@@ -1,5 +1,7 @@
 <template>
     <main id="main" class="main">
-        <h1>Demande de stage</h1>
-    </main><!-- End #main -->
+        <div class="demande-stage">
+            <h1>Demande de stage</h1>
+        </div><!-- End #main -->
+    </main>
 </template> 
