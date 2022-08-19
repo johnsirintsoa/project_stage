@@ -7,15 +7,20 @@ const Doleance = require('../models/Doleance')
 // })
 
 // filter doleance entre 2 date
-router.get('/filter/:first_date/:second_date',async (req,res)=>{
+router.get('/filter/:first_date/:second_date/:direction',async (req,res)=>{
     const first_date =  req.params.first_date.concat('T00:00:00Z')
     const second_date =  req.params.second_date.concat('T00:00:00Z')
-
+    const direction = req.params.direction
+    console.log(first_date)
+    console.log(second_date)
     try {
-        const doleances = await Doleance.find({date_publication:{
-            $gte: first_date, 
-            $lte: second_date 
-        }}).sort({date_publication: -1})
+        const doleances = await Doleance.find(
+            {
+                date_publication:{
+                    $gte: first_date, 
+                    $lte: second_date 
+                },direction: direction
+            }).sort({date_publication: -1})
         res.json(doleances)
     } catch (err) {
         res.json({message: err})
@@ -77,7 +82,7 @@ router.get('/detail/:doleance_id',async (req,res) => {
 // detail doleance
 router.delete('/delete/:doleance_id',async (req,res) => {
     try {
-        await Doleance.remove({_id: req.params.doleance_id})
+        await Doleance.deleteOne({_id: req.params.doleance_id})
         res.json(doleance)
     } catch (err) {
         res.json({message: err})

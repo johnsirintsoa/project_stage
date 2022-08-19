@@ -3,6 +3,13 @@ const domaine = "http://localhost:3000"
 const url = domaine.concat("/api/doleance")
 
 export default class DoleanceAPI{
+
+    // filtrer doleance
+    static async filter_doleance(date_1,date_2,direction){
+        const res = await axios.get(url.concat('/filter/',date_1,'/',date_2,'/',direction))
+        return res.data
+    }
+
     // all doleance
     static async getAllDoleance(){
         const res = await axios.get(url.concat('/all'))
