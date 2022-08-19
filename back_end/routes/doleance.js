@@ -32,6 +32,17 @@ router.get('/all',async (req,res)=>{
     }
 })
 
+// get doleance by session
+router.get('/my_doleances/:session',async (req,res)=>{
+    // res.json('hello wolrd')
+    try {
+        const doleances = await Doleance.find({session_navigateur: req.params.session}).sort({date_publication: -1})
+        res.json(doleances)
+    } catch (err) {
+        res.json({message: err})
+    }
+})
+
 // add doleance
 router.post('/add',async (req,res) => {
     const doleance = new Doleance({
@@ -39,9 +50,11 @@ router.post('/add',async (req,res) => {
         prenom: req.body.prenom,
         e_mail: req.body.e_mail,
         cin: req.body.cin,
+        numero_telephone:req.body.numero_telephone,
         titre: req.body.titre,
         message: req.body.message,
-        direction: req.body.direction
+        direction: req.body.direction,
+        session_navigateur: req.body.session_navigateur
     })
     try {
         const savedDoleance = await doleance.save()

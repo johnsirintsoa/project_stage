@@ -17,6 +17,10 @@ const doleance_schema = mongoose.Schema({
         type: String,
         default:''
     },
+    numero_telephone:{
+        type: String,
+        default:''
+    },
     titre:{
         type: String,
         required: true,
@@ -26,6 +30,10 @@ const doleance_schema = mongoose.Schema({
         required: true,
     },
     direction:{
+        type: String,
+        required: true,
+    },
+    session_navigateur:{
         type: String,
         required: true,
     },
