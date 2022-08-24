@@ -33,10 +33,9 @@ export default class Function{
         // }    return null
     }// add into session
 
-    static sessionSet(key, value, expirationInMin = 10) {  
-        let expirationDate = new Date(new Date().getTime() + (60000 * expirationInMin))    
-        let newValue = {    value: value,    expirationDate: expirationDate.toISOString()  }  
-        window.sessionStorage.setItem(key, JSON.stringify(newValue))
-    }
-    
+    // static sessionSet(key, value, expirationInMin = 10) {  
+    //     let expirationDate = new Date(new Date().getTime() + (60000 * expirationInMin))    
+    //     let newValue = {    value: value,    expirationDate: expirationDate.toISOString()  }  
+    //     window.sessionStorage.setItem(key, JSON.stringify(newValue))
+    // }
 }

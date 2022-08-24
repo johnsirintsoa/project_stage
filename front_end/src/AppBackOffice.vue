@@ -1,6 +1,7 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
+// import HelloWorld from './components/HelloWorld.vue'
+
 </script>
 
 <template>
@@ -254,37 +255,37 @@ import HelloWorld from './components/HelloWorld.vue'
         <li class="nav-heading">Pages</li>
 
         <li class="nav-item">
-          <a class="nav-link collapsed" href="">
+          <a class="nav-link collapsed" href="" >
             <i class="bi bi-person"></i>
-            <span><RouterLink to="/">Home</RouterLink></span>
+            <span><RouterLink to="/administrateur/" :class="{ disabled: active }">Home</RouterLink></span>
           </a>
         </li><!-- End Profile Page Nav -->
 
-        <li class="nav-item">
-          <a class="nav-link collapsed" href="">
+        <li class="nav-item" >
+          <a class="nav-link collapsed" >
             <i class="bi bi-question-circle"></i>
-            <span><RouterLink to="/boite-a-doleance">Doléance</RouterLink></span>
+            <span><RouterLink to="/administrateur/boite-a-doleance" :class="{ disabled: active }">Doléance</RouterLink></span>
           </a>
         </li><!-- End F.A.Q Page Nav -->
 
         <li class="nav-item">
           <a class="nav-link collapsed" href="">
             <i class="bi bi-envelope"></i>
-            <span><RouterLink to="/demande-stage">Stage</RouterLink></span>
+            <span><RouterLink to="/administrateur/demande-stage" :class="{ disabled: active }">Stage</RouterLink></span>
           </a>
         </li><!-- End Contact Page Nav -->
 
         <li class="nav-item">
           <a class="nav-link collapsed" href="">
             <i class="bi bi-card-list"></i>
-            <span><RouterLink to="/demande-emploi">Emploi</RouterLink></span>
+            <span><RouterLink to="/administrateur/demande-emploi" :class="{ disabled: active }" >Emploi</RouterLink></span>
           </a>
         </li><!-- End Register Page Nav -->
 
         <li class="nav-item">
           <a class="nav-link collapsed" href="">
             <i class="bi bi-box-arrow-in-right"></i>
-            <span><RouterLink to="/demande-audience">Audience</RouterLink></span>
+            <span><RouterLink to="/administrateur/demande-audience" :class="{ disabled: active }">Audience</RouterLink></span>
           </a>
         </li><!-- End Login Page Nav -->
 
@@ -310,6 +311,32 @@ import HelloWorld from './components/HelloWorld.vue'
     <!-- End Footer -->
 </template>
 
+<script>
+export default {
+  data() {
+    return {
+      active: false
+    }
+  },
+  async created() {
+    if(sessionStorage.getItem('administrateur')){
+      // redirect vers la page d'accueil
+      this.$router.push({path: '/administrateur/'});
+    }else{
+      // redirect vers la page de login
+      this.$router.push({path: '/administrateur/login'});
+      this.active = true
+
+    }
+  },
+}
+</script>
+<style>
+.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+</style>
 <!-- <style scoped>
 header {
   line-height: 1.5;

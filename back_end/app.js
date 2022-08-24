@@ -8,6 +8,7 @@ const app = express()
 // routes 
 const doleance_route = require('./routes/doleance')
 const direction_route = require('./routes/direction')
+const profil_route = require('./routes/profil')
 
 
 app.use(cors())
@@ -16,6 +17,8 @@ app.use(bodyParser.json())
 // app use route
 app.use('/api/doleance',doleance_route)
 app.use('/api/direction',direction_route)
+app.use('/api/profil',profil_route)
+
 
 
 

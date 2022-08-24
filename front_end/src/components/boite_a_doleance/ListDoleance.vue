@@ -1,5 +1,5 @@
 <template>
-    <div class="float-sm-start">
+    <div class="col-lg-5">
         Direction :
         <select class="form-select" v-model="filter.direction" aria-label="Default select example" required>
             <option selected disabled value="">Direction</option>
@@ -11,13 +11,9 @@
         De <input type="date" class="form-control" v-model="filter.date_1"> à <input type="date" v-model="filter.date_2" class="form-control">
         <button type="button" class="btn btn-primary position-relative" @click="filtrer()">
             Flitrer
-        </button></div><br>
-<div class="float-md-start"></div><br>
-<!-- <div class="float-lg-start">Float start on viewports sized LG (large) or wider</div><br>
-<div class="float-xl-start">Float start on viewports sized XL (extra-large) or wider</div><br> -->
+        </button>
+    </div>
 
-            
-    
     <div class="card" v-for="doleance in doleances" :key="doleance._id">
         <div class="card-body">
             <div class="d-flex w-100 justify-content-between">
@@ -50,7 +46,7 @@ export default {
     async created() {
         this.doleances = await DoleanceAPI.getAllDoleance();
         this.directions = await DirectionAPI.getAllDirection();
-        console.log(this.doleances)
+        // console.log(this.doleances)
         // console.log(new Date().toISOString().substring(0,10))
     },
     methods:{
