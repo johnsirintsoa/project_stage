@@ -255,38 +255,48 @@ import { RouterLink, RouterView } from 'vue-router'
         <li class="nav-heading">Pages</li>
 
         <li class="nav-item">
-          <a class="nav-link collapsed" href="" >
+          <RouterLink to="/administrateur/" :class="{ disabled: active }">
+          <a class="nav-link collapsed">
             <i class="bi bi-person"></i>
-            <span><RouterLink to="/administrateur/" :class="{ disabled: active }">Home</RouterLink></span>
+            <span>Home</span>
           </a>
+          </RouterLink>
         </li><!-- End Profile Page Nav -->
 
         <li class="nav-item" >
+          <RouterLink to="/administrateur/boite-a-doleance" :class="{ disabled: active }">
           <a class="nav-link collapsed" >
             <i class="bi bi-question-circle"></i>
-            <span><RouterLink to="/administrateur/boite-a-doleance" :class="{ disabled: active }">Doléance</RouterLink></span>
+            <span>Doléance</span>
           </a>
+          </RouterLink>
         </li><!-- End F.A.Q Page Nav -->
 
         <li class="nav-item">
+          <RouterLink to="/administrateur/demande-stage" :class="{ disabled: active }">
           <a class="nav-link collapsed" href="">
             <i class="bi bi-envelope"></i>
-            <span><RouterLink to="/administrateur/demande-stage" :class="{ disabled: active }">Stage</RouterLink></span>
+            <span>Stage</span>
           </a>
+          </RouterLink>
         </li><!-- End Contact Page Nav -->
 
         <li class="nav-item">
+          <RouterLink to="/administrateur/demande-emploi" :class="{ disabled: active }" >
           <a class="nav-link collapsed" href="">
             <i class="bi bi-card-list"></i>
-            <span><RouterLink to="/administrateur/demande-emploi" :class="{ disabled: active }" >Emploi</RouterLink></span>
+            <span>Emploi</span>
           </a>
+          </RouterLink>
         </li><!-- End Register Page Nav -->
 
         <li class="nav-item">
+          <RouterLink to="/administrateur/demande-audience" :class="{ disabled: active }">
           <a class="nav-link collapsed" href="">
             <i class="bi bi-box-arrow-in-right"></i>
-            <span><RouterLink to="/administrateur/demande-audience" :class="{ disabled: active }">Audience</RouterLink></span>
+            <span>Audience</span>
           </a>
+          </RouterLink>
         </li><!-- End Login Page Nav -->
 
 
