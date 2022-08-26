@@ -26,26 +26,10 @@ let app = null
 // console.log(window.location.href.includes('administrateur'))
 if(window.location.href.includes('administrateur')){
     app = createApp(AppBack)
-    // if(Profil.login_admin('haha','huhu')){
-    //     console.log('Connecter et login true')
-    //     // redirection page d'accueil
-    //     // router.push({name: 'back-home'})
-    //     window.location.href = '/administrateur/'
-    //     // router.push({path: '/administrateur/'})
-    //     // console.log(window.location.href)
-    // }else{
-    //     console.log('diso login')
-    //     // redirection page login
-    //     // router.push({name: 'loginAdmin'})
-    //     window.location.href = '/administrateur/login'
-    //     // router.push({name:'loginAdmin'})
-    //     // console.log(window.location.href)
-
-    // }
 }else{
     // expiration du session navigateur
     // start
-    const duree_expiration = 1
+    const duree_expiration = 2
     const date_expiration = new Date(new Date().getTime() + (60000 * duree_expiration))
     FUNC.session_navigateur(date_expiration)
     // end

@@ -79,13 +79,14 @@
                                             </div>
 
                                             <div class="col-12">
-                                            <label for="validationCustom04" class="form-label">Direction</label>
-                                            <select class="form-select" v-model="direction" aria-label="Default select example" required>
-                                                <option selected disabled value="">Choose...</option>
-                                                <option value="1">One</option>
-                                                <option value="2">Two</option>
-                                                <option value="3">Three</option>
-                                            </select>
+                                                <label for="validationCustom04" class="form-label">Direction</label>
+                                                <select class="form-select" v-model="doleance.direction" aria-label="Default select example" required>
+                                                    <option selected disabled value="">Choose...</option>
+                                                    <option v-for="direction in directions" :key="direction._id"> {{direction['direction_nickname']}}</option>
+                                                    <!-- <option value="1">One</option>
+                                                    <option value="2">Two</option>
+                                                    <option value="3">Three</option> -->
+                                                </select>
                                             </div>
                                         
 
@@ -109,10 +110,12 @@
 </template>
 <script>
 import DoleanceAPI from '../../api/doleance';
+import DirectionAPI from '../../api/direction';
 export default {
     data(){
         return {
             doleances:[],
+            directions:[],
             nom: "",
             prenom: "",
             e_mail: "",
@@ -125,6 +128,7 @@ export default {
     },
     async created() {
         this.doleances = await DoleanceAPI.getDoleanceBySession();
+        this.directions = await DirectionAPI.getAllDirection();
         console.log(this.doleances)
     },
     methods:{

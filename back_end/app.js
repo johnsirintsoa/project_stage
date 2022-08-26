@@ -9,6 +9,9 @@ const app = express()
 const doleance_route = require('./routes/doleance')
 const direction_route = require('./routes/direction')
 const profil_route = require('./routes/profil')
+const stage_route = require('./routes/demande_stage')
+const domaine_route = require('./routes/domaine')
+
 
 
 app.use(cors())
@@ -18,7 +21,8 @@ app.use(bodyParser.json())
 app.use('/api/doleance',doleance_route)
 app.use('/api/direction',direction_route)
 app.use('/api/profil',profil_route)
-
+app.use('/api/stage',stage_route)
+app.use('/api/domaine',domaine_route)
 
 
 
