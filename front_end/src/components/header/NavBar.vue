@@ -5,7 +5,7 @@
 <template>
     <header>
     <div class="navbar">
-        <ul>
+        <ul style="margin-left: 30rem;font-size: 20px;">
             <li>
                 <RouterLink to="/">Home</RouterLink>
             </li>

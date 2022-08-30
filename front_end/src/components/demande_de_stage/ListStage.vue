@@ -37,6 +37,7 @@ import { RouterLink, RouterView } from 'vue-router'
                 <span class="badge bg-warning text-dark" v-else >{{stage['demande_status']}}</span>
             </td>
             <td>
+                
                 <RouterLink :to="{name: 'back-demande-stage-detail',params:{id_demande_stage:stage['id']}}">
                     <button type="button" class="btn btn-info">
                         <i class="bi bi-info-circle"></i>

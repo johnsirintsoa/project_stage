@@ -7,6 +7,7 @@ export default class DemandeStageAPI{
         const res = await axios.post(url.concat('/add'),demande_stage)
         return res.data
     }
+
     // liste stages avec status
     static async all_status(){
         const res = await axios.get(url.concat('/all_status'))
