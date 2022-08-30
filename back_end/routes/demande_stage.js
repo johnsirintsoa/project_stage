@@ -18,7 +18,9 @@ let upload_pdf_stage = multer({
 
 
 router.post('/add',upload_pdf_stage,async (req,res)=>{
-    // console.log('All files here...')
+    // console.log(req.body)
+    // console.log(req.files)
+    console.log('All files here...')
     // console.log(upload_pdf_stage.length)
     // let demande_stage = {
     //     nom: req.body.nom,
@@ -47,4 +49,27 @@ router.post('/add',upload_pdf_stage,async (req,res)=>{
         res.json({message: err})
     }
 })
+
+// liste des demandes stages status
+router.get('/all_status',async(req,res)=>{
+    let sql = "SELECT demande_stage.id,CONCAT(demande_stage.nom,' ',demande_stage.prenom)as fullName,domaine.nom_domaine,demande_stage.duree,CASE WHEN rendez_vous_directeur.id_demande_stage IS NULL THEN 'en attente' ELSE 'valide' END as demande_status FROM demande_stage inner join domaine on demande_stage.id_domaine = domaine.id left join rendez_vous_directeur on demande_stage.id = rendez_vous_directeur.id_demande_stage";
+    try {
+        const stage = await db.promise().query(sql)
+        res.json(stage[0])
+    } catch (err) {
+        res.json({message: err})
+    }
+})
+
+// detail demande de stages
+router.get('/detail/:id',async(req,res)=>{
+    let sql = "SELECT demande_stage.id,demande_stage.nom,demande_stage.prenom,demande_stage.telephone,demande_stage.e_mail,demande_stage.cin,demande_stage.duree,demande_stage.curriculum_vitae ,demande_stage.lettre_motivation ,demande_stage.lettre_introduction ,demande_stage.message,domaine.nom_domaine from demande_stage inner join domaine on demande_stage.id_domaine = domaine.id where demande_stage.id ='".concat(req.params.id,"'");
+    try {
+        const stage = await db.promise().query(sql)
+        res.json(stage[0])
+    } catch (err) {
+        res.json({message: err})
+    }
+})
+
 module.exports = router

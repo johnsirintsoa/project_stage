@@ -4,11 +4,11 @@
         <h5 class="card-title">Formulaire :</h5>
 
         <!-- General Form Elements -->
-        <form enctype="multipart/form-data">
+        <form >
             <div class="row mb-3">
             <label for="validationDefault01" class="col-sm-2 col-form-label">Nom:</label>
             <div class="col-sm-10">
-                <input type="text" class="form-control" v-model="stage.nom" required="">
+                <input type="text" class="form-control" v-model="stage.nom" required="" >
             </div>
             </div>
 
@@ -71,32 +71,33 @@
             <div class="row mb-3">
             <label for="validationDefault01" class="col-sm-2 col-form-label">CV:</label>
             <div class="col-sm-10">
-                <input type="file" @change="selectCV" ref="file" class="form-control" id="formFile" required="">
+                <input type="file" @change="selectCV" ref="file_cv" class="form-control" id="formFile" required="" enctype="multipart/form-data">
             </div>
             </div>
             
             <div class="row mb-3">
             <label for="validationDefault01" class="col-sm-2 col-form-label">Lettre de motivation:</label>
             <div class="col-sm-10">
-                <input class="form-control" @change="selectLM" type="file" id="formFile" required="">
+                <input type="file" @change="selectLM"  ref="file_lm" class="form-control"  id="formFile" required="" enctype="multipart/form-data">
             </div>
             </div>
 
             <div class="row mb-3">
             <label for="validationDefault01" class="col-sm-2 col-form-label">Lettre d'introduction: </label>
             <div class="col-sm-10">
-                <input class="form-control" @change="selectLI" type="file" id="formFile" required="">
+                <input type="file" @change="selectLI" ref="file_li" class="form-control" id="formFile" required="" enctype="multipart/form-data" >
             </div>
             </div>
 
             
             <div class="row mb-3">
             <label class="col-sm-2 col-form-label"></label>
-            <div class="col-sm-10" v-if="this.stage.nom === '' || this.stage.prenom === '' || this.stage.prenom === '' || this.stage.telephone === '' || this.stage.e_mail === '' || this.stage.cin === '' || this.stage.duree === '' || this.stage.message === '' || this.stage.curriculum_vitae === '' || this.stage.lettre_motivation === '' || this.stage.lettre_introduction  === ''" >
+            <!-- <div class="col-sm-10" v-if="this.stage.nom === '' || this.stage.prenom === '' || this.stage.prenom === '' || this.stage.telephone === '' || this.stage.e_mail === '' || this.stage.cin === '' || this.stage.duree === '' || this.stage.message === '' || this.stage.curriculum_vitae === '' || this.stage.lettre_motivation === '' || this.stage.lettre_introduction  === ''" >
                 
                 <button class="btn btn-primary" type="submit" @click="addDemandeStage" disabled>Valider</button>
             </div>
-            <div class="col-sm-10" v-else >
+            <div class="col-sm-10" v-else > -->
+                <div>
                 
                 <button class="btn btn-primary" type="submit" @click="addDemandeStage" >Valider</button>
             </div>
@@ -127,13 +128,11 @@ export default {
                 message:'',
                 id_domaine:''
             },
-            domaines:'',
-            response:''
+            domaines:''
         }
     },
     async created() {
         this.domaines = await DomaineAPI.allDomaine();
-        console.log(this.response)
         
         // console.log(this.domaines)
         // console.log(this.stage)
@@ -153,44 +152,22 @@ export default {
             demande_stage.append('lettre_introduction',this.stage.lettre_introduction)
             demande_stage.append('message',this.stage.message)
             demande_stage.append('id_domaine',this.stage.id_domaine)
-
-            // const demande_stage = {
-            //     nom: this.nom,
-            //     prenom: this.prenom,
-            //     e_mail: this.e_mail,
-            //     cin: this.cin,
-            //     telephone:this.telephone,
-            //     duree: this.duree,
-            //     curriculum_vitae: this.curriculum_vitae,
-            //     lettre_motivation: this.lettre_motivation,
-            //     lettre_introduction: this.lettre_introduction,
-            //     message: this.message,
-            //     domaine: this.domaine
-            // }
+            
             try {
-                // console.log(demande_stage)
+                console.log('ato')
                 const response = await DemandeStageAPI.addDemandeStage(demande_stage)
-                this.response = response
-                // this.nom = "",
-                // prenom = "",
-                // e_mail = "",
-                // cin = "",
-                // numero_telephone = "",
-                // titre = "",
-                // message = "",
-                // direction = ""
             } catch (error) {
                 console.log(error)
             }
         },
         selectCV(){
-            this.stage.curriculum_vitae = this.$refs.file.files[0]
+            this.stage.curriculum_vitae = this.$refs.file_cv.files[0]
         },
         selectLM(){
-            this.stage.lettre_motivation = this.$refs.file.files[0]
+            this.stage.lettre_motivation = this.$refs.file_lm.files[0]
         },
         selectLI(){
-            this.stage.lettre_introduction = this.$refs.file.files[0]
+            this.stage.lettre_introduction = this.$refs.file_li.files[0]
         }
     },
 }

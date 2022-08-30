@@ -64,6 +64,14 @@ const router = createRouter({
       component: () => import('../views/backOffice/DemandeStage.vue')
     },
     {
+      path: '/administrateur/demande-stage/:id_demande_stage',
+      name: 'back-demande-stage-detail',
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import('../views/backOffice/DetailDemandeStage.vue')
+    },
+    {
       path: '/administrateur/demande-emploi',
       name: 'back-demande-emploi',
       // route level code-splitting
