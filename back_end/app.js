@@ -16,7 +16,11 @@ const domaine_route = require('./routes/domaine')
 
 app.use(cors())
 app.use(bodyParser.json())
-
+app.use(
+    express.urlencoded({
+        extended: true,
+    })
+);
 // app use route
 app.use('/api/doleance',doleance_route)
 app.use('/api/direction',direction_route)

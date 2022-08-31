@@ -3,7 +3,7 @@
         <div class="card-body">
         <h5 class="card-title">Formulaire :</h5>
 
-        <form enctype="multipart/form-data">
+        <form @submit.prevent="addDemandeStage" ref="formStage" enctype="multipart/form-data" >
             <div class="row mb-3">
             <label for="validationDefault01" class="form-label">Nom:</label>
             <div class="col-sm-10">
@@ -69,21 +69,21 @@
             <div class="row mb-3">
             <label for="validationDefault01" class="form-label">CV:</label>
             <div class="col-sm-10">
-                <input type="file" @change="selectCV" ref="file_cv" id="curriculum_vitae" name="curriculum_vitae" class="form-control"  required="">
+                <input type="file" @change="selectCV($event)" ref="file_cv" id="curriculum_vitae" name="curriculum_vitae" class="form-control"  required="">
             </div>
             </div>
             
             <div class="row mb-3">
             <label for="validationDefault01" class="form-label">Lettre de motivation:</label>
             <div class="col-sm-10">
-                <input type="file" @change="selectLM"  ref="file_lm" class="form-control"  id="lettre_motivation" name="lettre_motivation" required="">
+                <input type="file" @change="selectLM($event)"  ref="file_lm" class="form-control"  id="lettre_motivation" name="lettre_motivation" required="">
             </div>
             </div>
 
             <div class="row mb-3">
             <label for="validationDefault01" class="form-label">Lettre d'introduction: </label>
             <div class="col-sm-10">
-                <input type="file" @change="selectLI" ref="file_li" class="form-control" id="lettre_introduction" name="lettre_introduction" required="" >
+                <input type="file" @change="selectLI($event)" ref="file_li" class="form-control" id="lettre_introduction" name="lettre_introduction" required="" >
             </div>
             </div>
 
@@ -93,7 +93,7 @@
             
                 <div>
                 
-                <button  class="btn btn-primary" @click="addDemandeStage">Valider</button>
+                <button  type="submit" class="btn btn-primary" >Valider</button>
             </div>
             </div>
 
@@ -104,7 +104,9 @@
     </div>
 </template>
 <script>
-const baseURL = "http://localhost:3000/api/stage";
+const url_stage = "http://localhost:3000/api/stage";
+// import DemandeStageAPI from '../../api/demande_stage';
+import axios from 'axios';
 import DemandeStageAPI from '../../api/demande_stage';
 import DomaineAPI from '../../api/domaine';
 
@@ -124,13 +126,11 @@ export default {
                 message:'',
                 id_domaine:''
             },
-            domaines:'',
-            stageResult:null
+            domaines:''
         }
     },
     async created() {
         console.log(this.stage)
-        console.log(this.stageResult)
         this.domaines = await DomaineAPI.allDomaine();
     },
     methods: {
@@ -149,63 +149,31 @@ export default {
             this.stage.lettre_introduction = event.target.files[0]
 
         },
-        // async addDemandeStage(){
-        //     try {
-        //         // console.log(demande_stage)
-        //         const response = await DemandeStageAPI.addDemandeStage(this.stage)
-        //     } catch (error) {
-        //         console.log(error)
-        //     }
-        // }
-        // addDemandeStage(){
-        //     const formData = new FormData()
-        //     formData.append('imagesArray', this.imagesArray, this.imagesArray.name)
-        //     formData.append('nom',this.stage.nom)
-        //     formData.append('prenom',this.stage.prenom)
-        //     formData.append('telephone',this.stage.telephone)
-        //     formData.append('e_mail',this.stage.e_mail)
-        //     formData.append('cin',this.stage.cin)
-        //     formData.append('duree',this.stage.duree)
-        //     formData.append('curriculum_vitae',this.stage.curriculum_vitae)
-        //     formData.append('lettre_motivation',this.stage.lettre_motivation)
-        //     formData.append('lettre_introduction',this.stage.lettre_introduction)
-        //     formData.append('message',this.stage.message)
-        //     formData.append('id_domaine',this.stage.id_domaine)    
-        //     this.formaData = formData
-        //         formData.append('imagesArray', this.imagesArray, this.imagesArray.name)
-        //         console.log('hello world')
-        //     axios.post('http://localhost:3000/api/stage/add', formData, {
-        //     }).then((response) => {
-        //         console.log(response)
-        //     })
-        // }
         async addDemandeStage(){
-            try {
-                const res = await fetch(baseURL.concat('/add'), {
-                method: "post",
-                headers: {
-                    "Content-Type": "application/json",
-                    "x-access-token": "token-value",
-                },
-                body: JSON.stringify(this.stage),
-                });
-                if (!res.ok) {
-                    const message = `An error has occured: ${res.status} - ${res.statusText}`;
-                    throw new Error(message);
-                }
-                const data = await res.json();
-                const result = {
-                status: res.status + "-" + res.statusText,
-                headers: {
-                    "Content-Type": res.headers.get("Content-Type"),
-                    "Content-Length": res.headers.get("Content-Length"),
-                },
-                data: data,
-                };
-                this.stageResult = this.fortmatResponse(result);
-            } catch (err) {
-                this.stageResult = err.message;
-            }
+            const demande_stage = new FormData()
+            demande_stage.append('nom',this.stage.nom),
+            demande_stage.append('prenom',this.stage.prenom),
+            demande_stage.append('telephone',this.stage.telephone),
+            demande_stage.append('e_mail',this.stage.e_mail),
+            demande_stage.append('cin',this.stage.cin),
+            demande_stage.append('duree',this.stage.duree),
+            demande_stage.append('curriculum_vitae', this.stage.curriculum_vitae )
+            demande_stage.append('lettre_motivation', this.stage.lettre_motivation )
+            demande_stage.append('lettre_introduction', this.stage.lettre_introduction)
+
+            // console.log('FORMULAIRE EXECUTE...')
+            console.log(demande_stage.get('nom'))
+            console.log(demande_stage.get('prenom'))
+            console.log(demande_stage.get('telephone'))
+            console.log(demande_stage.get('e_mail'))
+            console.log(demande_stage.get('cin'))
+            console.log(demande_stage.get('duree'))
+            console.log(demande_stage.get('curriculum_vitae'))
+            console.log(demande_stage.get('lettre_motivation'))
+            console.log(demande_stage.get('lettre_introduction'))
+            
+            const response = await DemandeStageAPI.addDemandeStage(demande_stage)
+            console.log(response)
         }
     },
 }

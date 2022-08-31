@@ -1,6 +1,6 @@
 <script setup>
 // import DetailStage from '../../components/demande_de_stage/DetailStage.vue';
-import EmailDemandeStage from '../../components/demande_de_stage/EmailDemandeStage.vue';
+// import EmailDemandeStage from '../../components/demande_de_stage/EmailDemandeStage.vue';
 </script>
 <template>
     <main id="main" class="main">
@@ -89,7 +89,7 @@ import EmailDemandeStage from '../../components/demande_de_stage/EmailDemandeSta
                     <div class="col-lg-3 col-md-4 label">Lettre de motivation</div>
                     <div class="col-lg-9 col-md-8">
                         <div class="icon">
-                            <button type="hidden" @click="downloadFile()"><i class="bx bxs-file-pdf" style="font-size: 2.0rem;color: #012970"></i></button>
+                            <i class="bx bxs-file-pdf" style="font-size: 2.0rem;color: #012970"></i>
                             <div class="label">{{detail_stage[0]['lettre_motivation']}}</div>
                         </div>
                     </div>
@@ -105,7 +105,7 @@ import EmailDemandeStage from '../../components/demande_de_stage/EmailDemandeSta
                     </div>
                   </div>
 
-                  <EmailDemandeStage/>
+                  <!-- <EmailDemandeStage/> -->
 
                 </div>
                 
@@ -127,37 +127,36 @@ import EmailDemandeStage from '../../components/demande_de_stage/EmailDemandeSta
     </main>
 </template>
 <script>
-import axios from 'axios';
+// import axios from 'axios';
 import DemandeStageAPI from '../../api/demande_stage';
-import { url } from 'inspector';
 export default {
   data() {
     return {
       detail_stage: ''
     }
   },
-  async created(){
-    this.detail_stage = await DemandeStageAPI.detail(this.$route.params.id_demande_stage)
-  },
+  // async created(){
+  //   this.detail_stage = await DemandeStageAPI.detail(this.$route.params.id_demande_stage)
+  // },
   methods:{
-    downloadFile() {
-        // console.log('Hello world')
-        // console.log(axios)
-        axios({
-          url: './back_end/uploads/lettre_motivation_1661518676270_Etats_Analyses.pdf', // download file link goes here
-          method: 'GET',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          responseType: 'blob',
-        }).then((res) => {
-          var FILE = window.URL.createObjectURL(new Blob([res.data]));
+    // downloadFile() {
+    //     // console.log('Hello world')
+    //     // console.log(axios)
+    //     axios({
+    //       url: './back_end/uploads/lettre_motivation_1661518676270_Etats_Analyses.pdf', // download file link goes here
+    //       method: 'GET',
+    //       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    //       responseType: 'blob',
+    //     }).then((res) => {
+    //       var FILE = window.URL.createObjectURL(new Blob([res.data]));
         
-          var docUrl = document.createElement('x');
-          docUrl.href = FILE;
-          docUrl.setAttribute('download', 'lettre_motivation_1661518676270_Etats_Analyses.pdf');
-          document.body.appendChild(docUrl);
-          docUrl.click();
-        });
-      },
+    //       var docUrl = document.createElement('x');
+    //       docUrl.href = FILE;
+    //       docUrl.setAttribute('download', 'lettre_motivation_1661518676270_Etats_Analyses.pdf');
+    //       document.body.appendChild(docUrl);
+    //       docUrl.click();
+    //     });
+    //   },
     }
 }
 </script>

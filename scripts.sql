@@ -1,5 +1,5 @@
 /**
-    * Script sql start
+    * Script MYSQL start
     * start
 */
 
@@ -66,7 +66,7 @@ INSERT INTO stage.demande_stage( id, nom, prenom, telephone, e_mail, cin, duree,
 INSERT INTO stage.rendez_vous_directeur( date_time_debut, date_time_fin, id_demande_stage, id_demande_audience, motif ) VALUES ( '2022-08-29 07.09.06 PM', '2022-08-29 07.09.06 PM', 2, 1, 'Demande de stage');
 
 /** 
-    * Script sql 
+    * Script MYSQL 
     * End
 */
 
