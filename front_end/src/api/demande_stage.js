@@ -3,9 +3,15 @@ const domaine = "http://localhost:3000"
 const url = domaine.concat("/api/stage")
 
 export default class DemandeStageAPI{
+    // static addDemandeStage(demande_stage){
+    //     const res = await axios.post(url.concat('/add'),demande_stage)
+    //     return res.data
+    // }
     static async addDemandeStage(demande_stage){
-        const res = await axios.post(url.concat('/add'),demande_stage)
-        return res.data
+        await axios.post(url.concat('/add'), demande_stage, {
+          }).then((response) => {
+            console.log(response)
+          })
     }
 
     // liste stages avec status

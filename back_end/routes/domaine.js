@@ -3,13 +3,14 @@ const router = express.Router();
 const db = require('../database')
 
 router.get('/all',async (req,res)=>{
-    try {
-        let sql = "SELECT * FROM domaine"
-        const domaine = await db.promise().query(sql)
-        res.json(domaine[0])
-    } catch (err) {
-        res.json({message: err})
-    }
+    let sql = "SELECT * FROM domaine"
+    var query = db.query(sql, function(err, result) {
+        if(err){
+            return res.send({ err });
+        }else{
+            return res.json(result);
+        }
+    });
 })
 
 module.exports = router

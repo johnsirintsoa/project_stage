@@ -104,7 +104,6 @@
     </div>
 </template>
 <script>
-const url_stage = "http://localhost:3000/api/stage";
 // import DemandeStageAPI from '../../api/demande_stage';
 import axios from 'axios';
 import DemandeStageAPI from '../../api/demande_stage';
@@ -132,6 +131,7 @@ export default {
     async created() {
         console.log(this.stage)
         this.domaines = await DomaineAPI.allDomaine();
+        // console.log(this.domaines.)
     },
     methods: {
         selectCV(event){
@@ -151,29 +151,32 @@ export default {
         },
         async addDemandeStage(){
             const demande_stage = new FormData()
-            demande_stage.append('nom',this.stage.nom),
-            demande_stage.append('prenom',this.stage.prenom),
-            demande_stage.append('telephone',this.stage.telephone),
-            demande_stage.append('e_mail',this.stage.e_mail),
-            demande_stage.append('cin',this.stage.cin),
-            demande_stage.append('duree',this.stage.duree),
+            demande_stage.append('nom',this.stage.nom)
+            demande_stage.append('prenom',this.stage.prenom)
+            demande_stage.append('telephone',this.stage.telephone)
+            demande_stage.append('e_mail',this.stage.e_mail)
+            demande_stage.append('cin',this.stage.cin)
+            demande_stage.append('duree',this.stage.duree)
             demande_stage.append('curriculum_vitae', this.stage.curriculum_vitae )
             demande_stage.append('lettre_motivation', this.stage.lettre_motivation )
             demande_stage.append('lettre_introduction', this.stage.lettre_introduction)
+            demande_stage.append('message',this.stage.message)
+            demande_stage.append('id_domaine',this.stage.id_domaine)
 
             // console.log('FORMULAIRE EXECUTE...')
-            console.log(demande_stage.get('nom'))
-            console.log(demande_stage.get('prenom'))
-            console.log(demande_stage.get('telephone'))
-            console.log(demande_stage.get('e_mail'))
-            console.log(demande_stage.get('cin'))
-            console.log(demande_stage.get('duree'))
-            console.log(demande_stage.get('curriculum_vitae'))
-            console.log(demande_stage.get('lettre_motivation'))
-            console.log(demande_stage.get('lettre_introduction'))
+            // console.log(demande_stage)
+            // console.log(demande_stage.get('nom'))
+            // console.log(demande_stage.get('prenom'))
+            // console.log(demande_stage.get('telephone'))
+            // console.log(demande_stage.get('e_mail'))
+            // console.log(demande_stage.get('cin'))
+            // console.log(demande_stage.get('duree'))
+            // console.log(demande_stage.get('curriculum_vitae'))
+            // console.log(demande_stage.get('lettre_motivation'))
+            // console.log(demande_stage.get('lettre_introduction'))
             
-            const response = await DemandeStageAPI.addDemandeStage(demande_stage)
-            console.log(response)
+            const response =  await DemandeStageAPI.addDemandeStage(demande_stage)
+            // console.log(response)
         }
     },
 }
