@@ -14,6 +14,13 @@ export default class DemandeStageAPI{
           })
     }
 
+    static async getFile(file_name){
+        await axios.get(url.concat('/file/',file_name), {
+          }).then((response) => {
+            console.log(response)
+          })
+    }
+
     // liste stages avec status
     static async all_status(){
         const res = await axios.get(url.concat('/all_status'))

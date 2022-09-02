@@ -26,7 +26,7 @@
                               <input type="datetime-local" class="form-control" v-model="date_entretien" name="date_entretien" id="inputPassword4">
                             </div>
                             <div class="text-center">
-                                <button type="submit" value="Send" class="btn btn-success" @click="sendEmail">Send</button>
+                                <button type="submit" value="Send" class="btn btn-success" >Send</button>
                                 <button type="reset" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                             </div>
                           </form><!-- Vertical Form -->
@@ -62,17 +62,17 @@ export default {
     //   this.email = ''
     //   this.date_entretien = ''
     // }
-    sendEmail(){
-        emailjs.send('service_ir31b6q', 'template_84qzp1g', {
-            nom: this.nom,
-            email: this.email,
-            date_entretien: format_date(this.date_entretien)
-        }).then(function(response) {
-                console.log('SUCCESS!', response.status, response.text);
-            }, function(error) {
-                console.log('FAILED...', error);
-            });
-    },
+    // sendEmail(){
+    //     emailjs.send('service_ir31b6q', 'template_84qzp1g', {
+    //         nom: this.nom,
+    //         email: this.email,
+    //         date_entretien: format_date(this.date_entretien)
+    //     }).then(function(response) {
+    //             console.log('SUCCESS!', response.status, response.text);
+    //         }, function(error) {
+    //             console.log('FAILED...', error);
+    //         });
+    // },
     format_date(date){
         var dd = String(date.getDate()).padStart(2, '0');
         var mm = String(date.getMonth() + 1).padStart(2, '0'); //January is 0!
