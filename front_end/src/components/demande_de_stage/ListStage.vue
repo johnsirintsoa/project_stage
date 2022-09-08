@@ -59,17 +59,17 @@ import { RouterLink, RouterView } from 'vue-router'
                                 <!-- Vertical Form -->
                                 <form class="row g-3" ref="form" @submit.prevent="sendEmail">
                                     <div class="col-12">
-                                    <label for="inputNanme4" class="form-label">Nom et prénom</label>
-                                    <input type="text" class="form-control"  v-model="stage_email.nom" name="nom" id="inputNanme4" disabled>
+                                    <label for="inputName4" class="form-label">Nom et prénom</label>
+                                    <input type="text" class="form-control"  v-model="stage_email.nom" name="username" id="inputName4" disabled>
                                     </div>
                                     <div class="col-12">
                                     <label for="inputEmail4" class="form-label">Email</label>
-                                    <input type="email" class="form-control" v-model="stage_email.email" name="email" id="inputEmail4" disabled>
+                                    <input type="text" class="form-control" v-model="stage_email.email" name="usermail" id="inputEmail4" disabled>
                                     </div>
                                     <div class="col-12">
 
                                     <div class="col-12">
-                                    <label for="inputNanme4" class="form-label">CV</label>
+                                    <label for="inputName4" class="form-label">CV</label>
                                     <button type="hidden" @click="getFile(stage_email.curriculum_vitae)">
                                     <div class="icon">
                                         <i class="bx bxs-file-pdf" style="font-size: 2.0rem;color: #012970"></i>
@@ -79,7 +79,7 @@ import { RouterLink, RouterView } from 'vue-router'
                                     </div>
 
                                     <div class="col-12">
-                                    <label for="inputNanme4" class="form-label">Lettre de motivation</label>
+                                    <label for="inputName4" class="form-label">Lettre de motivation</label>
                                     <button type="hidden" @click="getFile(stage_email.lettre_motivation)">
                                     <div class="icon">
                                         <i class="bx bxs-file-pdf" style="font-size: 2.0rem;color: #012970"></i>
@@ -89,7 +89,7 @@ import { RouterLink, RouterView } from 'vue-router'
                                     </div>
 
                                     <div class="col-12">
-                                    <label for="inputNanme4" class="form-label">Lettre d'introduction</label>
+                                    <label for="inputName4" class="form-label">Lettre d'introduction</label>
                                     <button type="hidden" @click="getFile(stage_email.lettre_introduction)">
                                     <div class="icon">
                                         <i class="bx bxs-file-pdf" style="font-size: 2.0rem;color: #012970"></i>
@@ -143,7 +143,7 @@ import { RouterLink, RouterView } from 'vue-router'
 </template>
 
 <script>
-// import emailjs from 'emailjs-com'
+import emailjs from 'emailjs-com';
 import DemandeStageAPI from '../../api/demande_stage';
 export default {
     data() {
@@ -170,9 +170,13 @@ export default {
             this.stage_email.lettre_motivation = this.stages[index]['lettre_motivation']
             this.stage_email.lettre_introduction = this.stages[index]['lettre_introduction']
         },
-        sendEmail() {
-            // console.log(this.stage_email)
-            console.log('Mail send...')
+        async sendEmail() {
+            const send_stage = new FormData()
+            send_stage.append('username',this.stage_email.nom+" "+this.stage_email.prenom)
+            send_stage.append('usermail',this.stage_email.email)
+            send_stage.append('date_entretien',this.stage_email.date_entretien)
+
+            await DemandeStageAPI.sendMail(send_stage);
         },
         async getFile(file_name){
             await DemandeStageAPI.getFile(file_name)

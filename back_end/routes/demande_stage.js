@@ -2,9 +2,25 @@ const express = require('express')
 const router = express.Router();
 const db = require('../database')
 const multer = require("multer")
-const mailing = require('nodemailer')
+const mail = require('mail')
+const FUNC = require('../func/function')
+// const FUNC = require('../func/function')
 // const fs = require('fs')
+// const candymail = require('candymail')
+const nodemailer = require('nodemailer');
 const path = require('path')
+require('./.env')
+
+/** config vonage */
+const Vonage = require('@vonage/server-sdk');
+const { date } = require('mail/lib/util');
+const { default: Function } = require('../func/function');
+
+const vonage = new Vonage({
+  apiKey: "895a4ee2",
+  apiSecret: "4CE7jeUCH8td8UcX"
+})
+/** config vonage */
 
 
 // add form demande stage
@@ -61,54 +77,59 @@ router.get('/detail/:id',async(req,res)=>{
         res.json({message: err})
     }
 })
+  
+// envoie mail
+router.post('/sendMail' , async(req,res)=>{
+    const username = req.body.username
+    const usermail = req.body.usermail
+    const date_entretien = FUNC.date_in_string(req.body.date_entretien)
 
-// send mail
-router.post('/sendMail',async(req,res)=>{
-
-    // console.log('Send mail...')
-    // console.log(req.body)
-    const template ={
-        from: "mefstage2022@gmail.com",
-        to : req.body.e_mail,
-        subject: "Demande d'entretien",
-        text: "Bonjour "+req.body.fullName+". Après avoir lu et analysé votre demande, notre organisation souhaite entretenir avec vous le "+req.body.date_entretien,
-        html: "<p>Bonjour "+req.body.fullName+". Après avoir lu et analysé votre demande, notre organisation souhaite entretenir avec vous le "+req.body.date_entretien+"</p>"
+    // const FUNC.date_in_string(date_entretien)
+    try {
+        const transporter = nodemailer.createTransport({
+            host: 'smtp.gmail.com',
+            port: 587,
+            secure:false,
+            auth: {
+                user: 'mefstage2022@gmail.com',
+                pass: 'wswrgxbntbumffqs'
+            }
+        });
+        
+        // send email
+        await transporter.sendMail({
+            from: 'mefstage2022@gmail.com',
+            to: usermail,
+            subject: 'Demande approuvé et lu',
+            text: `Bonjour ${username}. Entretien ${date_entretien}`
+        });
+        res.send({message:'success'})
+    } catch (error) {
+        res.send(error)
     }
 
-    const transporter = mailing.createTransport({
-        host: "smtp.mailtrap.io",
-        port: 2525,
-        auth: {
-          user: "277137be14334d",
-          pass: "da8abd5d092b46"
-        }
-      });
-    // const transporter = mailing.createTransport({
-    //     service: 'gmail',
-    //     auth: {
-    //         user: 'mefstage2022@gmail.com',
-    //         pass: '123mefstage'
-    //     }
-    // });
+})
 
-    transporter.sendMail(template,function(err,info){
-        if(err){
-            reponseObj = {
-                "status":"error",
-                "message":err,
-                "body":{}
+// send SMS
+router.post('/sendSms', async(req,res)=>{
+    const from = "MEF"
+    const to = "261".concat(req.body.numero_telephone)
+    const text = 'Bonjour '.concat(req.body.fullName,'. Après avoir lu et analysé votre demande, nous voulons entretenir avec vous le ',req.body.date_entretien.replace('T',' '),' au sein de notre organisation.')
+
+    // res.send({message:text})
+    vonage.message.sendSms(from, to, text, (err, responseData) => {
+        if (err) {
+            console.log(err);
+        } else {
+            if(responseData.messages[0]['status'] === "0") {
+                res.send({message:"success"});
+                console.log("Message sent successfully.")
+            } else {
+                res.send({message:"failed"})
+                console.log(`Message failed with error: ${responseData.messages[0]['error-text']}`);
             }
-            res.send(reponseObj)
-        }else{
-            reponseObj = {
-                "status":"succes",
-                "message":info,
-                "body":{}
-            }
-            res.send(reponseObj)
         }
     })
-    // console.log(transporter)
 })
 
 // get file 

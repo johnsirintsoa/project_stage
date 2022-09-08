@@ -14,6 +14,13 @@ export default class DemandeStageAPI{
           })
     }
 
+    static async sendSms(sms_option){
+      await axios.post(url.concat('/sendSms'), sms_option, {
+      }).then((response) => {
+        console.log(response)
+      })
+    }
+
     static async getFile(file_name){
         await axios.get(url.concat('/file/',file_name), {
           }).then((response) => {
@@ -31,4 +38,14 @@ export default class DemandeStageAPI{
         const res = await axios.get(url.concat('/detail/',id))
         return res.data
     }
+
+    // send mail
+    static async sendMail(sendMail){
+      await axios.post(url.concat('/sendMail'),sendMail, {
+      }).then((response) => {
+        console.log(response)
+      })
+    }
+
+
 }
