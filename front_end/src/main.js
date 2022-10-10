@@ -14,11 +14,21 @@ import './assets/vendor/quill/quill.bubble.css'
 import './assets/vendor/remixicon/remixicon.css'
 import './assets/vendor/simple-datatables/style.css'
 
-import '@fortawesome/fontawesome-free/js/all'
 
 
 import './assets/css/style.css'
 import FUNC from './func/function'
+/* import the fontawesome core */
+import { library } from '@fortawesome/fontawesome-svg-core'
+
+/* import font awesome icon component */
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+
+/* import specific icons */
+import { faUserSecret } from '@fortawesome/free-solid-svg-icons'
+
+/* add icons to the library */
+library.add(faUserSecret)
 
 let app = null
 // sessionStorage.setItem('administrateur','138749183943')
@@ -31,12 +41,14 @@ if(window.location.href.includes('administrateur')){
     // start
     const duree_expiration = 2
     const date_expiration = new Date(new Date().getTime() + (60000 * duree_expiration))
+    // console.log("Date d'expiration "+date_expiration.toISOString())
     FUNC.session_navigateur(date_expiration)
     // end
     app = createApp(AppFront)
 }
 // console.log(app)
 app.use(router)
+app.component('font-awesome-icon', FontAwesomeIcon)
 app.mount('#app')
 // app.mount('#app')
 

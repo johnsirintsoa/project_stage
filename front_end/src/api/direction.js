@@ -9,4 +9,9 @@ export default class DirectionAPI{
         return res.data
     }
 
+    static async getMysqlDirections(){
+        const res = await axios.get(url.concat('/mysql/all'))
+        return res.data
+    }
+
 }
