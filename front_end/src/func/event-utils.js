@@ -1,5 +1,6 @@
 
 import DemandeAudience from '../api/demande_audience'
+import Jour_ferie from '../api/jour_ferie'
 
 let eventGuid = 0
 let todayStr = new Date().toISOString().replace(/T.*$/, '') // YYYY-MM-DD of today
@@ -26,6 +27,7 @@ let todayStr = new Date().toISOString().replace(/T.*$/, '') // YYYY-MM-DD of tod
 //   }
 // ]
 
+
 export const actual_events = async () => {
   const audiences =  DemandeAudience.all_audience()
   const actual_events = []
@@ -33,11 +35,13 @@ export const actual_events = async () => {
     const results = await audiences
     results.forEach(element => {
       // console.log(element)
+      const date_time_start = String(element.date_event_debut).concat('T',element.time_event_debut)
+      const date_time_fin = String(element.date_event_fin).concat('T',element.time_event_fin)
       let event = {
         id: String(element.id),
         title: element.motif,
-        start: String(element.date_time_debut).split('.')[0],
-        end: String(element.date_time_fin).split('.')[0],
+        start: date_time_start,
+        end: date_time_fin,
         intitule: String(element.intitule),
         id_direction: String(element.id_direction),
         type_audience: String(element.type_audience),
@@ -51,7 +55,28 @@ export const actual_events = async () => {
   }
 }
 
-
+// export const actual_events_TEST = async () => {
+//   const audiences =  DemandeAudience.all_audience_test()
+//   const actual_events = []
+//   try {
+//     const results = await audiences
+//     results.forEach(element => {
+//       // console.log(element)
+//       const date_time_start = String(element.date_x_debut).concat('T',element.time_x_debut)
+//       const date_time_fin = String(element.date_x_fin).concat('T',element.time_x_fin)
+//       let event = {
+//         title: 'TEST',
+//         start: date_time_start,
+//         end: date_time_fin
+//       }
+//       actual_events.push(event)
+//     })
+//     // console.log(actual_events)
+//     return actual_events
+//   } catch (error) {
+//     console.log(error)
+//   }
+// }
 
 export function createEventId() {
   return String(eventGuid++)
@@ -62,4 +87,9 @@ export function setDateEnd(date,duree){
   let date_end = new Date(date).getTime()
   return new Date(date_end+millsec)
   // return date_end+millsec
+}
+
+export const jour_ferie = async () => {
+  const jour_ferie = Jour_ferie.all_jour_ferie()
+  return jour_ferie
 }

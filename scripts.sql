@@ -5,6 +5,11 @@
 
 CREATE SCHEMA stage;
 
+CREATE TABLE stage.autorite_parent ( 
+	id                   INT  NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
+	intitule             VARCHAR(200)  NOT NULL    
+ ) engine=InnoDB;
+
 CREATE TABLE stage.direction ( 
 	id                   INT  NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
 	intitule             VARCHAR(200)  NOT NULL    ,
@@ -21,32 +26,45 @@ CREATE TABLE stage.jour_ferie (
 	nom_evenement        VARCHAR(30)      ,
 	numero_du_jour       VARCHAR(20)      ,
 	mois_du_jour         VARCHAR(20)      
- ) engine=InnoDB;
-
-CREATE TABLE stage.non_dispo_autorite ( 
-	motif                VARCHAR(200)      ,
-	jour                 VARCHAR(20)      ,
-	time_debut           TIME      ,
-	time_fin             TIME      
- ) engine=InnoDB;
+ ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE stage.profil ( 
 	nom_utilisateur      VARCHAR(30)  NOT NULL    ,
 	mot_de_passe         VARCHAR(255)  NOT NULL    ,
-	id                   INT  NOT NULL  AUTO_INCREMENT  PRIMARY KEY
+	id                   INT  NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
+	est_administrateur   SMALLINT  NOT NULL DEFAULT ('0')   
  ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
 
-CREATE TABLE stage.demande_audience ( 
+CREATE TABLE stage.autorite_enfant ( 
+	id                   INT  NOT NULL    PRIMARY KEY,
+	intitule             VARCHAR(200)      ,
+	intitule_code        VARCHAR(10)      ,
+	id_autorite_parent   INT      
+ ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE stage.autorite_enfant_profil ( 
+	id_profil            INT  NOT NULL    ,
+	id_autorite_enfant   INT      
+ ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE stage.demande_audience_autorite ( 
 	date_time_debut      DATETIME      ,
 	date_time_fin        DATETIME      ,
-	id_demande_stage     INT  NOT NULL    ,
+	id_autorite_enfant_sender INT      ,
+	id_autorite_enfant_receiver INT      ,
+	motif                VARCHAR(200)      
+ ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE stage.demande_audience_public ( 
+	date_event_debut     DATE      ,
 	motif                VARCHAR(200)  NOT NULL    ,
-	id_direction         INT      ,
-	type_audience        VARCHAR(200)  NOT NULL    ,
 	id                   INT  NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
-	est_valide           SMALLINT      ,
-	est_reporte          SMALLINT      
- ) ENGINE=InnoDB AUTO_INCREMENT=53 DEFAULT CHARSET=latin1;
+	date_event_fin       DATE      ,
+	time_event_debut     TIME      ,
+	time_event_fin       TIME      ,
+	action               INT      ,
+	id_autorite_enfant   INT      
+ ) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
 
 CREATE TABLE stage.demande_stage ( 
 	id                   INT  NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
@@ -63,18 +81,52 @@ CREATE TABLE stage.demande_stage (
 	id_domaine           INT      
  ) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=latin1;
 
+CREATE TABLE stage.non_disponibilite_autorite_date ( 
+	date_non_dispo_debut DATETIME      ,
+	date_non_dispo_fin   DATETIME      ,
+	id_autorite_enfant   INT      
+ ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE stage.non_disponibilite_autorite_jour ( 
+	jour                 VARCHAR(15)      ,
+	time_non_dispo_jour_debut TIME  NOT NULL    ,
+	time_non_dispo_jour_fin TIME  NOT NULL    ,
+	id_autorite_enfant   INT  NOT NULL    
+ );
+
 CREATE INDEX fk_direction_profil ON stage.direction ( id_profil );
 
-CREATE INDEX fk_demande_stage_calendrier_directeur ON stage.demande_audience ( id_demande_stage );
+CREATE INDEX fk_autorite_enfant_autorite_parent ON stage.autorite_enfant ( id_autorite_parent );
 
-CREATE INDEX fk_demande_audience_direction ON stage.demande_audience ( id_direction );
+CREATE INDEX fk_autorite_enfant_profil_id_profil ON stage.autorite_enfant_profil ( id_profil );
+
+CREATE INDEX fk_autorite_enfant_profil_id_autorite_enfant ON stage.autorite_enfant_profil ( id_autorite_enfant );
 
 CREATE INDEX fk_demande_stage_domaine ON stage.demande_stage ( id_domaine );
 
-ALTER TABLE stage.demande_audience ADD CONSTRAINT fk_demande_audience_direction FOREIGN KEY ( id_direction ) REFERENCES stage.direction( id ) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE stage.autorite_enfant ADD CONSTRAINT fk_autorite_enfant_autorite_parent FOREIGN KEY ( id_autorite_parent ) REFERENCES stage.autorite_parent( id ) ON DELETE SET NULL ON UPDATE SET NULL;
+
+ALTER TABLE stage.autorite_enfant_profil ADD CONSTRAINT fk_autorite_enfant_profil_id_autorite_enfant FOREIGN KEY ( id_autorite_enfant ) REFERENCES stage.autorite_enfant( id ) ON DELETE SET NULL ON UPDATE SET NULL;
+
+ALTER TABLE stage.autorite_enfant_profil ADD CONSTRAINT fk_autorite_enfant_profil_id_profil FOREIGN KEY ( id_profil ) REFERENCES stage.profil( id ) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+ALTER TABLE stage.demande_audience_autorite ADD CONSTRAINT fk_demande_audience_autorite_autorite_sender FOREIGN KEY ( id_autorite_enfant_sender ) REFERENCES stage.autorite_enfant( id ) ON DELETE SET NULL ON UPDATE SET NULL;
+
+ALTER TABLE stage.demande_audience_autorite ADD CONSTRAINT fk_demande_audience_autorite_autorite_receiver FOREIGN KEY ( id_autorite_enfant_receiver ) REFERENCES stage.autorite_enfant( id ) ON DELETE SET NULL ON UPDATE SET NULL;
+
+ALTER TABLE stage.demande_audience_public ADD CONSTRAINT fk_demande_audience_public_autorite_enfant FOREIGN KEY ( id_autorite_enfant ) REFERENCES stage.autorite_enfant( id ) ON DELETE SET NULL ON UPDATE SET NULL;
 
 ALTER TABLE stage.demande_stage ADD CONSTRAINT fk_demande_stage_domaine FOREIGN KEY ( id_domaine ) REFERENCES stage.domaine( id ) ON DELETE SET NULL ON UPDATE SET NULL;
 
+ALTER TABLE stage.non_disponibilite_autorite_date ADD CONSTRAINT fk_non_disponibilite_autorite_date_autorite_enfant FOREIGN KEY ( id_autorite_enfant ) REFERENCES stage.autorite_enfant( id ) ON DELETE SET NULL ON UPDATE SET NULL;
+
+ALTER TABLE stage.non_disponibilite_autorite_jour ADD CONSTRAINT fk_non_disponibilite_autorite_jour FOREIGN KEY ( id_autorite_enfant ) REFERENCES stage.autorite_enfant( id ) ON DELETE SET NULL ON UPDATE SET NULL;
+
+INSERT INTO stage.autorite_parent( id, intitule ) VALUES ( 1, 'Chef de service');
+INSERT INTO stage.autorite_parent( id, intitule ) VALUES ( 2, 'Directeurs');
+INSERT INTO stage.autorite_parent( id, intitule ) VALUES ( 3, 'Directeurs Généreaux');
+INSERT INTO stage.autorite_parent( id, intitule ) VALUES ( 4, 'Sécrétaire Général');
+INSERT INTO stage.autorite_parent( id, intitule ) VALUES ( 5, 'Ministère');
 INSERT INTO stage.direction( id, intitule, id_profil, intitule_code ) VALUES ( 1, 'Directeurs des Ressources Humaines', 3, 'DRH');
 INSERT INTO stage.direction( id, intitule, id_profil, intitule_code ) VALUES ( 2, 'Directeurs des Systèmes d''Informations', 4, 'DSI');
 INSERT INTO stage.direction( id, intitule, id_profil, intitule_code ) VALUES ( 3, 'Directeurs des Impots', 5, 'DI');
@@ -85,18 +137,14 @@ INSERT INTO stage.jour_ferie( nom_evenement, numero_du_jour, mois_du_jour ) VALU
 INSERT INTO stage.jour_ferie( nom_evenement, numero_du_jour, mois_du_jour ) VALUES ( 'Noel', '25', '12');
 INSERT INTO stage.jour_ferie( nom_evenement, numero_du_jour, mois_du_jour ) VALUES ( 'Fin d''année', '31', '12');
 INSERT INTO stage.jour_ferie( nom_evenement, numero_du_jour, mois_du_jour ) VALUES ( 'Nouvel an', '1', '1');
-INSERT INTO stage.non_dispo_autorite( jour, time_debut, time_fin, motif ) VALUES ( 'Mardi', '00:01:00', '23:59:00', 'Pas disponible');
-INSERT INTO stage.non_dispo_autorite( jour, time_debut, time_fin, motif ) VALUES ( 'Jeudi', '00:01:00', '23:59:00', 'Pas disponible');
-INSERT INTO stage.non_dispo_autorite( jour, time_debut, time_fin, motif ) VALUES ( 'Vendredi', '00:01:00', '23:59:00', 'Pas disponible');
-INSERT INTO stage.non_dispo_autorite( jour, time_debut, time_fin, motif ) VALUES ( 'Samedi', '00:01:00', '23:59:00', 'Jour non ouvrable');
-INSERT INTO stage.non_dispo_autorite( jour, time_debut, time_fin, motif ) VALUES ( 'Dimanche', '00:01:00', '23:59:00', 'Jour non ouvrable');
-INSERT INTO stage.profil( nom_utilisateur, mot_de_passe, id ) VALUES ( 'administrateur@gmail.com', '2dd07c9ce0189aaacacff6a86a5fc61a8d38d851', 2);
-INSERT INTO stage.profil( nom_utilisateur, mot_de_passe, id ) VALUES ( 'porte356@gmail.com', '7d1a3fe8eed303aedda59edecac8e448db5949ce', 3);
-INSERT INTO stage.profil( nom_utilisateur, mot_de_passe, id ) VALUES ( 'porte412@gmail.com', '9a28cbd1491c70432d9b3f228c77722ff115dd05', 4);
-INSERT INTO stage.profil( nom_utilisateur, mot_de_passe, id ) VALUES ( 'porte289@gmail.com', '0f4936674bd87ee70de47b7bc1c61a13ce4186dd', 5);
-INSERT INTO stage.demande_audience( date_time_debut, date_time_fin, id_demande_stage, motif, id_direction, type_audience, id, est_valide, est_reporte ) VALUES ( '2022-10-07 11.00.00 AM', '2022-10-07 01.00.00 PM', 35, 'Affaire volamena', 1, 'Ministère', 49, null, null);
-INSERT INTO stage.demande_audience( date_time_debut, date_time_fin, id_demande_stage, motif, id_direction, type_audience, id, est_valide, est_reporte ) VALUES ( '2022-10-07 12.30.00 PM', '2022-10-07 01.30.00 PM', 35, 'Dossier Maika', 1, 'DGFAG', 50, null, null);
-INSERT INTO stage.demande_audience( date_time_debut, date_time_fin, id_demande_stage, motif, id_direction, type_audience, id, est_valide, est_reporte ) VALUES ( '2022-10-07 01.15.00 PM', '2022-10-07 02.15.00 PM', 35, 'Dossier Maika', 1, 'DGFAG', 52, null, null);
+INSERT INTO stage.profil( nom_utilisateur, mot_de_passe, id, est_administrateur ) VALUES ( 'administrateur@gmail.com', '2dd07c9ce0189aaacacff6a86a5fc61a8d38d851', 2, 0);
+INSERT INTO stage.profil( nom_utilisateur, mot_de_passe, id, est_administrateur ) VALUES ( 'porte356@gmail.com', '7d1a3fe8eed303aedda59edecac8e448db5949ce', 3, 0);
+INSERT INTO stage.profil( nom_utilisateur, mot_de_passe, id, est_administrateur ) VALUES ( 'porte412@gmail.com', '9a28cbd1491c70432d9b3f228c77722ff115dd05', 4, 0);
+INSERT INTO stage.profil( nom_utilisateur, mot_de_passe, id, est_administrateur ) VALUES ( 'porte289@gmail.com', '0f4936674bd87ee70de47b7bc1c61a13ce4186dd', 5, 0);
+INSERT INTO stage.demande_audience_public( date_event_debut, motif, id, date_event_fin, time_event_debut, time_event_fin, action, id_autorite_enfant ) VALUES ( '2022-10-17', 'Travail personnel', 1, '2022-10-17', '08:00:00', '08:30:00', 0, null);
+INSERT INTO stage.demande_audience_public( date_event_debut, motif, id, date_event_fin, time_event_debut, time_event_fin, action, id_autorite_enfant ) VALUES ( '2022-10-18', 'Patrouille departement', 2, '2022-10-18', '08:30:00', '09:30:00', 0, null);
+INSERT INTO stage.demande_audience_public( date_event_debut, motif, id, date_event_fin, time_event_debut, time_event_fin, action, id_autorite_enfant ) VALUES ( '2022-10-17', 'Déjeuner', 4, '2022-10-17', '10:00:00', '10:30:00', 0, null);
+INSERT INTO stage.demande_audience_public( date_event_debut, motif, id, date_event_fin, time_event_debut, time_event_fin, action, id_autorite_enfant ) VALUES ( '2022-10-17', 'Asa speed', 5, '2022-10-17', '08:30:00', '09:00:00', 0, null);
 INSERT INTO stage.demande_stage( id, nom, prenom, telephone, e_mail, cin, duree, curriculum_vitae, lettre_motivation, lettre_introduction, message, id_domaine ) VALUES ( 1, 'Joris', 'agaga', '0345612895', '1213244@gmail.com', '515151', 2, 'ddfkdl.pdf', 'kfjdlf.pdf', 'gdg.pdf', 'Bonjour à tous je suis johns', 1);
 INSERT INTO stage.demande_stage( id, nom, prenom, telephone, e_mail, cin, duree, curriculum_vitae, lettre_motivation, lettre_introduction, message, id_domaine ) VALUES ( 2, 'Naivo', 'agaga', '0345612895', '1213244@gmail.com', '515151', 2, 'ddfkdl.pdf', 'kfjdlf.pdf', 'gdg.pdf', 'Bonjour à tous je suis johns', 1);
 INSERT INTO stage.demande_stage( id, nom, prenom, telephone, e_mail, cin, duree, curriculum_vitae, lettre_motivation, lettre_introduction, message, id_domaine ) VALUES ( 4, 'Johns', 'RANDY', '6523120023', 'jdfdfdjfkd@gmail.com', '54541351', 3, 'curriculum_vitae_1661415411604_Etats_Analyses.pdf', 'curriculum_vitae_1661415411604_Etats_Analyses.pdf', 'curriculum_vitae_1661415411604_Etats_Analyses.pdf', 'Je suis blabalbalbalbao', 1);
@@ -116,12 +164,13 @@ INSERT INTO stage.demande_stage( id, nom, prenom, telephone, e_mail, cin, duree,
 INSERT INTO stage.demande_stage( id, nom, prenom, telephone, e_mail, cin, duree, curriculum_vitae, lettre_motivation, lettre_introduction, message, id_domaine ) VALUES ( 33, 'RANDRIANARISON', 'Feno', '341758275', 'johnsirintsoa18@gmail.com', '112112112112', 2, 'curriculum_vitae_1662017293222_mail.pdf', 'lettre_motivation_1662017293224_mail.pdf', 'lettre_introduction_1662017293227_mail.pdf', 'Hello world here we go', 1);
 INSERT INTO stage.demande_stage( id, nom, prenom, telephone, e_mail, cin, duree, curriculum_vitae, lettre_motivation, lettre_introduction, message, id_domaine ) VALUES ( 34, 'Dyran', 'Johns', '341752875', 'dyranjohns@gmail.com', '112112112112', 3, 'curriculum_vitae_1662378969144_mail.pdf', 'lettre_motivation_1662378969350_mail.pdf', 'lettre_introduction_1662378969404_mail.pdf', 'Je suis la et je serai la', 2);
 INSERT INTO stage.demande_stage( id, nom, prenom, telephone, e_mail, cin, duree, curriculum_vitae, lettre_motivation, lettre_introduction, message, id_domaine ) VALUES ( 35, ' ', ' ', ' ', ' ', ' ', 0, ' ', ' ', ' ', ' ', 1);
-
 /** 
     * Script MYSQL 
     * End
 */
 
+-- CREATE USER
+create user 'autorite' identified by '123mef'
 
 /** 
     * Start
@@ -166,4 +215,7 @@ FROM
 /*
 	* Disponibilité du directeur
 */
-select * from demande_audience as tabl1 where ((SELECT date_time_debut from demande_audience) >= tabl1.date_time_fin  OR  (END_DT_TM BETWEEN 'START_DATE_TIME' AND 'END_DATE_TIME'))
+SELECT date_event_debut, date_event_fin, time_event_debut, time_event_fin, motif, id_direction, id
+	FROM stage.demande_audience_public c 
+		where id_direction = 2 and date_event_debut='2022-10-17'and date_event_fin='2022-10-17' and time_event_debut BETWEEN '08:59:00' and '09:59:00' or date_event_debut='2022-10-17'and date_event_fin='2022-10-17' and time_event_fin BETWEEN '09:01:00' and '10:01:00' 
+			order by date_event_debut,date_event_fin,time_event_debut,time_event_fin

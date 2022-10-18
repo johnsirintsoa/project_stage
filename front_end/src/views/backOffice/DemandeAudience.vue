@@ -23,12 +23,6 @@
                             <li> <button type="button" @click="add_event()">Valider</button></li>
                             </ul>
                         </form>
-                        <!-- <h2>Instructions</h2>
-                        <ul>
-                        <li>Select dates and you will be prompted to create a new event</li>
-                        <li>Drag, drop, and resize events</li>
-                        <li>Click an event to delete it</li>
-                        </ul> -->
                     </div>
                     <div class='demo-app-sidebar-section'>
                         <label>

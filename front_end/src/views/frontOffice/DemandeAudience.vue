@@ -7,7 +7,8 @@
     import timeGridPlugin from '@fullcalendar/timegrid'
     import interactionPlugin from '@fullcalendar/interaction'
     import listPlugin from '@fullcalendar/list'
-    import { actual_events } from '../../func/event-utils'
+    import timeLine from '@fullcalendar/timeline'
+    import { actual_events,jour_ferie} from '../../func/event-utils'
     import DemandeAudience from '../../api/demande_audience'
     import DirectionAPI from '../../api/direction';
     import tippy from 'tippy.js';
@@ -30,6 +31,7 @@
               dayGridPlugin,
               timeGridPlugin,
               listPlugin,
+              timeLine, 
               interactionPlugin // needed for dateClick
             ],
             headerToolbar: {
@@ -37,7 +39,7 @@
               center: 'title',
               right: 'dayGridMonth,timeGridWeek,timeGridDay,listDay'
             },
-            initialView: 'dayGridMonth',
+            initialView: 'timeGridWeek',
             // initialEvents: INITIAL_EVENTS, // alternatively, use the `events` setting to fetch from a feed
             initialEvents: this.actual_events, // alternatively, use the `events` setting to fetch from a feed
             editable: true,
@@ -45,7 +47,7 @@
             droppable: true,
             selectMirror: true,
             dayMaxEvents: true,
-            weekends: true,
+            weekends: false,
             select: this.handleDateSelect,
             eventClick: this.handleEventClick,
             // eventsSet: this.handleEvents,
@@ -68,7 +70,6 @@
             date_fin: '',
             time_debut:'',
             time_fin:'',
-            type_audience:'',
             id:''
           }
         }
@@ -79,19 +80,12 @@
       methods: {
         async actual_events(){
           return await actual_events()
-        },  
+        }, 
         async direction_mysql(){
           return await DirectionAPI.getMysqlDirections()
         },
         handleWeekendsToggle() {
           this.calendarOptions.weekends = !this.calendarOptions.weekends // update a property
-        },
-        split_date_time(date){
-          const date_time_split = date.split('T')[0]
-          const new_date = date_time_split[0];
-          const time = date_time_split[1].split('+')[0]
-          console.log(date_time_split)
-          // return {date:new_date,time:time}
         },
         
         handleDateSelect(selectInfo) {
@@ -131,25 +125,24 @@
         },
 
         async eventDropped(event){
-          console.log(event.event)
+          const start_date_time = Function.foramt_date_time(event.event.start)
+          const end_date_time = Function.foramt_date_time(event.event.end)
+
           this.audience.id = event.event.id
-          this.audience.type_audience = event.event.extendedProps.type_audience
           this.audience.direction = event.event.extendedProps.id_direction
           this.audience.motif = event.event.title
-          this.audience.date_debut = new Date(event.event.start).toISOString().split('.')[0].split('T')[0]
-          this.audience.date_fin = new Date(event.event.end).toISOString().split('.')[0].split('T')[0]
-          this.audience.time_debut = new Date(event.event.start).toISOString().split('.')[0].split('T')[1]
-          this.audience.time_fin = new Date(event.event.end).toISOString().split('.')[0].split('T')[1]
-
-          const date_time_debut = this.audience.date_debut.concat(' ',this.audience.time_debut,':00')
-          const date_time_fin = this.audience.date_fin.concat(' ',this.audience.time_fin,':00')
+          this.audience.date_debut = start_date_time[0]
+          this.audience.date_fin = end_date_time[0]
+          this.audience.time_debut = start_date_time[1]
+          this.audience.time_fin = end_date_time[1]
 
           const audience_event = {
-            date_time_debut: date_time_debut,
-            date_time_fin: date_time_fin,
+            date_event_debut: this.audience.date_debut,
+            date_event_fin: this.audience.date_fin, 
+            time_event_debut: this.audience.time_debut,
+            time_event_fin: this.audience.time_fin,
             motif: this.audience.motif,
             id_direction: this.audience.direction,
-            type_audience: this.audience.type_audience,
             id: this.audience.id
           }
           // const res = await DemandeAudience.update_event(audience_event)
@@ -172,24 +165,25 @@
 
         },
         eventDragged(event){
-          this.audience.id = event.event.id
-          this.audience.type_audience = event.event.extendedProps.type_audience
-          this.audience.direction = event.event.extendedProps.id_direction
-          this.audience.motif = event.event.title,
-          this.audience.date_debut = new Date(event.event.start).toISOString().split('.')[0].split('T')[0]
-          this.audience.date_fin = new Date(event.event.end).toISOString().split('.')[0].split('T')[0]
-          this.audience.time_debut = new Date(event.event.start).toISOString().split('.')[0].split('T')[1]
-          this.audience.time_fin = new Date(event.event.end).toISOString().split('.')[0].split('T')[1] 
+          const start_date_time = Function.foramt_date_time(event.event.start)
+          const end_date_time = Function.foramt_date_time(event.event.end)
 
-          const date_time_debut = this.audience.date_debut.concat(' ',this.audience.time_debut,':00')
-          const date_time_fin = this.audience.date_fin.concat(' ',this.audience.time_fin,':00')
+          this.audience.id = event.event.id
+          this.audience.direction = event.event.extendedProps.id_direction
+          this.audience.motif = event.event.title
+          this.audience.date_debut = start_date_time[0]
+          this.audience.date_fin = end_date_time[0]
+          this.audience.time_debut = start_date_time[1]
+          this.audience.time_fin = end_date_time[1]
+          
 
           const audience_event = {
-            date_time_debut: date_time_debut,
-            date_time_fin: date_time_fin,
+            date_event_debut: this.audience.date_debut,
+            date_event_fin: this.audience.date_fin, 
+            time_event_debut: this.audience.time_debut,
+            time_event_fin: this.audience.time_fin,
             motif: this.audience.motif,
             id_direction: this.audience.direction,
-            type_audience: this.audience.type_audience,
             id: this.audience.id
           }
 
@@ -212,36 +206,30 @@
         },
 
         detailEvent(info) {
-          const date_start = new Date(info.event.start).toISOString().split('.')[0]
-          const date_end = new Date(info.event.end).toISOString().split('.')[0]
-
-          // tippy(info.el, {
-          //   theme:'light',
-          //   content: `<p><strong>${info.event.title}</strong></p>
-          //   <p> De ${Function.date_in_string(date_start)} à ${Function.date_in_string(date_end)}</p>
-          //   <p>${info.event.extendedProps.intitule}</p>
-          //   <p>${info.event.extendedProps.type_audience}</p>`,
-          //   allowHTML: true,
-          // });
+          // console.log(info.event.extendedProps.intitule)
+          tippy(info.el, {
+            theme:'light',
+            content: `<p><strong>${info.event.title}</strong></p>
+            <p> De ${Function.date_in_string(info.event.start)} à ${Function.date_in_string(info.event.end)}</p>
+            <p>${info.event.extendedProps.intitule}</p>`,
+            allowHTML: true,
+          });
         },
 
         // add event
         async add_event(){
-          const date_time_debut = this.audience.date_debut.concat(' ',this.audience.time_debut,':00')
-          const date_time_fin = this.audience.date_fin.concat(' ',this.audience.time_fin,':00')
-
-          // console.log(date_time_debut)
-          // const audience_event = new FormData()
           const audience_event = {
-            date_time_debut: date_time_debut,
-            date_time_fin: date_time_fin,
+            date_event_debut: this.audience.date_debut,
+            date_event_fin: this.audience.date_fin, 
+            time_event_debut: this.audience.time_debut,
+            time_event_fin: this.audience.time_fin,
             // id_demande_stage: 35,
             motif: this.audience.motif,
             id_direction: this.audience.direction.id,
-            type_audience: this.audience.type_audience,
             session_navigateur: JSON.parse(sessionStorage.getItem("session_navigateur")).value
           }
           const response =  await DemandeAudience.add_event(audience_event)
+          console.log(audience_event)
           console.log(response)
           if(response.code == 'ER_BAD_FIELD_ERROR'){
             swal("Audience non enregistrée", "Veuillez remplir le formulaire", "error");
@@ -251,7 +239,30 @@
           setInterval( () => {
             window.location.reload()
           }, 1000)
-        }
+        },
+
+        // add test event
+        // async add_event_test(){
+
+        //   const audience_event = {
+        //     date_x_debut: this.audience.date_debut,
+        //     date_x_fin: this.audience.date_fin,
+        //     time_x_debut: this.audience.time_debut,
+        //     time_x_fin: this.audience.time_fin
+        //   }
+        //   const response =  await DemandeAudience.add_event_test(audience_event)
+        //   console.log(response)
+        //   if(response.code == 'ER_BAD_FIELD_ERROR'){
+        //     swal("Audience non enregistrée", "Veuillez remplir le formulaire", "error");
+        //   }else if(response.code == 'ER_PARSE_ERROR'){
+        //     swal("Audience non enregistrée", "Veuillez vérifier votreformulaire", "error");
+        //   }else{
+        //     swal("Audience enregistrée", "Votre audience a bien été enregistrée", "success");
+        //   }
+        //   // setInterval( () => {
+        //   //   window.location.reload()
+        //   // }, 1000)
+        // }
       }
     }
 </script>
@@ -274,7 +285,7 @@
                             <option v-for="dir in directions" :value="dir"> {{dir['intitule_code']}}</option>
                           </select>
                       </li>
-                      <li>Type audience: <input v-model="audience.type_audience" placeholder="Type d'audience..." /></li>
+                      <!-- <li>Type audience: <input v-model="audience.type_audience" placeholder="Type d'audience..." /></li> -->
                       <li> <button type="button" @click="add_event()">Valider</button></li>
                       </ul>
                   </form>

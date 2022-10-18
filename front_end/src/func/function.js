@@ -5,27 +5,50 @@ export default class Function{
     }
 
     static date_in_string(date) {
-        const date_splited = date.split('T')
         let mois = [
-            'Janvier',
-            'Février',
-            'Mars',
-            'Avril',
-            'Mai',
-            'Juin',
-            'Juillet',
-            'Aout',
-            'Septembre',
-            'Octobre',
-            'Novembre',
-            'Décembre'
+          'Janvier',
+          'Février',
+          'Mars',
+          'Avril',
+          'Mai',
+          'Juin',
+          'Juillet',
+          'Aout',
+          'Septembre',
+          'Octobre',
+          'Novembre',
+          'Décembre'
         ]
-        // console.log(date_splited[0])
-        const date_new_format = date_splited[0].split('-')
-        const index_mois = parseInt(date_new_format[1])-1
-        let date_string = `${date_new_format[2]} ${mois[index_mois]} ${date_new_format[0]} ${date_splited[1]}`;
-        // console.log(date_string)
-        return date_string
+        // console.log(date)
+        const num_date = new Date(date).getDate()
+        const index_mois = new Date(date).getMonth()
+        const annee = new Date(date).getFullYear()
+        if(new Date(date).getMinutes()==0){
+            return num_date+" "+mois[index_mois]+" "+annee+" "+new Date(date).getHours()+"h0"+new Date(date).getMinutes()+"min"
+        }
+        return num_date+" "+mois[index_mois]+" "+annee+" "+new Date(date).getHours()+"h"+new Date(date).getMinutes()+"min"
+      }
+      
+    static format_time = (date) =>{
+        if(new Date(date).getMinutes()==0){
+            return new Date(date).getHours()+"h0"+new Date(date).getMinutes()+"min"
+        }else{
+            return new Date(date).getHours()+"h"+new Date(date).getMinutes()+"min"
+        }
+        
+    }
+
+    
+    static foramt_date_time(date) {
+        const date_time = []
+        const mois = new Date(date).getMonth()+1
+        date_time[0] = new Date(date).getFullYear()+"-"+mois+"-"+new Date(date).getDate()
+        date_time[1] = new Date(date).getHours()+":"+new Date(date).getMinutes()+":"+"00"
+        if(new Date(date).getMinutes()==0){
+            date_time[1] = new Date(date).getHours()+":0"+new Date(date).getMinutes()+":"+"00"
+        }
+        // console.log(date_time)
+        return date_time
     }
 
     static split_date_time(date){
