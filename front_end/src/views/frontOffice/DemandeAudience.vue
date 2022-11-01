@@ -10,12 +10,12 @@
     import timeLine from '@fullcalendar/timeline'
     import { actual_events,jour_ferie} from '../../func/event-utils'
     import DemandeAudience from '../../api/demande_audience'
-    import DirectionAPI from '../../api/direction';
     import tippy from 'tippy.js';
     import 'tippy.js/dist/tippy.css'; // optional for styling
     import 'tippy.js/themes/light.css';
     import Function from '../../func/function';
     import swal from 'sweetalert';
+    import AutoriteAPI from '../../api/autorite';
 
     
     export default {
@@ -74,15 +74,20 @@
           }
         }
       },
+      async created(){
+        const id_autorite_enfant = window.location.pathname.split('/')[3]
+        
+        console.log()
+      },
       async mounted() {
-        this.directions = await this.direction_mysql()
+        this.directions = await this.autorites_enfant()
       },
       methods: {
         async actual_events(){
-          return await actual_events()
+          return await actual_events(1)
         }, 
-        async direction_mysql(){
-          return await DirectionAPI.getMysqlDirections()
+        async autorites_enfant(){
+          return await AutoriteAPI.autorite_enfant()
         },
         handleWeekendsToggle() {
           this.calendarOptions.weekends = !this.calendarOptions.weekends // update a property
@@ -127,9 +132,8 @@
         async eventDropped(event){
           const start_date_time = Function.foramt_date_time(event.event.start)
           const end_date_time = Function.foramt_date_time(event.event.end)
-
           this.audience.id = event.event.id
-          this.audience.direction = event.event.extendedProps.id_direction
+          this.audience.direction = event.event.extendedProps.id_autorite_enfant
           this.audience.motif = event.event.title
           this.audience.date_debut = start_date_time[0]
           this.audience.date_fin = end_date_time[0]
@@ -159,17 +163,20 @@
                 icon: "success",
               });
               const res = await DemandeAudience.update_event(audience_event)
+              setInterval( () => {
+                window.location.reload()
+              }, 1000)
             }
             
           });
-
+          
         },
         eventDragged(event){
           const start_date_time = Function.foramt_date_time(event.event.start)
           const end_date_time = Function.foramt_date_time(event.event.end)
 
           this.audience.id = event.event.id
-          this.audience.direction = event.event.extendedProps.id_direction
+          this.audience.direction = event.event.extendedProps.id_autorite_enfant
           this.audience.motif = event.event.title
           this.audience.date_debut = start_date_time[0]
           this.audience.date_fin = end_date_time[0]
@@ -200,13 +207,18 @@
                 icon: "success",
               });
               const res = await DemandeAudience.update_event(audience_event)
+              setInterval( () => {
+                window.location.reload()
+              }, 1000)
             }
             
           });
+          
         },
 
         detailEvent(info) {
-          // console.log(info.event.extendedProps.intitule)
+          console.log(info)
+          
           tippy(info.el, {
             theme:'light',
             content: `<p><strong>${info.event.title}</strong></p>
@@ -225,7 +237,7 @@
             time_event_fin: this.audience.time_fin,
             // id_demande_stage: 35,
             motif: this.audience.motif,
-            id_direction: this.audience.direction.id,
+            id_autorite_enfant: this.audience.direction.id,
             session_navigateur: JSON.parse(sessionStorage.getItem("session_navigateur")).value
           }
           const response =  await DemandeAudience.add_event(audience_event)
@@ -240,7 +252,6 @@
             window.location.reload()
           }, 1000)
         },
-
         // add test event
         // async add_event_test(){
 
@@ -337,7 +348,6 @@
             </div>
         </div>
     </main>
-    
 </template>
 <style lang='css'>
     #main-audience{

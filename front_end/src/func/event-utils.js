@@ -27,9 +27,36 @@ let todayStr = new Date().toISOString().replace(/T.*$/, '') // YYYY-MM-DD of tod
 //   }
 // ]
 
+// Actual events v1
+// export const actual_events = async () => {
+//   const audiences =  DemandeAudience.all_audience()
+//   const actual_events = []
+//   try {
+//     const results = await audiences
+//     results.forEach(element => {
+//       // console.log(element)
+//       const date_time_start = String(element.date_event_debut).concat('T',element.time_event_debut)
+//       const date_time_fin = String(element.date_event_fin).concat('T',element.time_event_fin)
+//       let event = {
+//         id: String(element.id),
+//         title: element.motif,
+//         start: date_time_start,
+//         end: date_time_fin,
+//         intitule: String(element.intitule),
+//         id_autorite_enfant: String(element.id_autorite_enfant)
+//       }
+//       actual_events.push(event)
+//     })
+//     // console.log(actual_events)
+//     return actual_events
+//   } catch (error) {
+//     console.log(error)
+//   }
+// }
 
-export const actual_events = async () => {
-  const audiences =  DemandeAudience.all_audience()
+// Actual events v2
+export const actual_events = async (id_autorite_enfant) => {
+  const audiences =  DemandeAudience.audiences_byId_autorite(id_autorite_enfant)
   const actual_events = []
   try {
     const results = await audiences
@@ -37,14 +64,29 @@ export const actual_events = async () => {
       // console.log(element)
       const date_time_start = String(element.date_event_debut).concat('T',element.time_event_debut)
       const date_time_fin = String(element.date_event_fin).concat('T',element.time_event_fin)
-      let event = {
-        id: String(element.id),
-        title: element.motif,
-        start: date_time_start,
-        end: date_time_fin,
-        intitule: String(element.intitule),
-        id_direction: String(element.id_direction),
-        type_audience: String(element.type_audience),
+      let event = {}
+      if(element.status_audience == 'Occupé'){
+        event = {
+          id: String(element.id),
+          title: element.motif,
+          start: date_time_start,
+          end: date_time_fin,
+          intitule: String(element.intitule),
+          id_autorite_enfant: String(element.id_autorite_enfant),
+          display:'backgroung',
+          color:'#ff9f89'
+        }
+      }else if (element.status_audience == 'Pas disponible'){
+        event = {
+          id: String(element.id),
+          title: element.motif,
+          start: date_time_start,
+          end: date_time_fin,
+          intitule: String(element.intitule),
+          id_autorite_enfant: String(element.id_autorite_enfant),
+          display:'backgroung',
+          color:'#2B2B2B'
+        }
       }
       actual_events.push(event)
     })

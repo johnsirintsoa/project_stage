@@ -13,6 +13,7 @@ const profil_route = require('./routes/profil')
 const stage_route = require('./routes/demande_stage')
 const domaine_route = require('./routes/domaine')
 const audience_route = require('./routes/audience')
+const autorite_route = require('./routes/autorite')
 const jour_ferie = require('./routes/jf')
 
 app.use(cors())
@@ -30,6 +31,7 @@ app.use('/api/profil',profil_route)
 app.use('/api/stage',stage_route)
 app.use('/api/domaine',domaine_route)
 app.use('/api/audience',audience_route)
+app.use('/api/autorite',autorite_route)
 
 // connection mongoDB
 mongoose.connect(process.env.DB_CONNECT,()=>{

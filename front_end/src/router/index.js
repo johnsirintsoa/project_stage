@@ -31,8 +31,16 @@ const router = createRouter({
       component: () => import('../views/frontOffice/DemandeEmploi.vue')
     },
     {
-      path: '/demande-audience',
+      path: '/demande-audience/autorite',
       name: 'front-demande-audience',
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import('../views/frontOffice/Autorite.vue')
+    },
+    {
+      path: '/demande-audience/autorite/:id_autorite_enfant',
+      name: 'front-demande-audience-autorite-enfant',
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
