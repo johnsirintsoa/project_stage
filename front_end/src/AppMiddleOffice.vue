@@ -55,6 +55,23 @@ import { RouterLink, RouterView } from 'vue-router'
             <span>Audience</span>
             </a>
             </RouterLink>
+            <ul id="icons-nav" class="nav-content collapse show" data-bs-parent="#sidebar-nav" style="">
+                <li>
+                    <a href="icons-bootstrap.html">
+                    <i class="bi bi-circle"></i><span>Bootstrap Icons</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="icons-remix.html">
+                    <i class="bi bi-circle"></i><span>Remix Icons</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="icons-boxicons.html">
+                    <i class="bi bi-circle"></i><span>Boxicons</span>
+                    </a>
+                </li>
+            </ul>
         </li>
         <!-- End Login Page Nav -->
 

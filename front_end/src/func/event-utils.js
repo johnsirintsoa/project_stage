@@ -351,7 +351,7 @@ export const actual_events_autorite = async (id_autorite_enfant) => {
       else if(element.dd_aud_autorite !=''){
         const date_time_start = String(element.dd_aud_autorite).concat('T',element.td_aud_autorite)
         const date_time_fin = String(element.df_aud_autorite).concat('T',element.tf_aud_autorite)
-        console.log(element.action_autorite)
+        // console.log(element.action_autorite)
         if(element.action_autorite == 1){
           event = {
             id: element.id_aud_autorite,

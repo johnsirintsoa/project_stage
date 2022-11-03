@@ -48,11 +48,21 @@ router.post('/public/update',async(req,res)=>{
         date_event_fin: req.body.date_event_fin, 
         time_event_debut: req.body.time_event_debut,
         time_event_fin: req.body.time_event_fin,
+        id_autorite_enfant: req.body.id_autorite_enfant,
         motif: req.body.motif,
         id: req.body.id
     }
     // const sql = `INSERT INTO stage.demande_audience( date_time_debut, date_time_fin, id_demande_stage, motif, id_direction, type_audience ) VALUES ( '${req.body.date_time_debut}', '${req.body.date_time_fin}', ${req.body.id_demande_stage}, '${req.body.motif}', ${req.body.id_direction}, '${req.body.type_audience}' )`
     db.query('UPDATE stage.demande_audience_public SET ? WHERE id = ' + req.body.id,audience, (error,result) => {
+        if(error) res.send(error)
+        res.json(result)
+    })
+})
+
+router.post('/public/valider/:id_dm_aud_public',async(req,res)=>{
+    // const sql = `CALL si_disponible_autorite('${req.body.date_event_debut}','${req.body.date_event_fin}','${req.body.time_event_debut}','${req.body.time_event_fin}',${req.body.id_autorite_enfant},'${req.body.motif}')`
+    const sql = `UPDATE stage.demande_audience_public SET action = 1 where id = ${req.params.id_dm_aud_public}`
+    db.query(sql, (error,result) => {
         if(error) res.send(error)
         res.json(result)
     })
@@ -263,22 +273,44 @@ router.post('/autorite/add',async(req,res)=>{
     })
 })
 
-router.post('/autorite/valider/:id_dm_aud_autorite',async(req,res)=>{
-    // const sql = `CALL si_disponible_autorite('${req.body.date_event_debut}','${req.body.date_event_fin}','${req.body.time_event_debut}','${req.body.time_event_fin}',${req.body.id_autorite_enfant},'${req.body.motif}')`
-    const sql = `UPDATE stage.demande_audience_autorite SET action = 1 where id = ${req.params.id_dm_aud_autorite}`
-    db.query(sql, (error,result) => {
+router.post('/autorite/update',async(req,res)=>{
+    const audience = {
+        date_debut: req.body.date_debut,
+        date_fin: req.body.date_fin, 
+        time_debut: req.body.time_debut,
+        time_fin: req.body.time_fin,
+        id_autorite_enfant_sender: req.body.id_autorite_enfant_sender,
+        id_autorite_enfant_receiver: req.body.id_autorite_enfant_receiver,
+        motif: req.body.motif,
+        id: req.body.id
+    }
+    // const sql = `INSERT INTO stage.demande_audience( date_time_debut, date_time_fin, id_demande_stage, motif, id_direction, type_audience ) VALUES ( '${req.body.date_time_debut}', '${req.body.date_time_fin}', ${req.body.id_demande_stage}, '${req.body.motif}', ${req.body.id_direction}, '${req.body.type_audience}' )`
+    db.query('UPDATE stage.demande_audience_autorite SET ? WHERE id = ' + req.body.id,audience, (error,result) => {
         if(error) res.send(error)
         res.json(result)
     })
 })
 
-router.post('/public/valider/:id_dm_aud_public',async(req,res)=>{
+router.post('/autorite/valider',async(req,res)=>{
+    const audience = {
+        date_debut: req.body.date_debut,
+        date_fin: req.body.date_fin, 
+        time_debut: req.body.time_debut,
+        time_fin: req.body.time_fin,
+        id_autorite_enfant_sender: req.body.id_autorite_enfant_sender,
+        id_autorite_enfant_receiver: req.body.id_autorite_enfant_receiver,
+        motif: req.body.motif,
+        action: 1,
+        id: req.body.id
+    }
+    console.log(audience)
     // const sql = `CALL si_disponible_autorite('${req.body.date_event_debut}','${req.body.date_event_fin}','${req.body.time_event_debut}','${req.body.time_event_fin}',${req.body.id_autorite_enfant},'${req.body.motif}')`
-    const sql = `UPDATE stage.demande_audience_public SET action = 1 where id = ${req.params.id_dm_aud_public}`
-    db.query(sql, (error,result) => {
+    const sql = `UPDATE stage.demande_audience_autorite SET ? where id = ${req.body.id}`
+    db.query(sql,audience, (error,result) => {
         if(error) res.send(error)
         res.json(result)
     })
 })
+
 
 module.exports = router

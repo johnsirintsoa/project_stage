@@ -58,6 +58,7 @@ app.component('font-awesome-icon', FontAwesomeIcon)
 app.mount('#app')
 // app.mount('#app')
 
+// import './assets/js/main.js'
 
 
 import "./assets/vendor/apexcharts/apexcharts.min.js"
@@ -69,5 +70,5 @@ import "./assets/vendor/simple-datatables/simple-datatables.js"
 import "./assets/vendor/tinymce/tinymce.min.js"
 // import "./assets/vendor/php-email-form/validate.js"
 
-import './assets/js/main.js'
+import "./assets/js/main"
 
