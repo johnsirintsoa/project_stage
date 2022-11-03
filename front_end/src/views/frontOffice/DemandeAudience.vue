@@ -1,6 +1,6 @@
 
 <script>
-    import { createPopper } from '@popperjs/core';
+    // import { createPopper } from '@popperjs/core';
     import '@fullcalendar/core/vdom'
     import FullCalendar from '@fullcalendar/vue3'
     import dayGridPlugin from '@fullcalendar/daygrid'
@@ -8,7 +8,7 @@
     import interactionPlugin from '@fullcalendar/interaction'
     import listPlugin from '@fullcalendar/list'
     import timeLine from '@fullcalendar/timeline'
-    import { actual_events,jour_ferie} from '../../func/event-utils'
+    import { actual_events_public} from '../../func/event-utils'
     import DemandeAudience from '../../api/demande_audience'
     import tippy from 'tippy.js';
     import 'tippy.js/dist/tippy.css'; // optional for styling
@@ -24,7 +24,7 @@
         FullCalendar
       },
     
-      data:  function() {
+      data() {
         return {
           calendarOptions: {
             plugins: [
@@ -41,17 +41,19 @@
             },
             initialView: 'timeGridWeek',
             // initialEvents: INITIAL_EVENTS, // alternatively, use the `events` setting to fetch from a feed
-            initialEvents: this.actual_events, // alternatively, use the `events` setting to fetch from a feed
-            editable: true,
+            // initialEvents: this.actual_events, // alternatively, use the `events` setting to fetch from a feed
+            initialDate: '2022-10-21',
+            initialEvents: this.all_actual_events,
+            // editable: true,
             selectable: true,
             droppable: true,
             selectMirror: true,
             dayMaxEvents: true,
             weekends: false,
             select: this.handleDateSelect,
-            eventClick: this.handleEventClick,
+            // eventClick: this.handleEventClick,
             // eventsSet: this.handleEvents,
-            eventDidMount: this.detailEvent,
+            // eventDidMount: this.detailEvent,
             eventResize: this.eventDragged,
             eventDrop: this.eventDropped
             /* you can update a remote database when these fire:
@@ -64,7 +66,7 @@
           currentEvents: [],
           directions: [],
           audience:{
-            direction:'',
+            direction: window.location.pathname.split('/')[ window.location.pathname.split('/').length-1],
             motif:'',
             date_debut: '',
             date_fin: '',
@@ -74,17 +76,15 @@
           }
         }
       },
-      async created(){
-        const id_autorite_enfant = window.location.pathname.split('/')[3]
-        
-        console.log()
-      },
       async mounted() {
         this.directions = await this.autorites_enfant()
+        // this.calendarOptions.initialEvents = await actual_events(1)
+        
       },
       methods: {
-        async actual_events(){
-          return await actual_events(1)
+        async all_actual_events(){
+          // return await actual_events()
+          return await actual_events_public(this.audience.direction)  
         }, 
         async autorites_enfant(){
           return await AutoriteAPI.autorite_enfant()
@@ -217,13 +217,13 @@
         },
 
         detailEvent(info) {
-          console.log(info)
+          // console.log(info)
           
           tippy(info.el, {
             theme:'light',
             content: `<p><strong>${info.event.title}</strong></p>
-            <p> De ${Function.date_in_string(info.event.start)} à ${Function.date_in_string(info.event.end)}</p>
-            <p>${info.event.extendedProps.intitule}</p>`,
+            <p> De ${Function.date_in_string(info.event.start)} à ${Function.date_in_string(info.event.end)}</p>`,
+            // <p>${info.event.extendedProps.status_audience}</p>`,
             allowHTML: true,
           });
         },
@@ -237,20 +237,30 @@
             time_event_fin: this.audience.time_fin,
             // id_demande_stage: 35,
             motif: this.audience.motif,
-            id_autorite_enfant: this.audience.direction.id,
-            session_navigateur: JSON.parse(sessionStorage.getItem("session_navigateur")).value
+            id_autorite_enfant: this.audience.direction
+            // session_navigateur: JSON.parse(sessionStorage.getItem("session_navigateur")).value
           }
           const response =  await DemandeAudience.add_event(audience_event)
-          console.log(audience_event)
+          // console.log(audience_event)
           console.log(response)
           if(response.code == 'ER_BAD_FIELD_ERROR'){
             swal("Audience non enregistrée", "Veuillez remplir le formulaire", "error");
-          }else{
+          }
+          else if(response[0][0].message == 'pas disponible'){
+            swal("Audience non enregistrée", "Cette place est occupé ou pas disponible.", "error");
+          }
+          else if(response[0][0].message == 'Jour férié et pas disponible'){
+            swal("Audience non enregistrée", "On est férié et le directeur n'est pas disponible", "error");
+          }
+          else if(response[0][0].message == 'Jour férié'){
+            swal("Audience non enregistrée", "On est férié", "error");
+          }
+          else{
             swal("Audience enregistrée", "Votre audience a bien été enregistrée", "success");
           }
-          setInterval( () => {
-            window.location.reload()
-          }, 1000)
+          // setInterval( () => {
+          //   window.location.reload()
+          // }, 1000)
         },
         // add test event
         // async add_event_test(){
@@ -289,13 +299,6 @@
                       <li>Motif: <input v-model="audience.motif" placeholder="motif..." /></li>
                       <li>De <input type="date" v-model="audience.date_debut"  />  <input type="time" v-model="audience.time_debut"  /></li>
                       <li>à <input type="date" v-model="audience.date_fin"  />  <input type="time" v-model="audience.time_fin"  /></li>
-                      <li>
-                          Direction: 
-                          <select v-model="audience.direction">
-                            <option selected disabled value="">Choose...</option>
-                            <option v-for="dir in directions" :value="dir"> {{dir['intitule_code']}}</option>
-                          </select>
-                      </li>
                       <!-- <li>Type audience: <input v-model="audience.type_audience" placeholder="Type d'audience..." /></li> -->
                       <li> <button type="button" @click="add_event()">Valider</button></li>
                       </ul>
@@ -318,7 +321,7 @@
                   </label>
               </div>
             <div class='demo-app-sidebar-section'>
-                <h2>All Events ({{ currentEvents.length }})</h2>
+                <!-- <h2>All Events ({{ currentEvents.length }})</h2> -->
 
                 <ul>
                 <li v-for='event in currentEvents' :key='event.id'>

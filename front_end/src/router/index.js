@@ -87,15 +87,74 @@ const router = createRouter({
       // which is lazy-loaded when the route is visited.
       component: () => import('../views/backOffice/DemandeEmploi.vue')
     },
+    // {
+    //   path: '/administrateur/demande-audience',
+    //   name: 'back-demande-audience',
+    //   // route level code-splitting
+    //   // this generates a separate chunk (About.[hash].js) for this route
+    //   // which is lazy-loaded when the route is visited.
+    //   component: () => import('../views/backOffice/DemandeAudience2.vue')
+    // },
     {
-      path: '/administrateur/demande-audience',
+      path: '/administrateur/demande-audience/autorite',
       name: 'back-demande-audience',
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('../views/backOffice/DemandeAudience.vue')
-    }
+      component: () => import('../views/backOffice/Autorite.vue')
+    },
+    {
+      path: '/administrateur/demande-audience/autorite/:id_autorite_enfant',
+      name: 'back-demande-audience-id-autorite-enfant',
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import('../views/backOffice/DemandeAudience2.vue')
+    },
     /** Administrateur routes */
+
+    /** Autorite routes */
+    {
+      path: '/autorite/',
+      name: 'middle-login',
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import('../views/middleOffice/HomeView.vue')
+    },
+    {
+      path: '/autorite/boite-a-doleance',
+      name: 'middle-doleance',
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import('../views/middleOffice/BoiteDoleance.vue')
+    },
+    {
+      path: '/autorite/demande-stage',
+      name: 'middle-demande-stage',
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import('../views/middleOffice/DemandeStage.vue')
+    },
+    {
+      path: '/autorite/demande-emploi',
+      name: 'middle-demande-emploi',
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import('../views/middleOffice/DemandeEmploi.vue')
+    },
+    {
+      path: '/autorite/demande-audience/:id_autorite_enfant',
+      name: 'middle-demande-audience',
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import('../views/middleOffice/DemandeAudiences.vue')
+    },
+    /** Autorite routes */
   ]
 })
 

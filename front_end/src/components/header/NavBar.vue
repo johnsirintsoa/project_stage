@@ -4,26 +4,25 @@
 </script>
 <template>
     <header>
-    <div class="navbar">
-        <ul style="margin-left: 30rem;font-size: 20px;">
-            <li>
-                <RouterLink to="/">Home</RouterLink>
-            </li>
-            <li>
-                <RouterLink to="/boite-a-doleance">Boite</RouterLink>
-            </li>
-            <li>
-                <RouterLink to="/demande-stage">Stage</RouterLink>
-            </li>
-            <li>
-                <RouterLink to="/demande-emploi">Emploi</RouterLink>
-            </li>
-            <li>
-                <RouterLink to="/demande-audience/autorite">Audience</RouterLink>
-            </li>
-        </ul>
-    
-    </div>
+        <div class="navbar">
+            <ul style="margin-left: 30rem;font-size: 20px;">
+                <li>
+                    <RouterLink to="/">Home</RouterLink>
+                </li>
+                <li>
+                    <RouterLink to="/boite-a-doleance">Boite</RouterLink>
+                </li>
+                <li>
+                    <RouterLink to="/demande-stage">Stage</RouterLink>
+                </li>
+                <li>
+                    <RouterLink to="/demande-emploi">Emploi</RouterLink>
+                </li>
+                <li>
+                    <RouterLink to="/demande-audience/autorite">Audience</RouterLink>
+                </li>
+            </ul>
+        </div>
     </header>
 </template>
 <style>

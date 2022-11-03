@@ -2,6 +2,7 @@ import "bootstrap/dist/css/bootstrap.min.css"
 import { createApp } from 'vue'
 import AppBack from './AppBackOffice.vue'
 import AppFront from './AppFrontOffice.vue'
+import AppMiddle from './AppMiddleOffice.vue'
 
 import router from './router'
 
@@ -33,10 +34,15 @@ library.add(faUserSecret)
 let app = null
 // sessionStorage.setItem('administrateur','138749183943')
 
-// console.log(window.location.href.includes('administrateur'))
-if(window.location.href.includes('administrateur')){
+const path = window.location.pathname.split('/')
+// console.log(path)
+if(path[1] == 'administrateur'){
     app = createApp(AppBack)
-}else{
+}
+else if(path[1] == 'autorite'){
+    app =  createApp(AppMiddle)
+}
+else{
     // expiration du session navigateur
     // start
     const duree_expiration = 2
@@ -61,7 +67,7 @@ import "./assets/vendor/echarts/echarts.min.js"
 import "./assets/vendor/quill/quill.min.js"
 import "./assets/vendor/simple-datatables/simple-datatables.js"
 import "./assets/vendor/tinymce/tinymce.min.js"
-import "./assets/vendor/php-email-form/validate.js"
+// import "./assets/vendor/php-email-form/validate.js"
 
 import './assets/js/main.js'
 

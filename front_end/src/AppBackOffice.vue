@@ -5,18 +5,6 @@ import { RouterLink, RouterView } from 'vue-router'
 </script>
 
 <template>
-  <!-- <header>
-    <img alt="Vue logo" class="logo" src="@/./assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
-    </div>
-  </header> -->
 
     <!-- ======= Header ======= -->
     <header id="header" class="header fixed-top d-flex align-items-center">
@@ -291,7 +279,7 @@ import { RouterLink, RouterView } from 'vue-router'
         </li><!-- End Register Page Nav -->
 
         <li class="nav-item">
-          <RouterLink to="/administrateur/demande-audience" :class="{ disabled: active }">
+          <RouterLink to="/administrateur/demande-audience/autorite" :class="{ disabled: active }">
           <a class="nav-link collapsed" href="">
             <i class="bi bi-box-arrow-in-right"></i>
             <span>Audience</span>
@@ -329,6 +317,7 @@ export default {
     }
   },
   async created() {
+    console.log('hello world')
     if(sessionStorage.getItem('administrateur')){
       // redirect vers la page d'accueil
       this.$router.push({path: '/administrateur/'});

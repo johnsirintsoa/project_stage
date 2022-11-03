@@ -9,4 +9,8 @@ export default class AutoriteAPI{
         return res.data
     }
 
+    static async autorite_enfant_autorite(id_autorite_enfant){
+        const res = await axios.get(url.concat('/enfant/all/',id_autorite_enfant))
+        return res.data
+    }
 }

@@ -27,8 +27,16 @@ export default class Function{
             return num_date+" "+mois[index_mois]+" "+annee+" "+new Date(date).getHours()+"h0"+new Date(date).getMinutes()+"min"
         }
         return num_date+" "+mois[index_mois]+" "+annee+" "+new Date(date).getHours()+"h"+new Date(date).getMinutes()+"min"
-      }
-      
+    }
+    
+    static format_time_hhmmss(time){
+        const hour = parseInt(time.split(':')[0])
+        if(hour < 10 && hour>0){
+            return '0'.concat(time)
+        }
+        return time
+    }
+    
     static format_time = (date) =>{
         if(new Date(date).getMinutes()==0){
             return new Date(date).getHours()+"h0"+new Date(date).getMinutes()+"min"
