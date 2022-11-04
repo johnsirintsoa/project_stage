@@ -628,3 +628,59 @@ FROM
         INNER JOIN stage.non_disponibilite_autorite_jour as ndaj on ae.id = ndaj.id_autorite_enfant
         where ndaj.id_autorite_enfant = 1;
 -- Tous les evenements pour un autorite
+
+
+-- Tous audiences valide
+SELECT 
+    ae.id,
+    ae.intitule,
+    ae.intitule_code,
+    dap.id as id_aud_public,
+    dap.date_event_debut as dd_aud_public,
+    dap.date_event_fin as df_aud_public,
+    dap.time_event_debut as td_aud_public,
+    dap.time_event_fin as tf_aud_public,
+    dap.action as action_public,
+    dap.motif,
+	'' id_autorite_sender,
+    '' sender_intitule,
+    '' sender_intitule_code,
+    '' id_aud_autorite,
+    '' dd_aud_autorite,             
+    '' df_aud_autorite,
+    '' td_aud_autorite,
+    '' tf_aud_autorite,
+    '' action_autorite,
+    'Public' type_audience
+FROM 
+    stage.autorite_enfant AS ae
+        INNER JOIN stage.demande_audience_public as dap on ae.id = dap.id_autorite_enfant
+        WHERE dap.id_autorite_enfant = 1 and dap.action = 1
+UNION
+SELECT 
+    aer.id,
+    aer.intitule,
+    aer.intitule_code,
+    '' id_aud_public,
+    '' dd_aud_public,
+    '' df_aud_public,
+    '' td_aud_public,
+    '' tf_aud_public,
+    '' action_public,
+    daa.motif,
+	aes.id as id_autorite_sender,
+    aes.intitule as sender_intitule,
+    aes.intitule_code as sender_intitule_code,
+    daa.id as id_aud_autorite,
+    daa.date_debut as dd_aud_autorite,             
+    daa.date_fin as df_aud_autorite,
+    daa.time_debut as td_aud_autorite,
+    daa.time_fin as tf_aud_autorite,
+    daa.action as action_autorite,
+    'Autorite' type_audience
+FROM 
+    stage.demande_audience_autorite daa
+		INNER JOIN stage.autorite_enfant aer on aer.id = daa.id_autorite_enfant_receiver
+        INNER JOIN stage.autorite_enfant aes on aes.id = daa.id_autorite_enfant_sender
+        where daa.id_autorite_enfant_receiver = 1 and daa.action = 1;
+-- Tous audiences valide

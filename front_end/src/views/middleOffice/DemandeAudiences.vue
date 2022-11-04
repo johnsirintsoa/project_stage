@@ -67,7 +67,7 @@ export default {
       currentEvents: [],
       directions: [],
       audience:{
-        direction: window.location.pathname.split('/')[ window.location.pathname.split('/').length-1],
+        direction: '',
         motif:'',
         date_debut: '',
         date_fin: '',
@@ -78,6 +78,11 @@ export default {
     }
   },
 
+  created(){
+    const ses = JSON.parse(sessionStorage.getItem('autorite'))
+    this.audience.direction = ses.autorite_enfant.id
+  },
+  
   async mounted() {
     this.directions = await this.autorites_enfant()
     // this.calendarOptions.initialEvents = await actual_events(1)

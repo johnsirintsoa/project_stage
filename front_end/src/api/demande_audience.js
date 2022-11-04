@@ -8,6 +8,11 @@ export default class DemandeAudience{
         return res.data
     }
 
+    static async audiences_valider(id_autorite_enfant){
+        const res = await axios.get(url.concat('/valider/all/',id_autorite_enfant))
+        return res.data
+    }
+
     // static async all_audience_test(){
     //     const res = await axios.get(url.concat('/public/test/all'))
     //     return res.data
@@ -54,5 +59,14 @@ export default class DemandeAudience{
     static async valider_autorite(dm_aud_autorite){
         const res = await axios.post(url.concat('/autorite/valider'),dm_aud_autorite)
         return res.data
+    }
+
+    static async reporter_autorite_maintenant(audience_event){
+        const res = await axios.post(url.concat('/autorite/reporter/now'),audience_event)
+        return res.data       
+    }
+    static async reporter_autorite_plus_tard(audience_event){
+        const res = await axios.post(url.concat('/autorite/reporter/later'),audience_event)
+        return res.data       
     }
 }

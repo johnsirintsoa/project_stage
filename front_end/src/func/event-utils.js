@@ -523,6 +523,11 @@ export const actual_events_autorite = async (id_autorite_enfant) => {
   }
 }
 
+export const audience_valider = async(id_autorite_enfant) => {
+  const audience = DemandeAudience.audiences_valider(id_autorite_enfant)
+  return audience
+}
+
 export function createEventId() {
   return String(eventGuid++)
 }

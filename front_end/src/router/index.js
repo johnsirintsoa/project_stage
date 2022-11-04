@@ -147,12 +147,20 @@ const router = createRouter({
       component: () => import('../views/middleOffice/DemandeEmploi.vue')
     },
     {
-      path: '/autorite/demande-audience/:id_autorite_enfant',
+      path: '/autorite/mes-demande-audience',
       name: 'middle-demande-audience',
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () => import('../views/middleOffice/DemandeAudiences.vue')
+    },
+    {
+      path: '/autorite/demande-audience/audience-valider',
+      name: 'middle-demande-audience-valider',
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import('../views/middleOffice/DemandeAudienceValider.vue')
     },
     /** Autorite routes */
   ]

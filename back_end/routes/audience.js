@@ -312,5 +312,134 @@ router.post('/autorite/valider',async(req,res)=>{
     })
 })
 
+router.post('/autorite/reporter/now',async(req,res)=>{
+    const audience = {
+        date_debut: req.body.date_debut,
+        date_fin: req.body.date_fin, 
+        time_debut: req.body.time_debut,
+        time_fin: req.body.time_fin,
+        id_autorite_enfant_sender: req.body.id_autorite_enfant_sender,
+        id_autorite_enfant_receiver: req.body.id_autorite_enfant_receiver,
+        motif: req.body.motif,
+        action: 1,
+        id: req.body.id
+    }
+    console.log(audience)
+    // const sql = `CALL si_disponible_autorite('${req.body.date_event_debut}','${req.body.date_event_fin}','${req.body.time_event_debut}','${req.body.time_event_fin}',${req.body.id_autorite_enfant},'${req.body.motif}')`
+    const sql = `UPDATE stage.demande_audience_autorite SET ? where id = ${req.body.id}`
+    db.query(sql,audience, (error,result) => {
+        if(error) res.send(error)
+        res.json(result)
+    })
+})
+
+router.post('/autorite/reporter/later',async(req,res)=>{
+    const audience = {
+        date_debut: req.body.date_debut,
+        date_fin: req.body.date_fin, 
+        time_debut: req.body.time_debut,
+        time_fin: req.body.time_fin,
+        id_autorite_enfant_sender: req.body.id_autorite_enfant_sender,
+        id_autorite_enfant_receiver: req.body.id_autorite_enfant_receiver,
+        motif: req.body.motif,
+        action: 2,
+        id: req.body.id
+    }
+    console.log(audience)
+    // const sql = `CALL si_disponible_autorite('${req.body.date_event_debut}','${req.body.date_event_fin}','${req.body.time_event_debut}','${req.body.time_event_fin}',${req.body.id_autorite_enfant},'${req.body.motif}')`
+    const sql = `UPDATE stage.demande_audience_autorite SET ? where id = ${req.body.id}`
+    db.query(sql,audience, (error,result) => {
+        if(error) res.send(error)
+        res.json(result)
+    })
+})
+
+
+router.get('/valider/all/:id_autorite_enfant', async(req,res) =>{
+    const sql = `SELECT 
+    dap.id as id_aud_public,
+    dap.date_event_debut as dd_aud_public,
+    dap.date_event_fin as df_aud_public,
+    dap.time_event_debut as td_aud_public,
+    dap.time_event_fin as tf_aud_public,
+    dap.action as action_public,
+    dap.motif,
+	'' id_autorite_sender,
+    '' sender_intitule,
+    '' sender_intitule_code,
+    '' id_aud_autorite,
+    '' dd_aud_autorite,             
+    '' df_aud_autorite,
+    '' td_aud_autorite,
+    '' tf_aud_autorite,
+    '' action_autorite,
+    'Public' type_audience
+FROM 
+    stage.autorite_enfant AS ae
+        INNER JOIN stage.demande_audience_public as dap on ae.id = dap.id_autorite_enfant
+        WHERE dap.id_autorite_enfant = ${req.params.id_autorite_enfant} and dap.action = 1
+UNION
+SELECT 
+    '' id_aud_public,
+    '' dd_aud_public,
+    '' df_aud_public,
+    '' td_aud_public,
+    '' tf_aud_public,
+    '' action_public,
+    daa.motif,
+	aes.id as id_autorite_sender,
+    aes.intitule as sender_intitule,
+    aes.intitule_code as sender_intitule_code,
+    daa.id as id_aud_autorite,
+    daa.date_debut as dd_aud_autorite,             
+    daa.date_fin as df_aud_autorite,
+    daa.time_debut as td_aud_autorite,
+    daa.time_fin as tf_aud_autorite,
+    daa.action as action_autorite,
+    'Autorite' type_audience
+FROM 
+    stage.demande_audience_autorite daa
+		INNER JOIN stage.autorite_enfant aer on aer.id = daa.id_autorite_enfant_receiver
+        INNER JOIN stage.autorite_enfant aes on aes.id = daa.id_autorite_enfant_sender
+        where daa.id_autorite_enfant_receiver = ${req.params.id_autorite_enfant} and daa.action = 1`
+    // console.log(sql)
+    db.query(sql,function(err, result) {
+        if(err){
+            return res.send({ err });
+        }else{
+            const array_result = []
+            result.forEach(element => {
+                if(element.type_audience == 'Public'){
+                    array_result.push({
+                        id_audience : element.id_aud_public,
+                        date_debut : element.dd_aud_public,
+                        date_fin : element.df_aud_public,
+                        time_debut : element.td_aud_public,
+                        time_fin : element.tf_aud_public,
+                        motif : element.motif,
+                        type_audience : element.type_audience
+                    })
+                }else if (element.type_audience == 'Autorite'){
+                    array_result.push({
+                        id_audience : element.id_aud_autorite,
+                        sender :{
+                            id: element.id_autorite_sender,
+                            intitule: element.sender_intitule,
+                            intitule_code: element.sender_intitule_code
+                        },
+                        date_debut : element.dd_aud_autorite,
+                        date_fin : element.df_aud_autorite,
+                        time_debut : element.td_aud_autorite,
+                        time_fin : element.tf_aud_autorite,
+                        motif : element.motif,
+                        type_audience : element.type_audience
+                    })
+                }               
+            });
+            // console.log(array_result)
+            return res.json(array_result);
+        }
+    })
+})
 
 module.exports = router
