@@ -55,11 +55,18 @@ import { RouterLink, RouterView } from 'vue-router'
             <span>Audience</span>
             </a>
             </RouterLink>
-            <ul id="icons-nav" class="nav-content collapse show" data-bs-parent="#sidebar-nav" style="">
+            <ul id="icons-nav" class="nav-content collapse show" data-bs-parent="#sidebar-nav" >
                 <li>
                     <RouterLink to='/autorite/demande-audience/audience-valider' :class="{ disabled: active }">
-                    <a href="icons-bootstrap.html">
+                    <a href="#">
                     <i class="bi bi-circle"></i><span>Audience validées</span>
+                    </a>
+                    </RouterLink>
+                </li>
+                <li>
+                    <RouterLink to='/autorite/demande-audience/audience-reporter' :class="{ disabled: active }">
+                    <a href="#">
+                    <i class="bi bi-circle"></i><span>Audience reportées</span>
                     </a>
                     </RouterLink>
                 </li>

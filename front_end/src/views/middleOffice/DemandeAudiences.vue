@@ -122,9 +122,12 @@ export default {
     },
 
     async handleEventClick(clickInfo) {
-      
+
+      // console.log(clickInfo.event.end)
+
       const start_date_time = Function.foramt_date_time(clickInfo.event.start)
       const end_date_time = Function.foramt_date_time(clickInfo.event.end)
+      console.log(end_date_time)
       this.audience.id = clickInfo.event.id
       this.audience.direction = this.audience.direction
       this.audience.motif = clickInfo.event.title
@@ -137,7 +140,9 @@ export default {
       const action = clickInfo.event.extendedProps.action
       // const type_audience = clickInfo.event
       // console.log(this.audience.time_debut)
-      
+      // console.log(action)
+      // console.log(type_audience)
+      // console.log(clickInfo.event.extendedProps.sender.id)
       if(type_audience == 'Public' && action == 0){
           const { value: formValues } = await Swal.fire({
             title: 'Validation',
@@ -170,8 +175,7 @@ export default {
             date_fin: this.audience.date_fin, 
             time_debut: this.audience.time_debut,
             time_fin: this.audience.time_fin,
-            id_autorite_enfant_receiver: this.audience.direction,
-            id_autorite_enfant_sender: clickInfo.event.extendedProps.sender.id,
+            id_autorite_enfant: this.audience.direction,
             motif: this.audience.motif,
             id: this.audience.id
           }
@@ -179,9 +183,9 @@ export default {
           Swal.fire('Succès',
               'Validation effectuée avec succès',
               'success')
-          setInterval( () => {
-              window.location.reload()
-            }, 1000)
+          // setInterval( () => {
+          //     window.location.reload()
+          //   }, 1000)
         }
       }
       else if(type_audience == 'Autorite' && action == 0){
@@ -231,6 +235,131 @@ export default {
               window.location.reload()
             }, 1000)
         }
+      }
+      else if(type_audience == 'Public' && action == 1){
+        const { value: formValues } = await Swal.fire({
+          title: 'A reporter',
+          showDenyButton: true,
+          showCancelButton: true,
+          confirmButtonText: 'Maintenant',
+          denyButtonText:'Plus tard',
+          html:
+            `<p>Date début: <input type=Date value="${this.audience.date_debut}" id="date1" class="swal2-input"></p>` +
+            `<p style="margin-left:25px;" >Date fin: <input type=Date value="${this.audience.date_fin}" id="date2" class="swal2-input"></p>` +
+            `<p style="margin-right:49px;">Durée début: <input type=time value="${this.audience.time_debut}" id="duree1" class="swal2-input"></p>`+
+            `<p style="margin-right:25px;">Durée fin: <input type=time value="${this.audience.time_fin}" id="duree2" class="swal2-input"></p>`,
+          focusConfirm: false,
+          preConfirm: () => {
+            return [
+              document.getElementById('date1').value,
+              document.getElementById('date2').value,
+              document.getElementById('duree1').value,
+              document.getElementById('duree2').value
+            ]
+          }
+        }).then(async (result) => {
+            if(result.isConfirmed){
+              const audience_event = {
+                date_debut: result.value[0],
+                date_fin: result.value[1], 
+                time_debut: result.value[2],
+                time_fin: result.value[3],
+                id_autorite_enfant: this.audience.direction ,
+                motif: this.audience.motif,
+                id: this.audience.id
+              }                  
+              await DemandeAudience.reporter_public_maintenant(audience_event)
+              Swal.fire('Succès','Vous avez reporté avec succès','success')
+              // setInterval( () => {
+              //   window.location.reload()
+              // }, 1000)
+            }
+            else if(result.isDenied){
+              // console.log(audience.sender)
+              const audience_event = {
+                date_debut: this.audience.date_debut,
+                date_fin: this.audience.date_fin,
+                time_debut: this.audience.time_debut,
+                time_fin: this.audience.time_fin,
+                id_autorite_enfant: this.audience.direction,
+                motif: this.audience.motif,
+                id: this.audience.id_audience
+              }                  
+              await DemandeAudience.reporter_public_plus_tard(audience_event)
+              Swal.fire('Audience reporter plus tard', '', 'info')
+              setInterval( () => {
+                window.location.reload()
+              }, 1000)
+            }
+          }).catch((err) => {
+            console.log(err)
+          })
+
+        // if (formValues) {
+        //   Swal.fire(JSON.stringify(formValues))
+        // }        
+      }
+      else if(type_audience == 'Autorite' && action == 1){
+        const { value: formValues } = await Swal.fire({
+          title: 'A reporter',
+          showDenyButton: true,
+          showCancelButton: true,
+          confirmButtonText: 'Maintenant',
+          denyButtonText:'Plus tard',
+          html:
+            `<p>Date début: <input type=Date value="${this.audience.date_debut}" id="date1" class="swal2-input"></p>` +
+            `<p style="margin-left:25px;" >Date fin: <input type=Date value="${this.audience.date_fin}" id="date2" class="swal2-input"></p>` +
+            `<p style="margin-right:49px;">Durée début: <input type=time value="${this.audience.time_debut}" id="duree1" class="swal2-input"></p>`+
+            `<p style="margin-right:25px;">Durée fin: <input type=time value="${this.audience.time_fin}" id="duree2" class="swal2-input"></p>`,
+          focusConfirm: false,
+          preConfirm: () => {
+            return[
+              document.getElementById('date1').value,
+              document.getElementById('date2').value,
+              document.getElementById('duree1').value,
+              document.getElementById('duree2').value
+            ]
+          } 
+        }).then(async (result) => {
+          // console.log(result)
+          if(result.isConfirmed){
+            const audience_event = {
+              date_debut: result.value[0],
+              date_fin: result.value[1], 
+              time_debut: result.value[2],
+              time_fin: result.value[3],
+              id_autorite_enfant_receiver: this.audience.direction ,
+              id_autorite_enfant_sender: clickInfo.event.extendedProps.sender.id,
+              motif: this.audience.motif,
+              id: this.audience.id
+            }                  
+            await DemandeAudience.reporter_autorite_maintenant(audience_event)
+            Swal.fire('Succès','Vous avez reportée avec succès','success')
+            setInterval( () => {
+              window.location.reload()
+            }, 1000)
+          }
+          else if(result.isDenied){
+            // console.log(audience.sender)
+            const audience_event = {
+              date_debut: this.audience.date_debut,
+              date_fin: this.audience.date_fin,
+              time_debut: this.audience.time_debut,
+              time_fin: this.audience.time_fin,
+              id_autorite_enfant_receiver: this.audience.direction,
+              id_autorite_enfant_sender: clickInfo.event.extendedProps.sender.id,
+              motif: this.audience.motif,
+              id: this.audience.id
+            }                  
+            await DemandeAudience.reporter_autorite_plus_tard(audience_event)
+            Swal.fire('Audience reporter plus tard', '', 'info')
+            setInterval( () => {
+              window.location.reload()
+            }, 1000)
+          }
+        }).catch((err) => {
+          console.log(err)
+        });                                    
       }
     },
 

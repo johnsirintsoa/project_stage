@@ -478,7 +478,7 @@ SELECT
 FROM 
     stage.autorite_enfant AS ae
         INNER JOIN stage.demande_audience_public as dap on ae.id = dap.id_autorite_enfant
-        WHERE dap.id_autorite_enfant = 1
+        WHERE dap.id_autorite_enfant = 1 and dap.action != 2 
 UNION
 SELECT 
     aer.id,
@@ -516,7 +516,7 @@ FROM
     stage.demande_audience_autorite daa
 		INNER JOIN stage.autorite_enfant aer on aer.id = daa.id_autorite_enfant_receiver
         INNER JOIN stage.autorite_enfant aes on aes.id = daa.id_autorite_enfant_sender
-        where daa.id_autorite_enfant_receiver = 1
+        where daa.id_autorite_enfant_receiver = 1 and daa.action != 2
 UNION
 SELECT 
     ae.id,

@@ -13,6 +13,12 @@ export default class DemandeAudience{
         return res.data
     }
 
+    static async audiences_reporter(id_autorite_enfant){
+        const res = await axios.get(url.concat('/reporter/all/',id_autorite_enfant))
+        return res.data
+    }
+
+
     // static async all_audience_test(){
     //     const res = await axios.get(url.concat('/public/test/all'))
     //     return res.data
@@ -51,8 +57,8 @@ export default class DemandeAudience{
         return res.data
     }
 
-    static async valider_public(id_dm_aud_public){
-        const res = await axios.post(url.concat('/public/valider/',id_dm_aud_public))
+    static async valider_public(dm_aud_public){
+        const res = await axios.post(url.concat('/public/valider'),dm_aud_public)
         return res.data
     }
 
@@ -67,6 +73,15 @@ export default class DemandeAudience{
     }
     static async reporter_autorite_plus_tard(audience_event){
         const res = await axios.post(url.concat('/autorite/reporter/later'),audience_event)
+        return res.data       
+    }
+
+    static async reporter_public_maintenant(audience_event){
+        const res = await axios.post(url.concat('/public/reporter/now'),audience_event)
+        return res.data       
+    }
+    static async reporter_public_plus_tard(audience_event){
+        const res = await axios.post(url.concat('/public/reporter/later'),audience_event)
         return res.data       
     }
 }
