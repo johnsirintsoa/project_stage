@@ -1,3 +1,4 @@
+// import DemandeAudiencePublic from '../api/demande_audience_public'
 export default class Function{
     // nombre aleatoire
     static random_number(min, max) {
@@ -5,6 +6,7 @@ export default class Function{
     }
 
     static date_in_string(date) {
+        
         let mois = [
           'Janvier',
           'Février',
@@ -28,7 +30,7 @@ export default class Function{
         }
         return num_date+" "+mois[index_mois]+" "+annee+" "+new Date(date).getHours()+"h"+new Date(date).getMinutes()+"min"
     }
-    
+
     static format_time_hhmmss(time){
         const hour = parseInt(time.split(':')[0])
         if(hour < 10 && hour>0){
@@ -46,16 +48,22 @@ export default class Function{
         
     }
 
-    
-    static foramt_date_time(date) {
-        const date_time = []
-        const mois = new Date(date).getMonth()+1
-        date_time[0] = new Date(date).getFullYear()+"-"+mois+"-"+new Date(date).getDate()
-        date_time[1] = new Date(date).getHours()+":"+new Date(date).getMinutes()+":"+"00"
-        if(new Date(date).getMinutes()==0){
-            date_time[1] = new Date(date).getHours()+":0"+new Date(date).getMinutes()+":"+"00"
+
+    static format_date_time(date) {
+        const date_arg = {
+            annee: new Date(date).getFullYear(),
+            mois: new Date(date).getMonth(),
+            date: new Date(date).getDate(),
+            heure: new Date(date).getHours(),
+            minute: new Date(date).getMinutes(),
+            second: new Date(date).getSeconds()
         }
-        // console.log(date_time)
+        const date_time = []
+        const date_split = date.toLocaleString("fr").split(' ')
+        date_time[0] = date_split[0].split('/')[2].concat("-",date_split[0].split('/')[1],"-",date_split[0].split('/')[0])
+        date_time[1]=date_split[1] 
+        console.log(date_time)
+
         return date_time
     }
 
@@ -85,4 +93,130 @@ export default class Function{
             sessionStorage.setItem(key, JSON.stringify(newValue))
         }
     }
+
+    static format_date_html(date){
+        const date_grid = String(date).split(' ')
+        const mois_dot = [
+            "janv.",
+            "févr.",
+            "mars",
+            "avr.",
+            "mai",
+            "juin",
+            "juil.",
+            "août",
+            "sept.",
+            "oct.",
+            "nov.",
+            "déc."
+        ]
+        if(date_grid.length == 2){
+            // date = new Date().getDate()+" "+date
+            const mois = parseInt(new Date(date).getMonth())+1
+            date = new Date(date).getFullYear()+"-"+mois+"-"+new Date().getDate()
+        }
+        else if(date_grid.length == 3){
+            const mois = parseInt(new Date(date).getMonth())+1
+            date = new Date(date).getFullYear()+"-"+mois+"-"+new Date().getDate()
+        }
+        else if(date_grid.length == 5){
+            date = date_grid[date_grid.length-1].concat("-",mois_dot.indexOf(date_grid[3])+1,"-",date_grid[0])
+        }
+        else if(date_grid.length == 6){
+            date = date_grid[date_grid.length-1].concat("-",mois_dot.indexOf(date_grid[1])+1,"-",date_grid[0])
+            // console.log(date_grid)
+        }
+        return date
+    }
+
+    // static set_intial_events(id_autorite,initialEvents){
+    //     // fullcalendar button left
+    //     const parDom1 = document.getElementsByClassName("fc-toolbar-chunk")
+    //     const parDom2 = parDom1[2].getElementsByClassName("fc-button-group")
+    //     const dayGridDom = parDom2[0].getElementsByClassName("fc-dayGridMonth-button fc-button fc-button-primary")
+    //     const timeGridWeekDom = parDom2[0].getElementsByClassName("fc-timeGridWeek-button fc-button fc-button-primary")
+    //     const timeGridDayDom = parDom2[0].getElementsByClassName("fc-timeGridDay-button fc-button fc-button-primary")
+    //     const listDayGridDom = parDom2[0].getElementsByClassName("fc-listDay-button fc-button fc-button-primary")
+    //     // fullcalendar button left
+
+    //     // fullcalendar button right
+    //     const parDom3 = parDom1[0].getElementsByClassName("fc-button-group")
+    //     const precedentButton = parDom3[0].getElementsByClassName("fc-prev-button fc-button fc-button-primary")
+    //     const nextButton = parDom3[0].getElementsByClassName("fc-next-button fc-button fc-button-primary")
+    //     const todayGridDom = parDom1[0].getElementsByClassName("fc-today-button fc-button fc-button-primary")
+    //     // fullcalendar button right
+
+    //     dayGridDom[0].addEventListener("click",async ()=>{
+    //         console.log('DayGridMonth clicked...')
+    //         let date_html = parDom1[1].getElementsByClassName("fc-toolbar-title")[0].innerHTML
+    //         const date_du_jour = this.format_date_html(date_html)
+    //         const audience_by_jour = {
+    //             id_autorite:id_autorite,
+    //             date_du_jour:date_du_jour
+    //         }
+    //         const data = await DemandeAudiencePublic.audience_public_mois(audience_by_jour)
+    //         console.log(data)
+    //         // this.format_date_html(date_html)
+    //     })
+
+    //     timeGridWeekDom[0].addEventListener("click",async ()=>{
+    //         let date_html = parDom1[1].getElementsByClassName("fc-toolbar-title")[0].innerHTML
+    //         console.log('timeGridWeek clicked...')
+    //         // this.format_date_html(date_html)
+    //         const date_actu = this.format_date_html(date_html)
+    //         console.log(date_actu)
+    //         const audience_by_jour = {
+    //             id_autorite: id_autorite,
+    //             date_du_jour: date_actu
+    //         }
+    //         // console.log('timeGridWeek clicked...')
+    //         const data = await DemandeAudiencePublic.audience_public_semaine(audience_by_jour)
+    //         console.log(data)
+    //     })
+
+    //     timeGridDayDom[0].addEventListener("click",async ()=>{
+    //         let date_html = parDom1[1].getElementsByClassName("fc-toolbar-title")[0].innerHTML
+    //         console.log('timeGridDay clicked...')
+    //         const date_actu = this.format_date_html(date_html)
+    //         console.log(date_actu)
+    //         const audience_by_jour = {
+    //             id_autorite:id_autorite,
+    //             date_du_jour:date_actu
+    //         }
+    //         const data = await DemandeAudiencePublic.audience_public_jour(audience_by_jour)
+    //         initialEvents = data
+    //         console.log(data)
+    //     })
+
+    //     listDayGridDom[0].addEventListener("click",async ()=>{
+    //         let date_html = parDom1[1].getElementsByClassName("fc-toolbar-title")[0].innerHTML
+    //         console.log('listDayGrid clicked...')
+    //         // this.format_date_html(date_html)
+    //         const date_du_jour = this.format_date_html(date_html)
+    //         const audience_by_jour = {
+    //             id_autorite:id_autorite,
+    //             date_du_jour:date_du_jour
+    //         }
+    //         const data = await DemandeAudiencePublic.audience_public_jour(audience_by_jour)
+    //         console.log(data)
+    //     })
+
+    //     todayGridDom[0].addEventListener("click",()=>{
+    //         let date_html = parDom1[1].getElementsByClassName("fc-toolbar-title")[0].innerHTML
+    //         console.log('todayGridDom clicked...')
+    //         this.format_date_html(date_html)
+    //     })
+
+    //     precedentButton[0].addEventListener("click",()=>{
+    //         let date_html = parDom1[1].getElementsByClassName("fc-toolbar-title")[0].innerHTML
+    //         console.log('precedentButton clicked...')
+    //         this.format_date_html(date_html)
+    //     })
+
+    //     nextButton[0].addEventListener("click",()=>{
+    //         let date_html = parDom1[1].getElementsByClassName("fc-toolbar-title")[0].innerHTML
+    //         console.log('nextButton clicked...')
+    //         this.format_date_html(date_html)
+    //     })
+    // }
 }

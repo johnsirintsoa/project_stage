@@ -40,10 +40,10 @@ export default {
           center: 'title',
           right: 'dayGridMonth,timeGridWeek,timeGridDay,listDay'
         },
-        initialView: 'timeGridWeek',
+        initialView: 'timeGridWeek',  
         // initialEvents: INITIAL_EVENTS, // alternatively, use the `events` setting to fetch from a feed
         // initialEvents: this.actual_events, // alternatively, use the `events` setting to fetch from a feed
-        initialDate: '2022-10-21',
+        // initialDate: '2022-10-21',
         initialEvents: this.all_actual_events,
         // editable: true,
         selectable: true,
@@ -85,13 +85,12 @@ export default {
   
   async mounted() {
     this.directions = await this.autorites_enfant()
-    // this.calendarOptions.initialEvents = await actual_events(1)
-    // console.log(this.all_actual_events())
-    
+    // console.log(new Date().getFullYear()+"-"+parseInt(new Date().getMonth())+1+"-"+new Date().getDate())
   },
+
   methods: {
+
     async all_actual_events(){
-      // return await actual_events()
       return await actual_events_autorite(this.audience.direction)  
     }, 
     async autorites_enfant(){
@@ -125,16 +124,16 @@ export default {
 
       // console.log(clickInfo.event.end)
 
-      const start_date_time = Function.foramt_date_time(clickInfo.event.start)
-      const end_date_time = Function.foramt_date_time(clickInfo.event.end)
-      console.log(end_date_time)
+      const start_date_time = Function.format_date_time(clickInfo.event.start)
+      const end_date_time = Function.format_date_time(clickInfo.event.end)
+      // console.log(end_date_time)
       this.audience.id = clickInfo.event.id
       this.audience.direction = this.audience.direction
       this.audience.motif = clickInfo.event.title
       this.audience.date_debut = start_date_time[0]
       this.audience.date_fin = end_date_time[0]
-      this.audience.time_debut = Function.format_time_hhmmss(start_date_time[1])
-      this.audience.time_fin = Function.format_time_hhmmss(end_date_time[1])
+      this.audience.time_debut = start_date_time[1]
+      this.audience.time_fin = end_date_time[1]
       
       const type_audience = clickInfo.event.extendedProps.type_audience
       const action = clickInfo.event.extendedProps.action
@@ -189,25 +188,25 @@ export default {
         }
       }
       else if(type_audience == 'Autorite' && action == 0){
-          const { value: formValues } = await Swal.fire({
-            title: 'Validation',
-            showCancelButton: true,
-            confirmButtonText: 'Valider',
-            html:
-            `<p>Date début: <input type=Date value="${this.audience.date_debut}"  id="date1" class="swal2-input"></p>` +
-            `<p style="margin-left:25px;" >Date fin: <input type=Date value="${this.audience.date_fin}" id="date2" class="swal2-input"></p>` +
-            `<p style="margin-right:49px;">Durée début: <input type=time value="${this.audience.time_debut}" id="duree1" class="swal2-input"></p>`+
-            `<p style="margin-right:25px;">Durée fin: <input type=time value="${this.audience.time_fin}" id="duree2" class="swal2-input"></p>`,
-            focusConfirm: false,
-            preConfirm: () => {
-              return[
-                document.getElementById('date1').value,
-                document.getElementById('date2').value,
-                document.getElementById('duree1').value,
-                document.getElementById('duree2').value
-              ]
-            }
-          })
+        const { value: formValues } = await Swal.fire({
+          title: 'Validation',
+          showCancelButton: true,
+          confirmButtonText: 'Valider',
+          html:
+          `<p>Date début: <input type=Date value="${this.audience.date_debut}"  id="date1" class="swal2-input"></p>` +
+          `<p style="margin-left:25px;" >Date fin: <input type=Date value="${this.audience.date_fin}" id="date2" class="swal2-input"></p>` +
+          `<p style="margin-right:49px;">Durée début: <input type=time value="${this.audience.time_debut}" id="duree1" class="swal2-input"></p>`+
+          `<p style="margin-right:25px;">Durée fin: <input type=time value="${this.audience.time_fin}" id="duree2" class="swal2-input"></p>`,
+          focusConfirm: false,
+          preConfirm: () => {
+            return[
+              document.getElementById('date1').value,
+              document.getElementById('date2').value,
+              document.getElementById('duree1').value,
+              document.getElementById('duree2').value
+            ]
+          }
+        })
 
         if (formValues) {
           // console.log(JSON.stringify(formValues))
@@ -370,8 +369,11 @@ export default {
     },
 
     async eventDropped(event){
-      const start_date_time = Function.foramt_date_time(event.event.start)
-      const end_date_time = Function.foramt_date_time(event.event.end)
+      const start_date_time = Function.format_date_time(event.event.start)
+      const end_date_time = Function.format_date_time(event.event.end)
+
+      // console.log(start_date_time)
+
       this.audience.id = event.event.id
       this.audience.direction = this.audience.direction
       this.audience.motif = event.event.title
@@ -380,146 +382,464 @@ export default {
       this.audience.time_debut = start_date_time[1]
       this.audience.time_fin = end_date_time[1]
 
-      console.log(event.event.extendedProps)
+      // console.log(event.event.extendedProps)
 
       if(event.event.extendedProps.type_audience == 'Public'){
-        const audience_event = {
-          date_event_debut: this.audience.date_debut,
-          date_event_fin: this.audience.date_fin, 
-          time_event_debut: this.audience.time_debut,
-          time_event_fin: this.audience.time_fin,
-          motif: this.audience.motif,
-          id_autorite_enfant: this.audience.direction,
-          id: this.audience.id
+        if(event.event.extendedProps.action == 1){
+          const { value: formValues } = await Swal.fire({
+            title: 'A reporter',
+            showDenyButton: true,
+            showCancelButton: true,
+            confirmButtonText: 'Maintenant',
+            denyButtonText:'Plus tard',
+            html:
+              `<p>Date début: <input type=Date value="${this.audience.date_debut}" id="date1" class="swal2-input"></p>` +
+              `<p style="margin-left:25px;" >Date fin: <input type=Date value="${this.audience.date_fin}" id="date2" class="swal2-input"></p>` +
+              `<p style="margin-right:49px;">Durée début: <input type=time value="${this.audience.time_debut}" id="duree1" class="swal2-input"></p>`+
+              `<p style="margin-right:25px;">Durée fin: <input type=time value="${this.audience.time_fin}" id="duree2" class="swal2-input"></p>`,
+            focusConfirm: false,
+            preConfirm: () => {
+              return [
+                document.getElementById('date1').value,
+                document.getElementById('date2').value,
+                document.getElementById('duree1').value,
+                document.getElementById('duree2').value
+              ]
+            }
+          }).then(async (result) => {
+            if(result.isConfirmed){
+              const audience_event = {
+                date_debut: result.value[0],
+                date_fin: result.value[1], 
+                time_debut: result.value[2],
+                time_fin: result.value[3],
+                id_autorite_enfant: this.audience.direction ,
+                motif: this.audience.motif,
+                id: this.audience.id
+              }                  
+              await DemandeAudience.reporter_public_maintenant(audience_event)
+              Swal.fire('Succès','Vous avez reporté avec succès','success')
+              setInterval( () => {
+                window.location.reload()
+              }, 1000)
+            }
+            else if(result.isDenied){
+              // console.log(audience.sender)
+              const audience_event = {
+                date_debut: this.audience.date_debut,
+                date_fin: this.audience.date_fin,
+                time_debut: this.audience.time_debut,
+                time_fin: this.audience.time_fin,
+                id_autorite_enfant: this.audience.direction,
+                motif: this.audience.motif,
+                id: this.audience.id
+              }                  
+              await DemandeAudience.reporter_public_plus_tard(audience_event)
+              Swal.fire('Audience reporter plus tard', '', 'info')
+              setInterval( () => {
+                window.location.reload()
+              }, 1000)
+            }
+          }).catch((err) => {
+            console.log(err)
+          })
         }
-        swal({
-          title: "Etes vous sure?",
-          text: "Vous modifierez l'audience",
-          icon: "warning",
-          buttons: true,
-          dangerMode: true,
-        })
-        .then(async (willDelete) => {
-          if (willDelete) {
-            swal("Votre audience a bien été modifiée", {
-              icon: "success",
-            });
-            const res = await DemandeAudience.update_event(audience_event)
+        else if(event.event.extendedProps.action == 0){
+          console.log('event dropped...')
+          // console.log(this.audience.date_debut)
+          const { value: formValues } = await Swal.fire({
+            title: 'Validation',
+            showCancelButton: true,
+            confirmButtonText: 'Valider',
+            html:
+              `<p>Date début: <input type=Date value="${this.audience.date_debut}" id="date1" class="swal2-input"></p>` +
+              `<p style="margin-left:25px;" >Date fin: <input type=Date value="${this.audience.date_fin}" id="date2" class="swal2-input"></p>` +
+              `<p style="margin-right:49px;">Durée début: <input type=time value="${this.audience.time_debut}" id="duree1" class="swal2-input"></p>`+
+              `<p style="margin-right:25px;">Durée fin: <input type=time value="${this.audience.time_fin}" id="duree2" class="swal2-input"></p>`,
+            focusConfirm: false,
+            preConfirm: () => {
+              return[
+                document.getElementById('date1').value,
+                document.getElementById('date2').value,
+                document.getElementById('duree1').value,
+                document.getElementById('duree2').value
+              ]
+            }
+          })
+          console.log(this.audience)
+          if (formValues) {
+            this.audience.date_debut = formValues[0]
+            this.audience.date_fin = formValues[1]
+            this.audience.time_debut = formValues[2]
+            this.audience.time_fin = formValues[3]
+            // console.log(this.audience)
+            const audience_event = {
+              date_debut: this.audience.date_debut,
+              date_fin: this.audience.date_fin, 
+              time_debut: this.audience.time_debut,
+              time_fin: this.audience.time_fin,
+              id_autorite_enfant: this.audience.direction,
+              motif: this.audience.motif,
+              id: this.audience.id
+            }
+            await DemandeAudience.valider_public(audience_event)
+            Swal.fire('Succès',
+                'Validation effectuée avec succès',
+                'success')
             setInterval( () => {
-              window.location.reload()
-            }, 1000)
+                window.location.reload()
+              }, 1000)
           }
-        })
+        }
       }
       else if(event.event.extendedProps.type_audience == 'Autorite'){
-        const audience_event = {
-          date_debut: this.audience.date_debut,
-          date_fin: this.audience.date_fin, 
-          time_debut: this.audience.time_debut,
-          time_fin: this.audience.time_fin,
-          motif: this.audience.motif,
-          id_autorite_enfant_receiver: this.audience.direction,
-          id_autorite_enfant_sender: event.event.extendedProps.sender.id,
-          id: this.audience.id
+        if(event.event.extendedProps.action == 0){
+          const { value: formValues } = await Swal.fire({
+            title: 'Validation',
+            showCancelButton: true,
+            confirmButtonText: 'Valider',
+            html:
+            `<p>Date début: <input type=Date value="${this.audience.date_debut}"  id="date1" class="swal2-input"></p>` +
+            `<p style="margin-left:25px;" >Date fin: <input type=Date value="${this.audience.date_fin}" id="date2" class="swal2-input"></p>` +
+            `<p style="margin-right:49px;">Durée début: <input type=time value="${this.audience.time_debut}" id="duree1" class="swal2-input"></p>`+
+            `<p style="margin-right:25px;">Durée fin: <input type=time value="${this.audience.time_fin}" id="duree2" class="swal2-input"></p>`,
+            focusConfirm: false,
+            preConfirm: () => {
+              return[
+                document.getElementById('date1').value,
+                document.getElementById('date2').value,
+                document.getElementById('duree1').value,
+                document.getElementById('duree2').value
+              ]
+            }
+          })
+
+          if (formValues) {
+              // console.log(JSON.stringify(formValues))
+            this.audience.date_debut = formValues[0]
+            this.audience.date_fin = formValues[1]
+            this.audience.time_debut = formValues[2]
+            this.audience.time_fin = formValues[3]
+            // console.log(this.audience)
+            const audience_event = {
+              date_debut: this.audience.date_debut,
+              date_fin: this.audience.date_fin, 
+              time_debut: this.audience.time_debut,
+              time_fin: this.audience.time_fin,
+              id_autorite_enfant_receiver: this.audience.direction,
+              id_autorite_enfant_sender: event.event.extendedProps.sender.id,
+              motif: this.audience.motif,
+              id: this.audience.id
+            }
+            // console.log(audience_event)
+            await DemandeAudience.valider_autorite(audience_event)
+            Swal.fire('Succès',
+              'Validation effectuée avec succès',
+              'success')
+            setInterval( () => {
+              window.location.reload()
+            }, 1000)
+  
+          }
         }
-        swal({
-          title: "Etes vous sure?",
-          text: "Vous modifierez l'audience",
-          icon: "warning",
-          buttons: true,
-          dangerMode: true,
-        })
-        .then(async (willDelete) => {
-          if (willDelete) {
-            swal("Votre audience a bien été modifiée", {
-              icon: "success",
-            });
-            const res = await DemandeAudience.update_event_autorite(audience_event)
+        else if(event.event.extendedProps.action == 1){
+          const { value: formValues } = await Swal.fire({
+          title: 'A reporter',
+          showDenyButton: true,
+          showCancelButton: true,
+          confirmButtonText: 'Maintenant',
+          denyButtonText:'Plus tard',
+          html:
+            `<p>Date début: <input type=Date value="${this.audience.date_debut}" id="date1" class="swal2-input"></p>` +
+            `<p style="margin-left:25px;" >Date fin: <input type=Date value="${this.audience.date_fin}" id="date2" class="swal2-input"></p>` +
+            `<p style="margin-right:49px;">Durée début: <input type=time value="${this.audience.time_debut}" id="duree1" class="swal2-input"></p>`+
+            `<p style="margin-right:25px;">Durée fin: <input type=time value="${this.audience.time_fin}" id="duree2" class="swal2-input"></p>`,
+          focusConfirm: false,
+          preConfirm: () => {
+            return[
+              document.getElementById('date1').value,
+              document.getElementById('date2').value,
+              document.getElementById('duree1').value,
+              document.getElementById('duree2').value
+            ]
+          } 
+        }).then(async (result) => {
+          // console.log(result)
+          if(result.isConfirmed){
+            const audience_event = {
+              date_debut: result.value[0],
+              date_fin: result.value[1], 
+              time_debut: result.value[2],
+              time_fin: result.value[3],
+              id_autorite_enfant_receiver: this.audience.direction ,
+              id_autorite_enfant_sender: event.event.extendedProps.sender.id,
+              motif: this.audience.motif,
+              id: this.audience.id
+            }                  
+            await DemandeAudience.reporter_autorite_maintenant(audience_event)
+            Swal.fire('Succès','Vous avez reportée avec succès','success')
             setInterval( () => {
               window.location.reload()
             }, 1000)
           }
-          
-        })
+          else if(result.isDenied){
+            // console.log(audience.sender)
+            const audience_event = {
+              date_debut: this.audience.date_debut,
+              date_fin: this.audience.date_fin,
+              time_debut: this.audience.time_debut,
+              time_fin: this.audience.time_fin,
+              id_autorite_enfant_receiver: this.audience.direction,
+              id_autorite_enfant_sender: event.event.extendedProps.sender.id,
+              motif: this.audience.motif,
+              id: this.audience.id
+            }                  
+            await DemandeAudience.reporter_autorite_plus_tard(audience_event)
+            Swal.fire('Audience reporter plus tard', '', 'info')
+            setInterval( () => {
+              window.location.reload()
+            }, 1000)
+          }
+          }).catch((err) => {
+            console.log(err)
+          });           
+        }
       }
       
     },
 
     async eventDragged(event){
-      const start_date_time = Function.foramt_date_time(event.event.start)
-      const end_date_time = Function.foramt_date_time(event.event.end)
-
+      const start_date_time = Function.format_date_time(event.event.start)
+      const end_date_time = Function.format_date_time(event.event.end)
       this.audience.id = event.event.id
-      // this.audience.direction = this.audience.direction
+      this.audience.direction = this.audience.direction
       this.audience.motif = event.event.title
       this.audience.date_debut = start_date_time[0]
       this.audience.date_fin = end_date_time[0]
       this.audience.time_debut = start_date_time[1]
       this.audience.time_fin = end_date_time[1]
-      
-      console.log(this.audience.direction)
+      // console.log(event.event.extendedProps)
 
       if(event.event.extendedProps.type_audience == 'Public'){
-        const audience_event = {
-          date_event_debut: this.audience.date_debut,
-          date_event_fin: this.audience.date_fin, 
-          time_event_debut: this.audience.time_debut,
-          time_event_fin: this.audience.time_fin,
-          motif: this.audience.motif,
-          id_autorite_enfant: this.audience.direction,
-          id: this.audience.id
+        if(event.event.extendedProps.action == 1){
+          const { value: formValues } = await Swal.fire({
+            title: 'A reporter',
+            showDenyButton: true,
+            showCancelButton: true,
+            confirmButtonText: 'Maintenant',
+            denyButtonText:'Plus tard',
+            html:
+              `<p>Date début: <input type=Date value="${this.audience.date_debut}" id="date1" class="swal2-input"></p>` +
+              `<p style="margin-left:25px;" >Date fin: <input type=Date value="${this.audience.date_fin}" id="date2" class="swal2-input"></p>` +
+              `<p style="margin-right:49px;">Durée début: <input type=time value="${this.audience.time_debut}" id="duree1" class="swal2-input"></p>`+
+              `<p style="margin-right:25px;">Durée fin: <input type=time value="${this.audience.time_fin}" id="duree2" class="swal2-input"></p>`,
+            focusConfirm: false,
+            preConfirm: () => {
+              return [
+                document.getElementById('date1').value,
+                document.getElementById('date2').value,
+                document.getElementById('duree1').value,
+                document.getElementById('duree2').value
+              ]
+            }
+          }).then(async (result) => {
+            if(result.isConfirmed){
+              const audience_event = {
+                date_debut: result.value[0],
+                date_fin: result.value[1], 
+                time_debut: result.value[2],
+                time_fin: result.value[3],
+                id_autorite_enfant: this.audience.direction ,
+                motif: this.audience.motif,
+                id: this.audience.id
+              }                  
+              await DemandeAudience.reporter_public_maintenant(audience_event)
+              Swal.fire('Succès','Vous avez reporté avec succès','success')
+              setInterval( () => {
+                window.location.reload()
+              }, 1000)
+            }
+            else if(result.isDenied){
+              // console.log(audience.sender)
+              const audience_event = {
+                date_debut: this.audience.date_debut,
+                date_fin: this.audience.date_fin,
+                time_debut: this.audience.time_debut,
+                time_fin: this.audience.time_fin,
+                id_autorite_enfant: this.audience.direction,
+                motif: this.audience.motif,
+                id: this.audience.id
+              }                  
+              await DemandeAudience.reporter_public_plus_tard(audience_event)
+              Swal.fire('Audience reporter plus tard', '', 'info')
+              setInterval( () => {
+                window.location.reload()
+              }, 1000)
+            }
+          }).catch((err) => {
+            console.log(err)
+          })
         }
-        swal({
-          title: "Etes vous sure?",
-          text: "Vous modifierez l'audience",
-          icon: "warning",
-          buttons: true,
-          dangerMode: true,
-        })
-        .then(async (willDelete) => {
-          if (willDelete) {
-            swal("Votre audience a bien été modifiée", {
-              icon: "success",
-            });
-            const res = await DemandeAudience.update_event(audience_event)
+        else if(event.event.extendedProps.action == 0){
+          console.log('event dropped...')
+          const { value: formValues } = await Swal.fire({
+            title: 'Validation',
+            showCancelButton: true,
+            confirmButtonText: 'Valider',
+            html:
+              `<p>Date début: <input type=Date value="${this.audience.date_debut}" id="date1" class="swal2-input"></p>` +
+              `<p style="margin-left:25px;" >Date fin: <input type=Date value="${this.audience.date_fin}" id="date2" class="swal2-input"></p>` +
+              `<p style="margin-right:49px;">Durée début: <input type=time value="${this.audience.time_debut}" id="duree1" class="swal2-input"></p>`+
+              `<p style="margin-right:25px;">Durée fin: <input type=time value="${this.audience.time_fin}" id="duree2" class="swal2-input"></p>`,
+            focusConfirm: false,
+            preConfirm: () => {
+              return[
+                document.getElementById('date1').value,
+                document.getElementById('date2').value,
+                document.getElementById('duree1').value,
+                document.getElementById('duree2').value
+              ]
+            }
+          })
+          if (formValues) {
+            this.audience.date_debut = formValues[0]
+            this.audience.date_fin = formValues[1]
+            this.audience.time_debut = formValues[2]
+            this.audience.time_fin = formValues[3]
+            // console.log(this.audience)
+            const audience_event = {
+              date_debut: this.audience.date_debut,
+              date_fin: this.audience.date_fin, 
+              time_debut: this.audience.time_debut,
+              time_fin: this.audience.time_fin,
+              id_autorite_enfant: this.audience.direction,
+              motif: this.audience.motif,
+              id: this.audience.id
+            }
+            await DemandeAudience.valider_public(audience_event)
+            Swal.fire('Succès',
+                'Validation effectuée avec succès',
+                'success')
             setInterval( () => {
-              window.location.reload()
-            }, 1000)
+                window.location.reload()
+              }, 1000)
           }
-        })
+        }
       }
       else if(event.event.extendedProps.type_audience == 'Autorite'){
-        const audience_event = {
-          date_debut: this.audience.date_debut,
-          date_fin: this.audience.date_fin, 
-          time_debut: this.audience.time_debut,
-          time_fin: this.audience.time_fin,
-          motif: this.audience.motif,
-          id_autorite_enfant_receiver: this.audience.direction,
-          id_autorite_enfant_sender: event.event.extendedProps.sender.id,
-          id: this.audience.id
+        if(event.event.extendedProps.action == 0){
+          const { value: formValues } = await Swal.fire({
+            title: 'Validation',
+            showCancelButton: true,
+            confirmButtonText: 'Valider',
+            html:
+            `<p>Date début: <input type=Date value="${this.audience.date_debut}"  id="date1" class="swal2-input"></p>` +
+            `<p style="margin-left:25px;" >Date fin: <input type=Date value="${this.audience.date_fin}" id="date2" class="swal2-input"></p>` +
+            `<p style="margin-right:49px;">Durée début: <input type=time value="${this.audience.time_debut}" id="duree1" class="swal2-input"></p>`+
+            `<p style="margin-right:25px;">Durée fin: <input type=time value="${this.audience.time_fin}" id="duree2" class="swal2-input"></p>`,
+            focusConfirm: false,
+            preConfirm: () => {
+              return[
+                document.getElementById('date1').value,
+                document.getElementById('date2').value,
+                document.getElementById('duree1').value,
+                document.getElementById('duree2').value
+              ]
+            }
+          })
+
+          if (formValues) {
+              // console.log(JSON.stringify(formValues))
+            this.audience.date_debut = formValues[0]
+            this.audience.date_fin = formValues[1]
+            this.audience.time_debut = formValues[2]
+            this.audience.time_fin = formValues[3]
+            // console.log(this.audience)
+            const audience_event = {
+              date_debut: this.audience.date_debut,
+              date_fin: this.audience.date_fin, 
+              time_debut: this.audience.time_debut,
+              time_fin: this.audience.time_fin,
+              id_autorite_enfant_receiver: this.audience.direction,
+              id_autorite_enfant_sender: event.event.extendedProps.sender.id,
+              motif: this.audience.motif,
+              id: this.audience.id
+            }
+            // console.log(audience_event)
+            await DemandeAudience.valider_autorite(audience_event)
+            Swal.fire('Succès',
+              'Validation effectuée avec succès',
+              'success')
+            setInterval( () => {
+              window.location.reload()
+            }, 1000)
+  
+          }
         }
-        swal({
-          title: "Etes vous sure?",
-          text: "Vous modifierez l'audience",
-          icon: "warning",
-          buttons: true,
-          dangerMode: true,
-        })
-        .then(async (willDelete) => {
-          if (willDelete) {
-            swal("Votre audience a bien été modifiée", {
-              icon: "success",
-            });
-            const res = await DemandeAudience.update_event_autorite(audience_event)
+        else if(event.event.extendedProps.action == 1){
+          const { value: formValues } = await Swal.fire({
+          title: 'A reporter',
+          showDenyButton: true,
+          showCancelButton: true,
+          confirmButtonText: 'Maintenant',
+          denyButtonText:'Plus tard',
+          html:
+            `<p>Date début: <input type=Date value="${this.audience.date_debut}" id="date1" class="swal2-input"></p>` +
+            `<p style="margin-left:25px;" >Date fin: <input type=Date value="${this.audience.date_fin}" id="date2" class="swal2-input"></p>` +
+            `<p style="margin-right:49px;">Durée début: <input type=time value="${this.audience.time_debut}" id="duree1" class="swal2-input"></p>`+
+            `<p style="margin-right:25px;">Durée fin: <input type=time value="${this.audience.time_fin}" id="duree2" class="swal2-input"></p>`,
+          focusConfirm: false,
+          preConfirm: () => {
+            return[
+              document.getElementById('date1').value,
+              document.getElementById('date2').value,
+              document.getElementById('duree1').value,
+              document.getElementById('duree2').value
+            ]
+          } 
+        }).then(async (result) => {
+          // console.log(result)
+          if(result.isConfirmed){
+            const audience_event = {
+              date_debut: result.value[0],
+              date_fin: result.value[1], 
+              time_debut: result.value[2],
+              time_fin: result.value[3],
+              id_autorite_enfant_receiver: this.audience.direction ,
+              id_autorite_enfant_sender: event.event.extendedProps.sender.id,
+              motif: this.audience.motif,
+              id: this.audience.id
+            }                  
+            await DemandeAudience.reporter_autorite_maintenant(audience_event)
+            Swal.fire('Succès','Vous avez reportée avec succès','success')
             setInterval( () => {
               window.location.reload()
             }, 1000)
           }
-          
-        })
+          else if(result.isDenied){
+            // console.log(audience.sender)
+            const audience_event = {
+              date_debut: this.audience.date_debut,
+              date_fin: this.audience.date_fin,
+              time_debut: this.audience.time_debut,
+              time_fin: this.audience.time_fin,
+              id_autorite_enfant_receiver: this.audience.direction,
+              id_autorite_enfant_sender: event.event.extendedProps.sender.id,
+              motif: this.audience.motif,
+              id: this.audience.id
+            }                  
+            await DemandeAudience.reporter_autorite_plus_tard(audience_event)
+            Swal.fire('Audience reporter plus tard', '', 'info')
+            setInterval( () => {
+              window.location.reload()
+            }, 1000)
+          }
+          }).catch((err) => {
+            console.log(err)
+          });           
+        }
       }
-      
+            
     },
 
     detailEvent(info) {
@@ -585,47 +905,7 @@ export default {
 <main id="main-audience" class="main-audience">
     <div  class='demo-app' >
         <!-- <div  class='demo-app-sidebar'> -->
-        <div v-if="is_clicked" class='demo-app-sidebar'>
-          <div class='demo-app-sidebar-section'>
-              <h1>Prendre un rendez-vous</h1>
-              <form class="form-audience">
-                  <ul>
-                  <li>Motif: <input v-model="audience.motif" placeholder="motif..." /></li>
-                  <li>De <input type="date" v-model="audience.date_debut"  />  <input type="time" v-model="audience.time_debut"  /></li>
-                  <li>à <input type="date" v-model="audience.date_fin"  />  <input type="time" v-model="audience.time_fin"  /></li>
-                  <!-- <li>Type audience: <input v-model="audience.type_audience" placeholder="Type d'audience..." /></li> -->
-                  <li> <button type="button" @click="add_event()">Valider</button></li>
-                  </ul>
-              </form>
-              <!-- <h2>Instructions</h2>
-              <ul>
-              <li>Select dates and you will be prompted to create a new event</li>
-              <li>Drag, drop, and resize events</li>
-              <li>Click an event to delete it</li>
-              </ul> -->
-          </div>
-          <div class='demo-app-sidebar-section'>
-              <label>
-              <input
-                  type='checkbox'
-                  :checked='calendarOptions.weekends'
-                  @change='handleWeekendsToggle'
-              />
-              toggle weekends
-              </label>
-          </div>
-        <div class='demo-app-sidebar-section'>
-            <!-- <h2>All Events ({{ currentEvents.length }})</h2> -->
-
-            <ul>
-            <li v-for='event in currentEvents' :key='event.id'>
-                <b>{{ event.startStr }}</b>
-                <b>{{ event.endStr }}</b>
-                <i>{{ event.title }}</i>
-            </li>
-            </ul>
-        </div>
-        </div>
+        
         <div class='demo-app-main'>
         <FullCalendar
             ref="fullCalendar"

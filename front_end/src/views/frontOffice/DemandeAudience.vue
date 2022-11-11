@@ -16,6 +16,7 @@
     import Function from '../../func/function';
     import swal from 'sweetalert';
     import AutoriteAPI from '../../api/autorite';
+    import frLocale from '@fullcalendar/core/locales/fr';
 
     
     export default {
@@ -27,6 +28,7 @@
       data() {
         return {
           calendarOptions: {
+            locale: frLocale,
             plugins: [
               dayGridPlugin,
               timeGridPlugin,
@@ -37,18 +39,23 @@
             headerToolbar: {
               left: 'prev,next today',
               center: 'title',
-              right: 'dayGridMonth,timeGridWeek,timeGridDay,listDay'
+              right: 'dayGridMonth,timeGridWeek,timeGridDay,listDay',
+              
             },
+            // initialView: 'dayGridMonth',
             initialView: 'timeGridWeek',
             // initialEvents: INITIAL_EVENTS, // alternatively, use the `events` setting to fetch from a feed
             // initialEvents: this.actual_events, // alternatively, use the `events` setting to fetch from a feed
-            initialDate: '2022-10-21',
+            // initialDate: '2022-10-21',
             initialEvents: this.all_actual_events,
             // editable: true,
+            // buttonIcons: false, // show the prev/next text
+            weekNumbers: true,
+            dayMaxEvents: true,
             selectable: true,
             droppable: true,
             selectMirror: true,
-            dayMaxEvents: true,
+            // dayMaxEvents: true,
             weekends: false,
             select: this.handleDateSelect,
             // eventClick: this.handleEventClick,
@@ -76,10 +83,14 @@
           }
         }
       },
+
+
       async mounted() {
         this.directions = await this.autorites_enfant()
-        // this.calendarOptions.initialEvents = await actual_events(1)
-        
+        const init_events = this.calendarOptions.initialEvents
+        // console.log(init_events)
+        // Function.set_intial_events(this.audience.direction,init_events);
+        // console.log(this.calendarOptions.initialEvents)
       },
       methods: {
         async all_actual_events(){
@@ -130,8 +141,8 @@
         },
 
         async eventDropped(event){
-          const start_date_time = Function.foramt_date_time(event.event.start)
-          const end_date_time = Function.foramt_date_time(event.event.end)
+          const start_date_time = Function.format_date_time(event.event.start)
+          const end_date_time = Function.format_date_time(event.event.end)
           this.audience.id = event.event.id
           this.audience.direction = event.event.extendedProps.id_autorite_enfant
           this.audience.motif = event.event.title
@@ -171,9 +182,10 @@
           });
           
         },
+
         eventDragged(event){
-          const start_date_time = Function.foramt_date_time(event.event.start)
-          const end_date_time = Function.foramt_date_time(event.event.end)
+          const start_date_time = Function.format_date_time(event.event.start)
+          const end_date_time = Function.format_date_time(event.event.end)
 
           this.audience.id = event.event.id
           this.audience.direction = event.event.extendedProps.id_autorite_enfant
@@ -228,6 +240,16 @@
           });
         },
 
+        remove_event(){
+          this.is_clicked = false
+          this.audience.motif = '',
+          this.audience.date_debut = '',
+          this.audience.date_fin = '',
+          this.audience.time_debut = '',
+          this.audience.time_fin = '',
+          this.audience.id = ''
+        },
+
         // add event
         async add_event(){
           const audience_event = {
@@ -242,48 +264,35 @@
           }
           const response =  await DemandeAudience.add_event(audience_event)
           // console.log(audience_event)
-          console.log(response)
+          // console.log(response)
           if(response.code == 'ER_BAD_FIELD_ERROR'){
             swal("Audience non enregistrée", "Veuillez remplir le formulaire", "error");
           }
-          else if(response[0][0].message == 'pas disponible'){
+          else if(response.message == 'pas disponible'){
             swal("Audience non enregistrée", "Cette place est occupé ou pas disponible.", "error");
           }
-          else if(response[0][0].message == 'Jour férié et pas disponible'){
+          else if(response.message == 'Jour férié et pas disponible'){
             swal("Audience non enregistrée", "On est férié et le directeur n'est pas disponible", "error");
           }
-          else if(response[0][0].message == 'Jour férié'){
+          else if(response.message == 'Jour férié'){
             swal("Audience non enregistrée", "On est férié", "error");
           }
-          else{
+          else if(response.message == "date fin invalid"){
+            swal("Audience non enregistrée", "La date de fin d'événement doit être égal à la date de début", "warning");
+          }
+          else if(response.affectedRows == 1){
             swal("Audience enregistrée", "Votre audience a bien été enregistrée", "success");
+            setInterval( () => {
+              window.location.reload()
+            }, 1000)
+          }
+          else if(response.message == "time fin invalid"){
+            swal("Audience non enregistrée", "L'heure fin doit être supérieur à l'heure début", "warning");
           }
           // setInterval( () => {
           //   window.location.reload()
           // }, 1000)
         },
-        // add test event
-        // async add_event_test(){
-
-        //   const audience_event = {
-        //     date_x_debut: this.audience.date_debut,
-        //     date_x_fin: this.audience.date_fin,
-        //     time_x_debut: this.audience.time_debut,
-        //     time_x_fin: this.audience.time_fin
-        //   }
-        //   const response =  await DemandeAudience.add_event_test(audience_event)
-        //   console.log(response)
-        //   if(response.code == 'ER_BAD_FIELD_ERROR'){
-        //     swal("Audience non enregistrée", "Veuillez remplir le formulaire", "error");
-        //   }else if(response.code == 'ER_PARSE_ERROR'){
-        //     swal("Audience non enregistrée", "Veuillez vérifier votreformulaire", "error");
-        //   }else{
-        //     swal("Audience enregistrée", "Votre audience a bien été enregistrée", "success");
-        //   }
-        //   // setInterval( () => {
-        //   //   window.location.reload()
-        //   // }, 1000)
-        // }
       }
     }
 </script>
@@ -296,11 +305,14 @@
                   <h1>Prendre un rendez-vous</h1>
                   <form class="form-audience">
                       <ul>
-                      <li>Motif: <input v-model="audience.motif" placeholder="motif..." /></li>
-                      <li>De <input type="date" v-model="audience.date_debut"  />  <input type="time" v-model="audience.time_debut"  /></li>
-                      <li>à <input type="date" v-model="audience.date_fin"  />  <input type="time" v-model="audience.time_fin"  /></li>
+                      <li id="li_date_time_debut">De <input id="date_debut" type="date" v-model="audience.date_debut"  />  <input id="time_debut" type="time" v-model="audience.time_debut"  /></li>
+                      <li id="li_date_time_fin">à <input id="date_fin" type="date" v-model="audience.date_fin"  />  <input id="time_fin" type="time" v-model="audience.time_fin"  /></li>
+                      <li id="li_motif"> Motif <textarea id="input_motif" v-model="audience.motif" placeholder="Veuillez saisir votre motif"></textarea></li>
                       <!-- <li>Type audience: <input v-model="audience.type_audience" placeholder="Type d'audience..." /></li> -->
-                      <li> <button type="button" @click="add_event()">Valider</button></li>
+                      <li id="li_button_event"> 
+                        <button type="button" class="btn btn-light" @click="remove_event()">Annuler</button>
+                        <button type="button" class="btn btn-primary" @click="add_event()">Valider</button>
+                      </li>
                       </ul>
                   </form>
                   <!-- <h2>Instructions</h2>
@@ -310,7 +322,7 @@
                   <li>Click an event to delete it</li>
                   </ul> -->
               </div>
-              <div class='demo-app-sidebar-section'>
+              <!-- <div class='demo-app-sidebar-section'>
                   <label>
                   <input
                       type='checkbox'
@@ -319,7 +331,7 @@
                   />
                   toggle weekends
                   </label>
-              </div>
+              </div> -->
             <div class='demo-app-sidebar-section'>
                 <!-- <h2>All Events ({{ currentEvents.length }})</h2> -->
 
@@ -333,21 +345,21 @@
             </div>
             </div>
             <div class='demo-app-main'>
-            <FullCalendar
-                ref="fullCalendar"
-                class='demo-app-calendar'
-                :options='calendarOptions'
-            >
-                <template v-slot:eventContent='arg'>
-                <b>{{ arg.timeText }}</b>
-                <i>{{ arg.event.title }}</i>
-                </template>
-            </FullCalendar>
-            <div class="collapse" id="collapseExample">
+              <FullCalendar
+                  ref="fullCalendar"
+                  class='demo-app-calendar'
+                  :options='calendarOptions'
+              >
+                  <template v-slot:eventContent='arg'>
+                  <b>{{ arg.timeText }}</b>
+                  <i>{{ arg.event.title }}</i>
+                  </template>
+              </FullCalendar>
+            <!-- <div class="collapse" id="collapseExample">
               <div class="card card-body">
                 Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.
               </div>
-            </div>
+            </div> -->
             </div>
         </div>
     </main>
@@ -370,11 +382,49 @@
     li {
       margin: 1.5em 0;
       padding: 0;
+      list-style-type: none;
     }
-    
+    #li_date_time_fin{
+      margin-left: 10px;
+    }
+
+    #li_motif{
+      margin-left: -12px;
+    }
+
+    #input_motif{
+      width: 12.1rem;
+      margin-bottom: -30px
+    }
+    #date_debut{
+      width: 5.9rem;
+    }
+    #date_fin{
+      width: 5.9rem;
+    }
+
+    #time_debut{
+      width: 6rem;
+    }
+
+    #time_fin{
+      width: 6rem;
+    }
+
+    #li_button_event{
+      margin-top: 2.9rem;
+      margin-left: 3.6rem;
+    }
+
+    #li_button_event button{
+      margin-left: 0.5rem;
+      font-size: 14px;
+    }
+
     b { /* used for event dates/times */
       margin-right: 3px;
     }
+
     
     .demo-app {
       display: flex;

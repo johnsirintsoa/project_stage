@@ -7,7 +7,7 @@
         <div class="navbar">
             <ul style="margin-left: 30rem;font-size: 20px;">
                 <li>
-                    <RouterLink to="/">Home</RouterLink>
+                    <RouterLink to="/">Accueil</RouterLink>
                 </li>
                 <li>
                     <RouterLink to="/boite-a-doleance">Boite</RouterLink>

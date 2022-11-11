@@ -127,8 +127,8 @@ export default {
     },
 
     eventDropped(event){
-      const start_date_time = Function.foramt_date_time(event.event.start)
-      const end_date_time = Function.foramt_date_time(event.event.end)
+      const start_date_time = Function.format_date_time(event.event.start)
+      const end_date_time = Function.format_date_time(event.event.end)
       this.audience.id = event.event.id
       this.audience.direction = event.event.extendedProps.id_autorite_enfant
       this.audience.motif = event.event.title
@@ -170,8 +170,8 @@ export default {
     },
 
     eventDragged(event){
-      const start_date_time = Function.foramt_date_time(event.event.start)
-      const end_date_time = Function.foramt_date_time(event.event.end)
+      const start_date_time = Function.format_date_time(event.event.start)
+      const end_date_time = Function.format_date_time(event.event.end)
 
       this.audience.id = event.event.id
       this.audience.direction = event.event.extendedProps.id_autorite_enfant
