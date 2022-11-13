@@ -136,7 +136,7 @@ BEGIN
 	END IF;	
 END
 
-CREATE  PROCEDURE `add_audience_public`(,dd date,df date,td time,tf time,motif VARCHAR(200),id_autorite int)
+CREATE  PROCEDURE `add_audience_public`(nom varchar(30),prenom varchar(30),cin varchar(15),numero_telephone varchar(10),email varchar(30),dd date,df date,td time,tf time,motif VARCHAR(200),id_autorite int)
 BEGIN    
     DECLARE time_debut time;
     DECLARE time_fin time;
@@ -258,8 +258,10 @@ BEGIN
 				and non_disponibilite_autorite_jour.jour = dayname(dd) 
 				and non_disponibilite_autorite_jour.jour =  dayname(df) 
 				and @time_fin between non_disponibilite_autorite_jour.time_non_dispo_jour_debut and non_disponibilite_autorite_jour.time_non_dispo_jour_fin)`x` into @nbr_rows;
-	IF @si_ferie = 0 AND @nbr_rows = 0 and df = dd and td < tf  THEN   
+	IF  nom != '' and prenom != '' and cin != '' and numero_telephone != '' and email !='' AND motif!='' AND @si_ferie = 0 AND @nbr_rows = 0 and df = dd and td < tf  THEN   
 		INSERT INTO stage.demande_audience_autorite( date_debut, date_fin, time_debut, time_fin, id_autorite_enfant_sender, id_autorite_enfant_receiver, motif) VALUES (dd,df,td,tf,id_autorite_enfant_sender,id_autorite_enfant_receiver,motif);
+	ELSEIF nom = '' or prenom = '' or cin = '' OR numero_telephone = '' OR email='' OR motif='' THEN 
+		SELECT 'formulaire vide' as message;
 	ELSEIF @nbr_rows > 0 and @si_ferie = 0 THEN  
 		SELECT 'pas disponible' as message;
 	ELSEIF dd != df then 

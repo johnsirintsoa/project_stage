@@ -104,12 +104,37 @@ const router = createRouter({
       component: () => import('../views/backOffice/Autorite.vue')
     },
     {
-      path: '/administrateur/demande-audience/autorite/:id_autorite_enfant',
-      name: 'back-demande-audience-id-autorite-enfant',
+      path: '/administrateur/demande-audience/autorite/faire-audience/:id_autorite_enfant',
+      name: 'back-demande-audience-faire-audience',
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('../views/backOffice/DemandeAudience2.vue')
+      component: () => import('../views/backOffice/FaireAudience.vue')
+    },
+    {
+      path: '/administrateur/demande-audience/mes-audiences',
+      name: 'back-mes-audiences',
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      // component: () => import('../views/backOffice/MesAudiences.vue')
+      component: () => import('../views/backOffice/MesAudiences.vue')
+    },
+    {
+      path: '/administrateur/demande-audience/audience-valider',
+      name: 'back-demande-audience-valider',
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import('../views/backOffice/DemandeAudienceValider.vue')
+    },
+    {
+      path: '/administrateur/demande-audience/audience-reporter',
+      name: 'back-demande-audience-reporter',
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import('../views/backOffice/DemandeAudienceReporter.vue')
     },
     /** Administrateur routes */
 

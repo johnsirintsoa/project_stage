@@ -17,7 +17,7 @@ import Function from '../../func/function';
 import swal from 'sweetalert';
 import Swal from 'sweetalert2';
 import AutoriteAPI from '../../api/autorite';
-
+import frLocale from '@fullcalendar/core/locales/fr';
 
 export default {
 
@@ -28,6 +28,7 @@ export default {
   data() {
     return {
       calendarOptions: {
+        locale: frLocale,
         plugins: [
           dayGridPlugin,
           timeGridPlugin,
@@ -917,11 +918,6 @@ export default {
             <i>{{ arg.event.title }}</i>
             </template>
         </FullCalendar>
-        <div class="collapse" id="collapseExample">
-          <div class="card card-body">
-            Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.
-          </div>
-        </div>
         </div>
     </div>
 </main>

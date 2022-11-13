@@ -23,4 +23,9 @@ export default class DemandeAudience{
         const res = await axios.post(url.concat('/all/jour'),id_autorite)
         return res.data        
     }
+
+    static async add_event(audience_event){
+        const res = await axios.post(url.concat('/add'), audience_event)
+        return res.data
+    }
 }

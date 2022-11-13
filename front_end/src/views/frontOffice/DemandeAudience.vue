@@ -9,7 +9,7 @@
     import listPlugin from '@fullcalendar/list'
     import timeLine from '@fullcalendar/timeline'
     import { actual_events_public} from '../../func/event-utils'
-    import DemandeAudience from '../../api/demande_audience'
+    import DemandeAudience from '../../api/demande_audience_public'
     import tippy from 'tippy.js';
     import 'tippy.js/dist/tippy.css'; // optional for styling
     import 'tippy.js/themes/light.css';
@@ -74,7 +74,12 @@
           directions: [],
           audience:{
             direction: window.location.pathname.split('/')[ window.location.pathname.split('/').length-1],
+            nom:'',
+            prenom:'',  
             motif:'',
+            cin:'',
+            numero_telephone:'',
+            email:'',
             date_debut: '',
             date_fin: '',
             time_debut:'',
@@ -257,9 +262,13 @@
             date_event_fin: this.audience.date_fin, 
             time_event_debut: this.audience.time_debut,
             time_event_fin: this.audience.time_fin,
-            // id_demande_stage: 35,
             motif: this.audience.motif,
-            id_autorite_enfant: this.audience.direction
+            id_autorite_enfant: this.audience.direction,
+            nom: this.audience.nom,
+            prenom :this.audience.prenom,
+            cin : this.audience.cin,
+            numero_telephone :this.audience.numero_telephone,
+            email: this.audience.email
             // session_navigateur: JSON.parse(sessionStorage.getItem("session_navigateur")).value
           }
           const response =  await DemandeAudience.add_event(audience_event)
@@ -279,6 +288,9 @@
           }
           else if(response.message == "date fin invalid"){
             swal("Audience non enregistrée", "La date de fin d'événement doit être égal à la date de début", "warning");
+          }
+          else if(response.message == "formulaire vide"){
+            swal("Audience non enregistrée", "Veuillez remplir le formulaire", "warning");
           }
           else if(response.affectedRows == 1){
             swal("Audience enregistrée", "Votre audience a bien été enregistrée", "success");
@@ -305,9 +317,15 @@
                   <h1>Prendre un rendez-vous</h1>
                   <form class="form-audience">
                       <ul>
-                      <li id="li_date_time_debut">De <input id="date_debut" type="date" v-model="audience.date_debut"  />  <input id="time_debut" type="time" v-model="audience.time_debut"  /></li>
-                      <li id="li_date_time_fin">à <input id="date_fin" type="date" v-model="audience.date_fin"  />  <input id="time_fin" type="time" v-model="audience.time_fin"  /></li>
-                      <li id="li_motif"> Motif <textarea id="input_motif" v-model="audience.motif" placeholder="Veuillez saisir votre motif"></textarea></li>
+                      <li id="li_date_time_debut">De <input id="date_debut" name="date_debut" type="date" required v-model="audience.date_debut"  />  <input id="time_debut" name="time_debut" type="time" required v-model="audience.time_debut"  /></li>
+                      <li id="li_date_time_fin">à <input id="date_fin" name="date_fin" type="date" required v-model="audience.date_fin"  />  <input id="time_fin" name="time_fin" type="time" required v-model="audience.time_fin"  /></li>
+                      <li id="li_motif"> Motif <textarea id="input_motif" name="motif" required v-model="audience.motif" placeholder="Motif"></textarea></li>
+                      <li id="li_nom">Nom <input id="nom" name="nom" type="text" required v-model="audience.nom"  placeholder="Nom"/></li>
+                      <li id="li_prenom">Prénom <input id="prenom" name="prenom" type="text" required v-model="audience.prenom" placeholder="Prénom"/></li>
+                      <!-- <li id="li_prenom">Prénom</li> -->
+                      <li id="li_cin">CIN <input id="cin" name="cin" type="text" required v-model="audience.cin" placeholder="CIN"/></li>
+                      <li id="li_telephone">Tél <input id="numero_telephone" name="numero_telephone" type="text" required v-model="audience.numero_telephone" placeholder="Numéro de téléphone"/></li>
+                      <li id="li_email">email <input id="email" name="email" type="email" required v-model="audience.email" placeholder="Addresse email"/></li>
                       <!-- <li>Type audience: <input v-model="audience.type_audience" placeholder="Type d'audience..." /></li> -->
                       <li id="li_button_event"> 
                         <button type="button" class="btn btn-light" @click="remove_event()">Annuler</button>
@@ -315,26 +333,8 @@
                       </li>
                       </ul>
                   </form>
-                  <!-- <h2>Instructions</h2>
-                  <ul>
-                  <li>Select dates and you will be prompted to create a new event</li>
-                  <li>Drag, drop, and resize events</li>
-                  <li>Click an event to delete it</li>
-                  </ul> -->
               </div>
-              <!-- <div class='demo-app-sidebar-section'>
-                  <label>
-                  <input
-                      type='checkbox'
-                      :checked='calendarOptions.weekends'
-                      @change='handleWeekendsToggle'
-                  />
-                  toggle weekends
-                  </label>
-              </div> -->
             <div class='demo-app-sidebar-section'>
-                <!-- <h2>All Events ({{ currentEvents.length }})</h2> -->
-
                 <ul>
                 <li v-for='event in currentEvents' :key='event.id'>
                     <b>{{ event.startStr }}</b>
@@ -355,177 +355,10 @@
                   <i>{{ arg.event.title }}</i>
                   </template>
               </FullCalendar>
-            <!-- <div class="collapse" id="collapseExample">
-              <div class="card card-body">
-                Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.
-              </div>
-            </div> -->
             </div>
         </div>
     </main>
 </template>
 <style lang='css'>
-    #main-audience{
-        margin-top: 0px;
-        margin-left: 0px;
-    }
-    h2 {
-      margin: 0;
-      font-size: 16px;
-    }
-    
-    ul {
-      margin: 0;
-      padding: 0 0 0 1.5em;
-    }
-    
-    li {
-      margin: 1.5em 0;
-      padding: 0;
-      list-style-type: none;
-    }
-    #li_date_time_fin{
-      margin-left: 10px;
-    }
-
-    #li_motif{
-      margin-left: -12px;
-    }
-
-    #input_motif{
-      width: 12.1rem;
-      margin-bottom: -30px
-    }
-    #date_debut{
-      width: 5.9rem;
-    }
-    #date_fin{
-      width: 5.9rem;
-    }
-
-    #time_debut{
-      width: 6rem;
-    }
-
-    #time_fin{
-      width: 6rem;
-    }
-
-    #li_button_event{
-      margin-top: 2.9rem;
-      margin-left: 3.6rem;
-    }
-
-    #li_button_event button{
-      margin-left: 0.5rem;
-      font-size: 14px;
-    }
-
-    b { /* used for event dates/times */
-      margin-right: 3px;
-    }
-
-    
-    .demo-app {
-      display: flex;
-      min-height: 100%;
-      font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
-      font-size: 14px;
-    }
-    
-    .demo-app-sidebar {
-      width: 300px;
-      line-height: 1.5;
-      background: #eaf9ff;
-      border-right: 1px solid #d3e2e8;
-    }
-    
-    .demo-app-sidebar-section {
-      padding: 2em;
-    }
-    
-    .demo-app-main {
-      flex-grow: 1;
-      padding: 3em;
-      z-index: 1;
-    }
-    
-    .fc { /* the calendar root */
-      /* max-width: 1100px; */
-      margin: 0 auto;
-    }
-    footer{
-      background:#ccc;
-      position:fixed;
-      bottom:0;
-      width:100%;
-      padding-top:50px;
-      height:50px;
-      z-index: 2;
-    }
-    #button-add-event {
-      float: right;
-      margin-top: -3%;
-      margin-right: 10px;
-    }
-
-    /* Popup */
-    .button {
-  border: none;
-  color: #FFF;
-  background: #42b983;
-  appearance: none;
-  font: inherit;
-  font-size: 1.8rem;
-  padding: .5em 1em;
-  border-radius: .3em;
-  cursor: pointer;
-}
-
-.modal {
-  position: absolute;
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  margin: auto;
-  text-align: center;
-  width: fit-content;
-  height: fit-content;
-  max-width: 22em;
-  padding: 2rem;
-  border-radius: 1rem;
-  box-shadow: 0 5px 5px rgba(0, 0, 0, 0.2);
-  background: #FFF;
-  z-index: 9999;
-  transform: none;
-}
-.modal h1 {
-  margin: 0 0 1rem;
-}
-
-
-/* ---------------------------------- */
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity .4s linear;
-}
-
-.fade-enter,
-.fade-leave-to {
-  opacity: 0;
-}
-
-.pop-enter-active,
-.pop-leave-active {
-  transition: transform 0.4s cubic-bezier(0.5, 0, 0.5, 1), opacity 0.4s linear;
-}
-
-.pop-enter,
-.pop-leave-to {
-  opacity: 0;
-  transform: scale(0.3) translateY(-50%);
-}
-    
+  @import url('./css/style.css');    
 </style>

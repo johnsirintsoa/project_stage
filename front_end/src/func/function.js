@@ -62,7 +62,7 @@ export default class Function{
         const date_split = date.toLocaleString("fr").split(' ')
         date_time[0] = date_split[0].split('/')[2].concat("-",date_split[0].split('/')[1],"-",date_split[0].split('/')[0])
         date_time[1]=date_split[1] 
-        console.log(date_time)
+        // console.log(date_time)
 
         return date_time
     }

@@ -744,8 +744,23 @@ router.delete('/public/delete/:audience_id',async(req,res)=>{
     })
 })
 
+// router.post('/public/add',async(req,res)=>{
+//     const sql = `CALL si_disponible_public('${req.body.date_event_debut}','${req.body.date_event_fin}','${req.body.time_event_debut}','${req.body.time_event_fin}','${req.body.motif}',${req.body.id_autorite_enfant})`
+//         db.query(sql, (error,result) => {
+//         if(error){
+//             res.send(error)
+//         } 
+//         else if(result.length > 0 ){
+//             res.json(result[0][0])
+//         }else{
+//             res.json(result)
+//         }
+        
+//     })
+// })
+
 router.post('/public/add',async(req,res)=>{
-    const sql = `CALL si_disponible_public('${req.body.date_event_debut}','${req.body.date_event_fin}','${req.body.time_event_debut}','${req.body.time_event_fin}','${req.body.motif}',${req.body.id_autorite_enfant})`
+    const sql = `CALL add_audience_public('${req.body.nom}','${req.body.prenom}','${req.body.cin}','${req.body.numero_telephone}','${req.body.email}','${req.body.date_event_debut}','${req.body.date_event_fin}','${req.body.time_event_debut}','${req.body.time_event_fin}','${req.body.motif}',${req.body.id_autorite_enfant})`
         db.query(sql, (error,result) => {
         if(error){
             res.send(error)

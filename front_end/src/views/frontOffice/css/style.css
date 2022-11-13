@@ -1,49 +1,6 @@
-<script setup>
-    import { RouterLink, RouterView } from 'vue-router'
-    // import HelloWorld from './components/HelloWorld.vue'
-</script>
-<template>
-    <main id="main-audience" class="main-audience">
-        <div class="autorite-enfant">
-            <ul>
-                <li v-for="autorite in autorites">
-                    <!-- <RouterLink to="/demande-audience/autorite">{{autorite.intitule}}</RouterLink> -->
-                    <RouterLink :to="{ name: 'back-demande-audience-faire-audience', params: { id_autorite_enfant: autorite.id }}">{{autorite.intitule}}</RouterLink>
-                </li>
-            </ul>
-        </div>
-    </main>
-    <!-- < RouterView/> -->
-</template>
-<script>
-    import AutoriteAPI from '../../api/autorite';
-    export default {
-        data(){
-            return{
-                autorites: '',
-            }
-        },
-        async created() {
-          const profil = JSON.parse(sessionStorage.getItem('administrateur'));
-          // console.log(profil)
-          this.autorites = await AutoriteAPI.autorite_enfant_autorite(profil.autorite_enfant.id)
-          // console.log(this.autorites)
-        },
-    }
-</script>
-<style lang='css'>
 #main-audience{
-  margin-top: 60px;
-  margin-left: 300px;
-  padding: 20px 30px;
-  transition: all 0.3s;
-}
-@media (min-width: 1200px) {
-
-  #main,
-  #footer {
-    margin-left: 300px;
-  }
+    margin-top: 0px;
+    margin-left: 0px;
 }
 h2 {
   margin: 0;
@@ -57,12 +14,76 @@ ul {
 
 li {
   margin: 1.5em 0;
-  padding: 0;
+  padding: 1;
+  list-style-type: none;
 }
 
-b { /* used for event dates/times */
-  margin-right: 3px;
+#li_nom{
+  margin-top: 2.9rem;
+  margin-left: -11px;
 }
+#nom{
+ padding-right: 14px;
+}
+#li_prenom{
+  margin-left: -30px;
+}
+#prenom{
+  padding-right: 14px;
+}
+
+#li_cin{
+  margin-left: -5px;
+}
+#cin{
+  padding-right: 14px;
+}
+#li_email{
+  margin-left: -13px;
+}
+#email{
+  padding-right: 14px;
+}
+#li_date_time_fin{
+  margin-left: 10px;
+}
+#numero_telephone{
+  padding-right: 14px;
+}
+
+#li_motif{
+  margin-left: -12px;
+}
+
+#input_motif{
+  width: 12.1rem;
+  margin-bottom: -30px
+}
+#date_debut{
+  width: 5.9rem;
+}
+#date_fin{
+  width: 5.9rem;
+}
+
+#time_debut{
+  width: 6rem;
+}
+
+#time_fin{
+  width: 6rem;
+}
+
+#li_button_event{
+  margin-top: 2.9rem;
+  margin-left: 3.6rem;
+}
+
+#li_button_event button{
+  margin-left: 0.5rem;
+  font-size: 14px;
+}
+
 
 .demo-app {
   display: flex;
@@ -165,5 +186,3 @@ transition: transform 0.4s cubic-bezier(0.5, 0, 0.5, 1), opacity 0.4s linear;
 opacity: 0;
 transform: scale(0.3) translateY(-50%);
 }
-
-</style>

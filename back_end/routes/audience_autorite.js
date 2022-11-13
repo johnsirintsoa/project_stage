@@ -199,14 +199,249 @@ router.post('/autorite/all/mois/', async(req,res) =>{
     })
 })
 
-router.post('/autorite/add',async(req,res)=>{
-    // const sql = `CALL si_disponible_autorite('${req.body.date_event_debut}','${req.body.date_event_fin}','${req.body.time_event_debut}','${req.body.time_event_fin}',${req.body.id_autorite_enfant},'${req.body.motif}')`
-    const sql = `CALL si_disponible_autorite('${req.body.date_debut}','${req.body.date_fin}','${req.body.time_debut}','${req.body.time_fin}',${req.body.id_autorite_enfant_sender},'${req.body.id_autorite_enfant_receiver}','${req.body.motif}')`
-    db.query(sql, (error,result) => {
-        if(error) res.send(error)
-        res.json(result)
+router.post('/autorite/all/faire_audience', async(req,res) =>{
+    const id_autorite_sender = req.body.id_autorite_sender
+    const sql = `CALL LISTE_FAIRE_AUDIENCE_AUTORITE(${req.body.id_autorite_sender},${req.body.id_autorite_receiver},'${req.body.date_du_jour}')`
+    // console.log(sql)
+    db.query(sql,function(err, result) {
+        if(err){
+            return res.send({ err });
+        }
+        // return res.json(sql)
+        else{
+            // res.send(sql);
+            const array_result = []
+            result[0].forEach(element => {
+                if(element.type_audience == 'Autorite'){
+                    const date_time_start = element.dd_aud_autorite.concat('T',element.td_aud_autorite)
+                    const date_time_fin = element.df_aud_autorite.concat('T',element.tf_aud_autorite)
+                    if(element.action_autorite == 0){
+                        if(element.id_autorite_sender == id_autorite_sender){
+                            array_result.push({
+                                id: element.id_aud_autorite,
+                                sender:{
+                                  id: element.id_autorite_sender,
+                                  intitule: element.sender_intitule,
+                                  intitule_code: element.sender_intitule_code
+                                },
+                                title: element.motif,
+                                start: date_time_start,
+                                end: date_time_fin,
+                                color:'#25AF1A',
+                                type_audience: element.type_audience,
+                                action: element.action_autorite,
+                                editable: true  
+                            })                              
+                        }else {
+                            array_result.push({
+                                id: element.id_aud_autorite,
+                                title: element.motif,
+                                start: date_time_start,
+                                end: date_time_fin,
+                                color:'#ff9f89',
+                                type_audience: element.type_audience,
+                                action: element.action_autorite,
+                                editable: false
+                            }) 
+                        }
+                    } 
+                    else if(element.action_autorite == 1){
+                        if(element.id_autorite_sender == id_autorite_sender){
+                            array_result.push({
+                                id: element.id_aud_autorite,
+                                sender:{
+                                  id: element.id_autorite_sender,
+                                  intitule: element.sender_intitule,
+                                  intitule_code: element.sender_intitule_code
+                                },
+                                title: element.motif,
+                                start: date_time_start,
+                                end: date_time_fin,
+                                color:'#ff9f89',
+                                type_audience: element.type_audience,
+                                action: element.action_autorite,
+                                editable: false  
+                            })                              
+                        }else {
+                            array_result.push({
+                                id: element.id_aud_autorite,
+                                title: element.motif,
+                                start: date_time_start,
+                                end: date_time_fin,
+                                color:'#ff9f89',
+                                type_audience: element.type_audience,
+                                action: element.action_autorite,
+                                editable: false
+                            }) 
+                        }                        
+                    }
+                }
+                else if (element.type_audience == 'Public'){
+                    const date_time_start = element.dd_aud_public.concat('T',element.td_aud_public)
+                    const date_time_fin = element.df_aud_public.concat('T',element.tf_aud_public)
+                    array_result.push({
+                        id: element.id_aud_public,
+                        title: element.motif,
+                        start: date_time_start,
+                        end: date_time_fin,
+                        color:'#ff9f89',
+                        type_audience: element.type_audience,
+                        action: element.action_public,
+                        editable: false  
+                    })
+                }
+                else if(element.type_audience == 'Pas disponible date'){
+                    const date_time_start = element.dd_non_dispo_date.concat('T',element.td_non_dispo_date)
+                    const date_time_fin = element.df_non_dispo_date.concat('T',element.tf_non_dispo_date)
+                    array_result.push({
+                        id: String(element.id),
+                        title: element.status_audience,
+                        start: date_time_start,
+                        end: date_time_fin,
+                        color:'#2B2B2B',
+                        type_audience: element.type_audience,
+                        editable: false
+                    })
+                }
+                else if(element.type_audience == 'Jour ferie'){
+                    const date_ferie_debut = String(element.date_ferie).concat('T',element.td_ferie)
+                    const date_ferie_fin = String(element.date_ferie).concat('T',element.tf_ferie)
+                    array_result.push({
+                      id: String(element.id),
+                      title: element.motif,
+                      start: date_ferie_debut,
+                      end: date_ferie_fin,
+                      color:'#EFEC27',
+                      type_audience: element.type_audience,
+                      editable: false
+                    
+                    })
+                }
+                else if(element.type_audience == 'Pas disponible jour'){
+                    if(element.jour_non_dispo_jour == 'Sunday'){
+                        array_result.push({
+                            title: element.status_audience,
+                            daysOfWeek: [ '0' ], // these recurrent events move separately
+                            startTime: element.td_non_dispo_jour,
+                            endTime: element.tf_non_dispo_jour,
+                            type_audience: element.type_audience,
+                            color: '#2B2B2B',
+                            editable: false
+                        })
+                      }
+                      else if(element.jour_non_dispo_jour == 'Monday'){
+                        array_result.push({
+                            title: element.status_audience,
+                            daysOfWeek: [ '1' ], // these recurrent events move separately
+                            startTime: element.td_non_dispo_jour,
+                            endTime: element.tf_non_dispo_jour,
+                            type_audience: element.type_audience,
+                            color: '#2B2B2B',
+                            editable: false
+                        
+                        })
+                      }
+                      else if(element.jour_non_dispo_jour == 'Tuesday'){
+                        array_result.push({
+                            title: element.status_audience,
+                            daysOfWeek: [ '2' ], // these recurrent events move separately
+                            startTime: element.td_non_dispo_jour,
+                            endTime: element.tf_non_dispo_jour,
+                            type_audience: element.type_audience,
+                            color: '#2B2B2B',
+                            editable: false
+                        
+                        })
+                      }
+                      else if(element.jour_non_dispo_jour == 'Wednesday'){
+                        array_result.push({
+                            title: element.status_audience,
+                            daysOfWeek: [ '3' ], // these recurrent events move separately
+                            startTime: element.td_non_dispo_jour,
+                            endTime: element.tf_non_dispo_jour,
+                            type_audience: element.type_audience,
+                            color: '#2B2B2B',
+                            editable: false
+                        
+                        })
+                      }
+                      else if(element.jour_non_dispo_jour == 'Thursday'){
+                        array_result.push({
+                            title: element.status_audience,
+                            daysOfWeek: [ '4' ], // these recurrent events move separately
+                            startTime: element.td_non_dispo_jour,
+                            endTime: element.tf_non_dispo_jour,
+                            type_audience: element.type_audience,
+                            color: '#2B2B2B',
+                            editable: false
+                        
+                        })
+                      }
+                      else if(element.jour_non_dispo_jour == 'Friday'){
+                        array_result.push({
+                            title: element.status_audience,
+                            daysOfWeek: [ '5' ], // these recurrent events move separately
+                            startTime: element.td_non_dispo_jour,
+                            endTime: element.tf_non_dispo_jour,
+                            type_audience: element.type_audience,
+                            color: '#2B2B2B',
+                            editable: false
+                        
+                        })
+                      }
+                      else if(element.jour_non_dispo_jour == 'Saturday'){
+                        array_result.push({
+                            title: element.status_audience,
+                            daysOfWeek: [ '6' ], // these recurrent events move separately
+                            startTime: element.td_non_dispo_jour,
+                            endTime: element.tf_non_dispo_jour,
+                            type_audience: element.type_audience,
+                            color: '#2B2B2B',
+                            editable: false
+                        
+                        })
+                      }                    
+                }
+                               
+            });            
+            return res.json(array_result);
+        }
     })
 })
+
+router.post('/autorite/add',async(req,res)=>{
+    // const sql = `CALL si_disponible_autorite('${req.body.date_event_debut}','${req.body.date_event_fin}','${req.body.time_event_debut}','${req.body.time_event_fin}',${req.body.id_autorite_enfant},'${req.body.motif}')`
+    const sql = `CALL add_audience_autorite('${req.body.date_debut}','${req.body.date_fin}','${req.body.time_debut}','${req.body.time_fin}',${req.body.id_autorite_enfant_sender},'${req.body.id_autorite_enfant_receiver}','${req.body.motif}')`
+    db.query(sql, (error,result) => {
+        // res.json(sql)
+        if(error){
+            res.send(error)
+        } 
+        else if(result.length > 0 ){
+            res.json(result[0][0])
+        }else{
+            res.json(result)
+        }
+    })
+})
+
+// router.post('/autorite/update',async(req,res)=>{
+//     const audience = {
+//         date_debut: req.body.date_debut,
+//         date_fin: req.body.date_fin, 
+//         time_debut: req.body.time_debut,
+//         time_fin: req.body.time_fin,
+//         id_autorite_enfant_sender: req.body.id_autorite_enfant_sender,
+//         id_autorite_enfant_receiver: req.body.id_autorite_enfant_receiver,
+//         motif: req.body.motif,
+//         id: req.body.id
+//     }
+//     // const sql = `INSERT INTO stage.demande_audience( date_time_debut, date_time_fin, id_demande_stage, motif, id_direction, type_audience ) VALUES ( '${req.body.date_time_debut}', '${req.body.date_time_fin}', ${req.body.id_demande_stage}, '${req.body.motif}', ${req.body.id_direction}, '${req.body.type_audience}' )`
+//     db.query('UPDATE stage.demande_audience_autorite SET ? WHERE id = ' + req.body.id,audience, (error,result) => {
+//         if(error) res.send(error)
+//         res.json(result)
+//     })
+// })
 
 router.post('/autorite/update',async(req,res)=>{
     const audience = {
@@ -220,7 +455,20 @@ router.post('/autorite/update',async(req,res)=>{
         id: req.body.id
     }
     // const sql = `INSERT INTO stage.demande_audience( date_time_debut, date_time_fin, id_demande_stage, motif, id_direction, type_audience ) VALUES ( '${req.body.date_time_debut}', '${req.body.date_time_fin}', ${req.body.id_demande_stage}, '${req.body.motif}', ${req.body.id_direction}, '${req.body.type_audience}' )`
-    db.query('UPDATE stage.demande_audience_autorite SET ? WHERE id = ' + req.body.id,audience, (error,result) => {
+    db.query(`CALL update_audience_autorite(${req.body.id} ,'${req.body.date_debut}','${req.body.date_fin}','${req.body.time_debut}','${req.body.time_fin}',${req.body.id_autorite_enfant_sender},${req.body.id_autorite_enfant_receiver},'${req.body.motif}') `, (error,result) => {
+        if(error){
+            res.send(error)
+        } 
+        else if(result.length > 0 ){
+            res.json(result[0][0])
+        }else{
+            res.json(result)
+        }
+    })
+})
+
+router.post('/autorite/delete',async(req,res)=>{
+    db.query(`DELETE FROM stage.demande_audience_autorite WHERE id = ${req.body.id}`, (error,result) => {
         if(error) res.send(error)
         res.json(result)
     })

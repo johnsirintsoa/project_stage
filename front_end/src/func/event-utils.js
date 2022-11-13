@@ -8,27 +8,27 @@ import func from './function'
 let eventGuid = 0
 let todayStr = new Date().toISOString().replace(/T.*$/, '') // YYYY-MM-DD of today
 
-export const INITIAL_EVENTS = [
-  {
-    id: createEventId(),
-    title: 'All-day event',
-    start: todayStr,
-  },
-  {
-    id: createEventId(),
-    title: 'Timed event',
-    start: todayStr + 'T12:00:00',
-    end: todayStr + 'T13:00:00'
+// export const INITIAL_EVENTS = [
+//   {
+//     id: createEventId(),
+//     title: 'All-day event',
+//     start: todayStr,
+//   },
+//   {
+//     id: createEventId(),
+//     title: 'Timed event',
+//     start: todayStr + 'T12:00:00',
+//     end: todayStr + 'T13:00:00'
 
-  },
-  {
-    id: createEventId(),
-    title: 'Test 1',
-    start: todayStr + 'T15:00:00',
-    end: todayStr + 'T16:00:00'
+//   },
+//   {
+//     id: createEventId(),
+//     title: 'Test 1',
+//     start: todayStr + 'T15:00:00',
+//     end: todayStr + 'T16:00:00'
 
-  }
-]
+//   }
+// ]
 
 // Actual events public v1
 export const actual_events_public = async (id_autorite_enfant) => {
@@ -49,6 +49,23 @@ export const actual_events_public_MOIS = async (id_autorite_enfant) => {
   }
   const audience = DemandeAudiencePublic.audience_public_mois(audience_public_mois)
   try {
+    return await audience
+  } catch (error) {
+    console.log(error)
+  }
+  return audience
+}
+
+export const faire_auidence_par_mois = async (id_autorite_sender,id_autorite_receiver) => {
+  const mois = parseInt(new Date().getMonth())+1
+  const date_actu =  new Date().getFullYear()+"-"+mois+"-"+new Date().getDate()
+  const faire_audience = {
+    id_autorite_sender: id_autorite_sender,
+    id_autorite_receiver: id_autorite_receiver,
+    date_du_jour: date_actu
+  }
+  const audience = DemandeAudienceAutorite.faire_audience_mois(faire_audience)
+  try { 
     return await audience
   } catch (error) {
     console.log(error)
