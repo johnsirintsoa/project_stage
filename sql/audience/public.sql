@@ -230,6 +230,37 @@ BEGIN
         and stage.non_disponibilite_autorite_date.date_non_dispo_debut between dd and df
 		and stage.non_disponibilite_autorite_date.date_non_dispo_fin between dd and df
 		and @time_fin between stage.non_disponibilite_autorite_date.time_debut and stage.non_disponibilite_autorite_date.time_fin
+	
+		UNION
+	
+    SELECT
+		count(*) as nbr_rows
+	FROM
+		stage.entretien_demande_stage eds
+	JOIN demande_stage ds on eds.id_demande_stage = ds.id
+    where 
+		ds.id_autorite_enfant = id_autorite_enfant
+        and eds.date_debut between dd and df
+		and eds.date_fin between dd and df
+		and eds.time_debut between @time_debut and @time_fin
+		and eds.time_fin between @time_debut and @time_fin
+		or
+		ds.id_autorite_enfant = id_autorite_enfant
+        and eds.date_debut between dd and df
+		and eds.date_fin between dd and df
+		and @time_debut between eds.time_debut and eds.time_fin
+		and @time_fin between eds.time_debut and eds.time_fin
+		or
+		ds.id_autorite_enfant = id_autorite_enfant
+        and eds.date_debut between dd and df
+		and eds.date_fin between dd and df
+		and @time_debut between eds.time_debut and eds.time_fin
+		or
+		ds.id_autorite_enfant = id_autorite_enfant
+        and eds.date_debut between dd and df
+		and eds.date_fin between dd and df
+		and @time_fin between eds.time_debut and eds.time_fin
+	
 	UNION
 	SELECT
 		count(*) as nbr_rows 

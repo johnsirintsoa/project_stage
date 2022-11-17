@@ -1,5 +1,8 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
+import Swal from 'sweetalert2';
+import swal from 'sweetalert';
+import EntretienDemandeStage from '../../api/entretien_stage'
 
 </script>
 <template>
@@ -7,7 +10,6 @@ import { RouterLink, RouterView } from 'vue-router'
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="">Demandes de stages</a></li>
           <li class="breadcrumb-item active">Liste</li>
-
         </ol>
     </nav>
     <div class="card">
@@ -18,121 +20,41 @@ import { RouterLink, RouterView } from 'vue-router'
             <table class="table table-hover">
             <thead>
                 <tr>
-                <th scope="col">#</th>
-                <th scope="col">Nom et prénom</th>
+                <th scope="col"></th>
+                <th scope="col">Nom</th>
+                <th scope="col">Prénom</th>
                 <th scope="col">Domaine</th>
-                <th scope="col">Durée</th>
+                <th scope="col">Durée(mois)</th>
                 <th scope="col">Status</th>
                 <th scope="col">Action</th>
                 </tr>
             </thead>
             <tbody>
                 <tr v-for="(stage,index) in stages" >
-                <th scope="row">{{stage['id']}}</th>
-                <td>{{stage['fullName']}}</td>
+                <th scope="row">{{stage['id_demande_stage']}}</th>
+                <td>{{stage['nom']}}</td>
+                <td>{{stage['prenom']}}</td>
                 <td>{{stage['nom_domaine']}}</td>
                 <td>{{stage['duree']}}</td>
                 <td>
-                    <span class="badge bg-success" v-if="stage['demande_status'] == 'valide'">{{stage['demande_status']}}</span>
+                    <span class="badge bg-success" v-if="stage['demande_status'] == 'validé'">{{stage['demande_status']}}</span>
                     <span class="badge bg-warning text-dark" v-else >{{stage['demande_status']}}</span>
                 </td>
-                <!-- <td>
-                    <RouterLink :to="{name: 'backDetailDemandeStage',params:{id_demande_stage:stage['id']}}">
+                <td>
+                    <RouterLink :to="{name: 'back-detail-demande-stage',params:{id_demande_stage:stage['id_demande_stage']}}">
                     
                         <button type="button" class="btn btn-info">
                             <i class="bi bi-info-circle"></i>
                         </button>
                     </RouterLink>
-                </td> -->
-                <td>
-                    <button type="button" @click="get_stage(index)" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#verticalycentered"> 
-                        <i class="bx bx-mail-send"></i>
+                    <button type="button" v-if="stage['demande_status'] == 'validé'" @click="getDemandeStage(stage)" class="btn btn-warning"> 
+                        <i class="ri-edit-2-line"></i>
                     </button>
-                    <div class="modal fade" id="verticalycentered" tabindex="-1" style="display: none;" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-body">
-                            <div class="card">
-                                <div class="card-body">
-                                <h5 class="card-title">Valider Stage</h5>
-
-                                <!-- Vertical Form -->
-                                <form class="row g-3" ref="form" @submit.prevent="sendEmail">
-                                    <div class="col-12">
-                                    <label for="inputName4" class="form-label">Nom et prénom</label>
-                                    <input type="text" class="form-control"  v-model="stage_email.nom" name="username" id="inputName4" disabled>
-                                    </div>
-                                    <div class="col-12">
-                                    <label for="inputEmail4" class="form-label">Email</label>
-                                    <input type="text" class="form-control" v-model="stage_email.email" name="usermail" id="inputEmail4" disabled>
-                                    </div>
-                                    <div class="col-12">
-
-                                    <div class="col-12">
-                                    <label for="inputName4" class="form-label">CV</label>
-                                    <button type="hidden" @click="getFile(stage_email.curriculum_vitae)">
-                                    <div class="icon">
-                                        <i class="bx bxs-file-pdf" style="font-size: 2.0rem;color: #012970"></i>
-                                        <div class="label">{{stage_email.curriculum_vitae}}</div>
-                                    </div>
-                                    </button>
-                                    </div>
-
-                                    <div class="col-12">
-                                    <label for="inputName4" class="form-label">Lettre de motivation</label>
-                                    <button type="hidden" @click="getFile(stage_email.lettre_motivation)">
-                                    <div class="icon">
-                                        <i class="bx bxs-file-pdf" style="font-size: 2.0rem;color: #012970"></i>
-                                        <div class="label">{{stage_email.lettre_motivation}}</div>
-                                    </div>
-                                    </button>
-                                    </div>
-
-                                    <div class="col-12">
-                                    <label for="inputName4" class="form-label">Lettre d'introduction</label>
-                                    <button type="hidden" @click="getFile(stage_email.lettre_introduction)">
-                                    <div class="icon">
-                                        <i class="bx bxs-file-pdf" style="font-size: 2.0rem;color: #012970"></i>
-                                        <div class="label">{{stage_email.lettre_introduction}}</div>
-                                    </div>
-                                    </button>
-                                    </div>
-
-                                    <label for="inputPassword4" class="form-label">Date de l'entretien</label>
-                                    <input type="datetime-local" class="form-control" v-model="stage_email.date_entretien" name="date_entretien" id="inputPassword4">
-                                    </div>
-                                    <div class="text-center">
-                                        <button type="submit" value="Send" class="btn btn-success">Send</button>
-                                        <button type="reset" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    </div>
-                                </form><!-- Vertical Form -->
-
-                                </div>
-                            </div>
-                            </div>
-                        </div>
-                        </div>
-                    </div>
-                </td>
-                </tr>
-                <!-- <tr>
-                <th scope="row">1</th>
-                <td>Brandon Jacob</td>
-                <td>Designer</td>
-                <td>28</td>
-                <td><span class="badge bg-warning text-dark">en attente</span></td>
-                <td>
-                    <RouterLink to="/administrateur/demande-stage/1">
-                        <button type="button" class="btn btn-info">
-                            <i class="bi bi-info-circle"></i>
-                        </button>
-                    </RouterLink>
-                    <button type="button" class="btn btn-success">
+                    <button type="button" v-else-if="stage['demande_status'] == 'en attente'" @click="getDemandeStage(stage)" class="btn btn-success"> 
                         <i class="bi bi-check-circle"></i>
                     </button>
                 </td>
-                </tr> -->
-
+                </tr>
             </tbody>
             </table>
             <!-- End Table with hoverable rows -->
@@ -145,6 +67,7 @@ import { RouterLink, RouterView } from 'vue-router'
 <script>
 import emailjs from 'emailjs-com';
 import DemandeStageAPI from '../../api/demande_stage';
+import EntretienStage from '../../api/entretien_stage';
 export default {
     data() {
         return {
@@ -160,7 +83,10 @@ export default {
         }
     },
     async created(){
-        this.stages = await DemandeStageAPI.all_status()
+        const ses = JSON.parse(sessionStorage.getItem('administrateur'))
+        const id_autorite = ses.autorite_enfant.id
+        // console.log(id_autorite)
+        this.stages = await DemandeStageAPI.all_status(id_autorite)
     },
     methods:{
         get_stage(index){
@@ -181,7 +107,195 @@ export default {
         async getFile(file_name){
             await DemandeStageAPI.getFile(file_name)
             // console.log(file_name)
+        },
+        async getDemandeStage(stage){
+            console.log(stage)
+            if(stage.date_debut){
+              const data = await Swal.fire({
+                title: `Faire un entretien`,
+                html:
+                  `<p align="left" style="margin-left: 1rem;">De <input type=Date value="${stage.date_debut}" id="date1" class="swal2-input"> <input type=time value="${stage.time_debut}" id="duree1" class="swal2-input"> </p>` +
+                  `<p align="left" style="margin-left: 1.8rem;">à <input type=Date value="${stage.date_fin}"  id="date2" class="swal2-input"> <input type=time value="${stage.time_fin}" id="duree2" class="swal2-input"></p>` ,
+                showDenyButton: true,
+                showCancelButton: true,
+                confirmButtonText: 'Maintenant',
+                denyButtonText:'Plus tard',
+                footer: `<a href="#">Voir mes audiences</a>`,
+                preConfirm: () => {
+                  return [
+                    document.getElementById('date1').value,
+                    document.getElementById('date2').value,
+                    document.getElementById('duree1').value,
+                    document.getElementById('duree2').value
+                  ]
+                }
+              }).then(async (result) => {
+                if(result.isConfirmed){
+                  const ses = JSON.parse(sessionStorage.getItem('administrateur'))
+                  const id_autorite = ses.autorite_enfant.id
+                  const audience_event = {
+                    date_debut: result.value[0],
+                    date_fin: result.value[1], 
+                    time_debut: result.value[2],
+                    time_fin: result.value[3],
+                    id_autorite_enfant_receiver: id_autorite ,
+                    id: stage.id_entretien_demande_stage
+                  }                  
+                  const response = await EntretienDemandeStage.update_entretien_stage(audience_event)
+                  if(response.code == 'ER_BAD_FIELD_ERROR'){
+                    swal("Entretien non enregistrée", "Veuillez remplir le formulaire", "error");
+                  }
+                  else if(response.message == 'pas disponible'){
+                    swal("Entretien non enregistrée", "Cette place est occupé ou pas disponible.", "error");
+                  }
+                  else if(response.message == 'Jour férié et pas disponible'){
+                    swal("Entretien non enregistrée", "On est férié et le directeur n'est pas disponible", "error");
+                  }
+                  else if(response.message == 'Jour férié'){
+                    swal("Entretien non enregistrée", "On est férié", "error");
+                  }
+                  else if(response.message == "date fin invalid"){
+                    swal("Entretien non enregistrée", "La date de fin d'événement doit être égal à la date de début", "warning");
+                  }
+                  else if(response.message == "formulaire vide"){
+                    swal("Entretien non enregistrée", "Veuillez remplir le formulaire", "warning");
+                  }
+                  else if(response.affectedRows == 1){
+                    swal("Entretien enregistrée", "Votre audience a bien été enregistrée", "success");
+                    setInterval( () => {
+                      window.location.reload()
+                    }, 1000)
+                    // this.$router.push({path: '/administrateur/demande-audience/autorite/faire-audience/', params: { id_autorite_enfant: this.audience.direction }});
+                  }
+                  else if(response.message == "time fin invalid"){
+                    swal("Entretien non enregistrée", "L'heure fin doit être supérieur à l'heure début", "warning");
+                  }
+                }
+                else if(result.isDenied){
+                  Swal.fire({
+                    title: 'Reporter un entretien',
+                    text: "Cette entretien sera considérée comme stage en attente",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    cancelButtonText: 'Annuler',
+                    confirmButtonText: 'Supprimer!'
+                  }).then(async (result) => {
+                    if (result.isConfirmed) {
+                      const response = await EntretienDemandeStage.delete_entretien_stage(this.audience.id)
+                      Swal.fire(
+                        'Deleted!',
+                        'Your file has been deleted.',
+                        'success'
+                      )
+                      // setInterval( () => {
+                      //   window.location.reload()
+                      // }, 1000)
+                    }
+                  })       
+                }               
+              }).catch((err) => {
+                console.log(err)
+              })
+            }
+            else{
+              const { value: formValues } = await Swal.fire({
+                  title: `Faire un entretien`,
+                  html:
+                      `<p align="left" style="margin-left: 1rem;">De <input type=Date  id="date1" class="swal2-input"> <input type=time id="duree1" class="swal2-input"> </p>` +
+                      `<p align="left" style="margin-left: 1.8rem;">à <input type=Date  id="date2" class="swal2-input"> <input type=time  id="duree2" class="swal2-input"></p>` ,
+                  showCancelButton: true,
+                  confirmButtonText: 'Valider',    
+                  focusConfirm: false,
+                  footer: `<a href="#">Voir mes audiences</a>`,
+                  preConfirm: () => {
+                    return [
+                      document.getElementById('date1').value,
+                      document.getElementById('duree1').value,
+                      document.getElementById('date2').value,
+                      document.getElementById('duree2').value
+                    ]
+                  }
+              })
+
+              if (formValues) {
+                // console.log(formValues)
+                // this.audience.date_debut = formValues[0]
+                // this.audience.time_debut = formValues[1]
+                // this.audience.date_fin = formValues[2]
+                // this.audience.time_fin = formValues[3]
+                // this.audience.motif = formValues[4]
+
+                console.log(formValues)
+
+                const ses = JSON.parse(sessionStorage.getItem('administrateur'))
+                const id_autorite_enfant = ses.autorite_enfant.id
+                // this.audience.direction = ses.autorite_enfant.id
+
+                const infos_stage = {
+                    date_debut: formValues[0],
+                    time_debut: formValues[1],
+                    date_fin: formValues[2],
+                    time_fin: formValues[3],
+                    id_autorite_enfant: id_autorite_enfant,
+                    id_demande_stage: stage.id_demande_stage
+                }
+
+                const response = await EntretienStage.add_entretien_stage(infos_stage)
+                console.log(response)
+                if(response.code == 'ER_BAD_FIELD_ERROR'){
+                  swal("Entretien non enregistrée", "Veuillez remplir le formulaire", "error");
+                }
+                else if(response.message == 'pas disponible'){
+                  swal("Entretien non enregistrée", "Cette place est occupé ou pas disponible.", "error");
+                }
+                else if(response.message == 'Jour férié et pas disponible'){
+                  swal("Entretien non enregistrée", "On est férié et le directeur n'est pas disponible", "error");
+                }
+                else if(response.message == 'Jour férié'){
+                  swal("Entretien non enregistrée", "On est férié", "error");
+                }
+                else if(response.message == "date fin invalid"){
+                  swal("Entretien non enregistrée", "La date de fin d'événement doit être égal à la date de début", "warning");
+                }
+                else if(response.message == "formulaire vide"){
+                  swal("Entretien non enregistrée", "Veuillez remplir le formulaire", "warning");
+                }
+                else if(response.affectedRows == 1){
+                  swal("Entretien enregistrée", `L'entretien avec ${stage.nom} ${stage.prenom} a bien été enregistrée`, "success");
+                  setInterval( () => {
+                    window.location.reload()
+                  }, 1000)
+                  // this.$router.push({path: '/administrateur/demande-audience/autorite/faire-audience/', params: { id_autorite_enfant: this.audience.direction }});
+                }
+                else if(response.message == "time fin invalid"){
+                  swal("Entretien non enregistrée", "L'heure fin doit être supérieur à l'heure début", "warning");
+                }
+                // Swal.fire(JSON.stringify(formValues))
+              }
+            }
+
         }
     }
 }
 </script>
+<style>
+/*
+  Sweet Alert 2 
+*/
+    .swal2-input, .swal2-file, .swal2-textarea, .swal2-select, .swal2-radio, .swal2-checkbox {
+        margin: 1em 0em 0px 1rem;
+    /* padding: 0px 0px 0px 0px; */
+    }
+
+    .swal2-textarea{
+        padding-right: 8.5rem;
+        display: flex;
+        margin-left: 60px;
+        margin-top: -2.5rem;
+    }
+/*
+  Sweet Alert 2
+*/
+</style>

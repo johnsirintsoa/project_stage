@@ -290,7 +290,7 @@ import { RouterLink, RouterView } from 'vue-router'
         <li class="nav-item">
           <RouterLink to='/administrateur/demande-audience/mes-audiences' :class="{ disabled: active }">
             <a class="nav-link collapsed" href="">
-            <i class="bi bi-calendar3-range"></i><span>Mes Audiences</span>
+            <i class="bi bi-calendar3-range"></i><span>Mes audiences</span>
             </a>
           </RouterLink>
         </li>
@@ -326,7 +326,6 @@ export default {
     }
   },
   async created() {
-    console.log('hello world')
     if(sessionStorage.getItem('administrateur')){
       // redirect vers la page d'accueil
       this.$router.push({path: '/administrateur/'});

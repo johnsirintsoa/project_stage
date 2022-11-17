@@ -10,6 +10,9 @@
     import timeLine from '@fullcalendar/timeline'
     import { actual_events_autorite} from '../../func/event-utils'
     import DemandeAudience from '../../api/demande_audience'
+    import EntretienDemandeStage from '../../api/entretien_stage'
+    import NonDispoAutoriteDate from '../../api/pas_dispo_date'
+    import NonDispoAutoriteJour from '../../api/pas_dispo_jour'
     import tippy from 'tippy.js';
     import 'tippy.js/dist/tippy.css'; // optional for styling
     import 'tippy.js/themes/light.css';
@@ -18,7 +21,7 @@
     import Swal from 'sweetalert2';
     import AutoriteAPI from '../../api/autorite';
     import frLocale from '@fullcalendar/core/locales/fr';
-    
+
     export default {
     
       components: {
@@ -94,14 +97,40 @@
         async all_actual_events(){
           return await actual_events_autorite(this.audience.direction)  
         }, 
+
         async autorites_enfant(){
           return await AutoriteAPI.autorite_enfant()
         },
+
         handleWeekendsToggle() {
           this.calendarOptions.weekends = !this.calendarOptions.weekends // update a property
         },
-        
-        handleDateSelect(selectInfo) {
+
+        swal_voir_detail(obj){
+          console.log(obj)
+        },
+
+        swal_reporting(obj){
+          console.log(obj)
+        },
+
+        liste_evenements_inclus(response){
+          let html_value = ''
+          console.log(response)
+          response.forEach(element => {
+            console.log(element)
+            html_value +=
+              `<tr>
+                <td>${element.id}</td>
+                <td>${element.title}</td>
+                <td>${element.type_evenement}</td>
+                <td>${element.status_evenement}</td>
+              </tr>`
+          });
+          return html_value
+        },
+
+        async handleDateSelect(selectInfo) {
           // let title = prompt('Please enter a new title for your event')
           let calendarApi = selectInfo.view.calendar
           this.is_clicked = true
@@ -119,12 +148,190 @@
             this.audience.time_debut = "10:00:00"
             this.audience.time_fin = "11:00:00"
           }
+          const inputOptions = new Promise((resolve) => {
+            setTimeout(() => {
+              resolve({
+                'today': `Aujourd'hui`,
+                'per_day': 'Autre jour'
+              })
+            }, 0)
+          })
+
+          const { value: type_de_disponibilite } = await Swal.fire({
+            title: 'Choisissez entre',
+            input: 'radio',
+            inputOptions: inputOptions,
+
+            inputValidator: (value) => {
+              if (!value) {
+                return 'Vous devez en choisir un'
+              }
+            }
+          })
+          if (type_de_disponibilite == 'today') {
+            // Swal.fire({ html: `You selected: ${type_de_disponibilite}`})
+            const { value: formValues } = await Swal.fire({
+                title: 'Je suis pas disponible',
+                html:
+                    `<p align="left" style="margin-left: 1rem;">De <input type=Date value="${this.audience.date_debut}" id="date1" class="swal2-input"> <input type=time value="${this.audience.time_debut}" id="duree1" class="swal2-input"> </p>` +
+                    `<p align="left" style="margin-left: 1.8rem;">à <input type=Date value="${this.audience.date_fin}" id="date2" class="swal2-input"> <input type=time value="${this.audience.time_fin}" id="duree2" class="swal2-input"></p>`, 
+                showCancelButton: true,
+                confirmButtonText: 'Valider',    
+                focusConfirm: false,
+                preConfirm: () => {
+                  return [
+                    document.getElementById('date1').value,
+                    document.getElementById('duree1').value,
+                    document.getElementById('date2').value,
+                    document.getElementById('duree2').value,
+                  ]
+                }
+            })
+
+            if (formValues) {
+              // console.log(formValues)
+              this.audience.date_debut = formValues[0]
+              this.audience.time_debut = formValues[1]
+              this.audience.date_fin = formValues[2]
+              this.audience.time_fin = formValues[3]
+
+              // console.log(formValues)
+
+              const ses = JSON.parse(sessionStorage.getItem('administrateur'))
+              // this.audience.direction = ses.autorite_enfant.id
+
+              const audience = {
+                date_debut: this.audience.date_debut,
+                date_fin: this.audience.date_fin,
+                time_debut: this.audience.time_debut,
+                time_fin: this.audience.time_fin,
+                id_autorite: this.audience.direction
+              }    
+              const response = await NonDispoAutoriteDate.add_non_disponible_date(audience)
+              if(response.length > 0){
+                const data = await Swal.fire({
+                  title:'Evénements inclus',
+                  html: `
+                  <div class="card">
+                    <div class="card-body">
+                      <table class="table table-hover">
+                        <thead>
+                          <tr>
+                            <th scope="col"></th>
+                            <th scope="col">Motif</th>
+                            <th scope="col">Type</th>
+                            <th scope="col">Status</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          ${this.liste_evenements_inclus(response)}
+                        </tbody>
+                      </table>
+
+                    </div>
+                  </div>`
+                })
+              }else {
+                swal("Evènement enregistré", "L'évènement a bien été enregistrée", "success");
+              }
+            } 
+          }
+          else if(type_de_disponibilite == 'per_day'){
+            console.log(new Date(this.audience.date_debut).getDay())
+            let checked1 = ''
+            let checked2 = ''
+            let checked3 = ''
+            let checked4 = ''
+            let checked5 = ''
+            if(new Date(this.audience.date_debut).getDay() == 1){
+              checked1 = 'checked'
+            }
+            else if(new Date(this.audience.date_debut).getDay() == 2){
+              checked2 = 'checked'
+            }
+            else if(new Date(this.audience.date_debut).getDay() == 3){
+              checked3 = 'checked'
+            }
+            else if(new Date(this.audience.date_debut).getDay() == 4){
+              checked4 = 'checked'
+            }
+            else if(new Date(this.audience.date_debut).getDay() == 5){
+              checked5 = 'checked'
+            }
+            const { value: formValues } = await Swal.fire({
+                title: 'Je suis pas disponible',
+                html:
+                    `<p align="left" style="margin-left: 2rem;">De <input type=time value="${this.audience.time_debut}" id="duree1" class="swal2-input"> <input type=time value="${this.audience.time_fin}" id="duree2" class="swal2-input"></p>` +
+                    `<p align="left" style="margin-left: 0rem;margin-top: 3rem;" >chaque 
+                      <div id="swal2-radio" class="swal2-radio" style="display: flex;margin-top: -2.4rem;margin-left: 1.5rem;">
+                        <label><input type="radio" id="1" name="swal2-radio" value="Monday" ${checked1}><span class="swal2-label">L</span></label>
+                        <label><input type="radio" id="2" name="swal2-radio" value="Tuesday" ${checked2}><span class="swal2-label">M</span></label>
+                        <label><input type="radio" id="3" name="swal2-radio" value="Wednesday" ${checked3}><span class="swal2-label">M</span></label>
+                        <label><input type="radio" id="4" name="swal2-radio" value="Thursday" ${checked4}><span class="swal2-label">J</span></label>
+                        <label><input type="radio" id="5" name="swal2-radio" value="Friday" ${checked5}><span class="swal2-label">V</span></label>
+                      </div>
+                    </p>`,
+                showCancelButton: true,
+                confirmButtonText: 'Valider',    
+                focusConfirm: false,
+                preConfirm: () => {
+                  let jour_checked = ''
+                  for (let index = 1; index <= 5 ; index++) {
+                    const jour = document.getElementById(index)
+                    if(jour.checked == true){
+                      jour_checked = jour.value
+                      break
+                    }
+                  }
+                  return [
+                    document.getElementById('duree1').value,
+                    document.getElementById('duree2').value,
+                    jour_checked
+                  ]
+                }
+            })
+            if (formValues) {
+              const audience = {
+                time_non_dispo_jour_debut: this.audience.time_debut,
+                time_non_dispo_jour_fin: this.audience.time_fin,
+                jour_date: formValues[2],
+                id_autorite: this.audience.direction
+              }
+              const response = await NonDispoAutoriteJour.add_non_disponible_jour(audience)
+              // console.log(response)
+              if(response.length > 0){
+                const data = await Swal.fire({
+                  title:'Evénements inclus',
+                  html: `
+                  <div class="card">
+                    <div class="card-body">
+                      <table class="table table-hover">
+                        <thead>
+                          <tr>
+                            <th scope="col"></th>
+                            <th scope="col">Motif</th>
+                            <th scope="col">Type</th>
+                            <th scope="col">Status</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          ${this.liste_evenements_inclus(response)}
+                        </tbody>
+                      </table>
+
+                    </div>
+                  </div>`
+                })
+              }
+              // else {
+              //   swal("Evènement enregistré", "L'évènement a bien été enregistrée", "success");
+              // }        
+            }
+          } 
         },
     
         async handleEventClick(clickInfo) {
-    
-          // console.log(clickInfo.event.end)
-    
+          
           const start_date_time = Function.format_date_time(clickInfo.event.start)
           const end_date_time = Function.format_date_time(clickInfo.event.end)
           // console.log(end_date_time)
@@ -606,6 +813,102 @@
               });           
             }
           }
+          else if(event.event.extendedProps.type_audience == 'Entretien'){
+            const data = await Swal.fire({
+              title: 'A reporter',
+              showDenyButton: true,
+              showCancelButton: true,
+              confirmButtonText: 'Maintenant',
+              denyButtonText:'Plus tard',
+              html:
+                `<p align="left" style="margin-left: 1rem;">De <input type=Date value="${this.audience.date_debut}" id="date1" class="swal2-input"> <input type=time value="${this.audience.time_debut}" id="duree1" class="swal2-input"> </p>` +
+                `<p align="left" style="margin-left: 1.8rem;">à <input type=Date value="${this.audience.date_fin}" id="date2" class="swal2-input"> <input type=time value="${this.audience.time_fin}" id="duree2" class="swal2-input"></p>` ,  
+              focusConfirm: false,
+              preConfirm: () => {
+                return [
+                  document.getElementById('date1').value,
+                  document.getElementById('date2').value,
+                  document.getElementById('duree1').value,
+                  document.getElementById('duree2').value
+                ]
+              }
+            }).then(async (result) => {
+              if(result.isConfirmed){
+                const audience_event = {
+                  date_debut: result.value[0],
+                  date_fin: result.value[1], 
+                  time_debut: result.value[2],
+                  time_fin: result.value[3],
+                  id_autorite_enfant_receiver: this.audience.direction ,
+                  id: this.audience.id
+                }                  
+                const response = await EntretienDemandeStage.update_entretien_stage(audience_event)
+                if(response.code == 'ER_BAD_FIELD_ERROR'){
+                  swal("Entretien non enregistrée", "Veuillez remplir le formulaire", "error");
+                }
+                else if(response.message == 'pas disponible'){
+                  swal("Entretien non enregistrée", "Cette place est occupé ou pas disponible.", "error");
+                }
+                else if(response.message == 'Jour férié et pas disponible'){
+                  swal("Entretien non enregistrée", "On est férié et le directeur n'est pas disponible", "error");
+                }
+                else if(response.message == 'Jour férié'){
+                  swal("Entretien non enregistrée", "On est férié", "error");
+                }
+                else if(response.message == "date fin invalid"){
+                  swal("Entretien non enregistrée", "La date de fin d'événement doit être égal à la date de début", "warning");
+                }
+                else if(response.message == "formulaire vide"){
+                  swal("Entretien non enregistrée", "Veuillez remplir le formulaire", "warning");
+                }
+                else if(response.affectedRows == 1){
+                  swal("Entretien enregistrée", "Votre audience a bien été enregistrée", "success");
+                  setInterval( () => {
+                    window.location.reload()
+                  }, 1000)
+                  // this.$router.push({path: '/administrateur/demande-audience/autorite/faire-audience/', params: { id_autorite_enfant: this.audience.direction }});
+                }
+                else if(response.message == "time fin invalid"){
+                  swal("Entretien non enregistrée", "L'heure fin doit être supérieur à l'heure début", "warning");
+                }
+              }
+              else if(result.isDenied){
+                // console.log(audience.sender)
+                // const audience_event = {
+                //   date_debut: result.value[0],
+                //   date_fin: result.value[1], 
+                //   time_debut: result.value[2],
+                //   time_fin: result.value[3],
+                //   id_autorite_enfant_receiver: this.audience.direction ,
+                //   id: this.audience.id
+                // } 
+                Swal.fire({
+                  title: 'Reporter un entretien',
+                  text: "Cette entretien sera considérée comme stage en attente",
+                  icon: 'warning',
+                  showCancelButton: true,
+                  confirmButtonColor: '#3085d6',
+                  cancelButtonColor: '#d33',
+                  cancelButtonText: 'Annuler',
+                  confirmButtonText: 'Supprimer!'
+                }).then(async (result) => {
+                  if (result.isConfirmed) {
+                    const response = await EntretienDemandeStage.delete_entretien_stage(this.audience.id)
+                    Swal.fire(
+                      'Deleted!',
+                      'Your file has been deleted.',
+                      'success'
+                    )
+                    // setInterval( () => {
+                    //   window.location.reload()
+                    // }, 1000)
+                  }
+                })       
+              }
+            }).catch((err) => {
+              console.log(err)
+            })
+          }
           
         },
     
@@ -840,28 +1143,156 @@
               });           
             }
           }
+          else if(event.event.extendedProps.type_audience == 'Entretien'){
+            const data = await Swal.fire({
+              title: 'A reporter',
+              showDenyButton: true,
+              showCancelButton: true,
+              confirmButtonText: 'Maintenant',
+              denyButtonText:'Plus tard',
+              html:
+                `<p align="left" style="margin-left: 1rem;">De <input type=Date value="${this.audience.date_debut}" id="date1" class="swal2-input"> <input type=time value="${this.audience.time_debut}" id="duree1" class="swal2-input"> </p>` +
+                `<p align="left" style="margin-left: 1.8rem;">à <input type=Date value="${this.audience.date_fin}" id="date2" class="swal2-input"> <input type=time value="${this.audience.time_fin}" id="duree2" class="swal2-input"></p>` ,  
+              focusConfirm: false,
+              preConfirm: () => {
+                return [
+                  document.getElementById('date1').value,
+                  document.getElementById('date2').value,
+                  document.getElementById('duree1').value,
+                  document.getElementById('duree2').value
+                ]
+              }
+            }).then(async (result) => {
+              if(result.isConfirmed){
+                const audience_event = {
+                  date_debut: result.value[0],
+                  date_fin: result.value[1], 
+                  time_debut: result.value[2],
+                  time_fin: result.value[3],
+                  id_autorite_enfant_receiver: this.audience.direction ,
+                  id: this.audience.id
+                }                  
+                const response = await EntretienDemandeStage.update_entretien_stage(audience_event)
+                if(response.code == 'ER_BAD_FIELD_ERROR'){
+                  swal("Entretien non enregistrée", "Veuillez remplir le formulaire", "error");
+                }
+                else if(response.message == 'pas disponible'){
+                  swal("Entretien non enregistrée", "Cette place est occupé ou pas disponible.", "error");
+                }
+                else if(response.message == 'Jour férié et pas disponible'){
+                  swal("Entretien non enregistrée", "On est férié et le directeur n'est pas disponible", "error");
+                }
+                else if(response.message == 'Jour férié'){
+                  swal("Entretien non enregistrée", "On est férié", "error");
+                }
+                else if(response.message == "date fin invalid"){
+                  swal("Entretien non enregistrée", "La date de fin d'événement doit être égal à la date de début", "warning");
+                }
+                else if(response.message == "formulaire vide"){
+                  swal("Entretien non enregistrée", "Veuillez remplir le formulaire", "warning");
+                }
+                else if(response.affectedRows == 1){
+                  swal("Entretien enregistrée", "Votre audience a bien été enregistrée", "success");
+                  setInterval( () => {
+                    window.location.reload()
+                  }, 1000)
+                  // this.$router.push({path: '/administrateur/demande-audience/autorite/faire-audience/', params: { id_autorite_enfant: this.audience.direction }});
+                }
+                else if(response.message == "time fin invalid"){
+                  swal("Entretien non enregistrée", "L'heure fin doit être supérieur à l'heure début", "warning");
+                }
+              }
+              else if(result.isDenied){
+                Swal.fire({
+                  title: 'Reporter un entretien',
+                  text: "Cette entretien sera considérée comme stage en attente",
+                  icon: 'warning',
+                  showCancelButton: true,
+                  confirmButtonColor: '#3085d6',
+                  cancelButtonColor: '#d33',
+                  cancelButtonText: 'Annuler',
+                  confirmButtonText: 'Supprimer!'
+                }).then(async (result) => {
+                  if (result.isConfirmed) {
+                    const response = await EntretienDemandeStage.delete_entretien_stage(this.audience.id)
+                    Swal.fire(
+                      'Deleted!',
+                      'Your file has been deleted.',
+                      'success'
+                    )
+                    // setInterval( () => {
+                    //   window.location.reload()
+                    // }, 1000)
+                  }
+                })       
+              }
+            }).catch((err) => {
+              console.log(err)
+            })
+          }
                 
         },
     
         detailEvent(info) {
-          // console.log(info.event)
-          
-          if(info.event.extendedProps.sender != undefined){
-            tippy(info.el, {
-              theme:'light',
-              content: `<p><strong>${info.event.title}</strong></p>
-              <p> De ${Function.date_in_string(info.event.start)} à ${Function.date_in_string(info.event.end)}</p>
-              <p>Autorité: <strong>${info.event.extendedProps.sender.intitule}</strong></p>`,
-              allowHTML: true,
-            });
-          } else if(info.event.extendedProps.status_audience == 'Occupé') {
-            tippy(info.el, {
-              theme:'light',
-              content: `<p><strong>${info.event.title}</strong></p>
-              <p> De ${Function.date_in_string(info.event.start)} à ${Function.date_in_string(info.event.end)}</p>`,
-              // <p>${info.event.extendedProps.status_audience}</p>`,
-              allowHTML: true,
-            });
+          if(info.event.extendedProps.type_audience == 'Public'){
+            if(info.event.extendedProps.status_audience == 'Validé'){
+              tippy(info.el, {
+                theme:'light',
+                content: `
+                  <p><strong>${info.event.title}</strong></p>
+                  <p>De ${Function.date_in_string(info.event.start)} à ${Function.date_in_string(info.event.end)}</p>
+                  <p>Nom: ${info.event.extendedProps.sender.nom_complet}</p>
+                  <p>CIN: ${info.event.extendedProps.sender.cin}</p>  
+                  <p>Numéro téléphone: ${info.event.extendedProps.sender.numero_telephone}</p>  
+                  <p>mail: ${info.event.extendedProps.sender.email}</p>  
+                  <p><span style="background-color: #da2020;" class="dot"></span>  ${info.event.extendedProps.status_audience}</p>`,
+                allowHTML: true,
+                delay: [500,0]
+              });   
+            }
+            else if(info.event.extendedProps.status_audience == 'Non validé'){
+              tippy(info.el, {
+                theme:'light',
+                content: `
+                <p><strong>${info.event.title}</strong></p>
+                <p> De ${Function.date_in_string(info.event.start)} à ${Function.date_in_string(info.event.end)}</p>
+                <p>Nom: ${info.event.extendedProps.sender.nom_complet}</p>
+                <p>CIN: ${info.event.extendedProps.sender.cin}</p>  
+                <p>Numéro téléphone: ${info.event.extendedProps.sender.numero_telephone}</p>  
+                <p>mail: ${info.event.extendedProps.sender.email}</p>  
+                <p> <span style="background-color: #09a009;" class="dot"></span>  ${info.event.extendedProps.status_audience}</p>`,
+                allowHTML: true,
+                delay: [500,0]
+
+              });              
+            }
+         
+          }
+          else if(info.event.extendedProps.type_audience == 'Autorite'){
+            if(info.event.extendedProps.status_audience == 'Validé'){
+              tippy(info.el, {
+                theme:'light',
+                content: `<p><strong>${info.event.title}</strong></p>
+                <p> De ${Function.date_in_string(info.event.start)} à ${Function.date_in_string(info.event.end)}</p>
+                <p>Autorité: <strong>${info.event.extendedProps.sender.intitule}</strong></p>
+                <p> <span style="background-color: #da2020;" class="dot"></span>  ${info.event.extendedProps.status_audience}</p>`,
+                allowHTML: true,
+                delay: [500,0]
+
+              })
+            }
+            else if(info.event.extendedProps.status_audience == 'Non validé'){
+              tippy(info.el, {
+                theme:'light',
+                content: `<p><strong>${info.event.title}</strong></p>
+                <p> De ${Function.date_in_string(info.event.start)} à ${Function.date_in_string(info.event.end)}</p>
+                <p>Autorité: <strong>${info.event.extendedProps.sender.intitule}</strong></p>
+                <p> <span style="background-color: #09a009;" class="dot"></span>  ${info.event.extendedProps.status_audience}</p>`,
+                allowHTML: true,
+                delay: [500,0]
+
+              })              
+            }
           }
         },
     
@@ -922,131 +1353,7 @@
         </div>
     </main>
     </template>
-    <style lang='css'>
-    #main-audience{
-        margin-top: 20px;
-        margin-left: 300px;
-    }
-    h2 {
-      margin: 0;
-      font-size: 16px;
-    }
-    
-    ul {
-      margin: 0;
-      padding: 0 0 0 1.5em;
-    }
-    
-    li {
-      margin: 1.5em 0;
-      padding: 0;
-    }
-    
-    b { /* used for event dates/times */
-      margin-right: 3px;
-    }
-    
-    .demo-app {
-      display: flex;
-      min-height: 100%;
-      font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
-      font-size: 14px;
-    }
-    
-    .demo-app-sidebar {
-      width: 300px;
-      line-height: 1.5;
-      background: #eaf9ff;
-      border-right: 1px solid #d3e2e8;
-    }
-    
-    .demo-app-sidebar-section {
-      padding: 2em;
-    }
-    
-    .demo-app-main {
-      flex-grow: 1;
-      padding: 3em;
-      z-index: 1;
-    }
-    
-    .fc { /* the calendar root */
-      /* max-width: 1100px; */
-      margin: 0 auto;
-    }
-    footer{
-      background:#ccc;
-      position:fixed;
-      bottom:0;
-      width:100%;
-      padding-top:50px;
-      height:50px;
-      z-index: 2;
-    }
-    #button-add-event {
-      float: right;
-      margin-top: -3%;
-      margin-right: 10px;
-    }
-    
-    /* Popup */
-    .button {
-    border: none;
-    color: #FFF;
-    background: #42b983;
-    appearance: none;
-    font: inherit;
-    font-size: 1.8rem;
-    padding: .5em 1em;
-    border-radius: .3em;
-    cursor: pointer;
-    }
-    
-    .modal {
-    position: absolute;
-    position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    margin: auto;
-    text-align: center;
-    width: fit-content;
-    height: fit-content;
-    max-width: 22em;
-    padding: 2rem;
-    border-radius: 1rem;
-    box-shadow: 0 5px 5px rgba(0, 0, 0, 0.2);
-    background: #FFF;
-    z-index: 9999;
-    transform: none;
-    }
-    .modal h1 {
-    margin: 0 0 1rem;
-    }
-    
-    
-    /* ---------------------------------- */
-    .fade-enter-active,
-    .fade-leave-active {
-    transition: opacity .4s linear;
-    }
-    
-    .fade-enter,
-    .fade-leave-to {
-    opacity: 0;
-    }
-    
-    .pop-enter-active,
-    .pop-leave-active {
-    transition: transform 0.4s cubic-bezier(0.5, 0, 0.5, 1), opacity 0.4s linear;
-    }
-    
-    .pop-enter,
-    .pop-leave-to {
-    opacity: 0;
-    transform: scale(0.3) translateY(-50%);
-    }
-    
-    </style>
+<style lang='css'>
+    @import url('./css/style.css');
+</style>
     

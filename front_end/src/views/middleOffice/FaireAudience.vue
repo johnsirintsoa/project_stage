@@ -83,7 +83,7 @@
       },
     
       created(){
-        const ses = JSON.parse(sessionStorage.getItem('administrateur'))
+        const ses = JSON.parse(sessionStorage.getItem('autorite'))
         this.audience.sender = ses.autorite_enfant.id
         // this.audience.direction = ses.autorite_enfant.id
         this.audience.direction = window.location.pathname.split('/')[ window.location.pathname.split('/').length-1]
@@ -112,8 +112,9 @@
           // let title = prompt('Please enter a new title for your event')
           let calendarApi = selectInfo.view.calendar
           this.is_clicked = true
-          
+    
           calendarApi.unselect() // clear date selection
+          // console.log(selectInfo.startStr.split('T')[0])
           if(selectInfo.startStr.includes('T') || selectInfo.endStr.includes('T')){
             this.audience.date_debut = selectInfo.startStr.split('T')[0]
             this.audience.date_fin = selectInfo.endStr.split('T')[0]
@@ -125,8 +126,6 @@
             this.audience.time_debut = "10:00:00"
             this.audience.time_fin = "11:00:00"
           }
-
-          // console.log(selectInfo)
 
           const { value: formValues } = await Swal.fire({
               title: 'Audience autorité',
@@ -173,7 +172,7 @@
             const response = await DemandeAudienceAutorite.add_audience_autorite(audience)
             console.log(response)
             if(response.code == 'ER_BAD_FIELD_ERROR'){
-              swal("Audience non enregistrée", "Veuillez remplir le formulaire", "error");
+            swal("Audience non enregistrée", "Veuillez remplir le formulaire", "error");
             }
             else if(response.message == 'pas disponible'){
               swal("Audience non enregistrée", "Cette place est occupé ou pas disponible.", "error");

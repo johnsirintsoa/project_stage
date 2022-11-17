@@ -67,6 +67,19 @@
             </div>
 
             <div class="row mb-3">
+            <label for="validationCustom02" class="form-label">Direction:</label>
+            <div class="col-sm-10">
+                <select class="form-select" id="autorite" name="autorite" v-model="stage.id_autorite_enfant" aria-label="Default select example" required="">
+                    <option selected disabled value="">Direction</option>
+                    <option v-for="(autorite,index)  in autorites"  :value="index+1" > {{autorite.intitule}}</option>
+                </select>
+            </div>
+            <div class="invalid-feedback">
+                Choisissez une direction
+            </div>
+            </div>
+
+            <div class="row mb-3">
             <label for="validationDefault01" class="form-label">CV:</label>
             <div class="col-sm-10">
                 <input type="file" @change="selectCV($event)" ref="file_cv" id="curriculum_vitae" name="curriculum_vitae" class="form-control"  required="">
@@ -108,6 +121,7 @@
 import axios from 'axios';
 import DemandeStageAPI from '../../api/demande_stage';
 import DomaineAPI from '../../api/domaine';
+import AutoriteApi from '../../api/autorite';
 
 export default {
     data(){
@@ -123,14 +137,17 @@ export default {
                 lettre_motivation:'',
                 lettre_introduction:'',
                 message:'',
+                id_autorite_enfant:'',
                 id_domaine:''
             },
-            domaines:''
+            domaines:'',
+            autorites:'',
         }
     },
     async created() {
-        console.log(this.stage)
+        // console.log(this.stage)
         this.domaines = await DomaineAPI.allDomaine();
+        this.autorites = await AutoriteApi.autorite_enfant()
         // console.log(this.domaines.)
     },
     methods: {
@@ -162,6 +179,8 @@ export default {
             demande_stage.append('lettre_introduction', this.stage.lettre_introduction)
             demande_stage.append('message',this.stage.message)
             demande_stage.append('id_domaine',this.stage.id_domaine)
+            demande_stage.append('id_autorite_enfant',this.stage.id_autorite_enfant)
+
 
             // console.log('FORMULAIRE EXECUTE...')
             // console.log(demande_stage)
@@ -176,7 +195,6 @@ export default {
             // console.log(demande_stage.get('lettre_introduction'))
             
             const response =  await DemandeStageAPI.addDemandeStage(demande_stage)
-            // console.log(response)
         }
     },
 }

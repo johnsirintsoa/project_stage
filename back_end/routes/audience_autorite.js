@@ -3,8 +3,233 @@ const router = express.Router();
 const db = require('../database')
 
 
-router.post('/autorite/all/mois/', async(req,res) =>{
+router.post('/autorite/all/mois/', async(req,res) => {
     const sql = `CALL LISTE_AUTORITE_PAR_MOIS(${req.body.id_autorite},'${req.body.date_du_jour}')`
+    // console.log(sql)
+    db.query(sql,function(err, result) {
+        if(err){
+            return res.send({ err });
+        }
+        else{
+            // res.send(sql);
+            const array_result = []
+            result[0].forEach(element => {
+                if(element.type_audience == 'Autorite'){
+                    const date_time_start = element.dd_aud_autorite.concat('T',element.td_aud_autorite)
+                    const date_time_fin = element.df_aud_autorite.concat('T',element.tf_aud_autorite)
+                    if(element.action_autorite == 1){
+                        array_result.push({
+                            id: element.id_aud_autorite,
+                            sender:{
+                              id: element.id_autorite_sender,
+                              intitule: element.sender_intitule,
+                              intitule_code: element.sender_intitule_code
+                            },
+                            title: element.motif,
+                            start: date_time_start,
+                            end: date_time_fin,
+                            color:'#ff9f89',
+                            type_audience: element.type_audience,
+                            action: element.action_autorite,
+                            status_audience: element.status_audience,
+                            editable: true  
+                        })                       
+                    }
+                    else if(element.action_autorite == 0){
+                        array_result.push({
+                            id: element.id_aud_autorite,
+                            sender:{
+                              id: element.id_autorite_sender,
+                              intitule: element.sender_intitule,
+                              intitule_code: element.sender_intitule_code
+                            },
+                            title: element.motif,
+                            start: date_time_start,
+                            end: date_time_fin,
+                            color:'#25AF1A',
+                            type_audience: element.type_audience,
+                            action: element.action_autorite,
+                            status_audience: element.status_audience,
+                            editable: true
+                        })                        
+                    }
+                }
+                else if (element.type_audience == 'Public'){
+                    const date_time_start = element.dd_aud_public.concat('T',element.td_aud_public)
+                    const date_time_fin = element.df_aud_public.concat('T',element.tf_aud_public)
+                    if(element.action_public == 1){
+                        array_result.push({
+                            id: element.id_aud_public,
+                            title: element.motif,
+                            sender:{
+                                nom_complet: element.nom_complet,
+                                cin: element.cin,
+                                numero_telephone: element.numero_telephone,
+                                email: element.email
+                            },
+                            start: date_time_start,
+                            end: date_time_fin,
+                            color:'#ff9f89',
+                            type_audience: element.type_audience,
+                            action: element.action_public,
+                            status_audience: element.status_audience,
+                            editable: true  
+                        })
+                    }
+                    else if(element.action_public == 0){
+                        array_result.push({
+                            id: element.id_aud_public,
+                            title: element.motif,
+                            sender:{
+                                nom_complet: element.nom_complet,
+                                cin: element.cin,
+                                numero_telephone: element.numero_telephone,
+                                email: element.email
+                            },
+                            start: date_time_start,
+                            end: date_time_fin,
+                            color:'#25AF1A',
+                            type_audience: element.type_audience,
+                            action: element.action_public,
+                            status_audience: element.status_audience,
+                            editable: true
+                        })
+                    }
+                }
+                else if (element.type_audience == 'Entretien'){
+                    const date_time_start = element.date_debut_entretien.concat('T',element.time_debut_entretien)
+                    const date_time_fin = element.date_fin_entretien.concat('T',element.time_fin_entretien)
+                    array_result.push({
+                        id: element.id_demande_entretien,
+                        title: element.motif,
+                        start: date_time_start,
+                        end: date_time_fin,
+                        color:'#4B187E',
+                        type_audience: element.type_audience,
+                        editable: true  
+                    })
+                }
+                else if(element.type_audience == 'Pas disponible date'){
+                    const date_time_start = element.dd_non_dispo_date.concat('T',element.td_non_dispo_date)
+                    const date_time_fin = element.df_non_dispo_date.concat('T',element.tf_non_dispo_date)
+                    array_result.push({
+                        id: String(element.id),
+                        title: element.status_audience,
+                        start: date_time_start,
+                        end: date_time_fin,
+                        color:'#2B2B2B',
+                        type_audience: element.type_audience,
+                        editable: false
+                    })
+                }
+                else if(element.type_audience == 'Jour ferie'){
+                    const date_ferie_debut = String(element.date_ferie).concat('T',element.td_ferie)
+                    const date_ferie_fin = String(element.date_ferie).concat('T',element.tf_ferie)
+                    array_result.push({
+                      id: String(element.id),
+                      title: element.motif,
+                      start: date_ferie_debut,
+                      end: date_ferie_fin,
+                      color:'#EFEC27',
+                      type_audience: element.type_audience,
+                      editable: false
+                    
+                    })
+                }
+                else if(element.type_audience == 'Pas disponible jour'){
+                    if(element.jour_non_dispo_jour == 'Sunday'){
+                        array_result.push({
+                            title: element.status_audience,
+                            daysOfWeek: [ '0' ], // these recurrent events move separately
+                            startTime: element.td_non_dispo_jour,
+                            endTime: element.tf_non_dispo_jour,
+                            type_audience: element.type_audience,
+                            color: '#2B2B2B',
+                            editable: false
+                        })
+                      }
+                      else if(element.jour_non_dispo_jour == 'Monday'){
+                        array_result.push({
+                            title: element.status_audience,
+                            daysOfWeek: [ '1' ], // these recurrent events move separately
+                            startTime: element.td_non_dispo_jour,
+                            endTime: element.tf_non_dispo_jour,
+                            type_audience: element.type_audience,
+                            color: '#2B2B2B',
+                            editable: false
+                        
+                        })
+                      }
+                      else if(element.jour_non_dispo_jour == 'Tuesday'){
+                        array_result.push({
+                            title: element.status_audience,
+                            daysOfWeek: [ '2' ], // these recurrent events move separately
+                            startTime: element.td_non_dispo_jour,
+                            endTime: element.tf_non_dispo_jour,
+                            type_audience: element.type_audience,
+                            color: '#2B2B2B',
+                            editable: false
+                        
+                        })
+                      }
+                      else if(element.jour_non_dispo_jour == 'Wednesday'){
+                        array_result.push({
+                            title: element.status_audience,
+                            daysOfWeek: [ '3' ], // these recurrent events move separately
+                            startTime: element.td_non_dispo_jour,
+                            endTime: element.tf_non_dispo_jour,
+                            type_audience: element.type_audience,
+                            color: '#2B2B2B',
+                            editable: false
+                        
+                        })
+                      }
+                      else if(element.jour_non_dispo_jour == 'Thursday'){
+                        array_result.push({
+                            title: element.status_audience,
+                            daysOfWeek: [ '4' ], // these recurrent events move separately
+                            startTime: element.td_non_dispo_jour,
+                            endTime: element.tf_non_dispo_jour,
+                            type_audience: element.type_audience,
+                            color: '#2B2B2B',
+                            editable: false
+                        
+                        })
+                      }
+                      else if(element.jour_non_dispo_jour == 'Friday'){
+                        array_result.push({
+                            title: element.status_audience,
+                            daysOfWeek: [ '5' ], // these recurrent events move separately
+                            startTime: element.td_non_dispo_jour,
+                            endTime: element.tf_non_dispo_jour,
+                            type_audience: element.type_audience,
+                            color: '#2B2B2B',
+                            editable: false
+                        
+                        })
+                      }
+                      else if(element.jour_non_dispo_jour == 'Saturday'){
+                        array_result.push({
+                            title: element.status_audience,
+                            daysOfWeek: [ '6' ], // these recurrent events move separately
+                            startTime: element.td_non_dispo_jour,
+                            endTime: element.tf_non_dispo_jour,
+                            type_audience: element.type_audience,
+                            color: '#2B2B2B',
+                            editable: false
+                        
+                        })
+                      }                    
+                }
+                               
+            });            
+            return res.json(array_result);
+        }
+    })
+})
+
+router.post('/autorite/all/mois/v2', async(req,res) =>{
+    const sql = `CALL LISTE_AUTORITE_PAR_MOIS_v2(${req.body.id_autorite},'${req.body.date_du_jour}')`
     // console.log(sql)
     db.query(sql,function(err, result) {
         if(err){
@@ -79,6 +304,19 @@ router.post('/autorite/all/mois/', async(req,res) =>{
                             editable: true
                         })
                     }
+                }
+                else if (element.type_audience == 'Entretien'){
+                    const date_time_start = element.date_debut_entretien.concat('T',element.time_debut_entretien)
+                    const date_time_fin = element.date_fin_entretien.concat('T',element.time_fin_entretien)
+                    array_result.push({
+                        id: element.id_demande_entretien,
+                        title: element.motif,
+                        start: date_time_start,
+                        end: date_time_fin,
+                        color:'#ff9f89',
+                        type_audience: element.type_audience,
+                        editable: true  
+                    })
                 }
                 else if(element.type_audience == 'Pas disponible date'){
                     const date_time_start = element.dd_non_dispo_date.concat('T',element.td_non_dispo_date)

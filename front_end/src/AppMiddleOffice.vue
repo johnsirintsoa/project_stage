@@ -49,29 +49,33 @@ import { RouterLink, RouterView } from 'vue-router'
         </li><!-- End Register Page Nav -->
 
         <li class="nav-item">
-            <RouterLink to='/autorite/mes-demande-audience' :class="{ disabled: active }">
-            <a class="nav-link collapsed" href="">
-            <i class="bi bi-box-arrow-in-right"></i>
-            <span>Audience</span>
-            </a>
+            <RouterLink to='/autorite/demande-audience/autorite' :class="{ disabled: active }">
+              <a class="nav-link collapsed" href="">
+              <i class="bi bi-calendar-plus"></i><span>Faire une audience</span>
+              </a>
             </RouterLink>
-            <ul id="icons-nav" class="nav-content collapse show" data-bs-parent="#sidebar-nav" >
-                <li>
-                    <RouterLink to='/autorite/demande-audience/audience-valider' :class="{ disabled: active }">
-                    <a href="#">
-                    <i class="bi bi-circle"></i><span>Audience validées</span>
-                    </a>
-                    </RouterLink>
-                </li>
-                <li>
-                    <RouterLink to='/autorite/demande-audience/audience-reporter' :class="{ disabled: active }">
-                    <a href="#">
-                    <i class="bi bi-circle"></i><span>Audience reportées</span>
-                    </a>
-                    </RouterLink>
-                </li>
-            </ul>
-        </li>
+          </li>
+          <li class="nav-item">
+            <RouterLink to='/autorite/demande-audience/mes-demandes-audiences' :class="{ disabled: active }">
+              <a class="nav-link collapsed" href="">
+              <i class="bi bi-calendar3-range"></i><span>Mes Audiences</span>
+              </a>
+            </RouterLink>
+          </li>
+          <li class="nav-item">
+            <RouterLink to='/autorite/demande-audience/audience-valider' :class="{ disabled: active }">
+              <a class="nav-link collapsed" href="">
+              <i class="bi bi-calendar-check"></i><span>Audience validées</span>
+              </a>
+            </RouterLink>
+          </li>
+          <li class="nav-item">
+            <RouterLink to='/autorite/demande-audience/audience-reporter' :class="{ disabled: active }">
+              <a class="nav-link collapsed" href="">
+              <i class="bi bi-calendar-x"></i><span>Audience reportées</span>
+              </a>
+            </RouterLink>
+          </li>
         <!-- End Login Page Nav -->
 
 
@@ -100,7 +104,7 @@ export default {
         // this.id_autorite = autorite.autorite_enfant.id
         // console.log(this.id_autorite)
         if(autorite != null) {
-            this.$router.push({name:'middle-demande-audience', params:{id_autorite_enfant: autorite.autorite_enfant.id}});
+            this.$router.push('/autorite/demande-audience/mes-demandes-audiences');
         }else{
             this.$router.push('/autorite/');
             this.active = true

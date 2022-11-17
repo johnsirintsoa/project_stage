@@ -1,6 +1,49 @@
+<script setup>
+    import { RouterLink, RouterView } from 'vue-router'
+    // import HelloWorld from './components/HelloWorld.vue'
+</script>
+<template>
+    <main id="main-audience" class="main-audience">
+        <div class="autorite-enfant">
+            <ul>
+                <li v-for="autorite in autorites">
+                    <!-- <RouterLink to="/demande-audience/autorite">{{autorite.intitule}}</RouterLink> -->
+                    <RouterLink :to="{ name: 'middle-demande-audience-autorite-faire-audience', params: { id_autorite_enfant: autorite.id }}">{{autorite.intitule}}</RouterLink>
+                </li>
+            </ul>
+        </div>
+    </main>
+    <!-- < RouterView/> -->
+</template>
+<script>
+    import AutoriteAPI from '../../api/autorite';
+    export default {
+        data(){
+            return{
+                autorites: '',
+            }
+        },
+        async created() {
+          const profil = JSON.parse(sessionStorage.getItem('autorite'));
+          // console.log(profil)
+          this.autorites = await AutoriteAPI.autorite_enfant_autorite(profil.autorite_enfant.id)
+          // console.log(this.autorites)
+        },
+    }
+</script>
+<style lang='css'>
 #main-audience{
-    margin-top: 20px;
+  margin-top: 60px;
+  margin-left: 300px;
+  padding: 20px 30px;
+  transition: all 0.3s;
+}
+@media (min-width: 1200px) {
+
+  #main,
+  #footer {
     margin-left: 300px;
+  }
 }
 h2 {
   margin: 0;
@@ -123,33 +166,4 @@ opacity: 0;
 transform: scale(0.3) translateY(-50%);
 }
 
-
-/*
-  Sweet Alert 2 
-*/
-.swal2-input, .swal2-file, .swal2-textarea, .swal2-select, .swal2-radio, .swal2-checkbox {
-  margin: 1em 0em 0px 1rem;
-  /* padding: 0px 0px 0px 0px; */
-}
-
-.swal2-textarea{
-  padding-right: 8.5rem;
-  display: flex;
-  margin-left: 60px;
-  margin-top: -2.5rem;
-}
-
-/* .swal2-popup{
-  width: 50rem;
-} */
-
-.dot {
-  height: 10px;
-  width: 10px;
-  border-radius: 50%;
-  display: inline-block;
-}
-
-/*
-  Sweet Alert 2
-*/
+</style>

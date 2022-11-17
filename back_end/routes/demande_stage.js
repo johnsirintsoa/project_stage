@@ -44,7 +44,8 @@ router.post('/add',upload.fields([{name: 'curriculum_vitae'},{name: 'lettre_moti
         return res.status(400).send({ message: 'Please upload a data.' });
     }else{
         // return res.status(200).send({ message: 'Nice we got it...' });
-        let sql = "INSERT INTO demande_stage(nom,prenom,e_mail,cin,telephone,duree,curriculum_vitae,lettre_motivation,lettre_introduction,message,id_domaine) VALUES ('"+req.body.nom+"','"+req.body.prenom+"','"+req.body.e_mail+"','"+req.body.cin+"','"+req.body.telephone+"','"+req.body.duree+"','"+req.files['curriculum_vitae'][0].filename+"','"+req.files['lettre_motivation'][0].filename+"','"+req.files['lettre_introduction'][0].filename+"','"+req.body.message+"','"+req.body.id_domaine+"')"
+        // let sql = "INSERT INTO demande_stage(nom,prenom,e_mail,cin,telephone,duree,curriculum_vitae,lettre_motivation,lettre_introduction,message,id_domaine) VALUES ('"+req.body.nom+"','"+req.body.prenom+"','"+req.body.e_mail+"','"+req.body.cin+"','"+req.body.telephone+"','"+req.body.duree+"','"+req.files['curriculum_vitae'][0].filename+"','"+req.files['lettre_motivation'][0].filename+"','"+req.files['lettre_introduction'][0].filename+"','"+req.body.message+"','"+req.body.id_domaine+"')"
+        let sql = `INSERT INTO demande_stage(nom,prenom,e_mail,cin,telephone,duree,curriculum_vitae,lettre_motivation,lettre_introduction,message,id_domaine,id_autorite_enfant) VALUES ('${req.body.nom}','${req.body.prenom}','${req.body.e_mail}','${req.body.cin}','${req.body.telephone}','${req.body.duree}','${req.files['curriculum_vitae'][0].filename}','${req.files['lettre_motivation'][0].filename}','${req.files['lettre_introduction'][0].filename}','${req.body.message}',${req.body.id_domaine},${req.body.id_autorite_enfant})`
         var query = db.query(sql, function(err, result) {
             if(err){
                 return res.json(err);
@@ -56,26 +57,119 @@ router.post('/add',upload.fields([{name: 'curriculum_vitae'},{name: 'lettre_moti
 })
 
 // liste des demandes stages status
-router.get('/all_status',async(req,res)=>{
-    let sql = "SELECT demande_stage.id,CONCAT(demande_stage.nom,' ',demande_stage.prenom)as fullName,demande_stage.e_mail,domaine.nom_domaine,demande_stage.duree,demande_stage.curriculum_vitae,demande_stage.lettre_motivation,demande_stage.lettre_introduction,CASE WHEN rendez_vous_directeur.id_demande_stage IS NULL THEN 'en attente' ELSE 'valide' END as demande_status FROM demande_stage inner join domaine on demande_stage.id_domaine = domaine.id left join rendez_vous_directeur on demande_stage.id = rendez_vous_directeur.id_demande_stage";
+router.get('/all_status/:id_autorite_enfant',async(req,res)=>{
+    let sql = `
+    SELECT 
+        e.id as id_demande_stage,
+        e.nom, 
+        e.prenom,
+        e.telephone, 
+        e.e_mail,
+        e.cin,
+        e.duree, 
+        e.curriculum_vitae, 
+        e.lettre_motivation, 
+        e.lettre_introduction, 
+        e.message, 
+        d.id as id_domaine,
+        d.nom_domaine,
+        eds.id as id_entretien_demande_stage,
+        eds.date_debut,
+        eds.date_fin,
+        eds.time_debut,
+        eds.time_fin,
+        CASE 
+            WHEN eds.id IS NULL THEN 'en attente' 
+            ELSE 'validé' END as demande_status
+    FROM
+        stage.demande_stage e 
+        JOIN domaine d on e.id_domaine = d.id
+        LEFT JOIN entretien_demande_stage eds on e.id = eds.id_demande_stage where e.id_autorite_enfant = ${req.params.id_autorite_enfant}`
     var query = db.query(sql, function(err, result) {
         if(err){
             return res.json(err);
         }else{
-            return res.json(result);
+            const array_result = []
+            result.forEach(element => {
+                if(element.id_entretien_demande_stage != null){
+                    array_result.push({
+                        id_demande_stage: element.id_demande_stage,
+                        nom: element.nom,
+                        prenom: element.prenom,
+                        telephone: element.telephone,
+                        e_mail: element.e_mail,
+                        cin: element.cin,
+                        duree: element.duree,
+                        curriculum_vitae: element.curriculum_vitae,
+                        lettre_motivation: element.lettre_motivation,
+                        lettre_introduction: element.lettre_introduction,
+                        message: element.message,
+                        id_domaine: element.id_domaine,
+                        nom_domaine: element.nom_domaine,
+                        date_debut: element.date_debut,
+                        date_fin: element.date_fin,
+                        time_debut: element.time_debut,
+                        time_fin: element.time_fin,
+                        id_entretien_demande_stage: element.id_entretien_demande_stage,
+                        demande_status: element.demande_status
+                    })
+                }else if(element.id_entretien_demande_stage == null){
+                    array_result.push({
+                        id_demande_stage: element.id_demande_stage,
+                        nom: element.nom,
+                        prenom: element.prenom,
+                        telephone: element.telephone,
+                        e_mail: element.e_mail,
+                        cin: element.cin,
+                        duree: element.duree,
+                        curriculum_vitae: element.curriculum_vitae,
+                        lettre_motivation: element.lettre_motivation,
+                        lettre_introduction: element.lettre_introduction,
+                        message: element.message,
+                        id_domaine: element.id_domaine,
+                        nom_domaine: element.nom_domaine,
+                        demande_status: element.demande_status
+                    })                    
+                }
+            });
+            return res.json(array_result);
         }
     });
 })
 
 // detail demande de stages
-router.get('/detail/:id',async(req,res)=>{
-    let sql = "SELECT demande_stage.id,demande_stage.nom,demande_stage.prenom,demande_stage.telephone,demande_stage.e_mail,demande_stage.cin,demande_stage.duree,demande_stage.curriculum_vitae ,demande_stage.lettre_motivation ,demande_stage.lettre_introduction ,demande_stage.message,domaine.nom_domaine from demande_stage inner join domaine on demande_stage.id_domaine = domaine.id where demande_stage.id ='".concat(req.params.id,"'");
-    try {
-        const stage = await db.promise().query(sql)
-        res.json(stage[0])
-    } catch (err) {
-        res.json({message: err})
-    }
+router.post('/detail',async(req,res)=>{
+    let sql = `
+    SELECT 
+        e.id,
+        e.nom,
+        e.prenom, 
+        e.telephone, 
+        e.e_mail, 
+        e.cin, 
+        e.duree,
+        e.curriculum_vitae, 
+        e.lettre_motivation,
+        e.lettre_introduction,
+        e.message, 
+        d.id, 
+        d.nom_domaine,
+        e.id_autorite_enfant,
+        IFNULL(eds.id,'0') as id_entretien_stage
+    FROM
+        stage.demande_stage e 
+            JOIN domaine d on e.id_domaine = d.id	
+            LEFT JOIN entretien_demande_stage eds on  e.id = eds.id_demande_stage
+            where id_autorite_enfant = ${req.body.id_autorite_enfant} and e.id = ${req.body.id_demande_stage}
+    `
+    
+    var query = db.query(sql, function(err, result) {
+        if(err){
+            return res.json(err);
+        }else{
+            return res.json(result[0]);
+        }
+    })
 })
   
 // envoie mail
@@ -142,6 +236,22 @@ router.get('/file/:file_name',async(req,res)=>{
     } catch (error) {
         res.send(error)
     }
+})
+
+// Prolonger demande stage
+router.post('/prolonger',async(req,res)=>{
+    let sql = `call prolonger_duree_stage(${req.body.duree_en_plus},${req.body.id_entretien_stage})`
+    
+    var query = db.query(sql, function(err, result) {
+        if(err){
+            return res.json(err);
+        }
+        else if(result.length > 0 ){
+            res.json(result[0][0])
+        }else{
+            res.json(result)
+        }
+    })
 })
 
 module.exports = router
