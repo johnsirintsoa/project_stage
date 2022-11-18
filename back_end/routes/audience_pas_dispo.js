@@ -2,7 +2,11 @@ const express = require('express')
 const router = express.Router();
 const db = require('../database')
 
-
+/**
+    * Disponibilite date Add procedure
+    * Disponibilite date Add insert
+    * Disponibilite date Update
+ */
 // Add non disponible autorite date
 router.post('/non_disponible_autorite_date/add',async(req,res)=>{
     const sql = `CALL add_non_disponibilite_autorite_date('${req.body.date_debut}','${req.body.date_fin}','${req.body.time_debut}','${req.body.time_fin}',${req.body.id_autorite})`
@@ -265,6 +269,27 @@ router.post('/non_disponible_autorite_date/insert/add',async(req,res)=>{
     })
 })
 
+// update non_disponibilite_autorite_date
+router.post('/non_disponible_autorite_date/update',async(req,res)=>{
+    const audience = {
+        date_non_dispo_debut : req.body.date_debut,
+        date_non_dispo_fin : req.body.date_fin,
+        time_debut: req.body.time_debut,
+        time_fin: req.body.time_fin,
+        id_autorite_enfant: req.body.id_autorite
+    } 
+    const sql = `UPDATE stage.non_disponibilite_autorite_date SET ? where id = ${req.body.id}`
+    db.query(sql,audience, (error,result) => {
+        if(error) res.send(error)
+        res.json(result)
+    })
+})
+
+/**
+    * Disponibilite jour Add procedure
+    * Disponibilite jour Add insert
+    * Disponibilite jour Update
+ */
 // Add non disponible autorite jour
 router.post('/non_disponible_autorite_jour/add',async(req,res)=>{
     const sql = `CALL add_non_disponibilite_autorite_jour('${req.body.jour_date}','${req.body.time_non_dispo_jour_debut}','${req.body.time_non_dispo_jour_fin}',${req.body.id_autorite})`
@@ -525,6 +550,21 @@ router.post('/non_disponible_autorite_jour/insert/add',async(req,res)=>{
         else {
             res.json(result[0])
         }
+    })
+})
+
+// update non_disponibilite_autorite_date
+router.post('/non_disponible_autorite_jour/update',async(req,res)=>{
+    const audience = {
+        time_non_dispo_jour_debut: req.body.time_non_dispo_jour_debut,
+        time_non_dispo_jour_fin: req.body.time_non_dispo_jour_fin,
+        jour: req.body.jour_date,
+        id_autorite_enfant: req.body.id_autorite
+    }
+    const sql = `UPDATE stage.non_disponibilite_autorite_jour SET ? where id = ${req.body.id}`
+    db.query(sql,audience, (error,result) => {
+        if(error) res.send(error)
+        res.json(result)
     })
 })
 

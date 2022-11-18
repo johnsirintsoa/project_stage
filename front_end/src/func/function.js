@@ -89,7 +89,7 @@ export default class Function{
                 sessionStorage.removeItem(key)
             }
         }else{
-            let newValue = { value: "session".concat(Function.random_number(0,1000)),expirationDate: date_expiration.toISOString() }  
+            let newValue = { value: "session".concat(Function.random_number(0,1000)),expirationDate: date_expiration }  
             sessionStorage.setItem(key, JSON.stringify(newValue))
         }
     }

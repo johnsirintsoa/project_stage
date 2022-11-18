@@ -42,10 +42,13 @@ export const actual_events_public = async (id_autorite_enfant) => {
 }
 
 export const actual_events_public_MOIS = async (id_autorite_enfant) => {
-  const date_actu = new Date().getFullYear()+"-"+new Date().getMonth()+"-"+new Date().getDate()
+  const mois = parseInt(new Date().getMonth())+1
+  const date_actu = new Date().getFullYear()+"-"+mois+"-"+new Date().getDate()
   const audience_public_mois = {
     id_autorite: id_autorite_enfant,
-    date_du_jour: date_actu
+    date_du_jour: date_actu,
+    // session_navigateur: JSON.parse(sessionStorage.getItem('session_navigateur')).value
+    session_navigateur: 'TEST123456789'
   }
   const audience = DemandeAudiencePublic.audience_public_mois(audience_public_mois)
   try {

@@ -47,8 +47,10 @@ else{
     // start
     const duree_expiration = 2
     const date_expiration = new Date(new Date().getTime() + (60000 * duree_expiration))
-    // console.log("Date d'expiration "+date_expiration.toISOString())
+    // console.log("Date d'expiration "+date_expiration)
+
     FUNC.session_navigateur(date_expiration)
+    // sessionStorage.setItem('session_navigateur','TEST123456789')
     // end
     app = createApp(AppFront)
 }
