@@ -168,7 +168,7 @@
               }
             }
           })
-          if (type_de_disponibilite == 'today') {
+          if (type_de_disponibilite == 'today') { 
             // Swal.fire({ html: `You selected: ${type_de_disponibilite}`})
             const { value: formValues } = await Swal.fire({
                 title: 'Je suis pas disponible',
@@ -229,10 +229,21 @@
                       </table>
 
                     </div>
-                  </div>`
+                  </div>`,
+                  confirmButtonText:'Valider',
+                  showCancelButton:true,
+                  cancelButtonText:'Annuler'
+                }).then(async (result) => {
+                  if(result.isConfirmed){
+                    const response = await NonDispoAutoriteDate.insert(audience)
+                    swal("Evènement enregistré", "L'évènement a bien été enregistré", "success");
+                  }
+                }).catch((err) => {
+                  console.log(err)
                 })
-              }else {
-                swal("Evènement enregistré", "L'évènement a bien été enregistrée", "success");
+              }
+              else {
+                swal("Evènement enregistré", "L'évènement a bien été enregistré", "success");
               }
             } 
           }
@@ -320,12 +331,22 @@
                       </table>
 
                     </div>
-                  </div>`
+                  </div>`,
+                  confirmButtonText:'Valider',
+                  showCancelButton:true,
+                  cancelButtonText:'Annuler'
+                }).then(async (result) => {
+                  if(result.isConfirmed){
+                    const response = await NonDispoAutoriteJour.insert(audience)
+                    swal("Evènement enregistré", "L'évènement a bien été enregistré", "success");
+                  }
+                }).catch((err) => {
+                  console.log(err)
                 })
               }
-              // else {
-              //   swal("Evènement enregistré", "L'évènement a bien été enregistrée", "success");
-              // }        
+              else {
+                swal("Evènement enregistré", "L'évènement a bien été enregistré", "success");
+              }        
             }
           } 
         },

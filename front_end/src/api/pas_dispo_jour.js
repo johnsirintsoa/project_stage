@@ -7,4 +7,10 @@ export default class non_disponible_autorite_date {
         const res = await axios.post(url.concat('/add'),audience)
         return res.data
     }
+
+    static async insert(audience){
+        const res = await axios.post(url.concat('/insert/add'),audience)
+        return res.data
+    }
+    
 }

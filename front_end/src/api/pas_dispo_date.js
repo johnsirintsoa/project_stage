@@ -8,8 +8,8 @@ export default class non_disponible_autorite_date {
         return res.data
     }
 
-    static async add_non_disponible_jour(audience){
-        const res = await axios.post(url.concat('/add'),audience)
+    static async insert(audience){
+        const res = await axios.post(url.concat('/insert/add'),audience)
         return res.data
     }
 }

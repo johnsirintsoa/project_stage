@@ -251,6 +251,20 @@ router.post('/non_disponible_autorite_date/add',async(req,res)=>{
     })
 })
 
+// insert non_disponibilite_autorite_date
+router.post('/non_disponible_autorite_date/insert/add',async(req,res)=>{
+    const sql = 
+    `INSERT INTO stage.non_disponibilite_autorite_date( date_non_dispo_debut, date_non_dispo_fin, time_debut, time_fin, id_autorite_enfant) VALUES ('${req.body.date_debut}','${req.body.date_fin}','${req.body.time_debut}','${req.body.time_fin}',${req.body.id_autorite})`
+    db.query(sql, (error,result) => {
+        if(error){
+            res.send(error)
+        } 
+        else {
+            res.json(result[0])
+        }
+    })
+})
+
 // Add non disponible autorite jour
 router.post('/non_disponible_autorite_jour/add',async(req,res)=>{
     const sql = `CALL add_non_disponibilite_autorite_jour('${req.body.jour_date}','${req.body.time_non_dispo_jour_debut}','${req.body.time_non_dispo_jour_fin}',${req.body.id_autorite})`
@@ -495,6 +509,21 @@ router.post('/non_disponible_autorite_jour/add',async(req,res)=>{
                 }
             });
             res.json(array_result)
+        }
+    })
+})
+
+// insert non_disponibilite_autorite_date
+router.post('/non_disponible_autorite_jour/insert/add',async(req,res)=>{
+    const sql = 
+    `INSERT INTO stage.non_disponibilite_autorite_jour
+	( jour, time_non_dispo_jour_debut, time_non_dispo_jour_fin, id_autorite_enfant) VALUES('${req.body.jour_date}','${req.body.time_non_dispo_jour_debut}','${req.body.time_non_dispo_jour_fin}',${req.body.id_autorite})`
+    db.query(sql, (error,result) => {
+        if(error){
+            res.send(error)
+        } 
+        else {
+            res.json(result[0])
         }
     })
 })
