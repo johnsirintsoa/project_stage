@@ -23,7 +23,8 @@ CREATE TABLE stage.autorite_enfant (
 	id                   INT  NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
 	intitule             VARCHAR(200)  NOT NULL    ,
 	intitule_code        VARCHAR(10)  NOT NULL    ,
-	id_autorite_parent   INT  NOT NULL    
+	id_autorite_parent   INT  NOT NULL    ,
+	CONSTRAINT fk_autorite_enfant_autorite_parent FOREIGN KEY ( id_autorite_parent ) REFERENCES stage.autorite_parent( id ) ON DELETE NO ACTION ON UPDATE NO ACTION
  ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 
 CREATE TABLE stage.demande_audience_autorite ( 
@@ -35,7 +36,9 @@ CREATE TABLE stage.demande_audience_autorite (
 	id_autorite_enfant_sender INT  NOT NULL    ,
 	id_autorite_enfant_receiver INT  NOT NULL    ,
 	motif                VARCHAR(200)  NOT NULL    ,
-	action               INT  NOT NULL DEFAULT ('0')   
+	action               INT  NOT NULL DEFAULT ('0')   ,
+	CONSTRAINT fk_demande_audience_autorite_autorite_receiver FOREIGN KEY ( id_autorite_enfant_receiver ) REFERENCES stage.autorite_enfant( id ) ON DELETE NO ACTION ON UPDATE NO ACTION,
+	CONSTRAINT fk_demande_audience_autorite_autorite_sender FOREIGN KEY ( id_autorite_enfant_sender ) REFERENCES stage.autorite_enfant( id ) ON DELETE NO ACTION ON UPDATE NO ACTION
  ) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=latin1;
 
 CREATE TABLE stage.demande_audience_public ( 
@@ -51,7 +54,8 @@ CREATE TABLE stage.demande_audience_public (
 	numero_telephone     VARCHAR(10)  NOT NULL    ,
 	email                VARCHAR(200)  NOT NULL    ,
 	nom                  VARCHAR(30)  NOT NULL    ,
-	prenom               VARCHAR(30)  NOT NULL    
+	prenom               VARCHAR(30)  NOT NULL    ,
+	CONSTRAINT fk_demande_audience_public FOREIGN KEY ( id_autorite_enfant ) REFERENCES stage.autorite_enfant( id ) ON DELETE NO ACTION ON UPDATE NO ACTION
  ) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=latin1;
 
 CREATE TABLE stage.demande_stage ( 
@@ -67,7 +71,9 @@ CREATE TABLE stage.demande_stage (
 	lettre_introduction  MEDIUMTEXT  NOT NULL    ,
 	message              MEDIUMTEXT  NOT NULL    ,
 	id_domaine           INT  NOT NULL    ,
-	id_autorite_enfant   INT  NOT NULL    
+	id_autorite_enfant   INT  NOT NULL    ,
+	CONSTRAINT fk_demande_stage FOREIGN KEY ( id_autorite_enfant ) REFERENCES stage.autorite_enfant( id ) ON DELETE NO ACTION ON UPDATE NO ACTION,
+	CONSTRAINT fk_demande_stage_domaine FOREIGN KEY ( id_domaine ) REFERENCES stage.domaine( id ) ON DELETE NO ACTION ON UPDATE NO ACTION
  ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
 
 CREATE TABLE stage.entretien_demande_stage ( 
@@ -76,7 +82,8 @@ CREATE TABLE stage.entretien_demande_stage (
 	time_debut           TIME  NOT NULL    ,
 	time_fin             TIME  NOT NULL    ,
 	id                   INT  NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
-	id_demande_stage     INT  NOT NULL    
+	id_demande_stage     INT  NOT NULL    ,
+	CONSTRAINT fk_entretien_demande_stage FOREIGN KEY ( id_demande_stage ) REFERENCES stage.demande_stage( id ) ON DELETE NO ACTION ON UPDATE NO ACTION
  ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 
 CREATE TABLE stage.non_disponibilite_autorite_date ( 
@@ -85,15 +92,17 @@ CREATE TABLE stage.non_disponibilite_autorite_date (
 	id_autorite_enfant   INT  NOT NULL    ,
 	time_debut           TIME  NOT NULL    ,
 	time_fin             TIME  NOT NULL    ,
-	id                   INT  NOT NULL  AUTO_INCREMENT  PRIMARY KEY
- ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
+	id                   INT  NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
+	CONSTRAINT fk_non_disponibilite_autorite_date FOREIGN KEY ( id_autorite_enfant ) REFERENCES stage.autorite_enfant( id ) ON DELETE NO ACTION ON UPDATE NO ACTION
+ ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 
 CREATE TABLE stage.non_disponibilite_autorite_jour ( 
 	id                   INT  NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
 	jour                 VARCHAR(15)  NOT NULL    ,
 	time_non_dispo_jour_debut TIME  NOT NULL    ,
 	time_non_dispo_jour_fin TIME  NOT NULL    ,
-	id_autorite_enfant   INT  NOT NULL    
+	id_autorite_enfant   INT  NOT NULL    ,
+	CONSTRAINT fk_non_disponibilite_autorite_jour_autorite_enfant FOREIGN KEY ( id_autorite_enfant ) REFERENCES stage.autorite_enfant( id ) ON DELETE NO ACTION ON UPDATE NO ACTION
  ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 CREATE TABLE stage.profil ( 
@@ -101,7 +110,8 @@ CREATE TABLE stage.profil (
 	nom_utilisateur      VARCHAR(30)  NOT NULL    ,
 	id                   INT  NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
 	est_administrateur   SMALLINT  NOT NULL DEFAULT ('0')   ,
-	id_autorite_enfant   INT  NOT NULL    
+	id_autorite_enfant   INT  NOT NULL    ,
+	CONSTRAINT fk_profil_autorite_enfant FOREIGN KEY ( id_autorite_enfant ) REFERENCES stage.autorite_enfant( id ) ON DELETE NO ACTION ON UPDATE NO ACTION
  ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 
 CREATE INDEX fk_autorite_enfant_autorite_parent ON stage.autorite_enfant ( id_autorite_parent );
@@ -123,26 +133,6 @@ CREATE INDEX fk_non_disponibilite_autorite_date ON stage.non_disponibilite_autor
 CREATE INDEX fk_non_disponibilite_autorite_jour ON stage.non_disponibilite_autorite_jour ( id_autorite_enfant );
 
 CREATE INDEX fk_profil_autorite_enfant ON stage.profil ( id_autorite_enfant );
-
-ALTER TABLE stage.autorite_enfant ADD CONSTRAINT fk_autorite_enfant_autorite_parent FOREIGN KEY ( id_autorite_parent ) REFERENCES stage.autorite_parent( id ) ON DELETE NO ACTION ON UPDATE NO ACTION;
-
-ALTER TABLE stage.demande_audience_autorite ADD CONSTRAINT fk_demande_audience_autorite_autorite_receiver FOREIGN KEY ( id_autorite_enfant_receiver ) REFERENCES stage.autorite_enfant( id ) ON DELETE NO ACTION ON UPDATE NO ACTION;
-
-ALTER TABLE stage.demande_audience_autorite ADD CONSTRAINT fk_demande_audience_autorite_autorite_sender FOREIGN KEY ( id_autorite_enfant_sender ) REFERENCES stage.autorite_enfant( id ) ON DELETE NO ACTION ON UPDATE NO ACTION;
-
-ALTER TABLE stage.demande_audience_public ADD CONSTRAINT fk_demande_audience_public FOREIGN KEY ( id_autorite_enfant ) REFERENCES stage.autorite_enfant( id ) ON DELETE NO ACTION ON UPDATE NO ACTION;
-
-ALTER TABLE stage.demande_stage ADD CONSTRAINT fk_demande_stage FOREIGN KEY ( id_autorite_enfant ) REFERENCES stage.autorite_enfant( id ) ON DELETE NO ACTION ON UPDATE NO ACTION;
-
-ALTER TABLE stage.demande_stage ADD CONSTRAINT fk_demande_stage_domaine FOREIGN KEY ( id_domaine ) REFERENCES stage.domaine( id ) ON DELETE NO ACTION ON UPDATE NO ACTION;
-
-ALTER TABLE stage.entretien_demande_stage ADD CONSTRAINT fk_entretien_demande_stage FOREIGN KEY ( id_demande_stage ) REFERENCES stage.demande_stage( id ) ON DELETE NO ACTION ON UPDATE NO ACTION;
-
-ALTER TABLE stage.non_disponibilite_autorite_date ADD CONSTRAINT fk_non_disponibilite_autorite_date FOREIGN KEY ( id_autorite_enfant ) REFERENCES stage.autorite_enfant( id ) ON DELETE NO ACTION ON UPDATE NO ACTION;
-
-ALTER TABLE stage.non_disponibilite_autorite_jour ADD CONSTRAINT fk_non_disponibilite_autorite_jour_autorite_enfant FOREIGN KEY ( id_autorite_enfant ) REFERENCES stage.autorite_enfant( id ) ON DELETE NO ACTION ON UPDATE NO ACTION;
-
-ALTER TABLE stage.profil ADD CONSTRAINT fk_profil_autorite_enfant FOREIGN KEY ( id_autorite_enfant ) REFERENCES stage.autorite_enfant( id ) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 CREATE  FUNCTION `FIRST_DATE_OF_MONTH`(day DATE) RETURNS date
     DETERMINISTIC
@@ -3317,9 +3307,8 @@ INSERT INTO stage.demande_stage( id, nom, prenom, telephone, e_mail, cin, duree,
 INSERT INTO stage.demande_stage( id, nom, prenom, telephone, e_mail, cin, duree, curriculum_vitae, lettre_motivation, lettre_introduction, message, id_domaine, id_autorite_enfant ) VALUES ( 6, 'RANAIVOSOA', 'Tiana', '348899966', 'teo@gmail.com', '112112112', 5, 'curriculum_vitae_1668366340054_Les nombres rationnels.pdf', 'lettre_motivation_1668366340061_Les nombres rationnels.pdf', 'lettre_introduction_1668366340067_Les nombres rationnels.pdf', 'Je suis désolé', 3, 1);
 INSERT INTO stage.demande_stage( id, nom, prenom, telephone, e_mail, cin, duree, curriculum_vitae, lettre_motivation, lettre_introduction, message, id_domaine, id_autorite_enfant ) VALUES ( 7, 'NAIVOSOA', 'Nirina', '345677889', 'naivosoa@gmail.com', '112112112', 3, 'curriculum_vitae_1668400143631_Les nombres rationnels.pdf', 'lettre_motivation_1668400143714_Les nombres rationnels.pdf', 'lettre_introduction_1668400143721_Les nombres rationnels.pdf', 'Je suis la ', 1, 2);
 INSERT INTO stage.demande_stage( id, nom, prenom, telephone, e_mail, cin, duree, curriculum_vitae, lettre_motivation, lettre_introduction, message, id_domaine, id_autorite_enfant ) VALUES ( 8, 'FIFIDIA', 'Fy', '345677889', 'fifidia@gmail.com', '112112112', 4, 'curriculum_vitae_1668402706992_Les nombres rationnels.pdf', 'lettre_motivation_1668402707078_Les nombres rationnels.pdf', 'lettre_introduction_1668402707083_Les nombres rationnels.pdf', 'bring it on', 4, 1);
-INSERT INTO stage.entretien_demande_stage( date_debut, date_fin, time_debut, time_fin, id, id_demande_stage ) VALUES ( '2022-11-09', '2022-11-09', '09:00:00', '10:00:00', 3, 4);
+INSERT INTO stage.entretien_demande_stage( date_debut, date_fin, time_debut, time_fin, id, id_demande_stage ) VALUES ( '2022-11-10', '2022-11-10', '09:00:00', '10:00:00', 3, 4);
 INSERT INTO stage.non_disponibilite_autorite_date( date_non_dispo_debut, date_non_dispo_fin, id_autorite_enfant, time_debut, time_fin, id ) VALUES ( '2022-11-09', '2022-11-09', 1, '03:00:00', '03:30:00', 1);
-INSERT INTO stage.non_disponibilite_autorite_date( date_non_dispo_debut, date_non_dispo_fin, id_autorite_enfant, time_debut, time_fin, id ) VALUES ( '2022-11-09', '2022-11-09', 1, '12:00:00', '13:00:00', 4);
 INSERT INTO stage.non_disponibilite_autorite_jour( id, jour, time_non_dispo_jour_debut, time_non_dispo_jour_fin, id_autorite_enfant ) VALUES ( 1, 'Wednesday', '06:00:00', '07:00:00', 1);
 INSERT INTO stage.non_disponibilite_autorite_jour( id, jour, time_non_dispo_jour_debut, time_non_dispo_jour_fin, id_autorite_enfant ) VALUES ( 2, 'Monday', '08:00:00', '16:00:00', 1);
 INSERT INTO stage.profil( mot_de_passe, nom_utilisateur, id, est_administrateur, id_autorite_enfant ) VALUES ( 'porte356', 'porte356@gmail.com', 1, 1, 1);
