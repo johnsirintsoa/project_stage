@@ -39,7 +39,7 @@ CREATE TABLE stage.demande_audience_autorite (
 	action               INT  NOT NULL DEFAULT ('0')   ,
 	CONSTRAINT fk_demande_audience_autorite_autorite_receiver FOREIGN KEY ( id_autorite_enfant_receiver ) REFERENCES stage.autorite_enfant( id ) ON DELETE NO ACTION ON UPDATE NO ACTION,
 	CONSTRAINT fk_demande_audience_autorite_autorite_sender FOREIGN KEY ( id_autorite_enfant_sender ) REFERENCES stage.autorite_enfant( id ) ON DELETE NO ACTION ON UPDATE NO ACTION
- ) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=latin1;
+ ) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=latin1;
 
 CREATE TABLE stage.demande_audience_public ( 
 	date_event_debut     DATE  NOT NULL    ,
@@ -57,7 +57,7 @@ CREATE TABLE stage.demande_audience_public (
 	prenom               VARCHAR(30)  NOT NULL    ,
 	session_navigateur   VARCHAR(100)  NOT NULL    ,
 	CONSTRAINT fk_demande_audience_public FOREIGN KEY ( id_autorite_enfant ) REFERENCES stage.autorite_enfant( id ) ON DELETE NO ACTION ON UPDATE NO ACTION
- ) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=latin1;
+ ) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=latin1;
 
 CREATE TABLE stage.demande_stage ( 
 	id                   INT  NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
@@ -85,7 +85,7 @@ CREATE TABLE stage.entretien_demande_stage (
 	id                   INT  NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
 	id_demande_stage     INT  NOT NULL    ,
 	CONSTRAINT fk_entretien_demande_stage FOREIGN KEY ( id_demande_stage ) REFERENCES stage.demande_stage( id ) ON DELETE NO ACTION ON UPDATE NO ACTION
- ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+ ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE stage.non_disponibilite_autorite_date ( 
 	date_non_dispo_debut DATE  NOT NULL    ,
@@ -95,7 +95,7 @@ CREATE TABLE stage.non_disponibilite_autorite_date (
 	time_fin             TIME  NOT NULL    ,
 	id                   INT  NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
 	CONSTRAINT fk_non_disponibilite_autorite_date FOREIGN KEY ( id_autorite_enfant ) REFERENCES stage.autorite_enfant( id ) ON DELETE NO ACTION ON UPDATE NO ACTION
- ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+ ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 
 CREATE TABLE stage.non_disponibilite_autorite_jour ( 
 	id                   INT  NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
@@ -113,7 +113,7 @@ CREATE TABLE stage.profil (
 	est_administrateur   SMALLINT  NOT NULL DEFAULT ('0')   ,
 	id_autorite_enfant   INT  NOT NULL    ,
 	CONSTRAINT fk_profil_autorite_enfant FOREIGN KEY ( id_autorite_enfant ) REFERENCES stage.autorite_enfant( id ) ON DELETE NO ACTION ON UPDATE NO ACTION
- ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+ ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 
 CREATE INDEX fk_autorite_enfant_autorite_parent ON stage.autorite_enfant ( id_autorite_parent );
 
@@ -559,10 +559,12 @@ BEGIN
         '' td_aud_autorite,
         '' tf_aud_autorite,
         '' action_autorite,
+		'' id_non_dispo_date,
         '' dd_non_dispo_date,
         '' df_non_dispo_date,
         '' td_non_dispo_date,
         '' tf_non_dispo_date,
+		'' id_non_dispo_jour,
         '' jour_non_dispo_jour,
         '' td_non_dispo_jour,
         '' tf_non_dispo_jour,
@@ -609,10 +611,12 @@ BEGIN
         daa.time_debut as td_aud_autorite,
         daa.time_fin as tf_aud_autorite,
         daa.action as action_autorite,
+		'' id_non_dispo_date,
         '' dd_non_dispo_date,
         '' df_non_dispo_date,
         '' td_non_dispo_date,
         '' tf_non_dispo_date,
+		'' id_non_dispo_jour,
         '' jour_non_dispo_jour,
         '' td_non_dispo_jour,
         '' tf_non_dispo_jour,
@@ -660,10 +664,12 @@ BEGIN
         '' td_aud_autorite,
         '' tf_aud_autorite,
         '' action_autorite,
+		'' id_non_dispo_date,
         '' dd_non_dispo_date,
         '' df_non_dispo_date,
         '' td_non_dispo_date,
         '' tf_non_dispo_date,
+		'' id_non_dispo_jour,
         '' jour_non_dispo_jour,
         '' td_non_dispo_jour,
         '' tf_non_dispo_jour,
@@ -708,10 +714,12 @@ BEGIN
         '' td_aud_autorite,
         '' tf_aud_autorite,
         '' action_autorite,
+		ndad.id id_non_dispo_date,
         ndad.date_non_dispo_debut as dd_non_dispo_date,
         ndad.date_non_dispo_fin as df_non_dispo_date,
         ndad.time_debut as td_non_dispo_date,
         ndad.time_fin as tf_non_dispo_date,
+		'' id_non_dispo_jour,
         '' jour_non_dispo_jour,
         '' td_non_dispo_jour,
         '' tf_non_dispo_jour,
@@ -754,10 +762,12 @@ BEGIN
         '' td_aud_autorite,
         '' tf_aud_autorite,
         '' action_autorite,
+		'' id_non_dispo_date,
         '' dd_non_dispo_date,
         '' df_non_dispo_date,
         '' td_non_dispo_date,
         '' tf_non_dispo_date,
+		'' id_non_dispo_jour,
         '' jour_non_dispo_jour,
         '' td_non_dispo_jour,
         '' tf_non_dispo_jour,
@@ -798,10 +808,12 @@ BEGIN
         '' td_aud_autorite,
         '' tf_aud_autorite,
         '' action_autorite,
+		'' id_non_dispo_date,
         '' dd_non_dispo_date,
         '' df_non_dispo_date,
         '' td_non_dispo_date,
         '' tf_non_dispo_date,
+		ndaj.id as id_non_dispo_jour,
         ndaj.jour as jour_non_dispo_jour,
         ndaj.time_non_dispo_jour_debut as td_non_dispo_jour,
         ndaj.time_non_dispo_jour_fin as tf_non_dispo_jour,
@@ -931,7 +943,7 @@ BEGIN
 			'' time_non_dispo_jour_fin,
 			CONCAT(ndad.date_non_dispo_debut,'T',ndad.time_debut) as start,
 			CONCAT(ndad.date_non_dispo_fin,'T',ndad.time_fin) as end,	
-			id,
+			ndad.id,
 			'Pas disponible' as title,
 			'' cin,
 			'' numero_telephone,
@@ -1057,12 +1069,12 @@ BEGIN
 			and @time_fin  BETWEEN time_event_debut and time_event_fin
 		UNION
 		SELECT
-			jour,
-			time_non_dispo_jour_debut,
-			time_non_dispo_jour_fin,
+			daj.jour,
+			daj.time_non_dispo_jour_debut,
+			daj.time_non_dispo_jour_fin,
 			'' start,
 			'' end,	
-			id,
+			daj.id,
 			'' title,
 			'' cin,
 			'' numero_telephone,
@@ -1075,30 +1087,30 @@ BEGIN
 			'Pas disponible' status_evenement,
 			'Pas disponible jour' type_evenement
 		FROM
-			non_disponibilite_autorite_jour 
+			non_disponibilite_autorite_jour daj
 		WHERE 	
 			-- Si disponible sur disponible jour
-			non_disponibilite_autorite_jour.id_autorite_enfant = id_autorite 
-			and  non_disponibilite_autorite_jour.jour = dayname(dd) 
-			and non_disponibilite_autorite_jour.jour =  dayname(df) 
-			and non_disponibilite_autorite_jour.time_non_dispo_jour_debut BETWEEN @time_debut and @time_fin 
-			and non_disponibilite_autorite_jour.time_non_dispo_jour_fin BETWEEN @time_debut and @time_fin 
+			daj.id_autorite_enfant = id_autorite 
+			and  daj.jour = dayname(dd) 
+			and daj.jour =  dayname(df) 
+			and daj.time_non_dispo_jour_debut BETWEEN @time_debut and @time_fin 
+			and daj.time_non_dispo_jour_fin BETWEEN @time_debut and @time_fin 
 			OR
-			non_disponibilite_autorite_jour.id_autorite_enfant = id_autorite 
-			and non_disponibilite_autorite_jour.jour = dayname(dd) 
-			and non_disponibilite_autorite_jour.jour =  dayname(df) 
-			AND @time_debut BETWEEN non_disponibilite_autorite_jour.time_non_dispo_jour_debut AND non_disponibilite_autorite_jour.time_non_dispo_jour_fin 
-			and @time_fin between non_disponibilite_autorite_jour.time_non_dispo_jour_debut AND non_disponibilite_autorite_jour.time_non_dispo_jour_fin 
+			daj.id_autorite_enfant = id_autorite 
+			and daj.jour = dayname(dd) 
+			and daj.jour =  dayname(df) 
+			AND @time_debut BETWEEN daj.time_non_dispo_jour_debut AND daj.time_non_dispo_jour_fin 
+			and @time_fin between daj.time_non_dispo_jour_debut AND daj.time_non_dispo_jour_fin 
 			or
-			non_disponibilite_autorite_jour.id_autorite_enfant = id_autorite 
-			and non_disponibilite_autorite_jour.jour = dayname(dd) 
-			and non_disponibilite_autorite_jour.jour =  dayname(df) 
-			and @time_debut between non_disponibilite_autorite_jour.time_non_dispo_jour_debut and non_disponibilite_autorite_jour.time_non_dispo_jour_fin 
+			daj.id_autorite_enfant = id_autorite 
+			and daj.jour = dayname(dd) 
+			and daj.jour =  dayname(df) 
+			and @time_debut between daj.time_non_dispo_jour_debut and daj.time_non_dispo_jour_fin 
 			OR 
-			non_disponibilite_autorite_jour.id_autorite_enfant = id_autorite 
-			and non_disponibilite_autorite_jour.jour = dayname(dd) 
-			and non_disponibilite_autorite_jour.jour =  dayname(df) 
-			and @time_fin between non_disponibilite_autorite_jour.time_non_dispo_jour_debut and non_disponibilite_autorite_jour.time_non_dispo_jour_fin;	
+			daj.id_autorite_enfant = id_autorite 
+			and daj.jour = dayname(dd) 
+			and daj.jour =  dayname(df) 
+			and @time_fin between daj.time_non_dispo_jour_debut and daj.time_non_dispo_jour_fin;	
 END
 
 CREATE  PROCEDURE `LISTE_EVENEMENTS_BY_DAY`(IN jour_date VARCHAR(15),in td time,in tf time,in id_autorite int)
@@ -1216,7 +1228,7 @@ BEGIN
 			'' time_non_dispo_jour_fin,
 			CONCAT(ndad.date_non_dispo_debut,'T',ndad.time_debut) as start,
 			CONCAT(ndad.date_non_dispo_fin,'T',ndad.time_fin) as end,	
-			id,
+			ndad.id,
 			'Pas disponible' as title,
 			'' cin,
 			'' numero_telephone,
@@ -1338,12 +1350,12 @@ BEGIN
 			and @time_fin  BETWEEN time_event_debut and time_event_fin
 		UNION
 		SELECT
-			jour,
-			time_non_dispo_jour_debut,
-			time_non_dispo_jour_fin,
+			ndaj.jour,
+			ndaj.time_non_dispo_jour_debut,
+			ndaj.time_non_dispo_jour_fin,
 			'' start,
 			'' end,	
-			id,
+			ndaj.id,
 			'' title,
 			'' cin,
 			'' numero_telephone,
@@ -1356,26 +1368,26 @@ BEGIN
 			'Pas disponible' status_evenement,
 			'Pas disponible jour' type_evenement
 		FROM
-			non_disponibilite_autorite_jour 
+			non_disponibilite_autorite_jour ndaj
 		WHERE 	
 			-- Si disponible sur disponible jour
-			non_disponibilite_autorite_jour.id_autorite_enfant = id_autorite 
-			and  CONVERT( non_disponibilite_autorite_jour.jour USING utf8) = @jour_UTF8
-			and non_disponibilite_autorite_jour.time_non_dispo_jour_debut BETWEEN @time_debut and @time_fin 
-			and non_disponibilite_autorite_jour.time_non_dispo_jour_fin BETWEEN @time_debut and @time_fin 
+			ndaj.id_autorite_enfant = id_autorite 
+			and  CONVERT( ndaj.jour USING utf8) = @jour_UTF8
+			and ndaj.time_non_dispo_jour_debut BETWEEN @time_debut and @time_fin 
+			and ndaj.time_non_dispo_jour_fin BETWEEN @time_debut and @time_fin 
 			OR
-			non_disponibilite_autorite_jour.id_autorite_enfant = id_autorite 
-			and CONVERT( non_disponibilite_autorite_jour.jour USING utf8) = @jour_UTF8
-			AND @time_debut BETWEEN non_disponibilite_autorite_jour.time_non_dispo_jour_debut AND non_disponibilite_autorite_jour.time_non_dispo_jour_fin 
-			and @time_fin between non_disponibilite_autorite_jour.time_non_dispo_jour_debut AND non_disponibilite_autorite_jour.time_non_dispo_jour_fin 
+			ndaj.id_autorite_enfant = id_autorite 
+			and CONVERT( ndaj.jour USING utf8) = @jour_UTF8
+			AND @time_debut BETWEEN ndaj.time_non_dispo_jour_debut AND ndaj.time_non_dispo_jour_fin 
+			and @time_fin between ndaj.time_non_dispo_jour_debut AND ndaj.time_non_dispo_jour_fin 
 			or
-			non_disponibilite_autorite_jour.id_autorite_enfant = id_autorite 
-			and CONVERT( non_disponibilite_autorite_jour.jour USING utf8) = @jour_UTF8
-			and @time_debut between non_disponibilite_autorite_jour.time_non_dispo_jour_debut and non_disponibilite_autorite_jour.time_non_dispo_jour_fin 
+			ndaj.id_autorite_enfant = id_autorite 
+			and CONVERT( ndaj.jour USING utf8) = @jour_UTF8
+			and @time_debut between ndaj.time_non_dispo_jour_debut and ndaj.time_non_dispo_jour_fin 
 			OR 
-			non_disponibilite_autorite_jour.id_autorite_enfant = id_autorite 
-			and CONVERT( non_disponibilite_autorite_jour.jour USING utf8) = @jour_UTF8
-			and @time_fin between non_disponibilite_autorite_jour.time_non_dispo_jour_debut and non_disponibilite_autorite_jour.time_non_dispo_jour_fin;	
+			ndaj.id_autorite_enfant = id_autorite 
+			and CONVERT( ndaj.jour USING utf8) = @jour_UTF8
+			and @time_fin between ndaj.time_non_dispo_jour_debut and ndaj.time_non_dispo_jour_fin;	
 END
 
 CREATE  PROCEDURE `LISTE_FAIRE_AUDIENCE_AUTORITE`(id_autorite_sender int,id_autorite_receiver int,_date date)
@@ -2731,6 +2743,178 @@ BEGIN
 	END IF;	
 END
 
+CREATE  PROCEDURE `add_audience_public_V2`(session_navigateur VARCHAR(100),nom varchar(30),prenom varchar(30),cin varchar(15),numero_telephone varchar(10),email varchar(30),dd date,df date,td time,tf time,motif VARCHAR(200),id_autorite int)
+BEGIN    
+    DECLARE time_debut time;
+    DECLARE time_fin time;
+    DECLARE si_ferie INT;
+    set @si_ferie = si_jour_ferie(dd ,df ,td ,tf );
+    SET @time_debut = SUBTIME(td,"-00:01:00");
+    SET @time_fin = SUBTIME(tf,"00:01:00");
+    -- select @si_ferie;
+ 	SELECT SUM(nbr_rows) FROM (	   
+	SELECT 
+	    count(*) as nbr_rows
+    FROM 
+        stage.autorite_enfant 
+            LEFT JOIN stage.demande_audience_public on stage.autorite_enfant.id = stage.demande_audience_public.id_autorite_enfant
+    where 
+		-- Si disponible sur l'audience public
+		stage.autorite_enfant.id = id_autorite
+        and stage.demande_audience_public.date_event_debut between dd and df
+		and stage.demande_audience_public.date_event_fin between dd and df
+		and stage.demande_audience_public.time_event_debut between @time_debut and @time_fin
+		and stage.demande_audience_public.time_event_fin between @time_debut and @time_fin
+		or
+		stage.autorite_enfant.id = id_autorite
+        and stage.demande_audience_public.date_event_debut between dd and df
+		and stage.demande_audience_public.date_event_fin between dd and df
+		and @time_debut between stage.demande_audience_public.time_event_debut and stage.demande_audience_public.time_event_fin
+		and @time_fin between stage.demande_audience_public.time_event_debut and stage.demande_audience_public.time_event_fin
+		or
+		stage.autorite_enfant.id = id_autorite
+        and stage.demande_audience_public.date_event_debut between dd and df
+		and stage.demande_audience_public.date_event_fin between dd and df
+		and @time_debut between stage.demande_audience_public.time_event_debut and stage.demande_audience_public.time_event_fin
+		or
+		stage.autorite_enfant.id = id_autorite
+        and stage.demande_audience_public.date_event_debut between dd and df
+		and stage.demande_audience_public.date_event_fin between dd and df
+		and @time_fin between stage.demande_audience_public.time_event_debut and stage.demande_audience_public.time_event_fin
+	UNION
+	SELECT
+		count(*) as nbr_rows
+	FROM
+		stage.autorite_enfant
+			LEFT JOIN stage.demande_audience_autorite on stage.autorite_enfant.id = stage.demande_audience_autorite.id_autorite_enfant_receiver
+    where 
+		stage.autorite_enfant.id = id_autorite
+        and stage.demande_audience_autorite.date_debut between dd and df
+		and stage.demande_audience_autorite.date_fin between dd and df
+		and stage.demande_audience_autorite.time_debut between @time_debut and @time_fin
+		and stage.demande_audience_autorite.time_fin between @time_debut and @time_fin
+		or
+		stage.autorite_enfant.id = id_autorite
+        and stage.demande_audience_autorite.date_debut between dd and df
+		and stage.demande_audience_autorite.date_fin between dd and df
+		and @time_debut between stage.demande_audience_autorite.time_debut and stage.demande_audience_autorite.time_fin
+		and @time_fin between stage.demande_audience_autorite.time_debut and stage.demande_audience_autorite.time_fin
+		or
+		stage.autorite_enfant.id = id_autorite
+        and stage.demande_audience_autorite.date_debut between dd and df
+		and stage.demande_audience_autorite.date_fin between dd and df
+		and @time_debut between stage.demande_audience_autorite.time_debut and stage.demande_audience_autorite.time_fin
+		or
+		stage.autorite_enfant.id = id_autorite
+        and stage.demande_audience_autorite.date_debut between dd and df
+		and stage.demande_audience_autorite.date_fin between dd and df
+		and @time_fin between stage.demande_audience_autorite.time_debut and stage.demande_audience_autorite.time_fin
+	UNION
+	SELECT
+		count(*) as nbr_rows
+	FROM
+		stage.autorite_enfant
+			LEFT JOIN stage.non_disponibilite_autorite_date on stage.autorite_enfant.id = stage.non_disponibilite_autorite_date.id_autorite_enfant
+    where 
+		stage.autorite_enfant.id = id_autorite
+        and stage.non_disponibilite_autorite_date.date_non_dispo_debut between dd and df
+		and stage.non_disponibilite_autorite_date.date_non_dispo_fin between dd and df
+		and stage.non_disponibilite_autorite_date.time_debut between @time_debut and @time_fin
+		and stage.non_disponibilite_autorite_date.time_fin between @time_debut and @time_fin
+		or
+		stage.autorite_enfant.id = id_autorite
+        and stage.non_disponibilite_autorite_date.date_non_dispo_debut between dd and df
+		and stage.non_disponibilite_autorite_date.date_non_dispo_fin between dd and df
+		and @time_debut between stage.non_disponibilite_autorite_date.time_debut and stage.non_disponibilite_autorite_date.time_fin
+		and @time_fin between stage.non_disponibilite_autorite_date.time_debut and stage.non_disponibilite_autorite_date.time_fin
+		or
+		stage.autorite_enfant.id = id_autorite
+        and stage.non_disponibilite_autorite_date.date_non_dispo_debut between dd and df
+		and stage.non_disponibilite_autorite_date.date_non_dispo_fin between dd and df
+		and @time_debut between stage.non_disponibilite_autorite_date.time_debut and stage.non_disponibilite_autorite_date.time_fin
+		or
+		stage.autorite_enfant.id = id_autorite
+        and stage.non_disponibilite_autorite_date.date_non_dispo_debut between dd and df
+		and stage.non_disponibilite_autorite_date.date_non_dispo_fin between dd and df
+		and @time_fin between stage.non_disponibilite_autorite_date.time_debut and stage.non_disponibilite_autorite_date.time_fin
+	
+		UNION
+	
+    SELECT
+		count(*) as nbr_rows
+	FROM
+		stage.entretien_demande_stage eds
+	JOIN demande_stage ds on eds.id_demande_stage = ds.id
+    where 
+		ds.id_autorite_enfant = id_autorite_enfant
+        and eds.date_debut between dd and df
+		and eds.date_fin between dd and df
+		and eds.time_debut between @time_debut and @time_fin
+		and eds.time_fin between @time_debut and @time_fin
+		or
+		ds.id_autorite_enfant = id_autorite_enfant
+        and eds.date_debut between dd and df
+		and eds.date_fin between dd and df
+		and @time_debut between eds.time_debut and eds.time_fin
+		and @time_fin between eds.time_debut and eds.time_fin
+		or
+		ds.id_autorite_enfant = id_autorite_enfant
+        and eds.date_debut between dd and df
+		and eds.date_fin between dd and df
+		and @time_debut between eds.time_debut and eds.time_fin
+		or
+		ds.id_autorite_enfant = id_autorite_enfant
+        and eds.date_debut between dd and df
+		and eds.date_fin between dd and df
+		and @time_fin between eds.time_debut and eds.time_fin
+	
+	UNION
+	SELECT
+		count(*) as nbr_rows 
+	FROM
+		stage.autorite_enfant
+			LEFT JOIN stage.non_disponibilite_autorite_jour on stage.autorite_enfant.id = stage.non_disponibilite_autorite_jour.id_autorite_enfant
+				WHERE 	
+				stage.autorite_enfant.id = id_autorite 
+				and  non_disponibilite_autorite_jour.jour = dayname(dd) 
+				and non_disponibilite_autorite_jour.jour =  dayname(df) 
+				and non_disponibilite_autorite_jour.time_non_dispo_jour_debut BETWEEN @time_debut and @time_fin 
+				and non_disponibilite_autorite_jour.time_non_dispo_jour_fin BETWEEN @time_debut and @time_fin 
+				OR
+				stage.autorite_enfant.id = id_autorite 
+				and non_disponibilite_autorite_jour.jour = dayname(dd) 
+				and non_disponibilite_autorite_jour.jour =  dayname(df) 
+				AND @time_debut BETWEEN non_disponibilite_autorite_jour.time_non_dispo_jour_debut AND non_disponibilite_autorite_jour.time_non_dispo_jour_fin 
+				and @time_fin between non_disponibilite_autorite_jour.time_non_dispo_jour_debut AND non_disponibilite_autorite_jour.time_non_dispo_jour_fin 
+				or
+				stage.autorite_enfant.id = id_autorite 
+				and non_disponibilite_autorite_jour.jour = dayname(dd) 
+				and non_disponibilite_autorite_jour.jour =  dayname(df) 
+				and @time_debut between non_disponibilite_autorite_jour.time_non_dispo_jour_debut and non_disponibilite_autorite_jour.time_non_dispo_jour_fin 
+				OR 
+				stage.autorite_enfant.id = id_autorite 
+				and non_disponibilite_autorite_jour.jour = dayname(dd) 
+				and non_disponibilite_autorite_jour.jour =  dayname(df) 
+				and @time_fin between non_disponibilite_autorite_jour.time_non_dispo_jour_debut and non_disponibilite_autorite_jour.time_non_dispo_jour_fin)`x` into @nbr_rows;
+	
+	IF  nom != '' and prenom != '' and cin != '' and numero_telephone != '' and email !='' AND motif!='' AND @si_ferie = 0 AND @nbr_rows = 0 and df = dd and td < tf  THEN   
+		INSERT INTO stage.demande_audience_public( date_event_debut,  date_event_fin, time_event_debut, time_event_fin, id_autorite_enfant,motif, cin, numero_telephone, email, nom, prenom, session_navigateur) 
+		VALUES (dd,df,td,tf,id_autorite,motif,cin, numero_telephone, email, nom, prenom, session_navigateur);
+	ELSEIF nom = '' or prenom = '' or cin = '' OR numero_telephone = '' OR email='' OR motif='' THEN 
+		SELECT 'Veuillez remplir le formulaire' as message;
+	ELSEIF @nbr_rows > 0 and @si_ferie = 0 THEN  
+		SELECT 'Cette place n''est pas disponible, veuillez choisir un autre' as message;
+	ELSEIF dd != df then 
+		SELECT 'La date fin de votre audience doit être égale à la date début' as message;
+	ELSEIF tf <= td  then 
+		SELECT 'L''heure fin de votre audience doite être supérieure à la date début' as message;
+	ELSEIF @si_ferie > 0 and @nbr_rows = 0 THEN  
+		SELECT 'On est férié au sein de notre organisation' as message;
+	ELSE 
+		SELECT 'La direction n''est pas disponible, veuillez choisir un autre' as message;
+	END IF;	
+END
+
 CREATE  PROCEDURE `add_entretien_stage`(dd date,df date,td time,tf time,id_autorite_enfant int,id_demande_stage int)
 BEGIN    
     DECLARE time_debut time;
@@ -2940,6 +3124,45 @@ BEGIN
 			INSERT INTO stage.non_disponibilite_autorite_jour (jour, id_autorite_enfant, time_debut, time_fin) VALUES (jour_date,id_autorite,td,tf);			
 		END IF;
 	END IF;
+END
+
+CREATE  PROCEDURE `notifications_audience`(id_autorite int)
+BEGIN
+    SELECT
+    dap.id as id,
+	dap.motif as title,
+    CONCAT(dap.date_event_debut,'T',dap.time_event_debut) as start,
+    CONCAT(dap.date_event_fin,'T',dap.time_event_fin) as end,
+	"#331999" as color,	
+	'Public' type_audience
+    FROM 
+	stage.demande_audience_public dap
+    WHERE 
+	dap.id_autorite_enfant = id_autorite 
+	and dap.action = 0
+	and dap.date_event_debut = CURDATE()
+	AND dap.date_event_fin  = CURDATE()
+	and dap.time_event_debut BETWEEN '00:01:00' and '23:59:00'
+	and dap.time_event_fin BETWEEN '00:01:00' and '23:59:00'
+
+    UNION 
+
+    SELECT 
+	daa.id as id,
+    daa.motif as title,
+	CONCAT(daa.date_debut,'T',daa.time_debut) as start,
+	CONCAT(daa.date_fin,'T',daa.time_fin) as end,
+	'#f10586' color,
+    'Autorité' type_audience
+    FROM 
+    stage.demande_audience_autorite daa
+    where 
+	daa.id_autorite_enfant_receiver = id_autorite 
+	and daa.action = 0
+	and daa.date_debut = CURDATE()
+	and daa.date_fin  = CURDATE()
+	and daa.time_debut BETWEEN '00:01:00' and '23:59:00'
+	and daa.time_fin BETWEEN '00:01:00' and '23:59:00';
 END
 
 CREATE  PROCEDURE `prolonger_duree_stage`(duree_de_stage int,id_entretien_stage int)
@@ -3405,17 +3628,20 @@ BEGIN
 		and stage.demande_audience_public.time_event_fin between @time_debut and @time_fin
 		or
 		stage.autorite_enfant.id = id_autorite
+		and stage.demande_audience_public.session_navigateur != session_navigateur
         and stage.demande_audience_public.date_event_debut between dd and df
 		and stage.demande_audience_public.date_event_fin between dd and df
 		and @time_debut between stage.demande_audience_public.time_event_debut and stage.demande_audience_public.time_event_fin
 		and @time_fin between stage.demande_audience_public.time_event_debut and stage.demande_audience_public.time_event_fin
 		or
 		stage.autorite_enfant.id = id_autorite
+		and stage.demande_audience_public.session_navigateur != session_navigateur
         and stage.demande_audience_public.date_event_debut between dd and df
 		and stage.demande_audience_public.date_event_fin between dd and df
 		and @time_debut between stage.demande_audience_public.time_event_debut and stage.demande_audience_public.time_event_fin
 		or
 		stage.autorite_enfant.id = id_autorite
+		and stage.demande_audience_public.session_navigateur != session_navigateur
         and stage.demande_audience_public.date_event_debut between dd and df
 		and stage.demande_audience_public.date_event_fin between dd and df
 		and @time_fin between stage.demande_audience_public.time_event_debut and stage.demande_audience_public.time_event_fin
@@ -3546,17 +3772,17 @@ BEGIN
 	ELSEIF @nbr_sn_existed = 0 THEN
 		select 'Session expirée';
 	ELSEIF nom = '' or prenom = '' or cin = '' OR numero_telephone = '' OR email='' OR motif='' THEN 
-		SELECT 'formulaire vide' as message;
+		SELECT 'Veuillez remplir le formulaire' as message;
 	ELSEIF @nbr_rows > 0 and @si_ferie = 0 THEN  
-		SELECT 'pas disponible' as message;
+		SELECT 'Cette place n''est pas disponible, veuillez choisir un autre' as message;
 	ELSEIF dd != df then 
-		SELECT 'date fin invalid' as message;
+		SELECT 'La date fin de votre audience doit être égale à la date début' as message;
 	ELSEIF tf <= td  then 
-		SELECT 'time fin invalid' as message;
+		SELECT 'L''heure fin de votre audience doite être supérieure à la date début' as message;
 	ELSEIF @si_ferie > 0 and @nbr_rows = 0 THEN  
-		SELECT 'Jour férié' as message;
+		SELECT 'On est férié au sein de notre organisation' as message;
 	ELSE 
-		SELECT 'Jour férié et pas disponible' as message;
+		SELECT 'La direction n''est pas disponible, veuillez choisir un autre' as message;
 	END IF;	
 END
 
@@ -3756,19 +3982,23 @@ INSERT INTO stage.demande_audience_autorite( id, date_debut, date_fin, time_debu
 INSERT INTO stage.demande_audience_autorite( id, date_debut, date_fin, time_debut, time_fin, id_autorite_enfant_sender, id_autorite_enfant_receiver, motif, action ) VALUES ( 21, '2022-11-09', '2022-11-09', '10:30:00', '11:30:00', 2, 1, 'TEST', 1);
 INSERT INTO stage.demande_audience_autorite( id, date_debut, date_fin, time_debut, time_fin, id_autorite_enfant_sender, id_autorite_enfant_receiver, motif, action ) VALUES ( 26, '2022-11-09', '2022-11-09', '12:30:00', '13:30:00', 3, 2, 'TAEST', 1);
 INSERT INTO stage.demande_audience_autorite( id, date_debut, date_fin, time_debut, time_fin, id_autorite_enfant_sender, id_autorite_enfant_receiver, motif, action ) VALUES ( 27, '2022-11-09', '2022-11-09', '07:30:00', '08:30:00', 3, 1, 'TEAWST', 0);
-INSERT INTO stage.demande_audience_public( date_event_debut, motif, id, date_event_fin, time_event_debut, time_event_fin, action, id_autorite_enfant, cin, numero_telephone, email, nom, prenom, session_navigateur ) VALUES ( '2022-10-21', 'TEST 2510', 4, '2022-10-21', '08:30:00', '10:00:00', 1, 1, '112112112', '0341752875', 'johnsirintsoa18@gmail.com', 'RANDRIANARISON', 'johns', '');
+INSERT INTO stage.demande_audience_autorite( id, date_debut, date_fin, time_debut, time_fin, id_autorite_enfant_sender, id_autorite_enfant_receiver, motif, action ) VALUES ( 29, '2022-11-21', '2022-11-21', '01:30:00', '03:00:00', 2, 1, 'Dossier maika', 0);
+INSERT INTO stage.demande_audience_public( date_event_debut, motif, id, date_event_fin, time_event_debut, time_event_fin, action, id_autorite_enfant, cin, numero_telephone, email, nom, prenom, session_navigateur ) VALUES ( '2022-11-21', 'TEST 2510', 4, '2022-11-21', '03:00:00', '04:30:00', 1, 1, '112112112', '0341752875', 'johnsirintsoa18@gmail.com', 'RANDRIANARISON', 'johns', '');
 INSERT INTO stage.demande_audience_public( date_event_debut, motif, id, date_event_fin, time_event_debut, time_event_fin, action, id_autorite_enfant, cin, numero_telephone, email, nom, prenom, session_navigateur ) VALUES ( '2022-10-21', 'Test 21', 5, '2022-10-21', '00:00:00', '09:00:00', 1, 1, '112112112', '0341752875', 'johnsirintsoa18@gmail.com', 'RANDRIANARISON', 'johns', '');
 INSERT INTO stage.demande_audience_public( date_event_debut, motif, id, date_event_fin, time_event_debut, time_event_fin, action, id_autorite_enfant, cin, numero_telephone, email, nom, prenom, session_navigateur ) VALUES ( '2022-11-09', 'TEST 9 Novembre', 7, '2022-11-09', '03:30:00', '05:00:00', 1, 1, '112112112', '0341752875', 'johnsirintsoa18@gmail.com', 'RANDRIANARISON', 'johns', '');
-INSERT INTO stage.demande_audience_public( date_event_debut, motif, id, date_event_fin, time_event_debut, time_event_fin, action, id_autorite_enfant, cin, numero_telephone, email, nom, prenom, session_navigateur ) VALUES ( '2022-11-15', 'TEST 15 Novembre', 8, '2022-11-15', '05:00:00', '06:00:00', 0, 1, '112112112', '0341752875', 'johnsirintsoa18@gmail.com', 'RANDRIANARISON', 'johns', 'session615.4606553657551session615.4606553657551');
-INSERT INTO stage.demande_audience_public( date_event_debut, motif, id, date_event_fin, time_event_debut, time_event_fin, action, id_autorite_enfant, cin, numero_telephone, email, nom, prenom, session_navigateur ) VALUES ( '2022-11-09', 'TEST HELLO WORLD', 16, '2022-11-09', '04:30:00', '05:00:00', 0, 1, '112112112', '0341752875', 'johnsirintsoa18@gmail.com', 'RANDRIANARISON', 'johns', '');
-INSERT INTO stage.demande_audience_public( date_event_debut, motif, id, date_event_fin, time_event_debut, time_event_fin, action, id_autorite_enfant, cin, numero_telephone, email, nom, prenom, session_navigateur ) VALUES ( '2022-11-08', 'rwr', 17, '2022-11-08', '05:00:00', '06:00:00', 0, 1, '112121211', '0341752875', 'teo@gmail.com', 'RAKOTONIRINA', 'Fy', 'session615.4606553657551');
+INSERT INTO stage.demande_audience_public( date_event_debut, motif, id, date_event_fin, time_event_debut, time_event_fin, action, id_autorite_enfant, cin, numero_telephone, email, nom, prenom, session_navigateur ) VALUES ( '2022-11-15', 'TEST 15 Novembre', 8, '2022-11-15', '05:00:00', '06:00:00', 0, 1, '112112112', '0341752875', 'johnsirintsoa18@gmail.com', 'RANDRIANARISON', 'johns', 'session898.2515433898981session898.2515433898981');
+INSERT INTO stage.demande_audience_public( date_event_debut, motif, id, date_event_fin, time_event_debut, time_event_fin, action, id_autorite_enfant, cin, numero_telephone, email, nom, prenom, session_navigateur ) VALUES ( '2022-11-08', 'TEST HELLO WORLD', 16, '2022-11-08', '06:00:00', '06:30:00', 1, 1, '112112112', '0341752875', 'johnsirintsoa18@gmail.com', 'RANDRIANARISON', 'johns', '');
+INSERT INTO stage.demande_audience_public( date_event_debut, motif, id, date_event_fin, time_event_debut, time_event_fin, action, id_autorite_enfant, cin, numero_telephone, email, nom, prenom, session_navigateur ) VALUES ( '2022-11-21', 'TEST', 17, '2022-11-21', '05:30:00', '07:30:00', 0, 1, '112112112', '0341752875', 'johnsirintsoa18@gmail.com', 'RANDRIANARISON', 'Fy', 'session669.8439904355946');
+INSERT INTO stage.demande_audience_public( date_event_debut, motif, id, date_event_fin, time_event_debut, time_event_fin, action, id_autorite_enfant, cin, numero_telephone, email, nom, prenom, session_navigateur ) VALUES ( '2022-11-22', 'Resaka matotra', 19, '2022-11-22', '03:00:00', '04:00:00', 0, 1, '112112112', '0385699878', 'fifidia@gmail.com', 'RAKOTONIRINA', 'Teo', 'session36.35297770114687');
 INSERT INTO stage.demande_stage( id, nom, prenom, telephone, e_mail, cin, duree, curriculum_vitae, lettre_motivation, lettre_introduction, message, id_domaine, id_autorite_enfant ) VALUES ( 4, 'RANDRIANARISON', 'Johns', '341777887', 'johnsirintsoa18@gmail.com', '112112112', 4, 'curriculum_vitae_1668365659799_decret_782_96.pdf', 'lettre_motivation_1668365659804_decret_782_96.pdf', 'lettre_introduction_1668365659808_decret_782_96.pdf', 'Je suis un étudiant en première année', 2, 1);
 INSERT INTO stage.demande_stage( id, nom, prenom, telephone, e_mail, cin, duree, curriculum_vitae, lettre_motivation, lettre_introduction, message, id_domaine, id_autorite_enfant ) VALUES ( 5, 'RAKOTONIRINA', 'Teo', '348899966', 'teo@gmail.com', '112112112', 5, 'curriculum_vitae_1668366150840_Les nombres rationnels.pdf', 'lettre_motivation_1668366150968_Les nombres rationnels.pdf', 'lettre_introduction_1668366150973_Les nombres rationnels.pdf', 'Je suis désolé', 3, 3);
 INSERT INTO stage.demande_stage( id, nom, prenom, telephone, e_mail, cin, duree, curriculum_vitae, lettre_motivation, lettre_introduction, message, id_domaine, id_autorite_enfant ) VALUES ( 6, 'RANAIVOSOA', 'Tiana', '348899966', 'teo@gmail.com', '112112112', 5, 'curriculum_vitae_1668366340054_Les nombres rationnels.pdf', 'lettre_motivation_1668366340061_Les nombres rationnels.pdf', 'lettre_introduction_1668366340067_Les nombres rationnels.pdf', 'Je suis désolé', 3, 1);
 INSERT INTO stage.demande_stage( id, nom, prenom, telephone, e_mail, cin, duree, curriculum_vitae, lettre_motivation, lettre_introduction, message, id_domaine, id_autorite_enfant ) VALUES ( 7, 'NAIVOSOA', 'Nirina', '345677889', 'naivosoa@gmail.com', '112112112', 3, 'curriculum_vitae_1668400143631_Les nombres rationnels.pdf', 'lettre_motivation_1668400143714_Les nombres rationnels.pdf', 'lettre_introduction_1668400143721_Les nombres rationnels.pdf', 'Je suis la ', 1, 2);
 INSERT INTO stage.demande_stage( id, nom, prenom, telephone, e_mail, cin, duree, curriculum_vitae, lettre_motivation, lettre_introduction, message, id_domaine, id_autorite_enfant ) VALUES ( 8, 'FIFIDIA', 'Fy', '345677889', 'fifidia@gmail.com', '112112112', 4, 'curriculum_vitae_1668402706992_Les nombres rationnels.pdf', 'lettre_motivation_1668402707078_Les nombres rationnels.pdf', 'lettre_introduction_1668402707083_Les nombres rationnels.pdf', 'bring it on', 4, 1);
 INSERT INTO stage.non_disponibilite_autorite_date( date_non_dispo_debut, date_non_dispo_fin, id_autorite_enfant, time_debut, time_fin, id ) VALUES ( '2022-11-09', '2022-11-09', 1, '03:00:00', '03:30:00', 1);
+INSERT INTO stage.non_disponibilite_autorite_date( date_non_dispo_debut, date_non_dispo_fin, id_autorite_enfant, time_debut, time_fin, id ) VALUES ( '2022-11-22', '2022-11-22', 1, '05:30:00', '08:00:00', 3);
 INSERT INTO stage.non_disponibilite_autorite_jour( id, jour, time_non_dispo_jour_debut, time_non_dispo_jour_fin, id_autorite_enfant ) VALUES ( 1, 'Wednesday', '06:00:00', '07:00:00', 1);
 INSERT INTO stage.non_disponibilite_autorite_jour( id, jour, time_non_dispo_jour_debut, time_non_dispo_jour_fin, id_autorite_enfant ) VALUES ( 2, 'Monday', '08:00:00', '16:00:00', 1);
 INSERT INTO stage.profil( mot_de_passe, nom_utilisateur, id, est_administrateur, id_autorite_enfant ) VALUES ( 'porte356', 'porte356@gmail.com', 1, 1, 1);
 INSERT INTO stage.profil( mot_de_passe, nom_utilisateur, id, est_administrateur, id_autorite_enfant ) VALUES ( 'tale356', 'tale356@gmail.com', 2, 0, 1);
+INSERT INTO stage.profil( mot_de_passe, nom_utilisateur, id, est_administrateur, id_autorite_enfant ) VALUES ( 'porteDSI', 'porteDSI@gmail.com', 3, 1, 2);

@@ -28,7 +28,8 @@ router.post('/autorite/all/mois/', async(req,res) => {
                             title: element.motif,
                             start: date_time_start,
                             end: date_time_fin,
-                            color:'#ff9f89',
+                            color:'#F10586',
+                            color_status: '#da2020',
                             type_audience: element.type_audience,
                             action: element.action_autorite,
                             status_audience: element.status_audience,
@@ -46,7 +47,8 @@ router.post('/autorite/all/mois/', async(req,res) => {
                             title: element.motif,
                             start: date_time_start,
                             end: date_time_fin,
-                            color:'#25AF1A',
+                            color:'#F10586',
+                            color_status: '#09a009', 
                             type_audience: element.type_audience,
                             action: element.action_autorite,
                             status_audience: element.status_audience,
@@ -69,7 +71,8 @@ router.post('/autorite/all/mois/', async(req,res) => {
                             },
                             start: date_time_start,
                             end: date_time_fin,
-                            color:'#ff9f89',
+                            color:'#331999',
+                            color_status: '#da2020',
                             type_audience: element.type_audience,
                             action: element.action_public,
                             status_audience: element.status_audience,
@@ -88,7 +91,8 @@ router.post('/autorite/all/mois/', async(req,res) => {
                             },
                             start: date_time_start,
                             end: date_time_fin,
-                            color:'#25AF1A',
+                            color:'#331999',
+                            color_status: '#09a009',
                             type_audience: element.type_audience,
                             action: element.action_public,
                             status_audience: element.status_audience,
@@ -113,8 +117,8 @@ router.post('/autorite/all/mois/', async(req,res) => {
                     const date_time_start = element.dd_non_dispo_date.concat('T',element.td_non_dispo_date)
                     const date_time_fin = element.df_non_dispo_date.concat('T',element.tf_non_dispo_date)
                     array_result.push({
-                        id: String(element.id),
-                        title: element.status_audience,
+                        id: element.id_non_dispo_date,
+                        title: 'Pas disponible',
                         start: date_time_start,
                         end: date_time_fin,
                         color:'#2B2B2B',
@@ -139,7 +143,8 @@ router.post('/autorite/all/mois/', async(req,res) => {
                 else if(element.type_audience == 'Pas disponible jour'){
                     if(element.jour_non_dispo_jour == 'Sunday'){
                         array_result.push({
-                            title: element.status_audience,
+                            id: element.id_non_dispo_jour,
+                            title: 'Pas disponible',
                             daysOfWeek: [ '0' ], // these recurrent events move separately
                             startTime: element.td_non_dispo_jour,
                             endTime: element.tf_non_dispo_jour,
@@ -150,7 +155,8 @@ router.post('/autorite/all/mois/', async(req,res) => {
                       }
                       else if(element.jour_non_dispo_jour == 'Monday'){
                         array_result.push({
-                            title: element.status_audience,
+                            id: element.id_non_dispo_jour,
+                            title: 'Pas disponible',
                             daysOfWeek: [ '1' ], // these recurrent events move separately
                             startTime: element.td_non_dispo_jour,
                             endTime: element.tf_non_dispo_jour,
@@ -162,7 +168,8 @@ router.post('/autorite/all/mois/', async(req,res) => {
                       }
                       else if(element.jour_non_dispo_jour == 'Tuesday'){
                         array_result.push({
-                            title: element.status_audience,
+                            id: element.id_non_dispo_jour,
+                            title: 'Pas disponible',
                             daysOfWeek: [ '2' ], // these recurrent events move separately
                             startTime: element.td_non_dispo_jour,
                             endTime: element.tf_non_dispo_jour,
@@ -174,7 +181,8 @@ router.post('/autorite/all/mois/', async(req,res) => {
                       }
                       else if(element.jour_non_dispo_jour == 'Wednesday'){
                         array_result.push({
-                            title: element.status_audience,
+                            id: element.id_non_dispo_jour,
+                            title: 'Pas disponible',
                             daysOfWeek: [ '3' ], // these recurrent events move separately
                             startTime: element.td_non_dispo_jour,
                             endTime: element.tf_non_dispo_jour,
@@ -186,7 +194,8 @@ router.post('/autorite/all/mois/', async(req,res) => {
                       }
                       else if(element.jour_non_dispo_jour == 'Thursday'){
                         array_result.push({
-                            title: element.status_audience,
+                            id: element.id_non_dispo_jour,
+                            title: 'Pas disponible',
                             daysOfWeek: [ '4' ], // these recurrent events move separately
                             startTime: element.td_non_dispo_jour,
                             endTime: element.tf_non_dispo_jour,
@@ -198,7 +207,8 @@ router.post('/autorite/all/mois/', async(req,res) => {
                       }
                       else if(element.jour_non_dispo_jour == 'Friday'){
                         array_result.push({
-                            title: element.status_audience,
+                            id: element.id_non_dispo_jour,
+                            title: 'Pas disponible',
                             daysOfWeek: [ '5' ], // these recurrent events move separately
                             startTime: element.td_non_dispo_jour,
                             endTime: element.tf_non_dispo_jour,
@@ -210,7 +220,8 @@ router.post('/autorite/all/mois/', async(req,res) => {
                       }
                       else if(element.jour_non_dispo_jour == 'Saturday'){
                         array_result.push({
-                            title: element.status_audience,
+                            id: element.id_non_dispo_jour,
+                            title: 'Pas disponible',
                             daysOfWeek: [ '6' ], // these recurrent events move separately
                             startTime: element.td_non_dispo_jour,
                             endTime: element.tf_non_dispo_jour,
@@ -253,7 +264,7 @@ router.post('/autorite/all/mois/v2', async(req,res) =>{
                             title: element.motif,
                             start: date_time_start,
                             end: date_time_fin,
-                            color:'#ff9f89',
+                            color:'#F10586',
                             type_audience: element.type_audience,
                             action: element.action_autorite,
                             editable: true  
@@ -946,6 +957,18 @@ FROM
             });
             // console.log(array_result)
             return res.json(array_result);
+        }
+    })
+})
+
+router.get('/autorite/notification/:id_autorite_enfant', async(req,res)=>{
+    const sql = `CALL notifications_audience(${req.params.id_autorite_enfant})`
+    db.query(sql,function(err, result) {
+        if(err){
+            return res.send({ err });
+        }
+        else{
+            return res.send(result[0])
         }
     })
 })

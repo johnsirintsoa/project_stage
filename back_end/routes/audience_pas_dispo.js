@@ -140,6 +140,7 @@ router.post('/non_disponible_autorite_date/add',async(req,res)=>{
                 else if(element.type_evenement == 'Pas disponible jour'){
                     if(element.jour == 'Sunday'){
                         array_result.push({
+                            id: element.id,
                             title: element.status_evenement,
                             daysOfWeek: [ '0' ], // these recurrent events move separately
                             startTime: element.time_non_dispo_jour_debut,
@@ -153,6 +154,7 @@ router.post('/non_disponible_autorite_date/add',async(req,res)=>{
                     }
                     else if(element.jour == 'Monday'){
                     array_result.push({
+                        id: element.id,
                         title: element.status_evenement,
                         daysOfWeek: [ '1' ], // these recurrent events move separately
                         startTime: element.time_non_dispo_jour_debut,
@@ -167,6 +169,7 @@ router.post('/non_disponible_autorite_date/add',async(req,res)=>{
                     }
                     else if(element.jour == 'Tuesday'){
                     array_result.push({
+                        id: element.id,
                         title: element.status_evenement,
                         daysOfWeek: [ '2' ], // these recurrent events move separately
                         startTime: element.time_non_dispo_jour_debut,
@@ -181,6 +184,7 @@ router.post('/non_disponible_autorite_date/add',async(req,res)=>{
                     }
                     else if(element.jour == 'Wednesday'){
                     array_result.push({
+                        id: element.id,
                         title: element.status_evenement,
                         daysOfWeek: [ '3' ], // these recurrent events move separately
                         startTime: element.time_non_dispo_jour_debut,
@@ -195,6 +199,7 @@ router.post('/non_disponible_autorite_date/add',async(req,res)=>{
                     }
                     else if(element.jour == 'Thursday'){
                     array_result.push({
+                        id: element.id,
                         title: element.status_evenement,
                         daysOfWeek: [ '4' ], // these recurrent events move separately
                         startTime: element.time_non_dispo_jour_debut,
@@ -209,6 +214,7 @@ router.post('/non_disponible_autorite_date/add',async(req,res)=>{
                     }
                     else if(element.jour == 'Friday'){
                     array_result.push({
+                        id: element.id,
                         title: element.status_evenement,
                         daysOfWeek: [ '5' ], // these recurrent events move separately
                         startTime: element.time_non_dispo_jour_debut,
@@ -223,6 +229,7 @@ router.post('/non_disponible_autorite_date/add',async(req,res)=>{
                     }
                     else if(element.jour == 'Saturday'){
                     array_result.push({
+                        id: element.id,
                         title: element.status_evenement,
                         daysOfWeek: [ '6' ], // these recurrent events move separately
                         startTime: element.time_non_dispo_jour_debut,
@@ -423,6 +430,7 @@ router.post('/non_disponible_autorite_jour/add',async(req,res)=>{
                 else if(element.type_evenement == 'Pas disponible jour'){
                     if(element.jour == 'Sunday'){
                         array_result.push({
+                            id: element.id,
                             title: element.status_evenement,
                             daysOfWeek: [ '0' ], // these recurrent events move separately
                             startTime: element.time_non_dispo_jour_debut,
@@ -436,6 +444,7 @@ router.post('/non_disponible_autorite_jour/add',async(req,res)=>{
                     }
                     else if(element.jour == 'Monday'){
                     array_result.push({
+                        id: element.id,
                         title: element.status_evenement,
                         daysOfWeek: [ '1' ], // these recurrent events move separately
                         startTime: element.time_non_dispo_jour_debut,
@@ -450,6 +459,7 @@ router.post('/non_disponible_autorite_jour/add',async(req,res)=>{
                     }
                     else if(element.jour == 'Tuesday'){
                     array_result.push({
+                        id: element.id,
                         title: element.status_evenement,
                         daysOfWeek: [ '2' ], // these recurrent events move separately
                         startTime: element.time_non_dispo_jour_debut,
@@ -464,6 +474,7 @@ router.post('/non_disponible_autorite_jour/add',async(req,res)=>{
                     }
                     else if(element.jour == 'Wednesday'){
                     array_result.push({
+                        id: element.id,
                         title: element.status_evenement,
                         daysOfWeek: [ '3' ], // these recurrent events move separately
                         startTime: element.time_non_dispo_jour_debut,
@@ -478,6 +489,7 @@ router.post('/non_disponible_autorite_jour/add',async(req,res)=>{
                     }
                     else if(element.jour == 'Thursday'){
                     array_result.push({
+                        id: element.id,
                         title: element.status_evenement,
                         daysOfWeek: [ '4' ], // these recurrent events move separately
                         startTime: element.time_non_dispo_jour_debut,
@@ -492,6 +504,7 @@ router.post('/non_disponible_autorite_jour/add',async(req,res)=>{
                     }
                     else if(element.jour == 'Friday'){
                     array_result.push({
+                        id: element.id,
                         title: element.status_evenement,
                         daysOfWeek: [ '5' ], // these recurrent events move separately
                         startTime: element.time_non_dispo_jour_debut,
@@ -506,6 +519,7 @@ router.post('/non_disponible_autorite_jour/add',async(req,res)=>{
                     }
                     else if(element.jour == 'Saturday'){
                     array_result.push({
+                        id: element.id,
                         title: element.status_evenement,
                         daysOfWeek: [ '6' ], // these recurrent events move separately
                         startTime: element.time_non_dispo_jour_debut,

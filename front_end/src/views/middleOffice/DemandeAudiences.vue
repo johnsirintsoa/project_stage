@@ -1063,25 +1063,34 @@ export default {
     },
 
     detailEvent(info) {
-      // console.log(info.event)
-      
-      if(info.event.extendedProps.sender != undefined){
+      if(info.event.extendedProps.type_audience == 'Public'){
+        tippy(info.el, {
+          theme:'light',
+          content: `
+          <p><strong>${info.event.title}</strong></p>
+          <p> De ${Function.date_in_string(info.event.start)} à ${Function.date_in_string(info.event.end)}</p>
+          <p>Nom: ${info.event.extendedProps.sender.nom_complet}</p>
+          <p>CIN: ${info.event.extendedProps.sender.cin}</p>  
+          <p>Numéro téléphone: ${info.event.extendedProps.sender.numero_telephone}</p>  
+          <p>mail: ${info.event.extendedProps.sender.email}</p>  
+          <p> <span style="background-color: #09a009;" class="dot"></span>  ${info.event.extendedProps.status_audience}</p>`,
+          allowHTML: true,
+          delay: [500,0]
+
+        });  
+      }
+      else if(info.event.extendedProps.type_audience == 'Autorite'){
         tippy(info.el, {
           theme:'light',
           content: `<p><strong>${info.event.title}</strong></p>
           <p> De ${Function.date_in_string(info.event.start)} à ${Function.date_in_string(info.event.end)}</p>
-          <p>Autorité: <strong>${info.event.extendedProps.sender.intitule}</strong></p>`,
+          <p>Autorité: <strong>${info.event.extendedProps.sender.intitule}</strong></p>
+          <p> <span style="background-color: #da2020;" class="dot"></span>  ${info.event.extendedProps.status_audience}</p>`,
           allowHTML: true,
-        });
-      } else if(info.event.extendedProps.status_audience == 'Occupé') {
-        tippy(info.el, {
-          theme:'light',
-          content: `<p><strong>${info.event.title}</strong></p>
-          <p> De ${Function.date_in_string(info.event.start)} à ${Function.date_in_string(info.event.end)}</p>`,
-          // <p>${info.event.extendedProps.status_audience}</p>`,
-          allowHTML: true,
-        });
-      }
+          delay: [500,0]
+
+        })
+      }  
     },
 
     // add event

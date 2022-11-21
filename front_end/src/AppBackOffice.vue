@@ -1,6 +1,7 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
 // import HelloWorld from './components/HelloWorld.vue'
+import dm_autorite_controller from './controllers/BackOffice/DemandeAudienceAutoriteController'
 
 </script>
 
@@ -39,154 +40,50 @@ import { RouterLink, RouterView } from 'vue-router'
 
             <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
               <i class="bi bi-bell"></i>
-              <span class="badge bg-primary badge-number">4</span>
+              <span class="badge bg-primary badge-number">{{notifications.length}}</span>
             </a><!-- End Notification Icon -->
 
             <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
               <li class="dropdown-header">
-                You have 4 new notifications
-                <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
+                Vous avez {{notifications.length}} audiences
+                <RouterLink to="/administrateur/demande-audience/mes-audiences" >
+                  <span class="badge rounded-pill bg-primary p-2 ms-2">Voir tout</span>
+                </RouterLink>
               </li>
               <li>
                 <hr class="dropdown-divider">
               </li>
-
-              <li class="notification-item">
-                <i class="bi bi-exclamation-circle text-warning"></i>
+              
+              <RouterLink to="/administrateur/demande-audience/mes-audiences" >
+              <li v-for="notification in notifications" :key="notifications.id" class="notification-item">
+                <i v-if="notification.type_audience === 'Public' "><span style="background-color: #331999" class="dot"></span></i>
+                <i v-else-if="notification.type_audience === 'Autorité'" ><span style="background-color: #f10586" class="dot"></span></i>
+                <!-- <i><span :style="{ 'background-color': styleObject.color}" class="dot"></span></i> -->
                 <div>
-                  <h4>Lorem Ipsum</h4>
-                  <p>Quae dolorem earum veritatis oditseno</p>
-                  <p>30 min. ago</p>
+                  <h4>{{notification.title}}</h4>
+                  <p>{{notification.type_audience}}</p>
+                  <p>{{notification.start}}</p>
                 </div>
               </li>
+              </RouterLink>
 
-              <li>
-                <hr class="dropdown-divider">
-              </li>
-
-              <li class="notification-item">
-                <i class="bi bi-x-circle text-danger"></i>
-                <div>
-                  <h4>Atque rerum nesciunt</h4>
-                  <p>Quae dolorem earum veritatis oditseno</p>
-                  <p>1 hr. ago</p>
-                </div>
-              </li>
-
-              <li>
-                <hr class="dropdown-divider">
-              </li>
-
-              <li class="notification-item">
-                <i class="bi bi-check-circle text-success"></i>
-                <div>
-                  <h4>Sit rerum fuga</h4>
-                  <p>Quae dolorem earum veritatis oditseno</p>
-                  <p>2 hrs. ago</p>
-                </div>
-              </li>
-
-              <li>
-                <hr class="dropdown-divider">
-              </li>
-
-              <li class="notification-item">
-                <i class="bi bi-info-circle text-primary"></i>
-                <div>
-                  <h4>Dicta reprehenderit</h4>
-                  <p>Quae dolorem earum veritatis oditseno</p>
-                  <p>4 hrs. ago</p>
-                </div>
-              </li>
-
-              <li>
-                <hr class="dropdown-divider">
-              </li>
-              <li class="dropdown-footer">
-                <a href="#">Show all notifications</a>
-              </li>
-
+              <li><hr class="dropdown-divider"></li>
             </ul><!-- End Notification Dropdown Items -->
 
           </li><!-- End Notification Nav -->
 
-          <li class="nav-item dropdown">
-
-            <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
-              <i class="bi bi-chat-left-text"></i>
-              <span class="badge bg-success badge-number">3</span>
-            </a><!-- End Messages Icon -->
-
-            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow messages">
-              <li class="dropdown-header">
-                You have 3 new messages
-                <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
-              </li>
-              <li>
-                <hr class="dropdown-divider">
-              </li>
-
-              <li class="message-item">
-                <a href="#">
-                  <img src="./assets/img/messages-1.jpg" alt="" class="rounded-circle">
-                  <div>
-                    <h4>Maria Hudson</h4>
-                    <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
-                    <p>4 hrs. ago</p>
-                  </div>
-                </a>
-              </li>
-              <li>
-                <hr class="dropdown-divider">
-              </li>
-
-              <li class="message-item">
-                <a href="#">
-                  <img src="./assets/img/messages-2.jpg" alt="" class="rounded-circle">
-                  <div>
-                    <h4>Anna Nelson</h4>
-                    <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
-                    <p>6 hrs. ago</p>
-                  </div>
-                </a>
-              </li>
-              <li>
-                <hr class="dropdown-divider">
-              </li>
-
-              <li class="message-item">
-                <a href="#">
-                  <img src="./assets/img/messages-3.jpg" alt="" class="rounded-circle">
-                  <div>
-                    <h4>David Muldon</h4>
-                    <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
-                    <p>8 hrs. ago</p>
-                  </div>
-                </a>
-              </li>
-              <li>
-                <hr class="dropdown-divider">
-              </li>
-
-              <li class="dropdown-footer">
-                <a href="#">Show all messages</a>
-              </li>
-
-            </ul><!-- End Messages Dropdown Items -->
-
-          </li><!-- End Messages Nav -->
 
           <li class="nav-item dropdown pe-3">
 
             <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
               <img src="./assets/img/profile-img.jpg" alt="Profile" class="rounded-circle">
-              <span class="d-none d-md-block dropdown-toggle ps-2">K. Anderson</span>
+              <span class="d-none d-md-block dropdown-toggle ps-2">{{autorite.intitule_code}}</span>
             </a><!-- End Profile Iamge Icon -->
 
             <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
               <li class="dropdown-header">
-                <h6>Kevin Anderson</h6>
-                <span>Web Designer</span>
+                <h6>{{autorite.intitule_code}}</h6>
+                <span>{{autorite.intitule}}</span>
               </li>
               <li>
                 <hr class="dropdown-divider">
@@ -223,7 +120,7 @@ import { RouterLink, RouterView } from 'vue-router'
               </li>
 
               <li>
-                <a class="dropdown-item d-flex align-items-center" href="#">
+                <a class="dropdown-item d-flex align-items-center" @click="deconnection()">
                   <i class="bi bi-box-arrow-right"></i>
                   <span>Sign Out</span>
                 </a>
@@ -322,7 +219,9 @@ import { RouterLink, RouterView } from 'vue-router'
 export default {
   data() {
     return {
-      active: false
+      active: false,
+      notifications: '',
+      autorite:''
     }
   },
   async created() {
@@ -333,7 +232,24 @@ export default {
       // redirect vers la page de login
       this.$router.push({path: '/administrateur/login'});
       this.active = true
+    }
 
+    this.autorite = JSON.parse(sessionStorage.getItem('administrateur')).autorite_enfant
+
+    //Notifications
+    const id_autorite = JSON.parse(sessionStorage.getItem('administrateur')).autorite_enfant.id
+    this.notifications = await dm_autorite_controller.notifications(id_autorite)
+    // console.log(this.notifications)
+  },
+  methods: {
+    getSessionId(){
+      return JSON.parse(sessionStorage.getItem('administrateur')).autorite_enfant.id
+    },
+
+    deconnection(){
+      sessionStorage.removeItem('administrateur')
+      window.location.reload()
+      this.$router.push({path: '/administrateur/login'});
     }
   },
 }
@@ -343,6 +259,15 @@ export default {
     opacity: 0.5;
     pointer-events: none;
 }
+
+.dot {
+  /* background-color: v-bind(notifColor); */
+  height: 10px;
+  width: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
 </style>
 <!-- <style scoped>
 header {

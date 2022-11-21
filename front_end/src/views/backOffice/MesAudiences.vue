@@ -21,6 +21,7 @@
     import Swal from 'sweetalert2';
     import AutoriteAPI from '../../api/autorite';
     import frLocale from '@fullcalendar/core/locales/fr';
+    import dm_autorite_controller from '../../controllers/BackOffice/DemandeAudienceAutoriteController'
 
     export default {
     
@@ -82,9 +83,13 @@
         }
       },
     
-      created(){
+      async created(){
         const ses = JSON.parse(sessionStorage.getItem('administrateur'))
         this.audience.direction = ses.autorite_enfant.id
+
+        // Notifications
+        const data = await dm_autorite_controller.notifications(this.audience.direction)
+        this.displayNotifications(data);
       },
       
       async mounted() {
@@ -94,6 +99,32 @@
     
       methods: {
     
+        async displayNotifications(data){
+          // console.log(data);
+          // let Toast = '';
+          // data.forEach(async(element) => {
+          //   Toast = Swal.mixin({
+          //     toast: true,
+          //     position: 'bottom-end',
+          //     showConfirmButton: true,
+          //     confirmButtonText: 'Voir audience',
+          //     confirmButtonColor:`${element.color}`,
+          //     timer: 3000,
+          //     timerProgressBar: true,
+          //     didOpen: (toast) => {
+          //       toast.addEventListener('mouseenter', Swal.stopTimer)
+          //       toast.addEventListener('mouseleave', Swal.resumeTimer)
+          //     }
+          //   })
+
+          //   await Toast.fire({
+          //     icon: 'info',
+          //     title: `${element.title}`,
+          //   })
+
+          // });
+        },
+
         async all_actual_events(){
           return await actual_events_autorite(this.audience.direction)  
         }, 
@@ -136,13 +167,14 @@
           this.is_clicked = true
     
           // calendarApi.unselect() // clear date selection
-          // console.log(selectInfo.startStr)
+          // console.log(selectInfo)
           if(selectInfo.startStr.includes('T') || selectInfo.endStr.includes('T')){
             this.audience.date_debut = selectInfo.startStr.split('T')[0]
             this.audience.date_fin = selectInfo.endStr.split('T')[0]
             this.audience.time_debut = selectInfo.startStr.split('T')[1].split('+')[0]
             this.audience.time_fin = selectInfo.endStr.split('T')[1].split('+')[0]
-          }else{
+          }
+          else{
             this.audience.date_debut = selectInfo.startStr
             this.audience.date_fin = selectInfo.endStr
             this.audience.time_debut = "10:00:00"
@@ -169,23 +201,22 @@
             }
           })
           if (type_de_disponibilite == 'today') { 
-            // Swal.fire({ html: `You selected: ${type_de_disponibilite}`})
             const { value: formValues } = await Swal.fire({
-                title: 'Je suis pas disponible',
-                html:
-                    `<p align="left" style="margin-left: 1rem;">De <input type=Date value="${this.audience.date_debut}" id="date1" class="swal2-input"> <input type=time value="${this.audience.time_debut}" id="duree1" class="swal2-input"> </p>` +
-                    `<p align="left" style="margin-left: 1.8rem;">à <input type=Date value="${this.audience.date_fin}" id="date2" class="swal2-input"> <input type=time value="${this.audience.time_fin}" id="duree2" class="swal2-input"></p>`, 
-                showCancelButton: true,
-                confirmButtonText: 'Valider',    
-                focusConfirm: false,
-                preConfirm: () => {
-                  return [
-                    document.getElementById('date1').value,
-                    document.getElementById('duree1').value,
-                    document.getElementById('date2').value,
-                    document.getElementById('duree2').value,
-                  ]
-                }
+              title: 'Je suis pas disponible',
+              html:
+                  `<p align="left" style="margin-left: 1rem;">De <input type=Date value="${this.audience.date_debut}" id="date1" class="swal2-input"> <input type=time value="${this.audience.time_debut}" id="duree1" class="swal2-input"> </p>` +
+                  `<p align="left" style="margin-left: 1.8rem;">à <input type=Date value="${this.audience.date_fin}" id="date2" class="swal2-input"> <input type=time value="${this.audience.time_fin}" id="duree2" class="swal2-input"></p>`, 
+              showCancelButton: true,
+              confirmButtonText: 'Valider',    
+              focusConfirm: false,
+              preConfirm: () => {
+                return [
+                  document.getElementById('date1').value,
+                  document.getElementById('duree1').value,
+                  document.getElementById('date2').value,
+                  document.getElementById('duree2').value,
+                ]
+              }
             })
 
             if (formValues) {
@@ -205,12 +236,15 @@
                 date_fin: this.audience.date_fin,
                 time_debut: this.audience.time_debut,
                 time_fin: this.audience.time_fin,
-                id_autorite: this.audience.direction
+                id_autorite: this.audience.direction,
+                id: this.audience.id
               }    
               const response = await NonDispoAutoriteDate.add_non_disponible_date(audience)
+              console.log(response)
               if(response.length > 0){
                 const data = await Swal.fire({
                   title:'Evénements inclus',
+                  width:600,
                   html: `
                   <div class="card">
                     <div class="card-body">
@@ -232,11 +266,15 @@
                   </div>`,
                   confirmButtonText:'Valider',
                   showCancelButton:true,
-                  cancelButtonText:'Annuler'
+                  cancelButtonText:'Annuler',
+                  
                 }).then(async (result) => {
                   if(result.isConfirmed){
                     const response = await NonDispoAutoriteDate.insert(audience)
                     swal("Evènement enregistré", "L'évènement a bien été enregistré", "success");
+                    setInterval( () => {
+                      window.location.reload()
+                    }, 1000)
                   }
                 }).catch((err) => {
                   console.log(err)
@@ -244,6 +282,9 @@
               }
               else {
                 swal("Evènement enregistré", "L'évènement a bien été enregistré", "success");
+                setInterval( () => {
+                  window.location.reload()
+                }, 1000)
               }
             } 
           }
@@ -313,6 +354,7 @@
               if(response.length > 0){
                 const data = await Swal.fire({
                   title:'Evénements inclus',
+                  width:800,
                   html: `
                   <div class="card">
                     <div class="card-body">
@@ -339,6 +381,9 @@
                   if(result.isConfirmed){
                     const response = await NonDispoAutoriteJour.insert(audience)
                     swal("Evènement enregistré", "L'évènement a bien été enregistré", "success");
+                    setInterval( () => {
+                      window.location.reload()
+                    }, 1000)
                   }
                 }).catch((err) => {
                   console.log(err)
@@ -346,6 +391,9 @@
               }
               else {
                 swal("Evènement enregistré", "L'évènement a bien été enregistré", "success");
+                setInterval( () => {
+                  window.location.reload()
+                }, 1000)
               }        
             }
           } 
@@ -1256,8 +1304,7 @@
     
         detailEvent(info) {
           if(info.event.extendedProps.type_audience == 'Public'){
-            if(info.event.extendedProps.status_audience == 'Validé'){
-              tippy(info.el, {
+            tippy(info.el, {
                 theme:'light',
                 content: `
                   <p><strong>${info.event.title}</strong></p>
@@ -1266,54 +1313,22 @@
                   <p>CIN: ${info.event.extendedProps.sender.cin}</p>  
                   <p>Numéro téléphone: ${info.event.extendedProps.sender.numero_telephone}</p>  
                   <p>mail: ${info.event.extendedProps.sender.email}</p>  
-                  <p><span style="background-color: #da2020;" class="dot"></span>  ${info.event.extendedProps.status_audience}</p>`,
+                  <p><span style="background-color: ${info.event.extendedProps.color_status};" class="dot"></span>  ${info.event.extendedProps.status_audience}</p>`,
                 allowHTML: true,
                 delay: [500,0]
-              });   
-            }
-            else if(info.event.extendedProps.status_audience == 'Non validé'){
-              tippy(info.el, {
-                theme:'light',
-                content: `
-                <p><strong>${info.event.title}</strong></p>
-                <p> De ${Function.date_in_string(info.event.start)} à ${Function.date_in_string(info.event.end)}</p>
-                <p>Nom: ${info.event.extendedProps.sender.nom_complet}</p>
-                <p>CIN: ${info.event.extendedProps.sender.cin}</p>  
-                <p>Numéro téléphone: ${info.event.extendedProps.sender.numero_telephone}</p>  
-                <p>mail: ${info.event.extendedProps.sender.email}</p>  
-                <p> <span style="background-color: #09a009;" class="dot"></span>  ${info.event.extendedProps.status_audience}</p>`,
-                allowHTML: true,
-                delay: [500,0]
-
               });              
             }
-         
-          }
           else if(info.event.extendedProps.type_audience == 'Autorite'){
-            if(info.event.extendedProps.status_audience == 'Validé'){
-              tippy(info.el, {
-                theme:'light',
-                content: `<p><strong>${info.event.title}</strong></p>
-                <p> De ${Function.date_in_string(info.event.start)} à ${Function.date_in_string(info.event.end)}</p>
-                <p>Autorité: <strong>${info.event.extendedProps.sender.intitule}</strong></p>
-                <p> <span style="background-color: #da2020;" class="dot"></span>  ${info.event.extendedProps.status_audience}</p>`,
-                allowHTML: true,
-                delay: [500,0]
+            tippy(info.el, {
+              theme:'light',
+              content: `<p><strong>${info.event.title}</strong></p>
+              <p> De ${Function.date_in_string(info.event.start)} à ${Function.date_in_string(info.event.end)}</p>
+              <p>Autorité: <strong>${info.event.extendedProps.sender.intitule}</strong></p>
+              <p> <span style="background-color: ${info.event.extendedProps.color_status};" class="dot"></span>  ${info.event.extendedProps.status_audience}</p>`,
+              allowHTML: true,
+              delay: [500,0]
 
-              })
-            }
-            else if(info.event.extendedProps.status_audience == 'Non validé'){
-              tippy(info.el, {
-                theme:'light',
-                content: `<p><strong>${info.event.title}</strong></p>
-                <p> De ${Function.date_in_string(info.event.start)} à ${Function.date_in_string(info.event.end)}</p>
-                <p>Autorité: <strong>${info.event.extendedProps.sender.intitule}</strong></p>
-                <p> <span style="background-color: #09a009;" class="dot"></span>  ${info.event.extendedProps.status_audience}</p>`,
-                allowHTML: true,
-                delay: [500,0]
-
-              })              
-            }
+            })
           }
         },
     

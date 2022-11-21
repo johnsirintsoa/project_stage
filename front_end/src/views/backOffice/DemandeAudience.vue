@@ -217,8 +217,6 @@ export default {
     },
 
     detailEvent(info) {
-      // console.log(info)
-      
       tippy(info.el, {
         theme:'light',
         content: `<p><strong>${info.event.title}</strong></p>

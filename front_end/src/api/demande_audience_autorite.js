@@ -28,4 +28,9 @@ export default class DemandeAudienceAutorite{
         const res = await axios.post(url.concat('/delete'),id)
         return res.data
     }
+
+    static async notifications(id){
+        const res =  await axios.get(url.concat('/notification/',id))
+        return res.data
+    }
 }
