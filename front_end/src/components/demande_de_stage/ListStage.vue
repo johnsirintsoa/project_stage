@@ -3,6 +3,7 @@ import { RouterLink, RouterView } from 'vue-router'
 import Swal from 'sweetalert2';
 import swal from 'sweetalert';
 import EntretienDemandeStage from '../../api/entretien_stage'
+import func from '../../func/function'
 
 </script>
 <template>
@@ -87,6 +88,7 @@ export default {
         const id_autorite = ses.autorite_enfant.id
         // console.log(id_autorite)
         this.stages = await DemandeStageAPI.all_status(id_autorite)
+        console.log(func.format_date_time(new Date())[1].substring(0,5))
     },
     methods:{
         get_stage(index){
@@ -108,14 +110,15 @@ export default {
             await DemandeStageAPI.getFile(file_name)
             // console.log(file_name)
         },
+
         async getDemandeStage(stage){
-            console.log(stage)
+            // console.log(stage)
             if(stage.date_debut){
               const data = await Swal.fire({
                 title: `Faire un entretien`,
                 html:
-                  `<p align="left" style="margin-left: 1rem;">De <input type=Date value="${stage.date_debut}" id="date1" class="swal2-input"> <input type=time value="${stage.time_debut}" id="duree1" class="swal2-input"> </p>` +
-                  `<p align="left" style="margin-left: 1.8rem;">à <input type=Date value="${stage.date_fin}"  id="date2" class="swal2-input"> <input type=time value="${stage.time_fin}" id="duree2" class="swal2-input"></p>` ,
+                  `<p align="left" style="margin-left: 1rem;">De <input type=Date value="${stage.date_debut}" id="date1" class="swal2-input"> <input type=time value="${stage.time_debut}" id="duree1" class="swal2-input"> </p>
+                    <p align="left" style="margin-left: 1.8rem;">à <input type=Date value="${stage.date_fin}"  id="date2" class="swal2-input"> <input type=time value="${stage.time_fin}" id="duree2" class="swal2-input"></p>` ,
                 showDenyButton: true,
                 showCancelButton: true,
                 confirmButtonText: 'Maintenant',
@@ -134,6 +137,12 @@ export default {
                   const ses = JSON.parse(sessionStorage.getItem('administrateur'))
                   const id_autorite = ses.autorite_enfant.id
                   const audience_event = {
+                    autorite: stage.autorite,
+                    nom: stage.nom,
+                    prenom: stage.prenom,
+                    telephone: stage.telephone,
+                    e_mail: stage.e_mail,
+                    cin: stage.cin,
                     date_debut: result.value[0],
                     date_fin: result.value[1], 
                     time_debut: result.value[2],
@@ -170,6 +179,9 @@ export default {
                   else if(response.message == "time fin invalid"){
                     swal("Entretien non enregistrée", "L'heure fin doit être supérieur à l'heure début", "warning");
                   }
+                  else if(response.message == "Validation non validé et envoyé"){
+                    swal("Entretien non enregistrée", `${response.message}`, "warning");
+                  }
                 }
                 else if(result.isDenied){
                   Swal.fire({
@@ -183,15 +195,15 @@ export default {
                     confirmButtonText: 'Supprimer!'
                   }).then(async (result) => {
                     if (result.isConfirmed) {
-                      const response = await EntretienDemandeStage.delete_entretien_stage(this.audience.id)
+                      const response = await EntretienDemandeStage.delete_entretien_stage(stage.id_entretien_demande_stage)
                       Swal.fire(
-                        'Deleted!',
-                        'Your file has been deleted.',
+                        'Entretien supprimé',
+                        `Entretien avec ${stage.nom} ${stage.prenom} a été reporté`,
                         'success'
                       )
-                      // setInterval( () => {
-                      //   window.location.reload()
-                      // }, 1000)
+                      setInterval( () => {
+                        window.location.reload()
+                      }, 1000)
                     }
                   })       
                 }               
@@ -202,9 +214,13 @@ export default {
             else{
               const { value: formValues } = await Swal.fire({
                   title: `Faire un entretien`,
+                  width: 550,
                   html:
-                      `<p align="left" style="margin-left: 1rem;">De <input type=Date  id="date1" class="swal2-input"> <input type=time id="duree1" class="swal2-input"> </p>` +
-                      `<p align="left" style="margin-left: 1.8rem;">à <input type=Date  id="date2" class="swal2-input"> <input type=time  id="duree2" class="swal2-input"></p>` ,
+                    `<p align="left" style="margin-left: 1rem;">De <input type=Date value="${new Date().toISOString().substring(0,10)}" id="date1" class="swal2-input"> <input type=time id="duree1" value="${func.format_date_time(new Date())[1].substring(0,5)}" class="swal2-input"> </p>` +
+                    `<p align="left" style="margin-left: 1.8rem;">à <input type=Date value="${new Date().toISOString().substring(0,10)}" id="date2" class="swal2-input"> <input type=time  id="duree2" value="${func.time_plus_30_min(new Date()).substring(0,5)}" class="swal2-input"></p>` ,
+
+                      // `<p align="left" style="margin-left: 1rem;">De <input type=Date value="${new Date().toISOString().substring(0,10)}" id="date1" class="swal2-input"> <input type=time id="duree1" value="${func.format_date_time(new Date())[1].substring(0,5)}" class="swal2-input"> </p>` +
+                      // `<p align="left" style="margin-left: 1.8rem;">à <input type=Date value="${new Date().toISOString().substring(0,10)}" id="date2" class="swal2-input"> <input type=time  id="duree2" value="${func.time_plus_30_min(new Date()).substring(0,5)}" class="swal2-input"></p>` ,
                   showCancelButton: true,
                   confirmButtonText: 'Valider',    
                   focusConfirm: false,
@@ -220,27 +236,27 @@ export default {
               })
 
               if (formValues) {
-                // console.log(formValues)
-                // this.audience.date_debut = formValues[0]
-                // this.audience.time_debut = formValues[1]
-                // this.audience.date_fin = formValues[2]
-                // this.audience.time_fin = formValues[3]
-                // this.audience.motif = formValues[4]
-
-                console.log(formValues)
 
                 const ses = JSON.parse(sessionStorage.getItem('administrateur'))
                 const id_autorite_enfant = ses.autorite_enfant.id
                 // this.audience.direction = ses.autorite_enfant.id
 
                 const infos_stage = {
-                    date_debut: formValues[0],
-                    time_debut: formValues[1],
-                    date_fin: formValues[2],
-                    time_fin: formValues[3],
-                    id_autorite_enfant: id_autorite_enfant,
-                    id_demande_stage: stage.id_demande_stage
+                  autorite: stage.autorite,
+                  nom: stage.nom,
+                  prenom: stage.prenom,
+                  telephone: stage.telephone,
+                  e_mail: stage.e_mail,
+                  cin: stage.cin,
+                  date_debut: formValues[0],
+                  time_debut: formValues[1],
+                  date_fin: formValues[2],
+                  time_fin: formValues[3],
+                  id_autorite_enfant: id_autorite_enfant,
+                  id_demande_stage: stage.id_demande_stage
                 }
+
+                console.log(infos_stage)
 
                 const response = await EntretienStage.add_entretien_stage(infos_stage)
                 console.log(response)

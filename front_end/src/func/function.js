@@ -129,6 +129,11 @@ export default class Function{
         return date
     }
 
+    static time_plus_30_min(date){
+        const duree_decalage = 30
+        return this.format_date_time(new Date(date.getTime() + (60000 * duree_decalage)))[1]
+    }
+
     // static set_intial_events(id_autorite,initialEvents){
     //     // fullcalendar button left
     //     const parDom1 = document.getElementsByClassName("fc-toolbar-chunk")

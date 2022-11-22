@@ -2,7 +2,6 @@ const express = require('express')
 const router = express.Router();
 const db = require('../database')
 const multer = require("multer")
-const mail = require('mail')
 const FUNC = require('../func/function')
 // const FUNC = require('../func/function')
 // const fs = require('fs')
@@ -10,17 +9,6 @@ const FUNC = require('../func/function')
 const nodemailer = require('nodemailer');
 const path = require('path')
 require('./.env')
-
-/** config vonage */
-const Vonage = require('@vonage/server-sdk');
-const { date } = require('mail/lib/util');
-const { default: Function } = require('../func/function');
-
-const vonage = new Vonage({
-  apiKey: "895a4ee2",
-  apiSecret: "4CE7jeUCH8td8UcX"
-})
-/** config vonage */
 
 
 // add form demande stage
@@ -78,11 +66,18 @@ router.get('/all_status/:id_autorite_enfant',async(req,res)=>{
         eds.date_fin,
         eds.time_debut,
         eds.time_fin,
+        e.id_autorite_enfant,
+        ae.intitule,
+        ae.addresse_electronique,
+        ae.mot_de_passe_mailing,
+        ae.intitule_code,
+        ae.porte,
         CASE 
             WHEN eds.id IS NULL THEN 'en attente' 
             ELSE 'validé' END as demande_status
     FROM
         stage.demande_stage e 
+        JOIN autorite_enfant ae on e.id_autorite_enfant = ae.id
         JOIN domaine d on e.id_domaine = d.id
         LEFT JOIN entretien_demande_stage eds on e.id = eds.id_demande_stage where e.id_autorite_enfant = ${req.params.id_autorite_enfant}`
     var query = db.query(sql, function(err, result) {
@@ -104,6 +99,14 @@ router.get('/all_status/:id_autorite_enfant',async(req,res)=>{
                         lettre_motivation: element.lettre_motivation,
                         lettre_introduction: element.lettre_introduction,
                         message: element.message,
+                        autorite:{
+                            id_autorite: element.id_autorite_enfant,
+                            intitule: element.intitule,
+                            intitule_code: element.intitule_code,
+                            addresse_electronique: element.addresse_electronique,
+                            mot_de_passe_mailing: element.mot_de_passe_mailing,
+                            porte: element.porte
+                        },
                         id_domaine: element.id_domaine,
                         nom_domaine: element.nom_domaine,
                         date_debut: element.date_debut,
@@ -113,7 +116,8 @@ router.get('/all_status/:id_autorite_enfant',async(req,res)=>{
                         id_entretien_demande_stage: element.id_entretien_demande_stage,
                         demande_status: element.demande_status
                     })
-                }else if(element.id_entretien_demande_stage == null){
+                }
+                else if(element.id_entretien_demande_stage == null){
                     array_result.push({
                         id_demande_stage: element.id_demande_stage,
                         nom: element.nom,
@@ -126,6 +130,14 @@ router.get('/all_status/:id_autorite_enfant',async(req,res)=>{
                         lettre_motivation: element.lettre_motivation,
                         lettre_introduction: element.lettre_introduction,
                         message: element.message,
+                        autorite:{
+                            id_autorite: element.id_autorite_enfant,
+                            intitule: element.intitule,
+                            intitule_code: element.intitule_code,
+                            addresse_electronique: element.addresse_electronique,
+                            mot_de_passe_mailing: element.mot_de_passe_mailing,
+                            porte: element.porte
+                        },
                         id_domaine: element.id_domaine,
                         nom_domaine: element.nom_domaine,
                         demande_status: element.demande_status
@@ -160,8 +172,7 @@ router.post('/detail',async(req,res)=>{
         stage.demande_stage e 
             JOIN domaine d on e.id_domaine = d.id	
             LEFT JOIN entretien_demande_stage eds on  e.id = eds.id_demande_stage
-            where id_autorite_enfant = ${req.body.id_autorite_enfant} and e.id = ${req.body.id_demande_stage}
-    `
+            where id_autorite_enfant = ${req.body.id_autorite_enfant} and e.id = ${req.body.id_demande_stage}`
     
     var query = db.query(sql, function(err, result) {
         if(err){
@@ -174,9 +185,12 @@ router.post('/detail',async(req,res)=>{
   
 // envoie mail
 router.post('/sendMail' , async(req,res)=>{
-    const username = req.body.username
-    const usermail = req.body.usermail
-    const date_entretien = FUNC.date_in_string(req.body.date_entretien)
+    // const username = req.body.username
+    // const usermail = req.body.usermail
+    // const date_entretien = FUNC.date_in_string(req.body.date_entretien)
+    const username = 'RANDRIANARISON Johns'
+    const usermail = 'johnsirintsoa18@gmail.com'
+    const date_entretien = FUNC.date_in_string('2022-11-22T11:00:00')
 
     // const FUNC.date_in_string(date_entretien)
     try {

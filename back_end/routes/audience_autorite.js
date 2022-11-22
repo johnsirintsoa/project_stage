@@ -961,16 +961,16 @@ FROM
     })
 })
 
-router.get('/autorite/notification/:id_autorite_enfant', async(req,res)=>{
-    const sql = `CALL notifications_audience(${req.params.id_autorite_enfant})`
-    db.query(sql,function(err, result) {
-        if(err){
-            return res.send({ err });
-        }
-        else{
-            return res.send(result[0])
-        }
-    })
-})
+// router.get('/autorite/notification/:id_autorite_enfant', async(req,res)=>{
+//     const sql = `CALL notifications_audience(${req.params.id_autorite_enfant})`
+//     db.query(sql,function(err, result) {
+//         if(err){
+//             return res.send({ err });
+//         }
+//         else{
+//             return res.send(result[0])
+//         }
+//     })
+// })
 
 module.exports = router

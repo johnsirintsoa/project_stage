@@ -18,6 +18,7 @@ const autorite_route = require('./routes/autorite')
 const jour_ferie = require('./routes/jf')
 const entretien_route = require('./routes/entretien_stage')
 const audience_pas_dispo = require('./routes/audience_pas_dispo')
+// const notification_route = require('./routes/notifications')
 
 
 app.use(cors())
@@ -45,6 +46,7 @@ app.use('/api/audience',audience_public_route)
 app.use('/api/autorite',autorite_route)
 app.use('/api/entretien',entretien_route)
 app.use('/api/audience',audience_pas_dispo)
+// app.use('/api/notification',notification_route)
 
 
 // connection mongoDB

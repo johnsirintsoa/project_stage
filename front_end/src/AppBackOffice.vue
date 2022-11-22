@@ -228,17 +228,17 @@ export default {
     if(sessionStorage.getItem('administrateur')){
       // redirect vers la page d'accueil
       this.$router.push({path: '/administrateur/'});
+      this.autorite = JSON.parse(sessionStorage.getItem('administrateur')).autorite_enfant
     }else{
       // redirect vers la page de login
       this.$router.push({path: '/administrateur/login'});
       this.active = true
     }
 
-    this.autorite = JSON.parse(sessionStorage.getItem('administrateur')).autorite_enfant
 
     //Notifications
     const id_autorite = JSON.parse(sessionStorage.getItem('administrateur')).autorite_enfant.id
-    this.notifications = await dm_autorite_controller.notifications(id_autorite)
+    // this.notifications = await dm_autorite_controller.notifications(id_autorite)
     // console.log(this.notifications)
   },
   methods: {
