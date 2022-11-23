@@ -238,7 +238,7 @@ export default {
 
     //Notifications
     const id_autorite = JSON.parse(sessionStorage.getItem('administrateur')).autorite_enfant.id
-    // this.notifications = await dm_autorite_controller.notifications(id_autorite)
+    this.notifications = await dm_autorite_controller.notifications(id_autorite)
     // console.log(this.notifications)
   },
   methods: {

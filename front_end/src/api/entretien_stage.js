@@ -13,8 +13,8 @@ export default class EntretienStage{
     return res.data
   }
 
-  static async delete_entretien_stage(id){
-    const res = await axios.get(url.concat('/delete/',id))
+  static async delete_entretien_stage(stage){
+    const res = await axios.post(url.concat('/delete'),stage)
     return res.data
   }
 

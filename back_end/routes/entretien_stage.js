@@ -86,18 +86,35 @@ router.post('/update',async(req,res)=>{
                 res.json(result)
             }
             else {
-                res.json({message:'Validation non validé et envoyé',mail:response,result})
+                res.json({message:'Entretien reporté et envoyé',mail:response,result})
             }
         }
     })
 })
 
-router.get('/delete/:id',async(req,res)=>{
-    db.query(`DELETE FROM entretien_demande_stage where id = ${req.params.id}`,(error,result)=>{
+router.post('/delete',async(req,res)=>{
+    db.query(`DELETE FROM entretien_demande_stage where id = ${req.body.id_entretien}`,async (error,result)=>{
         if(error){
             res.send(error)
-        }else{
-            res.json(result)
+        }
+        else{
+            const autorite = req.body.autorite
+            const stagiaire = {
+                mail : req.body.e_mail,
+                nom : req.body.nom,
+                prenom : req.body.prenom,
+                telephone: req.body.telephone,
+                e_mail: req.body.e_mail,
+                cin: req.body.cin, 
+            }
+            const response = await mailing.entretien_supprimer(autorite,stagiaire)
+            
+            if(response && result ){
+                res.json(result)
+            }
+            else {
+                res.json({message:'Entretien supprimé',mail:response,result})
+            }
         }
     })
 })

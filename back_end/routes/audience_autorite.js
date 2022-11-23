@@ -20,6 +20,14 @@ router.post('/autorite/all/mois/', async(req,res) => {
                     if(element.action_autorite == 1){
                         array_result.push({
                             id: element.id_aud_autorite,
+                            autorite:{
+                                id: element.id,
+                                intitule: element.intitule,
+                                intitule_code: element.intitule_code,
+                                addresse_electronique: element.addresse_electronique,
+                                mot_de_passe_mailing: element.mot_de_passe_mailing,
+                                porte: element.porte ,
+                            },
                             sender:{
                               id: element.id_autorite_sender,
                               intitule: element.sender_intitule,
@@ -39,6 +47,14 @@ router.post('/autorite/all/mois/', async(req,res) => {
                     else if(element.action_autorite == 0){
                         array_result.push({
                             id: element.id_aud_autorite,
+                            autorite:{
+                                id: element.id,
+                                intitule: element.intitule,
+                                intitule_code: element.intitule_code,
+                                addresse_electronique: element.addresse_electronique,
+                                mot_de_passe_mailing: element.mot_de_passe_mailing,
+                                porte: element.porte ,
+                            },
                             sender:{
                               id: element.id_autorite_sender,
                               intitule: element.sender_intitule,
@@ -63,8 +79,17 @@ router.post('/autorite/all/mois/', async(req,res) => {
                         array_result.push({
                             id: element.id_aud_public,
                             title: element.motif,
+                            autorite:{
+                                id: element.id,
+                                intitule: element.intitule,
+                                intitule_code: element.intitule_code,
+                                addresse_electronique: element.addresse_electronique,
+                                mot_de_passe_mailing: element.mot_de_passe_mailing,
+                                porte: element.porte ,
+                            },
                             sender:{
-                                nom_complet: element.nom_complet,
+                                nom: element.nom,
+                                prenom: element.prenom,
                                 cin: element.cin,
                                 numero_telephone: element.numero_telephone,
                                 email: element.email
@@ -83,8 +108,17 @@ router.post('/autorite/all/mois/', async(req,res) => {
                         array_result.push({
                             id: element.id_aud_public,
                             title: element.motif,
+                            autorite:{
+                                id: element.id,
+                                intitule: element.intitule,
+                                intitule_code: element.intitule_code,
+                                addresse_electronique: element.addresse_electronique,
+                                mot_de_passe_mailing: element.mot_de_passe_mailing,
+                                porte: element.porte ,
+                            },
                             sender:{
-                                nom_complet: element.nom_complet,
+                                nom: element.nom,
+                                prenom: element.prenom,
                                 cin: element.cin,
                                 numero_telephone: element.numero_telephone,
                                 email: element.email
@@ -106,6 +140,21 @@ router.post('/autorite/all/mois/', async(req,res) => {
                     array_result.push({
                         id: element.id_demande_entretien,
                         title: element.motif,
+                        autorite:{
+                            id: element.id,
+                            intitule: element.intitule,
+                            intitule_code: element.intitule_code,
+                            addresse_electronique: element.addresse_electronique,
+                            mot_de_passe_mailing: element.mot_de_passe_mailing,
+                            porte: element.porte ,
+                        },
+                        stagiaire:{
+                            nom: element.nom,
+                            prenom: element.prenom,
+                            cin: element.cin,
+                            numero_telephone: element.numero_telephone,
+                            email: element.email
+                        },
                         start: date_time_start,
                         end: date_time_fin,
                         color:'#4B187E',
@@ -961,16 +1010,16 @@ FROM
     })
 })
 
-// router.get('/autorite/notification/:id_autorite_enfant', async(req,res)=>{
-//     const sql = `CALL notifications_audience(${req.params.id_autorite_enfant})`
-//     db.query(sql,function(err, result) {
-//         if(err){
-//             return res.send({ err });
-//         }
-//         else{
-//             return res.send(result[0])
-//         }
-//     })
-// })
+router.get('/autorite/notification/:id_autorite_enfant', async(req,res)=>{
+    const sql = `CALL notifications_audience(${req.params.id_autorite_enfant})`
+    db.query(sql,function(err, result) {
+        if(err){
+            return res.send({ err });
+        }
+        else{
+            return res.send(result[0])
+        }
+    })
+})
 
 module.exports = router

@@ -112,7 +112,7 @@ export default {
         },
 
         async getDemandeStage(stage){
-            // console.log(stage)
+            console.log(stage)
             if(stage.date_debut){
               const data = await Swal.fire({
                 title: `Faire un entretien`,
@@ -194,8 +194,17 @@ export default {
                     cancelButtonText: 'Annuler',
                     confirmButtonText: 'Supprimer!'
                   }).then(async (result) => {
+                    const audience_event = {
+                      autorite: stage.autorite,
+                      nom: stage.nom,
+                      prenom: stage.prenom,
+                      telephone: stage.telephone,
+                      e_mail: stage.e_mail,
+                      cin: stage.cin,
+                      id_entretien: stage.id_entretien_demande_stage
+                    } 
                     if (result.isConfirmed) {
-                      const response = await EntretienDemandeStage.delete_entretien_stage(stage.id_entretien_demande_stage)
+                      const response = await EntretienDemandeStage.delete_entretien_stage(audience_event)
                       Swal.fire(
                         'Entretien supprimé',
                         `Entretien avec ${stage.nom} ${stage.prenom} a été reporté`,

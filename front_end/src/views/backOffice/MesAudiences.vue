@@ -648,9 +648,6 @@
         async eventDropped(event){
           const start_date_time = Function.format_date_time(event.event.start)
           const end_date_time = Function.format_date_time(event.event.end)
-    
-          // console.log(start_date_time)
-    
           this.audience.id = event.event.id
           this.audience.direction = this.audience.direction
           this.audience.motif = event.event.title
@@ -658,8 +655,7 @@
           this.audience.date_fin = end_date_time[0]
           this.audience.time_debut = start_date_time[1]
           this.audience.time_fin = end_date_time[1]
-    
-          // console.log(event.event.extendedProps)
+          console.log(event.event)
     
           if(event.event.extendedProps.type_audience == 'Public'){
             if(event.event.extendedProps.action == 1){
@@ -723,7 +719,6 @@
             }
             else if(event.event.extendedProps.action == 0){
               console.log('event dropped...')
-              // console.log(this.audience.date_debut)
               const { value: formValues } = await Swal.fire({
                 title: 'Validation',
                 showCancelButton: true,
@@ -743,7 +738,6 @@
                   ]
                 }
               })
-              console.log(this.audience)
               if (formValues) {
                 this.audience.date_debut = formValues[0]
                 this.audience.date_fin = formValues[1]
@@ -904,13 +898,20 @@
             }).then(async (result) => {
               if(result.isConfirmed){
                 const audience_event = {
+                  autorite: event.event.extendedProps.autorite,
+                  nom: event.event.extendedProps.stagiaire.nom,
+                  prenom: event.event.extendedProps.stagiaire.prenom,
+                  telephone: event.event.extendedProps.stagiaire.numero_telephone,
+                  e_mail: event.event.extendedProps.stagiaire.email,
+                  cin: event.event.extendedProps.stagiaire.cin,
                   date_debut: result.value[0],
                   date_fin: result.value[1], 
                   time_debut: result.value[2],
                   time_fin: result.value[3],
                   id_autorite_enfant_receiver: this.audience.direction ,
                   id: this.audience.id
-                }                  
+                }    
+                console.log(audience_event)              
                 const response = await EntretienDemandeStage.update_entretien_stage(audience_event)
                 if(response.code == 'ER_BAD_FIELD_ERROR'){
                   swal("Entretien non enregistrée", "Veuillez remplir le formulaire", "error");
@@ -942,15 +943,6 @@
                 }
               }
               else if(result.isDenied){
-                // console.log(audience.sender)
-                // const audience_event = {
-                //   date_debut: result.value[0],
-                //   date_fin: result.value[1], 
-                //   time_debut: result.value[2],
-                //   time_fin: result.value[3],
-                //   id_autorite_enfant_receiver: this.audience.direction ,
-                //   id: this.audience.id
-                // } 
                 Swal.fire({
                   title: 'Reporter un entretien',
                   text: "Cette entretien sera considérée comme stage en attente",
@@ -962,10 +954,20 @@
                   confirmButtonText: 'Supprimer!'
                 }).then(async (result) => {
                   if (result.isConfirmed) {
-                    const response = await EntretienDemandeStage.delete_entretien_stage(this.audience.id)
+                    const audience_event = {
+                      autorite: event.event.extendedProps.autorite,
+                      nom: event.event.extendedProps.stagiaire.nom,
+                      prenom: event.event.extendedProps.stagiaire.prenom,
+                      telephone: event.event.extendedProps.stagiaire.numero_telephone,
+                      e_mail: event.event.extendedProps.stagiaire.email,
+                      cin: event.event.extendedProps.stagiaire.cin,
+                      id_entretien: event.event.id
+                    } 
+                    console.log(audience_event)
+                    const response = await EntretienDemandeStage.delete_entretien_stage(audience_event)
                     Swal.fire(
-                      'Deleted!',
-                      'Your file has been deleted.',
+                      'Entretien supprimé',
+                      `Entretien avec ${audience_event.nom} ${audience_event.prenom} a été reporté`,
                       'success'
                     )
                     // setInterval( () => {
@@ -978,10 +980,12 @@
               console.log(err)
             })
           }
+           
           
         },
     
         async eventDragged(event){
+          
           const start_date_time = Function.format_date_time(event.event.start)
           const end_date_time = Function.format_date_time(event.event.end)
           this.audience.id = event.event.id
@@ -991,7 +995,7 @@
           this.audience.date_fin = end_date_time[0]
           this.audience.time_debut = start_date_time[1]
           this.audience.time_fin = end_date_time[1]
-          // console.log(event.event.extendedProps)
+          console.log(event.event)
     
           if(event.event.extendedProps.type_audience == 'Public'){
             if(event.event.extendedProps.action == 1){
@@ -1234,13 +1238,20 @@
             }).then(async (result) => {
               if(result.isConfirmed){
                 const audience_event = {
+                  autorite: event.event.extendedProps.autorite,
+                  nom: event.event.extendedProps.stagiaire.nom,
+                  prenom: event.event.extendedProps.stagiaire.prenom,
+                  telephone: event.event.extendedProps.stagiaire.numero_telephone,
+                  e_mail: event.event.extendedProps.stagiaire.email,
+                  cin: event.event.extendedProps.stagiaire.cin,
                   date_debut: result.value[0],
                   date_fin: result.value[1], 
                   time_debut: result.value[2],
                   time_fin: result.value[3],
                   id_autorite_enfant_receiver: this.audience.direction ,
                   id: this.audience.id
-                }                  
+                }    
+                console.log(audience_event)              
                 const response = await EntretienDemandeStage.update_entretien_stage(audience_event)
                 if(response.code == 'ER_BAD_FIELD_ERROR'){
                   swal("Entretien non enregistrée", "Veuillez remplir le formulaire", "error");
@@ -1283,10 +1294,20 @@
                   confirmButtonText: 'Supprimer!'
                 }).then(async (result) => {
                   if (result.isConfirmed) {
-                    const response = await EntretienDemandeStage.delete_entretien_stage(this.audience.id)
+                    const audience_event = {
+                      autorite: event.event.extendedProps.autorite,
+                      nom: event.event.extendedProps.stagiaire.nom,
+                      prenom: event.event.extendedProps.stagiaire.prenom,
+                      telephone: event.event.extendedProps.stagiaire.numero_telephone,
+                      e_mail: event.event.extendedProps.stagiaire.email,
+                      cin: event.event.extendedProps.stagiaire.cin,
+                      id_entretien: event.event.id
+                    } 
+                    console.log(audience_event)
+                    const response = await EntretienDemandeStage.delete_entretien_stage(audience_event)
                     Swal.fire(
-                      'Deleted!',
-                      'Your file has been deleted.',
+                      'Entretien supprimé',
+                      `Entretien avec ${audience_event.nom} ${audience_event.prenom} a été reporté`,
                       'success'
                     )
                     // setInterval( () => {
@@ -1309,7 +1330,8 @@
                 content: `
                   <p><strong>${info.event.title}</strong></p>
                   <p>De ${Function.date_in_string(info.event.start)} à ${Function.date_in_string(info.event.end)}</p>
-                  <p>Nom: ${info.event.extendedProps.sender.nom_complet}</p>
+                  <p>Nom: ${info.event.extendedProps.sender.nom}</p>
+                  <p>Prénom: ${info.event.extendedProps.sender.prenom}</p>
                   <p>CIN: ${info.event.extendedProps.sender.cin}</p>  
                   <p>Numéro téléphone: ${info.event.extendedProps.sender.numero_telephone}</p>  
                   <p>mail: ${info.event.extendedProps.sender.email}</p>  
