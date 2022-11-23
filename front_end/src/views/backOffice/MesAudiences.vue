@@ -22,6 +22,8 @@
     import AutoriteAPI from '../../api/autorite';
     import frLocale from '@fullcalendar/core/locales/fr';
     import dm_autorite_controller from '../../controllers/BackOffice/DemandeAudienceAutoriteController'
+    import dm_public_controller from '../../controllers/BackOffice/DemandeAudiencePublicController'
+    
 
     export default {
     
@@ -418,7 +420,7 @@
           // console.log(this.audience.time_debut)
           // console.log(action)
           // console.log(type_audience)
-          // console.log(clickInfo.event.extendedProps.sender.id)
+          console.log(clickInfo.event.extendedProps)
           if(type_audience == 'Public' && action == 0){
               const { value: formValues } = await Swal.fire({
                 title: 'Validation',
@@ -445,8 +447,10 @@
               this.audience.date_fin = formValues[1]
               this.audience.time_debut = formValues[2]
               this.audience.time_fin = formValues[3]
-              // console.log(this.audience)
+              console.log(clickInfo.event.extendedProps)
               const audience_event = {
+                autorite: clickInfo.event.extendedProps.autorite,
+                sender: clickInfo.event.extendedProps.sender,
                 date_debut: this.audience.date_debut,
                 date_fin: this.audience.date_fin, 
                 time_debut: this.audience.time_debut,
@@ -455,13 +459,16 @@
                 motif: this.audience.motif,
                 id: this.audience.id
               }
-              await DemandeAudience.valider_public(audience_event)
-              Swal.fire('Succès',
-                  'Validation effectuée avec succès',
-                  'success')
-              // setInterval( () => {
-              //     window.location.reload()
-              //   }, 1000)
+              const response = await dm_public_controller.valider(audience_event)
+              if(response.data){
+                Swal.fire('Succès',`${response.message}`,'success')
+                // setInterval( () => {
+                //   window.location.reload()
+                // }, 1000)
+              }
+              else{
+                Swal.fire('Error',`${response.message}`,'error')
+              }
             }
           }
           else if(type_audience == 'Autorite' && action == 0){
@@ -493,6 +500,8 @@
               this.audience.time_fin = formValues[3]
               // console.log(this.audience)
               const audience_event = {
+                autorite: clickInfo.event.extendedProps.autorite,
+                sender: clickInfo.event.extendedProps.sender,
                 date_debut: this.audience.date_debut,
                 date_fin: this.audience.date_fin, 
                 time_debut: this.audience.time_debut,
@@ -503,17 +512,20 @@
                 id: this.audience.id
               }
               // console.log(audience_event)
-              await DemandeAudience.valider_autorite(audience_event)
-              Swal.fire('Succès',
-                  'Validation effectuée avec succès',
-                  'success')
-              setInterval( () => {
-                  window.location.reload()
-                }, 1000)
+              const response = await dm_autorite_controller.valider(audience_event)
+              if(response.data){
+                Swal.fire('Succès',`${response.message}`,'success')
+                // setInterval( () => {
+                //   window.location.reload()
+                // }, 1000)
+              }
+              else{
+                Swal.fire('Error',`${response.message}`,'error')
+              }
             }
           }
           else if(type_audience == 'Public' && action == 1){
-            const { value: formValues } = await Swal.fire({
+            const form = await Swal.fire({
               title: 'A reporter',
               showDenyButton: true,
               showCancelButton: true,
@@ -536,6 +548,8 @@
             }).then(async (result) => {
                 if(result.isConfirmed){
                   const audience_event = {
+                    autorite: clickInfo.event.extendedProps.autorite,
+                    sender: clickInfo.event.extendedProps.sender,
                     date_debut: result.value[0],
                     date_fin: result.value[1], 
                     time_debut: result.value[2],
@@ -543,29 +557,42 @@
                     id_autorite_enfant: this.audience.direction ,
                     motif: this.audience.motif,
                     id: this.audience.id
-                  }                  
-                  await DemandeAudience.reporter_public_maintenant(audience_event)
-                  Swal.fire('Succès','Vous avez reporté avec succès','success')
-                  // setInterval( () => {
-                  //   window.location.reload()
-                  // }, 1000)
+                  }                
+                  const response = await dm_public_controller.reporter_maintenant(audience_event)
+                  if(response.data){
+                    Swal.fire('Succès',`${response.message}`,'success')
+                    setInterval( () => {
+                      window.location.reload()
+                    }, 1000)
+                  }
+                  else{
+                    Swal.fire('Error',`${response.message}`,'error')
+                  }
+                  
                 }
                 else if(result.isDenied){
                   // console.log(audience.sender)
                   const audience_event = {
+                    autorite: clickInfo.event.extendedProps.autorite,
+                    sender: clickInfo.event.extendedProps.sender,
                     date_debut: this.audience.date_debut,
                     date_fin: this.audience.date_fin,
                     time_debut: this.audience.time_debut,
                     time_fin: this.audience.time_fin,
                     id_autorite_enfant: this.audience.direction,
                     motif: this.audience.motif,
-                    id: this.audience.id_audience
+                    id: this.audience.id
                   }                  
-                  await DemandeAudience.reporter_public_plus_tard(audience_event)
-                  Swal.fire('Audience reporter plus tard', '', 'info')
-                  setInterval( () => {
-                    window.location.reload()
-                  }, 1000)
+                  const response = await dm_public_controller.reporter_plus_tard(audience_event)
+                  if(response.data){
+                    Swal.fire('Succès',`${response.message}`,'success')
+                    setInterval( () => {
+                      window.location.reload()
+                    }, 1000)
+                  }
+                  else{
+                    Swal.fire('Error',`${response.message}`,'error')
+                  }
                 }
               }).catch((err) => {
                 console.log(err)
@@ -600,6 +627,7 @@
               // console.log(result)
               if(result.isConfirmed){
                 const audience_event = {
+                  
                   date_debut: result.value[0],
                   date_fin: result.value[1], 
                   time_debut: result.value[2],
@@ -655,11 +683,11 @@
           this.audience.date_fin = end_date_time[0]
           this.audience.time_debut = start_date_time[1]
           this.audience.time_fin = end_date_time[1]
-          console.log(event.event)
+          console.log(event.event.extendedProps)
     
           if(event.event.extendedProps.type_audience == 'Public'){
             if(event.event.extendedProps.action == 1){
-              const { value: formValues } = await Swal.fire({
+              const form = await Swal.fire({
                 title: 'A reporter',
                 showDenyButton: true,
                 showCancelButton: true,
@@ -682,6 +710,8 @@
               }).then(async (result) => {
                 if(result.isConfirmed){
                   const audience_event = {
+                    autorite: event.event.extendedProps.autorite,
+                    sender: event.event.extendedProps.sender,
                     date_debut: result.value[0],
                     date_fin: result.value[1], 
                     time_debut: result.value[2],
@@ -689,16 +719,24 @@
                     id_autorite_enfant: this.audience.direction ,
                     motif: this.audience.motif,
                     id: this.audience.id
-                  }                  
-                  await DemandeAudience.reporter_public_maintenant(audience_event)
-                  Swal.fire('Succès','Vous avez reporté avec succès','success')
-                  setInterval( () => {
-                    window.location.reload()
-                  }, 1000)
+                  }                
+                  const response = await dm_public_controller.reporter_maintenant(audience_event)
+                  if(response.data){
+                    Swal.fire('Succès',`${response.message}`,'success')
+                    setInterval( () => {
+                      window.location.reload()
+                    }, 1000)
+                  }
+                  else{
+                    Swal.fire('Error',`${response.message}`,'error')
+                  }
+                  
                 }
                 else if(result.isDenied){
                   // console.log(audience.sender)
                   const audience_event = {
+                    autorite: event.event.extendedProps.autorite,
+                    sender: event.event.extendedProps.sender,
                     date_debut: this.audience.date_debut,
                     date_fin: this.audience.date_fin,
                     time_debut: this.audience.time_debut,
@@ -707,18 +745,23 @@
                     motif: this.audience.motif,
                     id: this.audience.id
                   }                  
-                  await DemandeAudience.reporter_public_plus_tard(audience_event)
-                  Swal.fire('Audience reporter plus tard', '', 'info')
-                  setInterval( () => {
-                    window.location.reload()
-                  }, 1000)
+                  const response = await dm_public_controller.reporter_plus_tard(audience_event)
+                  if(response.data){
+                    Swal.fire('Succès',`${response.message}`,'success')
+                    // setInterval( () => {
+                    //   window.location.reload()
+                    // }, 1000)
+                  }
+                  else{
+                    Swal.fire('Error',`${response.message}`,'error')
+                  }
                 }
               }).catch((err) => {
                 console.log(err)
               })
             }
             else if(event.event.extendedProps.action == 0){
-              console.log('event dropped...')
+              // console.log('Pas encore validé...')
               const { value: formValues } = await Swal.fire({
                 title: 'Validation',
                 showCancelButton: true,
@@ -730,7 +773,7 @@
                   `<p style="margin-right:25px;">Durée fin: <input type=time value="${this.audience.time_fin}" id="duree2" class="swal2-input"></p>`,
                 focusConfirm: false,
                 preConfirm: () => {
-                  return[
+                  return [
                     document.getElementById('date1').value,
                     document.getElementById('date2').value,
                     document.getElementById('duree1').value,
@@ -745,6 +788,8 @@
                 this.audience.time_fin = formValues[3]
                 // console.log(this.audience)
                 const audience_event = {
+                  autorite: event.event.extendedProps.autorite,
+                  sender: event.event.extendedProps.sender,
                   date_debut: this.audience.date_debut,
                   date_fin: this.audience.date_fin, 
                   time_debut: this.audience.time_debut,
@@ -753,13 +798,16 @@
                   motif: this.audience.motif,
                   id: this.audience.id
                 }
-                await DemandeAudience.valider_public(audience_event)
-                Swal.fire('Succès',
-                    'Validation effectuée avec succès',
-                    'success')
-                setInterval( () => {
-                    window.location.reload()
-                  }, 1000)
+                const response = await dm_public_controller.valider(audience_event)
+                if(response.data){
+                  Swal.fire('Succès',`${response.message}`,'success')
+                  // setInterval( () => {
+                  //   window.location.reload()
+                  // }, 1000)
+                }
+                else{
+                  Swal.fire('Error',`${response.message}`,'error')
+                }
               }
             }
           }
@@ -793,6 +841,8 @@
                 this.audience.time_fin = formValues[3]
                 // console.log(this.audience)
                 const audience_event = {
+                  autorite: event.event.extendedProps.autorite,
+                  sender: event.event.extendedProps.sender,
                   date_debut: this.audience.date_debut,
                   date_fin: this.audience.date_fin, 
                   time_debut: this.audience.time_debut,
@@ -802,19 +852,20 @@
                   motif: this.audience.motif,
                   id: this.audience.id
                 }
-                // console.log(audience_event)
-                await DemandeAudience.valider_autorite(audience_event)
-                Swal.fire('Succès',
-                  'Validation effectuée avec succès',
-                  'success')
-                setInterval( () => {
-                  window.location.reload()
-                }, 1000)
-      
+                const response = await dm_autorite_controller.valider(audience_event)
+                if(response.data){
+                  Swal.fire('Succès',`${response.message}`,'success')
+                  setInterval( () => {
+                    window.location.reload()
+                  }, 1000)
+                }
+                else{
+                  Swal.fire('Error',`${response.message}`,'error')
+                }
               }
             }
             else if(event.event.extendedProps.action == 1){
-              const { value: formValues } = await Swal.fire({
+              const form = await Swal.fire({
               title: 'A reporter',
               showDenyButton: true,
               showCancelButton: true,
@@ -838,6 +889,8 @@
               // console.log(result)
               if(result.isConfirmed){
                 const audience_event = {
+                  autorite: event.event.extendedProps.autorite,
+                  sender: event.event.extendedProps.sender,
                   date_debut: result.value[0],
                   date_fin: result.value[1], 
                   time_debut: result.value[2],
@@ -847,15 +900,22 @@
                   motif: this.audience.motif,
                   id: this.audience.id
                 }                  
-                await DemandeAudience.reporter_autorite_maintenant(audience_event)
-                Swal.fire('Succès','Vous avez reportée avec succès','success')
-                setInterval( () => {
-                  window.location.reload()
-                }, 1000)
+                const response = await dm_autorite_controller.reporter_maintenant(audience_event)
+                if(response.data){
+                  Swal.fire('Succès',`${response.message}`,'success')
+                  setInterval( () => {
+                    window.location.reload()
+                  }, 1000)
+                }
+                else{
+                  Swal.fire('Error',`${response.message}`,'error')
+                }
               }
               else if(result.isDenied){
                 // console.log(audience.sender)
                 const audience_event = {
+                  autorite: event.event.extendedProps.autorite,
+                  sender: event.event.extendedProps.sender,
                   date_debut: this.audience.date_debut,
                   date_fin: this.audience.date_fin,
                   time_debut: this.audience.time_debut,
@@ -865,11 +925,16 @@
                   motif: this.audience.motif,
                   id: this.audience.id
                 }                  
-                await DemandeAudience.reporter_autorite_plus_tard(audience_event)
-                Swal.fire('Audience reporter plus tard', '', 'info')
-                setInterval( () => {
-                  window.location.reload()
-                }, 1000)
+                const response = await dm_autorite_controller.reporter_plus_tard(audience_event)
+                if(response.data){
+                  Swal.fire('Succès',`${response.message}`,'success')
+                  setInterval( () => {
+                    window.location.reload()
+                  }, 1000)
+                }
+                else{
+                  Swal.fire('Error',`${response.message}`,'error')
+                }
               }
               }).catch((err) => {
                 console.log(err)
@@ -999,7 +1064,7 @@
     
           if(event.event.extendedProps.type_audience == 'Public'){
             if(event.event.extendedProps.action == 1){
-              const { value: formValues } = await Swal.fire({
+              const form = await Swal.fire({
                 title: 'A reporter',
                 showDenyButton: true,
                 showCancelButton: true,
@@ -1022,6 +1087,8 @@
               }).then(async (result) => {
                 if(result.isConfirmed){
                   const audience_event = {
+                    autorite: event.event.extendedProps.autorite,
+                    sender: event.event.extendedProps.sender,
                     date_debut: result.value[0],
                     date_fin: result.value[1], 
                     time_debut: result.value[2],
@@ -1029,16 +1096,24 @@
                     id_autorite_enfant: this.audience.direction ,
                     motif: this.audience.motif,
                     id: this.audience.id
-                  }                  
-                  await DemandeAudience.reporter_public_maintenant(audience_event)
-                  Swal.fire('Succès','Vous avez reporté avec succès','success')
-                  setInterval( () => {
-                    window.location.reload()
-                  }, 1000)
+                  }                
+                  const response = await dm_public_controller.reporter_maintenant(audience_event)
+                  if(response.data){
+                    Swal.fire('Succès',`${response.message}`,'success')
+                    setInterval( () => {
+                      window.location.reload()
+                    }, 1000)
+                  }
+                  else{
+                    Swal.fire('Error',`${response.message}`,'error')
+                  }
+                  
                 }
                 else if(result.isDenied){
                   // console.log(audience.sender)
                   const audience_event = {
+                    autorite: event.event.extendedProps.autorite,
+                    sender: event.event.extendedProps.sender,
                     date_debut: this.audience.date_debut,
                     date_fin: this.audience.date_fin,
                     time_debut: this.audience.time_debut,
@@ -1047,11 +1122,16 @@
                     motif: this.audience.motif,
                     id: this.audience.id
                   }                  
-                  await DemandeAudience.reporter_public_plus_tard(audience_event)
-                  Swal.fire('Audience reporter plus tard', '', 'info')
-                  setInterval( () => {
-                    window.location.reload()
-                  }, 1000)
+                  const response = await dm_public_controller.reporter_plus_tard(audience_event)
+                  if(response.data){
+                    Swal.fire('Succès',`${response.message}`,'success')
+                    setInterval( () => {
+                      window.location.reload()
+                    }, 1000)
+                  }
+                  else{
+                    Swal.fire('Error',`${response.message}`,'error')
+                  }
                 }
               }).catch((err) => {
                 console.log(err)
@@ -1085,6 +1165,9 @@
                 this.audience.time_fin = formValues[3]
                 // console.log(this.audience)
                 const audience_event = {
+                  
+                  autorite: event.event.extendedProps.autorite,
+                  sender: event.event.extendedProps.sender,
                   date_debut: this.audience.date_debut,
                   date_fin: this.audience.date_fin, 
                   time_debut: this.audience.time_debut,
@@ -1093,13 +1176,16 @@
                   motif: this.audience.motif,
                   id: this.audience.id
                 }
-                await DemandeAudience.valider_public(audience_event)
-                Swal.fire('Succès',
-                    'Validation effectuée avec succès',
-                    'success')
-                setInterval( () => {
-                    window.location.reload()
-                  }, 1000)
+                const response = await dm_public_controller.valider(audience_event)
+                if(response.data){
+                  Swal.fire('Succès',`${response.message}`,'success')
+                  // setInterval( () => {
+                  //   window.location.reload()
+                  // }, 1000)
+                }
+                else{
+                  Swal.fire('Error',`${response.message}`,'error')
+                }
               }
             }
           }
@@ -1133,6 +1219,8 @@
                 this.audience.time_fin = formValues[3]
                 // console.log(this.audience)
                 const audience_event = {
+                  autorite: event.event.extendedProps.autorite,
+                  sender: event.event.extendedProps.sender,
                   date_debut: this.audience.date_debut,
                   date_fin: this.audience.date_fin, 
                   time_debut: this.audience.time_debut,
@@ -1143,18 +1231,21 @@
                   id: this.audience.id
                 }
                 // console.log(audience_event)
-                await DemandeAudience.valider_autorite(audience_event)
-                Swal.fire('Succès',
-                  'Validation effectuée avec succès',
-                  'success')
-                setInterval( () => {
-                  window.location.reload()
-                }, 1000)
+                const response = await dm_autorite_controller.valider(audience_event)
+                if(response.data){
+                  Swal.fire('Succès',`${response.message}`,'success')
+                  setInterval( () => {
+                    window.location.reload()
+                  }, 1000)
+                }
+                else{
+                  Swal.fire('Error',`${response.message}`,'error')
+                }
       
               }
             }
             else if(event.event.extendedProps.action == 1){
-              const { value: formValues } = await Swal.fire({
+              const form = await Swal.fire({
               title: 'A reporter',
               showDenyButton: true,
               showCancelButton: true,
@@ -1178,6 +1269,8 @@
               // console.log(result)
               if(result.isConfirmed){
                 const audience_event = {
+                  autorite: event.event.extendedProps.autorite,
+                  sender: event.event.extendedProps.sender,
                   date_debut: result.value[0],
                   date_fin: result.value[1], 
                   time_debut: result.value[2],
@@ -1319,8 +1412,7 @@
             }).catch((err) => {
               console.log(err)
             })
-          }
-                
+          }    
         },
     
         detailEvent(info) {

@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router();
 const db = require('../database')
-
+const mailing = require('../Controllers/MailingController')
 
 router.post('/autorite/all/mois/', async(req,res) => {
     const sql = `CALL LISTE_AUTORITE_PAR_MOIS(${req.body.id_autorite},'${req.body.date_du_jour}')`
@@ -31,7 +31,8 @@ router.post('/autorite/all/mois/', async(req,res) => {
                             sender:{
                               id: element.id_autorite_sender,
                               intitule: element.sender_intitule,
-                              intitule_code: element.sender_intitule_code
+                              intitule_code: element.sender_intitule_code,
+                              addresse_electronique: element.sender_addresse_electronique,
                             },
                             title: element.motif,
                             start: date_time_start,
@@ -58,7 +59,8 @@ router.post('/autorite/all/mois/', async(req,res) => {
                             sender:{
                               id: element.id_autorite_sender,
                               intitule: element.sender_intitule,
-                              intitule_code: element.sender_intitule_code
+                              intitule_code: element.sender_intitule_code,
+                              addresse_electronique: element.sender_addresse_electronique
                             },
                             title: element.motif,
                             start: date_time_start,
@@ -787,9 +789,22 @@ router.post('/autorite/valider',async(req,res)=>{
     // console.log(audience)
     // const sql = `CALL si_disponible_autorite('${req.body.date_event_debut}','${req.body.date_event_fin}','${req.body.time_event_debut}','${req.body.time_event_fin}',${req.body.id_autorite_enfant},'${req.body.motif}')`
     const sql = `UPDATE stage.demande_audience_autorite SET ? where id = ${req.body.id}`
-    db.query(sql,audience, (error,result) => {
-        if(error) res.send(error)
-        res.json(result)
+    db.query(sql, audience,async(error,result) => {
+        if(error) {
+            res.send(error)
+        }
+        else{
+            const autorite = req.body.autorite
+            const sender =  req.body.sender
+            const entretien_date_time = String(req.body.date_debut).concat('T',req.body.time_debut)
+            const response = await mailing.audience_autorite_valide(autorite,sender,entretien_date_time)
+            if(response && result ){
+                res.json({message:'Audience validé et envoyé',mail:response,data:result})
+            }
+            else {
+                res.json({message:'Audience non validé '})
+            }
+        }
     })
 })
 
@@ -808,9 +823,22 @@ router.post('/autorite/reporter/now',async(req,res)=>{
     // console.log(audience)
     // const sql = `CALL si_disponible_autorite('${req.body.date_event_debut}','${req.body.date_event_fin}','${req.body.time_event_debut}','${req.body.time_event_fin}',${req.body.id_autorite_enfant},'${req.body.motif}')`
     const sql = `UPDATE stage.demande_audience_autorite SET ? where id = ${req.body.id}`
-    db.query(sql,audience, (error,result) => {
-        if(error) res.send(error)
-        res.json(result)
+    db.query(sql,audience, async (error,result) => {
+        if(error) {
+            res.send(error)
+        }
+        else{
+            const autorite = req.body.autorite
+            const sender =  req.body.sender
+            const entretien_date_time = String(req.body.date_debut).concat('T',req.body.time_debut)
+            const response = await mailing.audience_autorite_reporte(autorite,sender,entretien_date_time)
+            if(response && result ){
+                res.json({message:'Audience reportée et envoyé',mail:response,data:result})
+            }
+            else {
+                res.json({message:'Audience non reportée '})
+            }
+        }
     })
 })
 
@@ -829,9 +857,21 @@ router.post('/autorite/reporter/later',async(req,res)=>{
     console.log(audience)
     // const sql = `CALL si_disponible_autorite('${req.body.date_event_debut}','${req.body.date_event_fin}','${req.body.time_event_debut}','${req.body.time_event_fin}',${req.body.id_autorite_enfant},'${req.body.motif}')`
     const sql = `UPDATE stage.demande_audience_autorite SET ? where id = ${req.body.id}`
-    db.query(sql,audience, (error,result) => {
-        if(error) res.send(error)
-        res.json(result)
+    db.query(sql,audience, async(error,result) => {
+        if(error) {
+            res.send(error)
+        }
+        else{
+            const autorite = req.body.autorite
+            const sender =  req.body.sender
+            const response = await mailing.audience_autorite_reporte_plus_tard(autorite,sender)
+            if(response && result ){
+                res.json({message:'Audience reportée et envoyé',mail:response,data:result})
+            }
+            else {
+                res.json({message:'Audience non reportée '})
+            }
+        }
     })
 })
 
@@ -923,7 +963,7 @@ FROM
     })
 })
 
-router.get('/reporter/all/:id_autorite_enfant', async(req,res) =>{
+router.get('/autorite/reporter/all/:id_autorite_enfant', async(req,res) =>{
     const sql = `SELECT 
     dap.id as id_aud_public,
     dap.date_event_debut as dd_aud_public,
@@ -975,37 +1015,38 @@ FROM
         if(err){
             return res.send({ err });
         }else{
-            const array_result = []
-            result.forEach(element => {
-                if(element.type_audience == 'Public'){
-                    array_result.push({
-                        id_audience : element.id_aud_public,
-                        date_debut : element.dd_aud_public,
-                        date_fin : element.df_aud_public,
-                        time_debut : element.td_aud_public,
-                        time_fin : element.tf_aud_public,
-                        motif : element.motif,
-                        type_audience : element.type_audience
-                    })
-                }else if (element.type_audience == 'Autorite'){
-                    array_result.push({
-                        id_audience : element.id_aud_autorite,
-                        sender :{
-                            id: element.id_autorite_sender,
-                            intitule: element.sender_intitule,
-                            intitule_code: element.sender_intitule_code
-                        },
-                        date_debut : element.dd_aud_autorite,
-                        date_fin : element.df_aud_autorite,
-                        time_debut : element.td_aud_autorite,
-                        time_fin : element.tf_aud_autorite,
-                        motif : element.motif,
-                        type_audience : element.type_audience
-                    })
-                }               
-            });
-            // console.log(array_result)
-            return res.json(array_result);
+            return res.send(sql);
+            // const array_result = []
+            // result.forEach(element => {
+            //     if(element.type_audience == 'Public'){
+            //         array_result.push({
+            //             id_audience : element.id_aud_public,
+            //             date_debut : element.dd_aud_public,
+            //             date_fin : element.df_aud_public,
+            //             time_debut : element.td_aud_public,
+            //             time_fin : element.tf_aud_public,
+            //             motif : element.motif,
+            //             type_audience : element.type_audience
+            //         })
+            //     }else if (element.type_audience == 'Autorite'){
+            //         array_result.push({
+            //             id_audience : element.id_aud_autorite,
+            //             sender :{
+            //                 id: element.id_autorite_sender,
+            //                 intitule: element.sender_intitule,
+            //                 intitule_code: element.sender_intitule_code
+            //             },
+            //             date_debut : element.dd_aud_autorite,
+            //             date_fin : element.df_aud_autorite,
+            //             time_debut : element.td_aud_autorite,
+            //             time_fin : element.tf_aud_autorite,
+            //             motif : element.motif,
+            //             type_audience : element.type_audience
+            //         })
+            //     }               
+            // });
+            // // console.log(array_result)
+            // return res.json(array_result);
         }
     })
 })

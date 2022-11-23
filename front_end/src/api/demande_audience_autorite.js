@@ -33,4 +33,24 @@ export default class DemandeAudienceAutorite{
         const res =  await axios.get(url.concat('/notification/',id))
         return res.data
     }
+
+    static async valider(dm_aud_autorite){
+        const res = await axios.post(url.concat('/valider'),dm_aud_autorite)
+        return res.data
+    }
+
+    static async reporter_maintenant(audience_event){
+        const res = await axios.post(url.concat('/reporter/now'),audience_event)
+        return res.data       
+    }
+    static async reporter_plus_tard(audience_event){
+        const res = await axios.post(url.concat('/reporter/later'),audience_event)
+        return res.data       
+    }
+
+    // Liste audiences reportées
+    static async audiences_reporter(id_autorite_enfant){
+        const res = await axios.get(url.concat('/reporter/all/',id_autorite_enfant))
+        return res.data
+    }
 }

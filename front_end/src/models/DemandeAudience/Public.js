@@ -17,7 +17,22 @@ export default class DemandeAudiencePublic {
     }
 
     static async delete(audience_event){
-        const res = await this.delete(audience_event)
+        const res = await Public.delete(audience_event)
+        return res
+    }
+
+    static async valider(audience){
+        const res = await Public.valider_public(audience)
+        return res
+    }
+
+    static async reporter_maintenant(audience){
+        const res = await Public.reporter_public_maintenant(audience)
+        return res
+    }
+
+    static async reporter_plus_tard(audience){
+        const res = await Public.reporter_public_plus_tard(audience)
         return res
     }
 }
