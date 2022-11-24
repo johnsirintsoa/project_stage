@@ -6,6 +6,11 @@ export default class DemandeAudienceAutorite {
         return res
     }
 
+    static async revalider(audience){
+        const res = await Autorite.revalider(audience)
+        return res
+    }
+
     static async reporter_maintenant(audience){
         const res = await Autorite.reporter_maintenant(audience)
         return res
@@ -20,5 +25,10 @@ export default class DemandeAudienceAutorite {
         const res = await Autorite.audiences_reporter(id_autorite)
         return res
     }
+
+    static async liste_audience_validees (id_autorite_enfant) {
+        const audience = await Autorite.audiences_valider(id_autorite_enfant)
+        return audience
+      }
     
 }

@@ -872,6 +872,39 @@ router.post('/public/valider',async(req,res)=>{
     })
 })
 
+router.post('/public/revalider',async(req,res)=>{
+    const audience = {
+        date_event_debut: req.body.date_debut,
+        date_event_fin: req.body.date_fin, 
+        time_event_debut: req.body.time_debut,
+        time_event_fin: req.body.time_fin,
+        id_autorite_enfant: req.body.id_autorite_enfant,
+        motif: req.body.motif,
+        action: 1,
+        id: req.body.id
+    }
+
+    const autorite = req.body.autorite
+    const sender = req.body.sender
+
+    const sql = `UPDATE stage.demande_audience_public SET ? where id = ${req.body.id}`
+    db.query(sql,audience,async (error,result) => {
+        if(error) {
+            res.send(error)
+        }
+        else{
+            const entretien_date_time = String(req.body.date_debut).concat('T',req.body.time_debut)
+            const response = await mailing.audience_public_revalide(autorite,sender,entretien_date_time)
+            if(response && result ){
+                res.json({message:'Audience validé et envoyé',mail:response,data:result})
+            }
+            else {
+                res.json({message:'Audience non validé '})
+            }
+        }
+    })
+})
+
 router.post('/public/reporter/now',async(req,res)=>{
     const audience = {
         date_event_debut: req.body.date_debut,

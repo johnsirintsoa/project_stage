@@ -53,4 +53,14 @@ export default class DemandeAudienceAutorite{
         const res = await axios.get(url.concat('/reporter/all/',id_autorite_enfant))
         return res.data
     }
+
+    static async audiences_valider(id_autorite_enfant){
+        const res = await axios.get(url.concat('/valider/all/',id_autorite_enfant))
+        return res.data
+    }
+
+    static async revalider(dm_aud_autorite){
+        const res = await axios.post(url.concat('/revalider'),dm_aud_autorite)
+        return res.data
+    }
 }

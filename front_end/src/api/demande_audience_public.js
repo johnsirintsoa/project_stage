@@ -44,6 +44,11 @@ export default class DemandeAudience{
         return res.data
     }
 
+    static async revalider_public(dm_aud_public){
+        const res = await axios.post(url.concat('/revalider'),dm_aud_public)
+        return res.data
+    }
+
     static async reporter_public_maintenant(audience_event){
         const res = await axios.post(url.concat('/reporter/now'),audience_event)
         return res.data       

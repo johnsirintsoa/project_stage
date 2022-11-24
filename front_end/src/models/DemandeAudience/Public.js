@@ -26,6 +26,11 @@ export default class DemandeAudiencePublic {
         return res
     }
 
+    static async revalider(audience){
+        const res = await Public.revalider_public(audience)
+        return res
+    }
+
     static async reporter_maintenant(audience){
         const res = await Public.reporter_public_maintenant(audience)
         return res

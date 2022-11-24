@@ -27,4 +27,14 @@ export default class DemandeAudienceAutoriteController{
         const response = await DemandeAudienceAutorite.liste_audiences_reportes(id_autorite)
         return response
     }
+
+    static async liste_audiences_validees(id_autorite){
+        const response = await DemandeAudienceAutorite.liste_audience_validees(id_autorite)
+        return response
+    }
+
+    static async revalider(audience){
+        const response = await DemandeAudienceAutorite.revalider(audience)
+        return response
+    }
 }

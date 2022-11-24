@@ -7,6 +7,11 @@ export default class DemandeAudiencePublicController{
         return response
     }
 
+    static async revalider(audience){
+        const response = await DemandeAudiencePublic.revalider(audience)
+        return response
+    }
+
     static async reporter_maintenant(audience){
         const response = await DemandeAudiencePublic.reporter_maintenant(audience)
         return response

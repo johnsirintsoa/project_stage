@@ -147,6 +147,41 @@ const audience_public_valide = async (autorite,sender,entretien_date_time) =>{
     return data
 }
 
+const audience_public_revalide = async (autorite,sender,entretien_date_time) =>{
+    const autorite_mail = {
+        user: autorite.addresse_electronique,
+        pass: autorite.mot_de_passe_mailing
+    }
+    const date_entretien = FUNC.date_in_string(entretien_date_time)
+    const transporter = nodemailer.createTransport({
+        host: 'smtp.gmail.com',
+        port: 587,
+        secure:false,
+        auth: {
+            user: autorite_mail.user,
+            pass: autorite_mail.pass
+            // user: 'mefstage2022@gmail.com',
+            // pass: 'wswrgxbntbumffqs'
+        }
+    });
+    
+    let data = ''
+    // send email
+    await transporter.sendMail({
+        from: autorite_mail.user,
+        to: sender.addresse_electronique,
+        subject: 'Audience validé',
+        html: `<p>Bonjour ${sender.nom} ${sender.prenom}.</p> 
+                <p>Votre audience auprès de la ${autorite.intitule}(${autorite.intitule_code}) a été revalidée, vous pouvez venir le ${date_entretien} 
+                Porte <strong>${autorite.porte}</strong></p>`
+    }).then((result) => {
+        data = result
+    }).catch((err) => {
+        data = err
+    });
+    return data
+}
+
 const audience_public_reporte = async (autorite,sender,entretien_date_time) =>{
     const autorite_mail = {
         user: autorite.addresse_electronique,
@@ -324,14 +359,51 @@ const audience_autorite_reporte_plus_tard = async (autorite,sender) =>{
     return data
 }
 
+const audience_autorite_revalide = async (autorite,sender,entretien_date_time) =>{
+    const autorite_mail = {
+        user: autorite.addresse_electronique,
+        pass: autorite.mot_de_passe_mailing
+    }
+    const date_entretien = FUNC.date_in_string(entretien_date_time)
+    const transporter = nodemailer.createTransport({
+        host: 'smtp.gmail.com',
+        port: 587,
+        secure:false,
+        auth: {
+            user: autorite_mail.user,
+            pass: autorite_mail.pass
+            // user: 'mefstage2022@gmail.com',
+            // pass: 'wswrgxbntbumffqs'
+        }
+    });
+    
+    let data = ''
+    // send email
+    await transporter.sendMail({
+        from: autorite_mail.user,
+        to: sender.email,
+        subject: 'Audience validé',
+        html: `<p>Bonjour Monsieur ou Madame le ${sender.intitule_code}</p> 
+                <p>Votre audience auprès de la ${autorite.intitule}(${autorite.intitule_code}) a été revalidée, vous pouvez venir le ${date_entretien} 
+                Porte <strong>${autorite.porte}</strong></p>`
+    }).then((result) => {
+        data = result
+    }).catch((err) => {
+        data = err
+    });
+    return data
+}
+
 module.exports = {
     entretien_valide,
     entretien_reporte,
     entretien_supprimer,
     audience_public_valide,
+    audience_public_revalide,
     audience_public_reporte,
     audience_public_reporte_plus_tard,
     audience_autorite_valide,
     audience_autorite_reporte,
-    audience_autorite_reporte_plus_tard
+    audience_autorite_reporte_plus_tard,
+    audience_autorite_revalide
 }
