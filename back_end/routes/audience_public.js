@@ -769,7 +769,100 @@ router.post('/public/all/mois', async(req,res) =>{
                         color: element.color
                     })
                 }
-                }               
+                }  
+                else if(element.type_audience == 'Jour ouvrable'){
+                    if(element.jour_non_dispo_jour == 'Sunday'){
+                        result_array.push({
+                            display: 'background',
+                            Overlap: false,
+                            title: element.title,
+                            daysOfWeek: [ '0' ], // these recurrent events move separately
+                            startTime: element.td_non_dispo_jour,
+                            endTime: element.tf_non_dispo_jour,
+                            type_audience: element.type_audience,
+                            color: element.color,
+                            status_audience: element.status_audience
+                        })
+                }
+                else if(element.jour_non_dispo_jour == 'Monday'){
+                    result_array.push({
+                        display: 'background',
+                        Overlap: false,
+                        title: element.title,
+                        daysOfWeek: [ '1' ], // these recurrent events move separately
+                        startTime: element.td_non_dispo_jour,
+                        endTime: element.tf_non_dispo_jour,
+                        type_audience: element.type_audience,
+                        color: element.color,
+                        status_audience: element.status_audience
+                    })
+                }
+                else if(element.jour_non_dispo_jour == 'Tuesday'){
+                    result_array.push({
+                        display: 'background',
+                        Overlap: false,
+                        title: element.title,
+                        daysOfWeek: [ '2' ], // these recurrent events move separately
+                        startTime: element.td_non_dispo_jour,
+                        endTime: element.tf_non_dispo_jour,
+                        type_audience: element.type_audience,
+                        color: element.color,
+                        status_audience: element.status_audience
+                    })
+                }
+                else if(element.jour_non_dispo_jour == 'Wednesday'){
+                    result_array.push({
+                        display: 'background',
+                        Overlap: false,
+                        title: element.title,
+                        daysOfWeek: [ '3' ], // these recurrent events move separately
+                        startTime: element.td_non_dispo_jour,
+                        endTime: element.tf_non_dispo_jour,
+                        type_audience: element.type_audience,
+                        color: element.color,
+                        status_audience: element.status_audience
+                    })
+                }
+                else if(element.jour_non_dispo_jour == 'Thursday'){
+                    result_array.push({
+                        display: 'background',
+                        Overlap: false,
+                        title: element.title,
+                        daysOfWeek: [ '4' ], // these recurrent events move separately
+                        startTime: element.td_non_dispo_jour,
+                        endTime: element.tf_non_dispo_jour,
+                        type_audience: element.type_audience,
+                        color: element.color,
+                        status_audience: element.status_audience
+                    })
+                }
+                else if(element.jour_non_dispo_jour == 'Friday'){
+                    result_array.push({
+                        display: 'background',
+                        Overlap: false,
+                        title: element.title,
+                        daysOfWeek: [ '5' ], // these recurrent events move separately
+                        startTime: element.td_non_dispo_jour,
+                        endTime: element.tf_non_dispo_jour,
+                        type_audience: element.type_audience,
+                        color: element.color,
+                        status_audience: element.status_audience
+                    })
+                }
+                else if(element.jour_non_dispo_jour == 'Saturday'){
+                    result_array.push({
+                        display: 'background',
+                        Overlap: false,
+                        title: element.title,
+                        daysOfWeek: [ '6' ], // these recurrent events move separately
+                        startTime: element.td_non_dispo_jour,
+                        endTime: element.tf_non_dispo_jour,
+                        type_audience: element.type_audience,
+                        color: element.color,
+                        status_audience: element.status_audience
+                    })
+                }
+                } 
             });
             return res.json(result_array);
         }
@@ -784,21 +877,6 @@ router.post('/public/delete',async(req,res)=>{
         res.json(result)
     })
 })
-
-// router.post('/public/add',async(req,res)=>{
-//     const sql = `CALL si_disponible_public('${req.body.date_event_debut}','${req.body.date_event_fin}','${req.body.time_event_debut}','${req.body.time_event_fin}','${req.body.motif}',${req.body.id_autorite_enfant})`
-//         db.query(sql, (error,result) => {
-//         if(error){
-//             res.send(error)
-//         } 
-//         else if(result.length > 0 ){
-//             res.json(result[0][0])
-//         }else{
-//             res.json(result)
-//         }
-        
-//     })
-// })
 
 router.post('/public/add',async(req,res)=>{
     const sql = `CALL add_audience_public_V2('${req.body.session_navigateur}','${req.body.nom}','${req.body.prenom}','${req.body.cin}','${req.body.numero_telephone}','${req.body.email}','${req.body.date_event_debut}','${req.body.date_event_fin}','${req.body.time_event_debut}','${req.body.time_event_fin}','${req.body.motif}',${req.body.id_autorite_enfant})`

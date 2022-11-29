@@ -64,7 +64,8 @@
             // eventsSet: this.handleEvents,
             eventDidMount: this.detailEvent,
             eventResize: this.eventDragged,
-            eventDrop: this.eventDropped
+            eventDrop: this.eventDropped,
+            // Overlap: true
             /* you can update a remote database when these fire:
             eventAdd:
             eventChange:

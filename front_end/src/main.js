@@ -45,7 +45,7 @@ else if(path[1] == 'autorite'){
 else{
     // expiration du session navigateur
     // start
-    const duree_expiration = 2
+    const duree_expiration = 10
     const date_expiration = new Date(new Date().getTime() + (60000 * duree_expiration))
     // console.log("Date d'expiration "+date_expiration)
 

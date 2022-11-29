@@ -2,9 +2,8 @@
 import { RouterLink, RouterView } from 'vue-router'
 // import HelloWorld from './components/HelloWorld.vue'
 import dm_autorite_controller from './controllers/BackOffice/DemandeAudienceAutoriteController'
-
+import notificationController from './controllers/BackOffice/NotificationController';
 </script>
-
 <template>
 
     <!-- ======= Header ======= -->
@@ -229,6 +228,7 @@ export default {
       // redirect vers la page d'accueil
       this.$router.push({path: '/administrateur/'});
       this.autorite = JSON.parse(sessionStorage.getItem('administrateur')).autorite_enfant
+      notificationController.notification_back_end()
     }else{
       // redirect vers la page de login
       this.$router.push({path: '/administrateur/login'});
