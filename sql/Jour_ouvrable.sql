@@ -1,48 +1,95 @@
-INSERT INTO jour_ouvrable (jour, time_debut_matin, time_fin_matin, time_debut_apres_midi, time_fin_apres_midi, id_autorite)
+-- Pour tous les autorites
+INSERT INTO jour_ouvrable (jour, time_debut, time_fin, partie_du_jour, id_autorite)
     SELECT 
         'Monday' as jour,
         '08:00:00' as time_debut_matin,
         '12:00:00' as time_fin_matin,
-        '13:00:00' as time_debut_apres_midi,
-        '16:00:00' as time_fin_apres_midi,
+		'Matin' as partie_du_jour
         id as id_autorite
     FROM autorite_enfant
+	WHERE id = 1
+	UNION
+	SELECT 
+        'Monday' as jour,
+        '13:00:00' as time_debut_matin,
+        '16:00:00' as time_fin_matin,
+		'Après-midi' as partie_du_jour
+        id as id_autorite
+    FROM autorite_enfant
+	WHERE id = 1
     UNION
     SELECT 
         'Tuesday' as jour,
         '08:00:00' as time_debut_matin,
         '12:00:00' as time_fin_matin,
-        '13:00:00' as time_debut_apres_midi,
-        '16:00:00' as time_fin_apres_midi,
+        'Matin' as partie_du_jour,
         id as id_autorite
     FROM autorite_enfant
+	WHERE id = 1
+	UNION
+	SELECT 
+        'Tuesday' as jour,
+        '13:00:00' as time_debut_matin,
+        '16:00:00' as time_fin_matin,
+		'Après-midi' as partie_du_jour
+        id as id_autorite
+    FROM autorite_enfant
+	WHERE id = 1
     UNION
     SELECT 
         'Wednesday' as jour,
         '08:00:00' as time_debut_matin,
         '12:00:00' as time_fin_matin,
-        '13:00:00' as time_debut_apres_midi,
-        '16:00:00' as time_fin_apres_midi,
+        'Matin' as partie_du_jour,
         id as id_autorite
     FROM autorite_enfant
+	WHERE id = 1
+	UNION
+    SELECT 
+        'Wednesday' as jour,
+        '13:00:00' as time_debut_matin,
+        '16:00:00' as time_fin_matin,
+		'Après-midi' as partie_du_jour,
+        id as id_autorite
+    FROM autorite_enfant
+	WHERE id = 1
     UNION
     SELECT 
         'Thursday' as jour,
         '08:00:00' as time_debut_matin,
         '12:00:00' as time_fin_matin,
-        '13:00:00' as time_debut_apres_midi,
-        '16:00:00' as time_fin_apres_midi,
+        'Matin' as partie_du_jour,
         id as id_autorite
     FROM autorite_enfant
+	WHERE id = 1
+	UNION
+    SELECT 
+        'Thursday' as jour,
+        '13:00:00' as time_debut_matin,
+        '16:00:00' as time_fin_matin,
+		'Après-midi' as partie_du_jour,
+        id as id_autorite
+    FROM autorite_enfant
+	WHERE id = 1
     UNION
     SELECT 
         'Friday' as jour,
         '08:00:00' as time_debut_matin,
         '12:00:00' as time_fin_matin,
-        '13:00:00' as time_debut_apres_midi,
-        '16:00:00' as time_fin_apres_midi,
+        'Matin' as partie_du_jour,
         id as id_autorite
     FROM autorite_enfant
+	WHERE id = 1
+	UNION
+    SELECT 
+        'Friday' as jour,
+        '13:00:00' as time_debut_matin,
+        '16:00:00' as time_fin_matin,
+        'Après-midi' as partie_du_jour,
+        id as id_autorite
+    FROM autorite_enfant
+	WHERE id = 1
+
 
 
 CREATE  PROCEDURE `ajouter_heure_place_autorite`(heure_debut time,heure_fin time,duree_audience time,tous_les_jours INT,jour_place varchar(15),id_autorite int)

@@ -22,7 +22,7 @@ export default class notificationModel {
     static async askPermission() {
         const permission = await Notification.requestPermission();
         if (permission === "granted") {
-          registerServiceWorker();
+          // registerServiceWorker();
         }
     }
     static async registerServiceWorker() {

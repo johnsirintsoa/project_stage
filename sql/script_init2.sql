@@ -88,7 +88,7 @@ CREATE TABLE stage.entretien_demande_stage (
 	id                   INT  NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
 	id_demande_stage     INT  NOT NULL    ,
 	CONSTRAINT fk_entretien_demande_stage FOREIGN KEY ( id_demande_stage ) REFERENCES stage.demande_stage( id ) ON DELETE NO ACTION ON UPDATE NO ACTION
- ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+ ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 
 CREATE TABLE stage.jour_ouvrable ( 
 	id                   INT  NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
@@ -127,14 +127,6 @@ CREATE TABLE stage.profil (
 	id_autorite_enfant   INT  NOT NULL    ,
 	CONSTRAINT fk_profil_autorite_enfant FOREIGN KEY ( id_autorite_enfant ) REFERENCES stage.autorite_enfant( id ) ON DELETE NO ACTION ON UPDATE NO ACTION
  ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
-
-CREATE TABLE stage.dm_aud_public_jour_ouvrable ( 
-	id                   INT  NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
-	id_jour_ouvrable     INT  NOT NULL    ,
-	id_dm_aud_public     INT  NOT NULL    ,
-	CONSTRAINT fk_dm_aud_public_jour_ouvrable_id_jour_ouvrable FOREIGN KEY ( id_jour_ouvrable ) REFERENCES stage.jour_ouvrable( id ) ON DELETE NO ACTION ON UPDATE NO ACTION,
-	CONSTRAINT fk_dm_aud_public_jour_ouvrable_id_dm_aud_public FOREIGN KEY ( id_dm_aud_public ) REFERENCES stage.demande_audience_public( id ) ON DELETE NO ACTION ON UPDATE NO ACTION
- ) engine=InnoDB;
 
 CREATE INDEX fk_autorite_enfant_autorite_parent ON stage.autorite_enfant ( id_autorite_parent );
 
