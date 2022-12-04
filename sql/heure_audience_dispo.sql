@@ -76,17 +76,39 @@ INSERT INTO stage2.demande_stage( nom, prenom, telephone, e_mail, cin, duree, cu
                 - jour_ferie
 */
 
--- Version 2
-CREATE PROCEDURE `liste_place_disponible_public_par_jour`(IN date_du_jour date,IN session_navigateur varchar(50),in id_autorite int)
+-- Version 1
+CREATE  PROCEDURE `liste_place_disponible_public_par_jour`(IN date_du_jour date,IN session_navigateur varchar(50),in id_autorite int)
 BEGIN
     SET @id_autorite = id_autorite;
     SET @session_navigateur = session_navigateur;
     SET @date_du_jour = date_du_jour;
     set @jour_UTF8 = CONVERT(DAYNAME(@date_du_jour) USING utf8);
 
-    SELECT 
-    had.*,
-    dap.*
+	(SELECT 
+    had.id as id_heure_disponible,
+	CONCAT(@date_du_jour,'T',had.heure_debut) as start,	
+	CONCAT(@date_du_jour,'T',had.heure_fin) as end,
+	dap.id as id,
+	dap.date_event_debut,
+	dap.date_event_fin,
+	dap.time_event_debut,
+	dap.time_event_fin,
+	dap.nom,
+	dap.prenom,
+	dap.cin,
+	dap.numero_telephone,
+	dap.email,
+	CASE 
+		WHEN dap.action = 0 THEN 'Non validé'
+		WHEN dap.action = 1 THEN 'Validé'
+		WHEN dap.action = 2 THEN 'Reporté'
+		ELSE 'Aucune' 
+	END as status_audience,
+	CASE 
+		WHEN dap.session_navigateur = @session_navigateur and dap.action = 0 THEN "#407DFF"
+		WHEN dap.session_navigateur = @session_navigateur and dap.action = 1 THEN "#FF0018"
+		ELSE ''
+	END as color
     FROM
     stage2.heure_audience_disponible had
     JOIN stage2.demande_audience_public dap on had.id = dap.id_heure_audience_disponible
@@ -95,14 +117,29 @@ BEGIN
     and dap.date_event_fin = @date_du_jour
     and dap.session_navigateur = @session_navigateur
     and dap.action >= 0 and dap.action <= 1
+	ORDER BY dap.id DESC LIMIT 1)
     UNION
-    SELECT 
-    had.*,
-    dap.*
+	
+	(SELECT 
+    had.id as id_heure_disponible,
+	CONCAT(@date_du_jour,'T',had.heure_debut) as start,	
+	CONCAT(@date_du_jour,'T',had.heure_fin) as end,
+	'' id,
+	'' date_event_debut,
+	'' date_event_fin,
+	'' time_event_debut,
+	'' time_event_fin,
+	'' nom,
+	'' prenom,
+	'' cin,
+	'' numero_telephone,
+	'' email,
+	'' status_audience,
+	'#0AA913' color
     FROM
     stage2.heure_audience_disponible had
     LEFT JOIN stage2.demande_audience_public dap on had.id = dap.id_heure_audience_disponible
-    WHERE 
+    WHERE
     had.id NOT IN (
         select 
         had.id
@@ -310,11 +347,82 @@ BEGIN
         and jo.jour = @jour_UTF8
         and SUBTIME(daa.time_fin,"00:01:00") between had.heure_debut and had.heure_fin
 		and daa.time_debut between jo.time_debut and jo.time_fin
-		and daa.time_fin between jo.time_debut and jo.time_fin
-        GROUP by had.id 
+		and daa.time_fin between jo.time_debut and jo.time_fin    
+		UNION
+		select 
+		had.id
+		FROM 
+		heure_audience_disponible had
+		JOIN jour_ouvrable jo on had.id_jour_ouvrable = jo.id
+		WHERE 
+		jo.id_autorite = @id_autorite	
+		and had.heure_debut >= (
+		    SELECT 
+		    SUBTIME(jf.time_event_debut,"-00:01:00")
+		    from jour_ferie jf
+		    where 
+		    CONVERT((select dayname(concat(YEAR(CURDATE()),'-',jf.mois_du_jour,'-',jf.numero_du_jour))) USING utf8) = @jour_UTF8
+		)
+		and had.heure_debut <= (
+		    SELECT 
+		    SUBTIME(jf.time_event_fin,"00:01:00")
+		    from jour_ferie jf
+		    where 
+		    CONVERT((select dayname(concat(YEAR(CURDATE()),'-',jf.mois_du_jour,'-',jf.numero_du_jour))) USING utf8) = @jour_UTF8
+		)
+		and	
+		had.heure_fin >= (
+		    SELECT 
+		    SUBTIME(jf.time_event_debut,"-00:01:00")
+		    from jour_ferie jf
+		    where 
+		    CONVERT((select dayname(concat(YEAR(CURDATE()),'-',jf.mois_du_jour,'-',jf.numero_du_jour))) USING utf8) = @jour_UTF8
+		)
+		and had.heure_fin <= (
+		    SELECT 
+		    SUBTIME(jf.time_event_fin,"00:01:00")
+		    from jour_ferie jf
+		    where 
+		    CONVERT((select dayname(concat(YEAR(CURDATE()),'-',jf.mois_du_jour,'-',jf.numero_du_jour))) USING utf8) = @jour_UTF8
+		)
+		
+		or
+		jo.id_autorite = @id_autorite	
+		and had.heure_debut <= (
+		    SELECT 
+		    SUBTIME(jf.time_event_debut,"-00:01:00")
+		    from jour_ferie jf
+		    where 
+		    CONVERT((select dayname(concat(YEAR(CURDATE()),'-',jf.mois_du_jour,'-',jf.numero_du_jour))) USING utf8) = @jour_UTF8
+		)
+		and had.heure_fin >=(
+		    SELECT 
+		    SUBTIME(jf.time_event_debut,"-00:01:00")
+		    from jour_ferie jf
+		    where 
+		    CONVERT((select dayname(concat(YEAR(CURDATE()),'-',jf.mois_du_jour,'-',jf.numero_du_jour))) USING utf8) = @jour_UTF8
+		)
+		or
+		jo.id_autorite = @id_autorite	
+		and had.heure_debut <= (
+		    SELECT 
+		    SUBTIME(jf.time_event_fin,"00:01:00")
+		    from jour_ferie jf
+		    where 
+		    CONVERT((select dayname(concat(YEAR(CURDATE()),'-',jf.mois_du_jour,'-',jf.numero_du_jour))) USING utf8) = @jour_UTF8
+		)
+		and had.heure_fin >=(
+		    SELECT 
+		    SUBTIME(jf.time_event_fin,"00:01:00")
+		    from jour_ferie jf
+		    where 
+		    CONVERT((select dayname(concat(YEAR(CURDATE()),'-',jf.mois_du_jour,'-',jf.numero_du_jour))) USING utf8) = @jour_UTF8
+		)
+		GROUP by had.id 
         ORDER BY heure_debut ASC
-    )
+    ));
 END
+
 
 CREATE PROCEDURE `liste_place_disponible_autorite_par_jour`(IN date_du_jour date,in id_autorite_sender int,in id_autorite_receiver int)
 BEGIN
@@ -326,7 +434,8 @@ BEGIN
 
     SELECT 
     had.*,
-    dap.*
+    dap.*,
+    '' color
     FROM
     stage2.heure_audience_disponible had
     JOIN stage2.demande_audience_autorite daa on had.id = dap.id_heure_audience_disponible
@@ -549,7 +658,99 @@ BEGIN
         and SUBTIME(daa.time_fin,"00:01:00") between had.heure_debut and had.heure_fin
 		and daa.time_debut between jo.time_debut and jo.time_fin
 		and daa.time_fin between jo.time_debut and jo.time_fin
+        
+        -- Jour ferie
+        UNION 
+        select 
+        had.id
+        FROM 
+        heure_audience_disponible had
+        JOIN jour_ouvrable jo on had.id_jour_ouvrable = jo.id
+        WHERE 
+        had.
         GROUP by had.id 
         ORDER BY heure_debut ASC
     )
 END
+
+
+
+
+INSERT INTO stage2.jour_ferie( nom_evenement, numero_du_jour, mois_du_jour, time_event_debut, time_event_fin ) VALUES ( 'Toussaint', '11', '11', '00:00:01', '23:59:00');
+INSERT INTO stage2.jour_ferie( nom_evenement, numero_du_jour, mois_du_jour, time_event_debut, time_event_fin ) VALUES ( 'Noel', '25', '12', '08:00:00', '12:00:00');
+INSERT INTO stage2.jour_ferie( nom_evenement, numero_du_jour, mois_du_jour, time_event_debut, time_event_fin ) VALUES ( 'Fin d''année', '31', '12', '14:00:00', '16:00:00');
+INSERT INTO stage2.jour_ferie( nom_evenement, numero_du_jour, mois_du_jour, time_event_debut, time_event_fin ) VALUES ( 'Nouvel an', '11', '1', '08:00:00', '12:00:00');
+INSERT INTO stage2.jour_ferie( nom_evenement, numero_du_jour, mois_du_jour, time_event_debut, time_event_fin ) VALUES ( 'Black friday', '28', '11', '14:00:00', '15:00:00');
+
+
+
+select 
+had.id
+FROM 
+heure_audience_disponible had
+JOIN demande_audience_public dap on had.id = dap.id_heure_audience_disponible
+JOIN jour_ouvrable jo on had.id_jour_ouvrable = jo.id
+WHERE 
+jo.id_autorite = @id_autorite	
+and had.heure_debut > (
+    SELECT 
+    jf.time_event_debut
+    from jour_ferie jf
+    where 
+    CONVERT((select dayname(concat(YEAR(CURDATE()),'-',jf.mois_du_jour,'-',jf.numero_du_jour))) USING utf8) = @jour_UTF8
+)
+and had.heure_debut < (
+    SELECT 
+    jf.time_event_fin
+    from jour_ferie jf
+    where 
+    CONVERT((select dayname(concat(YEAR(CURDATE()),'-',jf.mois_du_jour,'-',jf.numero_du_jour))) USING utf8) = @jour_UTF8
+)
+and	
+had.heure_fin > (
+    SELECT 
+    jf.time_event_debut
+    from jour_ferie jf
+    where 
+    CONVERT((select dayname(concat(YEAR(CURDATE()),'-',jf.mois_du_jour,'-',jf.numero_du_jour))) USING utf8) = @jour_UTF8
+)
+and had.heure_fin < (
+    SELECT 
+    jf.time_event_fin
+    from jour_ferie jf
+    where 
+    CONVERT((select dayname(concat(YEAR(CURDATE()),'-',jf.mois_du_jour,'-',jf.numero_du_jour))) USING utf8) = @jour_UTF8
+)
+
+or
+jo.id_autorite = @id_autorite	
+and had.heure_debut < (
+    SELECT 
+    jf.time_event_debut
+    from jour_ferie jf
+    where 
+    CONVERT((select dayname(concat(YEAR(CURDATE()),'-',jf.mois_du_jour,'-',jf.numero_du_jour))) USING utf8) = @jour_UTF8
+)
+and had.heure_fin >(
+    SELECT 
+    jf.time_event_debut
+    from jour_ferie jf
+    where 
+    CONVERT((select dayname(concat(YEAR(CURDATE()),'-',jf.mois_du_jour,'-',jf.numero_du_jour))) USING utf8) = @jour_UTF8
+)
+or
+jo.id_autorite = @id_autorite	
+and had.heure_debut < (
+    SELECT 
+    jf.time_event_fin
+    from jour_ferie jf
+    where 
+    CONVERT((select dayname(concat(YEAR(CURDATE()),'-',jf.mois_du_jour,'-',jf.numero_du_jour))) USING utf8) = @jour_UTF8
+)
+and had.heure_fin >(
+    SELECT 
+    jf.time_event_fin
+    from jour_ferie jf
+    where 
+    CONVERT((select dayname(concat(YEAR(CURDATE()),'-',jf.mois_du_jour,'-',jf.numero_du_jour))) USING utf8) = @jour_UTF8
+)
