@@ -76,257 +76,141 @@ INSERT INTO stage2.demande_stage( nom, prenom, telephone, e_mail, cin, duree, cu
                 - jour_ferie
 */
 
--- Version 2
-CREATE PROCEDURE `liste_place_disponible_public_par_jour`(IN date_du_jour date,IN session_navigateur varchar(50),in id_autorite int)
+-- Version 1
+CREATE  PROCEDURE `liste_place_disponible_public_par_jour`(IN date_du_jour date,IN session_navigateur varchar(50),in id_autorite int)
 BEGIN
-    SET @id_autorite = id_autorite;
     SET @session_navigateur = session_navigateur;
+    SET @id_autorite = id_autorite;
+    SET @date_du_jour = date_du_jour;
+    set @jour_UTF8 = CONVERT(DAYNAME(@date_du_jour) USING utf8);
+
+    (SELECT 
+    had.id as id_heure_disponible, 
+    CONCAT(@date_du_jour,'T',had.heure_debut) as start,
+    CONCAT(@date_du_jour,'T',had.heure_fin) as end, 
+    dap.id as id, 
+    hd_dap.date_audience, 
+    hd_dap.heure_debut, 
+    hd_dap.heure_fin, 
+    dap.motif as title,
+    dap.nom, 
+    dap.prenom, 
+    dap.cin, 
+    dap.numero_telephone, 
+    dap.email, 
+    CASE 
+        WHEN dap.action = 0 THEN 'Non validé' 
+        WHEN dap.action = 1 THEN 'Validé' 
+        WHEN dap.action = 2 THEN 'Reporté' 
+    ELSE 'Aucune' END as status_audience, 
+    CASE 
+        WHEN dap.session_navigateur = @session_navigateur and dap.action = 0 THEN "#407DFF" 
+        WHEN dap.session_navigateur = @session_navigateur and dap.action = 1 THEN "#FF0018" 
+        ELSE '#FF0018' END as color 
+    FROM stage3.heure_disponible had 
+    JOIN stage3.dm_aud_public_heure_dispo hd_dap on had.id = hd_dap.id_heure_dispo and  hd_dap.date_audience = @date_du_jour
+    JOIN stage3.demande_audience_public dap on hd_dap.id_aud_public = dap.id
+    where dap.action >=0 and dap.action <=1
+    Group by dap.id order by dap.id Desc LIMIT 1)
+
+    union
+
+    (SELECT 
+    hd.id,
+    CONCAT(@date_du_jour,'T',hd.heure_debut) as start,
+    CONCAT(@date_du_jour,'T',hd.heure_fin) as end, 
+    '' id,
+    '' date_audience, 
+    '' heure_debut, 
+    '' heure_fin, 
+    'Disponible' title,
+    '' nom,
+    '' prenom,
+    '' cin,
+    '' numero_telephone,
+    '' email,
+    '' status_audience,
+    '#0AA913' color
+    FROM
+    stage3.heure_disponible hd
+    LEFT JOIN jour_ouvrable jo on hd.id_jour_ouvrable = jo.id and jo.jour = @jour_UTF8
+    LEFT JOIN heure_dispo_dm_aud_autorite hddaa on hd.id = hddaa.id_heure_dispo and hddaa.date_audience = @date_du_jour and jo.jour = @jour_UTF8
+    LEFT JOIN dm_aud_public_heure_dispo dm_aud_pub_hd on hd.id = dm_aud_pub_hd.id_heure_dispo and dm_aud_pub_hd.date_audience = @date_du_jour and jo.jour = @jour_UTF8
+    LEFT JOIN non_disponibilite_autorite_date ndad on hd.id = ndad.id_heure_dispo and ndad.date_non_dispo = @date_du_jour and jo.jour = @jour_UTF8
+    LEFT JOIN non_disponibilite_autorite_jour ndaj on hd.id = ndaj.id_heure_dispo and jo.jour = @jour_UTF8
+    LEFT JOIN entretien_demande_stage eds on hd.id = eds.id_heure_dispo and eds.date_entretien = @date_du_jour and jo.jour = @jour_UTF8
+    WHERE 
+    jo.id_autorite = @id_autorite
+    and hddaa.id IS NULL
+    and dm_aud_pub_hd.id IS NULL
+    and ndad.id IS NULL
+    and ndaj.id IS NULL
+    and eds.id IS NULL);
+END
+
+-- Version 2
+CREATE  PROCEDURE `liste_place_disponible_public_par_jour`(IN date_du_jour date,IN session_navigateur varchar(50),in id_autorite int)
+BEGIN
+    SET @session_navigateur = session_navigateur;
+    SET @id_autorite = id_autorite;
     SET @date_du_jour = date_du_jour;
     set @jour_UTF8 = CONVERT(DAYNAME(@date_du_jour) USING utf8);
 
     SELECT 
-    had.*,
-    dap.*
+    hd.id,
+    CONCAT(@date_du_jour,'T',hd.heure_debut) as start,
+    CONCAT(@date_du_jour,'T',hd.heure_fin) as end, 
+    dap.id as id, 
+    hd_dap.date_audience, 
+    hd_dap.heure_debut, 
+    hd_dap.heure_fin, 
+    IFNULL(dap.motif,"Disponible") as title,
+    dap.nom, 
+    dap.prenom, 
+    dap.cin, 
+    dap.numero_telephone, 
+    dap.email, 
+    CASE 
+        WHEN dap.action = 0 THEN 'Non validé' 
+        WHEN dap.action = 1 THEN 'Validé' 
+        WHEN dap.action = 2 THEN 'Reporté' 
+        ELSE 'Aucune' END as status_audience, 
+    CASE 
+        WHEN dap.session_navigateur = @session_navigateur and dap.action = 0 THEN "#407DFF" 
+        WHEN dap.session_navigateur = @session_navigateur and dap.action = 1 THEN "#FF0018" 
+        ELSE '#FF0018' END as color 
     FROM
-    stage2.heure_audience_disponible had
-    JOIN stage2.demande_audience_public dap on had.id = dap.id_heure_audience_disponible
-    WHERE
-    dap.date_event_debut = @date_du_jour
-    and dap.date_event_fin = @date_du_jour
-    and dap.session_navigateur = @session_navigateur
-    and dap.action >= 0 and dap.action <= 1
-    UNION
-    SELECT 
-    had.*,
-    dap.*
-    FROM
-    stage2.heure_audience_disponible had
-    LEFT JOIN stage2.demande_audience_public dap on had.id = dap.id_heure_audience_disponible
+    stage3.heure_disponible hd
+    LEFT JOIN jour_ouvrable jo on hd.id_jour_ouvrable = jo.id and jo.jour = @jour_UTF8
+    LEFT JOIN heure_dispo_dm_aud_autorite hddaa on hd.id = hddaa.id_heure_dispo and hddaa.date_audience = @date_du_jour and jo.jour = @jour_UTF8
+    LEFT JOIN dm_aud_public_heure_dispo dm_aud_pub_hd on hd.id = dm_aud_pub_hd.id_heure_dispo and dm_aud_pub_hd.date_audience = @date_du_jour and jo.jour = @jour_UTF8
+    LEFT JOIN non_disponibilite_autorite_date ndad on hd.id = ndad.id_heure_dispo and ndad.date_non_dispo = @date_du_jour and jo.jour = @jour_UTF8
+    LEFT JOIN non_disponibilite_autorite_jour ndaj on hd.id = ndaj.id_heure_dispo and jo.jour = @jour_UTF8
+    LEFT JOIN entretien_demande_stage eds on hd.id = eds.id_heure_dispo and eds.date_entretien = @date_du_jour and jo.jour = @jour_UTF8
     WHERE 
-    had.id NOT IN (
-        select 
-        had.id
-        FROM 
-        heure_audience_disponible had
-        JOIN jour_ouvrable jo on had.id_jour_ouvrable = jo.id
-        JOIN autorite_enfant ae on jo.id_autorite = ae.id
-        JOIN non_disponibilite_autorite_date ndad on ndad.id_autorite_enfant = ae.id
-        JOIN non_disponibilite_autorite_jour ndaj on ndaj.id_autorite_enfant = ae.id
-        JOIN demande_stage ds on ds.id_autorite_enfant = ae.id
-        JOIN entretien_demande_stage eds on eds.id_demande_stage = ds.id
-        WHERE 
-        -- Non disponible autorite date
-        jo.jour = @jour_UTF8
-        and ndad.id_autorite_enfant = @id_autorite	
-        and ndad.date_non_dispo_debut = @date_du_jour
-        and ndad.date_non_dispo_fin = @date_du_jour
-        and had.heure_debut between SUBTIME(ndad.time_debut,"-00:01:00") and SUBTIME(ndad.time_fin,"00:01:00")
-        and had.heure_fin between SUBTIME(ndad.time_debut,"-00:01:00") and SUBTIME(ndad.time_fin,"00:01:00")
-		and ndad.time_debut between jo.time_debut and jo.time_fin
-		and ndad.time_fin between jo.time_debut and jo.time_fin
-        or
-        jo.jour = @jour_UTF8
-        and ndad.id_autorite_enfant = @id_autorite	
-        and ndad.date_non_dispo_debut = @date_du_jour
-        and ndad.date_non_dispo_fin = @date_du_jour
-        and SUBTIME(ndad.time_debut,"-00:01:00") between had.heure_debut and had.heure_fin
-        and SUBTIME(ndad.time_fin,"00:01:00") between had.heure_debut and had.heure_fin
-		and ndad.time_debut between jo.time_debut and jo.time_fin
-		and ndad.time_fin between jo.time_debut and jo.time_fin
-        or
-        jo.jour = @jour_UTF8
-        and ndad.id_autorite_enfant = @id_autorite	
-        and ndad.date_non_dispo_debut = @date_du_jour
-        and ndad.date_non_dispo_fin = @date_du_jour
-        and SUBTIME(ndad.time_debut,"-00:01:00") between had.heure_debut and had.heure_fin
-		and ndad.time_debut between jo.time_debut and jo.time_fin
-		and ndad.time_fin between jo.time_debut and jo.time_fin
-        or
-        jo.jour = @jour_UTF8
-        and ndad.id_autorite_enfant = @id_autorite	
-        and ndad.date_non_dispo_debut = @date_du_jour
-        and ndad.date_non_dispo_fin = @date_du_jour
-        and SUBTIME(ndad.time_fin,"00:01:00") between had.heure_debut and had.heure_fin
-		and ndad.time_debut between jo.time_debut and jo.time_fin
-		and ndad.time_fin between jo.time_debut and jo.time_fin
-        or 
-        -- Non disponible jour
-        ndaj.id_autorite_enfant = @id_autorite	
-        and jo.jour = @jour_UTF8
-        and ndaj.jour = @jour_UTF8
-        and had.heure_debut between SUBTIME(ndaj.time_non_dispo_jour_debut,"-00:01:00") and SUBTIME(ndaj.time_non_dispo_jour_fin,"00:01:00")
-        and had.heure_fin between SUBTIME(ndaj.time_non_dispo_jour_debut,"-00:01:00") and SUBTIME(ndaj.time_non_dispo_jour_fin,"00:01:00")
-		and ndaj.time_non_dispo_jour_debut between jo.time_debut and jo.time_fin
-		and ndaj.time_non_dispo_jour_fin between jo.time_debut and jo.time_fin
-        or
-        ndaj.id_autorite_enfant = @id_autorite	
-        and jo.jour = @jour_UTF8
-        and ndaj.jour = @jour_UTF8
-        and SUBTIME(ndaj.time_non_dispo_jour_debut,"-00:01:00") between had.heure_debut and had.heure_fin
-        and SUBTIME(ndaj.time_non_dispo_jour_fin,"-00:01:00") between had.heure_debut and had.heure_fin
-		and ndaj.time_non_dispo_jour_debut between jo.time_debut and jo.time_fin
-		and ndaj.time_non_dispo_jour_fin between jo.time_debut and jo.time_fin
-        or
-        ndaj.id_autorite_enfant = @id_autorite	
-        and ndaj.jour  = @jour_UTF8
-        and jo.jour = @jour_UTF8
-        and SUBTIME(ndaj.time_non_dispo_jour_debut,"-00:01:00") between had.heure_debut and had.heure_fin
-		and ndaj.time_non_dispo_jour_debut between jo.time_debut and jo.time_fin
-		and ndaj.time_non_dispo_jour_fin between jo.time_debut and jo.time_fin
-        or
-        ndaj.id_autorite_enfant = @id_autorite	
-        and ndaj.jour  = @jour_UTF8
-        and jo.jour = @jour_UTF8
-        and SUBTIME(ndaj.time_non_dispo_jour_fin,"00:01:00") between had.heure_debut and had.heure_fin
-		and ndaj.time_non_dispo_jour_debut between jo.time_debut and jo.time_fin
-		and ndaj.time_non_dispo_jour_fin between jo.time_debut and jo.time_fin
-        -- Demande Entretien
-        or
-        jo.id_autorite = @id_autorite
-        and ds.id_autorite_enfant = @id_autorite	
-        and eds.date_debut = @date_du_jour
-        and eds.date_fin = @date_du_jour
-        and jo.jour = @jour_UTF8
-        and had.heure_debut between SUBTIME(eds.time_debut,"-00:01:00") and SUBTIME(eds.time_fin,"00:01:00")
-        and had.heure_fin between SUBTIME(eds.time_debut,"-00:01:00") and SUBTIME(eds.time_fin,"00:01:00")
-		and eds.time_debut between jo.time_debut and jo.time_fin
-		and eds.time_fin between jo.time_debut and jo.time_fin
-        or
-        jo.id_autorite = @id_autorite
-        and ds.id_autorite_enfant = @id_autorite	
-        and eds.date_debut = @date_du_jour
-        and eds.date_fin = @date_du_jour
-        and jo.jour = @jour_UTF8
-        and SUBTIME(eds.time_debut,"-00:01:00") between had.heure_debut and had.heure_fin
-        and SUBTIME(eds.time_fin,"00:01:00") between had.heure_debut and had.heure_fin
-		and eds.time_debut between jo.time_debut and jo.time_fin
-		and eds.time_fin between jo.time_debut and jo.time_fin
-        or
-        jo.id_autorite = @id_autorite
-        and ds.id_autorite_enfant = @id_autorite	
-        and eds.date_debut = @date_du_jour
-        and eds.date_fin = @date_du_jour
-        and jo.jour = @jour_UTF8
-        and SUBTIME(eds.time_debut,"-00:01:00") between had.heure_debut and had.heure_fin
-		and eds.time_debut between jo.time_debut and jo.time_fin
-		and eds.time_fin between jo.time_debut and jo.time_fin
-        or
-        jo.id_autorite = @id_autorite
-        and ds.id_autorite_enfant = @id_autorite	
-        and eds.date_debut = @date_du_jour
-        and eds.date_fin = @date_du_jour
-        and jo.jour = @jour_UTF8
-        and SUBTIME(eds.time_fin,"00:01:00") between had.heure_debut and had.heure_fin
-		and eds.time_debut between jo.time_debut and jo.time_fin
-		and eds.time_fin between jo.time_debut and jo.time_fin
-        -- Demande audience public
-        UNION
-        select 
-        had.id
-        FROM 
-        heure_audience_disponible had
-        JOIN demande_audience_public dap on had.id = dap.id_heure_audience_disponible
-        JOIN jour_ouvrable jo on had.id_jour_ouvrable = jo.id
-        WHERE 
-        jo.id_autorite = @id_autorite	
-        and dap.action >=0 and dap.action <= 1
-        and dap.date_event_debut = @date_du_jour
-        and dap.date_event_fin = @date_du_jour
-        and jo.jour = @jour_UTF8
-        and had.heure_debut between SUBTIME(dap.time_event_debut,"-00:01:00") and SUBTIME(dap.time_event_fin,"00:01:00")
-        and had.heure_fin between SUBTIME(dap.time_event_debut,"-00:01:00") and SUBTIME(dap.time_event_fin,"00:01:00")
-		and dap.time_event_debut between jo.time_debut and jo.time_fin
-		and dap.time_event_fin between jo.time_debut and jo.time_fin
-        or
-        jo.id_autorite  = @id_autorite
-        AND dap.action >=0 and dap.action <= 1
-        and dap.date_event_debut = @date_du_jour
-        and dap.date_event_fin = @date_du_jour
-        and jo.jour = @jour_UTF8
-        and SUBTIME(dap.time_event_debut,"-00:01:00") between had.heure_debut and had.heure_fin
-        and SUBTIME(dap.time_event_fin,"00:01:00") between had.heure_debut and had.heure_fin		
-		and dap.time_event_debut between jo.time_debut and jo.time_fin
-		and dap.time_event_fin between jo.time_debut and jo.time_fin
-        or
-        jo.id_autorite  = @id_autorite
-        AND dap.action >=0 and dap.action <= 1
-        and dap.date_event_debut = @date_du_jour
-        and dap.date_event_fin = @date_du_jour
-        and jo.jour = @jour_UTF8
-        and SUBTIME(dap.time_event_debut,"-00:01:00") between had.heure_debut and had.heure_fin
-		and dap.time_event_debut between jo.time_debut and jo.time_fin
-		and dap.time_event_fin between jo.time_debut and jo.time_fin
-        or
-        jo.id_autorite  = @id_autorite
-        AND dap.action >=0 and dap.action <= 1
-        and dap.date_event_debut = @date_du_jour
-        and dap.date_event_fin = @date_du_jour
-        and jo.jour = @jour_UTF8
-        and SUBTIME(dap.time_event_fin,"00:01:00") between had.heure_debut and had.heure_fin
-		and dap.time_event_debut between jo.time_debut and jo.time_fin
-		and dap.time_event_fin between jo.time_debut and jo.time_fin
-        -- Demande audience autorite 
-        UNION
-        select 
-        had.id
-        FROM 
-        heure_audience_disponible had
-        JOIN demande_audience_autorite daa on had.id = daa.id_heure_audience_disponible
-        JOIN jour_ouvrable jo on had.id_jour_ouvrable = jo.id
-        WHERE 
-        jo.id_autorite  = @id_autorite
-        AND daa.action >= 0 and daa.action <= 1
-        and daa.date_debut = @date_du_jour
-        and daa.date_fin = @date_du_jour
-        and jo.jour = @jour_UTF8
-        and had.heure_debut between SUBTIME(daa.time_debut,"-00:01:00") and SUBTIME(daa.time_fin,"00:01:00")
-        and had.heure_fin between SUBTIME(daa.time_debut,"-00:01:00") and SUBTIME(daa.time_fin,"00:01:00")
-		and daa.time_debut between jo.time_debut and jo.time_fin
-		and daa.time_fin between jo.time_debut and jo.time_fin
-        or
-        jo.id_autorite  = @id_autorite
-        AND daa.action >= 0 and daa.action <= 1
-        and daa.date_debut = @date_du_jour
-        and daa.date_fin = @date_du_jour
-        and jo.jour = @jour_UTF8
-        and SUBTIME(daa.time_debut,"-00:01:00") between had.heure_debut and had.heure_fin
-        and SUBTIME(daa.time_fin,"00:01:00") between had.heure_debut and had.heure_fin
-		and daa.time_debut between jo.time_debut and jo.time_fin
-		and daa.time_fin between jo.time_debut and jo.time_fin
-        or
-        jo.id_autorite  = @id_autorite
-        AND daa.action >= 0 and daa.action <= 1
-        and daa.date_debut = @date_du_jour
-        and daa.date_fin = @date_du_jour
-        and jo.jour = @jour_UTF8
-        and SUBTIME(daa.time_debut,"-00:01:00") between had.heure_debut and had.heure_fin
-		and daa.time_debut between jo.time_debut and jo.time_fin
-		and daa.time_fin between jo.time_debut and jo.time_fin
-        or
-        jo.id_autorite  = @id_autorite
-        AND daa.action >= 0 and daa.action <= 1
-        and daa.date_debut = @date_du_jour
-        and daa.date_fin = @date_du_jour
-        and jo.jour = @jour_UTF8
-        and SUBTIME(daa.time_fin,"00:01:00") between had.heure_debut and had.heure_fin
-		and daa.time_debut between jo.time_debut and jo.time_fin
-		and daa.time_fin between jo.time_debut and jo.time_fin
-        GROUP by had.id 
-        ORDER BY heure_debut ASC
-    )
+    jo.id_autorite = @id_autorite
+    and hddaa.id IS NULL
+    and dm_aud_pub_hd.id IS NULL
+    and ndad.id IS NULL
+    and ndaj.id IS NULL
+    and eds.id IS NULL
+    or 
+    jo.id_autorite = @id_autorite
+    and dap.session_navigateur = @session_navigateur
+    group by hd_dap.id;
 END
 
 CREATE PROCEDURE `liste_place_disponible_autorite_par_jour`(IN date_du_jour date,in id_autorite_sender int,in id_autorite_receiver int)
 BEGIN
     SET @id_autorite_receiver = id_autorite_receiver;
     SET @id_autorite_sender = id_autorite_sender;
-    SET @session_navigateur = session_navigateur;
     SET @date_du_jour = date_du_jour;
     set @jour_UTF8 = CONVERT(DAYNAME(@date_du_jour) USING utf8);
 
     SELECT 
     had.*,
-    dap.*
+    dap.*,
+    '' color
     FROM
     stage2.heure_audience_disponible had
     JOIN stage2.demande_audience_autorite daa on had.id = dap.id_heure_audience_disponible
@@ -549,7 +433,321 @@ BEGIN
         and SUBTIME(daa.time_fin,"00:01:00") between had.heure_debut and had.heure_fin
 		and daa.time_debut between jo.time_debut and jo.time_fin
 		and daa.time_fin between jo.time_debut and jo.time_fin
+        
+        -- Jour ferie
+        UNION 
+        select 
+        had.id
+        FROM 
+        heure_audience_disponible had
+        JOIN jour_ouvrable jo on had.id_jour_ouvrable = jo.id
+        WHERE 
+        had.
         GROUP by had.id 
         ORDER BY heure_debut ASC
     )
 END
+
+
+
+
+INSERT INTO stage2.jour_ferie( nom_evenement, numero_du_jour, mois_du_jour, time_event_debut, time_event_fin ) VALUES ( 'Toussaint', '11', '11', '00:00:01', '23:59:00');
+INSERT INTO stage2.jour_ferie( nom_evenement, numero_du_jour, mois_du_jour, time_event_debut, time_event_fin ) VALUES ( 'Noel', '25', '12', '08:00:00', '12:00:00');
+INSERT INTO stage2.jour_ferie( nom_evenement, numero_du_jour, mois_du_jour, time_event_debut, time_event_fin ) VALUES ( 'Fin d''année', '31', '12', '14:00:00', '16:00:00');
+INSERT INTO stage2.jour_ferie( nom_evenement, numero_du_jour, mois_du_jour, time_event_debut, time_event_fin ) VALUES ( 'Nouvel an', '11', '1', '08:00:00', '12:00:00');
+INSERT INTO stage2.jour_ferie( nom_evenement, numero_du_jour, mois_du_jour, time_event_debut, time_event_fin ) VALUES ( 'Black friday', '28', '11', '14:00:00', '15:00:00');
+
+
+SELECT 
+hd.id,
+CONCAT(@date_du_jour,'T',hd.heure_debut) as start,
+CONCAT(@date_du_jour,'T',hd.heure_fin) as end, 
+'' id,
+'' date_audience, 
+'' heure_debut, 
+'' heure_fin, 
+'Disponible' title,
+'' nom,
+'' prenom,
+'' cin,
+'' numero_telephone,
+'' email,
+'' status_audience,
+'#0AA913' color
+FROM
+stage3.heure_disponible hd
+LEFT JOIN jour_ouvrable jo on hd.id_jour_ouvrable = jo.id and jo.jour = @jour_UTF8
+LEFT JOIN heure_dispo_dm_aud_autorite hddaa on hd.id = hddaa.id_heure_dispo and hddaa.date_audience = @date_du_jour and jo.jour = @jour_UTF8
+LEFT JOIN dm_aud_public_heure_dispo dm_aud_pub_hd on hd.id = dm_aud_pub_hd.id_heure_dispo and dm_aud_pub_hd.date_audience = @date_du_jour and jo.jour = @jour_UTF8
+LEFT JOIN non_disponibilite_autorite_date ndad on hd.id = ndad.id_heure_dispo and ndad.date_non_dispo = @date_du_jour and jo.jour = @jour_UTF8
+LEFT JOIN non_disponibilite_autorite_jour ndaj on hd.id = ndaj.id_heure_dispo and jo.jour = @jour_UTF8
+LEFT JOIN entretien_demande_stage eds on hd.id = eds.id_heure_dispo and eds.date_entretien = @date_du_jour and jo.jour = @jour_UTF8
+WHERE 
+jo.id_autorite = @id_autorite
+and hddaa.id IS NULL
+and dm_aud_pub_hd.id IS NULL
+and ndad.id IS NULL
+and ndaj.id IS NULL
+and eds.id IS NULL
+and (select jf.time_event_debut from jour_ferie jf where CONVERT((select dayname(concat(YEAR(CURDATE()),'-',jf.mois_du_jour,'-',jf.numero_du_jour))) USING utf8) = @jour_UTF8 ) NOT BETWEEN hd.heure_debut and hd.heure_fin
+and (select jf.time_event_fin from jour_ferie jf where CONVERT((select dayname(concat(YEAR(CURDATE()),'-',jf.mois_du_jour,'-',jf.numero_du_jour))) USING utf8) = @jour_UTF8 ) NOT BETWEEN hd.heure_debut and hd.heure_fin
+or
+jo.id_autorite = @id_autorite
+and hddaa.id IS NULL
+and dm_aud_pub_hd.id IS NULL
+and ndad.id IS NULL
+and ndaj.id IS NULL
+and eds.id IS NULL
+and hd.heure_debut NOT BETWEEN (select jf.time_event_debut from jour_ferie jf where CONVERT((select dayname(concat(YEAR(CURDATE()),'-',jf.mois_du_jour,'-',jf.numero_du_jour))) USING utf8) = @jour_UTF8 ) and (select jf.time_event_fin from jour_ferie jf where CONVERT((select dayname(concat(YEAR(CURDATE()),'-',jf.mois_du_jour,'-',jf.numero_du_jour))) USING utf8) = @jour_UTF8)
+and hd.heure_fin NOT BETWEEN (select jf.time_event_debut from jour_ferie jf where CONVERT((select dayname(concat(YEAR(CURDATE()),'-',jf.mois_du_jour,'-',jf.numero_du_jour))) USING utf8) = @jour_UTF8) and (select jf.time_event_fin from jour_ferie jf where CONVERT((select dayname(concat(YEAR(CURDATE()),'-',jf.mois_du_jour,'-',jf.numero_du_jour))) USING utf8) = @jour_UTF8)
+or 
+jo.id_autorite = @id_autorite
+and hddaa.id IS NULL
+and dm_aud_pub_hd.id IS NULL
+and ndad.id IS NULL
+and ndaj.id IS NULL
+and eds.id IS NULL
+and hd.heure_debut NOT BETWEEN (select jf.time_event_debut from jour_ferie jf where CONVERT((select dayname(concat(YEAR(CURDATE()),'-',jf.mois_du_jour,'-',jf.numero_du_jour))) USING utf8) = @jour_UTF8 ) and (select jf.time_event_fin from jour_ferie jf where CONVERT((select dayname(concat(YEAR(CURDATE()),'-',jf.mois_du_jour,'-',jf.numero_du_jour))) USING utf8) = @jour_UTF8)
+and hd.heure_fin BETWEEN (select jf.time_event_debut from jour_ferie jf where CONVERT((select dayname(concat(YEAR(CURDATE()),'-',jf.mois_du_jour,'-',jf.numero_du_jour))) USING utf8) = @jour_UTF8) and (select jf.time_event_fin from jour_ferie jf where CONVERT((select dayname(concat(YEAR(CURDATE()),'-',jf.mois_du_jour,'-',jf.numero_du_jour))) USING utf8) = @jour_UTF8)
+or
+jo.id_autorite = @id_autorite
+and hddaa.id IS NULL
+and dm_aud_pub_hd.id IS NULL
+and ndad.id IS NULL
+and ndaj.id IS NULL
+and eds.id IS NULL
+and hd.heure_debut BETWEEN (select jf.time_event_debut from jour_ferie jf where CONVERT((select dayname(concat(YEAR(CURDATE()),'-',jf.mois_du_jour,'-',jf.numero_du_jour))) USING utf8) = @jour_UTF8 ) and (select jf.time_event_fin from jour_ferie jf where CONVERT((select dayname(concat(YEAR(CURDATE()),'-',jf.mois_du_jour,'-',jf.numero_du_jour))) USING utf8) = @jour_UTF8)
+and hd.heure_fin NOT BETWEEN (select jf.time_event_debut from jour_ferie jf where CONVERT((select dayname(concat(YEAR(CURDATE()),'-',jf.mois_du_jour,'-',jf.numero_du_jour))) USING utf8) = @jour_UTF8 ) and (select jf.time_event_fin from jour_ferie jf where CONVERT((select dayname(concat(YEAR(CURDATE()),'-',jf.mois_du_jour,'-',jf.numero_du_jour))) USING utf8) = @jour_UTF8)
+or
+jo.id_autorite = @id_autorite
+and hddaa.id IS NULL
+and dm_aud_pub_hd.id IS NULL
+and ndad.id IS NULL
+and ndaj.id IS NULL
+and eds.id IS NULL
+and (select jf.time_event_debut from jour_ferie jf where CONVERT((select dayname(concat(YEAR(CURDATE()),'-',jf.mois_du_jour,'-',jf.numero_du_jour))) USING utf8) = @jour_UTF8 ) NOT BETWEEN hd.heure_debut and hd.heure_fin
+and (select jf.time_event_fin from jour_ferie jf where CONVERT((select dayname(concat(YEAR(CURDATE()),'-',jf.mois_du_jour,'-',jf.numero_du_jour))) USING utf8) = @jour_UTF8 ) BETWEEN hd.heure_debut and hd.heure_fin
+
+or
+jo.id_autorite = @id_autorite
+and hddaa.id IS NULL
+and dm_aud_pub_hd.id IS NULL
+and ndad.id IS NULL
+and ndaj.id IS NULL
+and eds.id IS NULL
+and (select jf.time_event_debut from jour_ferie jf where CONVERT((select dayname(concat(YEAR(CURDATE()),'-',jf.mois_du_jour,'-',jf.numero_du_jour))) USING utf8) = @jour_UTF8 ) BETWEEN hd.heure_debut and hd.heure_fin
+and (select jf.time_event_fin from jour_ferie jf where CONVERT((select dayname(concat(YEAR(CURDATE()),'-',jf.mois_du_jour,'-',jf.numero_du_jour))) USING utf8) = @jour_UTF8 ) NOT BETWEEN hd.heure_debut and hd.heure_fin
+
+
+-- Liste des places disponible coté public
+CREATE  PROCEDURE `liste_place_disponible_public_par_jour`(IN date_du_jour date,IN session_navigateur varchar(50),in id_autorite int)
+BEGIN
+    SET @session_navigateur = session_navigateur;
+	SET @id_autorite = 1;
+    SET @date_du_jour = '2022-11-28';
+    set @jour_UTF8 = CONVERT(DAYNAME(@date_du_jour) USING utf8);
+	
+	select @id_autorite,@jour_UTF8,@date_du_jour;
+
+	SELECT 
+	hd.*,
+	hd_dm_aud_aut.*,
+	dm_aud_pub_hd.*,
+	hd_nd_aut_date.*,
+	hd_nd_aut_jour.*,
+	hd_es.*
+	FROM
+	stage3.heure_disponible hd
+	-- jour ouvrable
+	JOIN jour_ouvrable jo on hd.id_jour_ouvrable = jo.id
+	
+	-- demande audience autorite 
+	LEFT JOIN heure_dispo_dm_aud_autorite hd_dm_aud_aut on hd.id = hd_dm_aud_aut.id_heure_dispo
+	join demande_audience_autorite daa on hd_dm_aud_aut.id_dm_aud_autorite = daa.id
+	
+	-- demande audience public
+	LEFT JOIN dm_aud_public_heure_dispo dm_aud_pub_hd on hd.id = dm_aud_pub_hd.id_heure_dispo
+	join demande_audience_public dap on dm_aud_pub_hd.id_aud_public = dap.id
+	
+	-- non disponible date 
+	LEFT JOIN heure_dispo_non_dispo_autorite_date hd_nd_aut_date on hd.id = hd_nd_aut_date.id_heure_dispo
+	JOIN non_disponibilite_autorite_date ndad on hd_nd_aut_date.id_non_dispo_date = ndad.id
+	
+	-- non disponible jour
+	LEFT JOIN heure_dispo_non_dispo_autorite_jour hd_nd_aut_jour  on hd.id = hd_nd_aut_jour.id_heure_dispo
+	JOIN non_disponibilite_autorite_jour ndaj on hd_nd_aut_jour.id_non_dispo_jour = ndaj.id
+	
+	-- entretien stage
+	LEFT JOIN heure_dispo_entretien_stage hd_es on hd.id = hd_es.id_heure_dispo
+	JOIN entretien_demande_stage eds on hd_es.id_entretien_stage = eds.id
+	
+	WHERE 
+	jo.id_autorite = @id_autorite
+	and daa.date_debut = @date_du_jour
+	and daa.date_fin = @date_du_jour
+	and dap.date_event_debut = @date_du_jour
+	and dap.date_event_fin = @date_du_jour
+	and ndad.date_non_dispo_debut = @date_du_jour
+	and ndad.date_non_dispo_fin = @date_du_jour
+	and jo.jour = @jour_UTF8
+	and eds.date_debut = @date_du_jour
+	and eds.date_fin = @date_du_jour
+	and hd_dm_aud_aut.id IS NULL
+	and dm_aud_pub_hd.id IS NULL
+	and hd_nd_aut_date.id IS NULL
+	and hd_nd_aut_jour.id IS NULL
+	and hd_es.id IS NULL
+END
+
+CREATE  PROCEDURE `liste_place_disponible_autorite_par_jour`(IN date_du_jour date,IN session_navigateur varchar(50),in id_autorite int)
+BEGIN
+    SET @session_navigateur = session_navigateur;
+    SET @id_autorite = id_autorite;
+    SET @date_du_jour = date_du_jour;
+    set @jour_UTF8 = CONVERT(DAYNAME(@date_du_jour) USING utf8);
+
+    (SELECT 
+    had.id as id_heure_disponible, 
+    CONCAT(@date_du_jour,'T',had.heure_debut) as start,
+    CONCAT(@date_du_jour,'T',had.heure_fin) as end, 
+    dap.id as id, 
+    hd_dap.date_audience, 
+    hd_dap.heure_debut, 
+    hd_dap.heure_fin, 
+    dap.motif as title,
+    dap.nom, 
+    dap.prenom, 
+    dap.cin, 
+    dap.numero_telephone, 
+    dap.email, 
+    CASE 
+        WHEN dap.action = 0 THEN 'Non validé' 
+        WHEN dap.action = 1 THEN 'Validé' 
+        WHEN dap.action = 2 THEN 'Reporté' 
+    ELSE 'Aucune' END as status_audience, 
+    CASE 
+        WHEN dap.session_navigateur = @session_navigateur and dap.action = 0 THEN "#407DFF" 
+        WHEN dap.session_navigateur = @session_navigateur and dap.action = 1 THEN "#FF0018" 
+        ELSE '#FF0018' END as color 
+    FROM stage3.heure_disponible had 
+    JOIN stage3.dm_aud_public_heure_dispo hd_dap on had.id = hd_dap.id_heure_dispo and  hd_dap.date_audience = @date_du_jour
+    JOIN stage3.demande_audience_public dap on hd_dap.id_aud_public = dap.id
+    where dap.action >=0 and dap.action <=1
+    Group by dap.id order by dap.id Desc LIMIT 1)
+
+    union
+
+    (SELECT 
+    hd.id,
+    CONCAT(@date_du_jour,'T',hd.heure_debut) as start,
+    CONCAT(@date_du_jour,'T',hd.heure_fin) as end, 
+    '' id,
+    '' date_audience, 
+    '' heure_debut, 
+    '' heure_fin, 
+    'Disponible' title,
+    '' nom,
+    '' prenom,
+    '' cin,
+    '' numero_telephone,
+    '' email,
+    '' status_audience,
+    '#0AA913' color
+    FROM
+    stage3.heure_disponible hd
+    LEFT JOIN jour_ouvrable jo on hd.id_jour_ouvrable = jo.id and jo.jour = @jour_UTF8
+    LEFT JOIN heure_dispo_dm_aud_autorite hddaa on hd.id = hddaa.id_heure_dispo and hddaa.date_audience = @date_du_jour and jo.jour = @jour_UTF8
+    LEFT JOIN dm_aud_public_heure_dispo dm_aud_pub_hd on hd.id = dm_aud_pub_hd.id_heure_dispo and dm_aud_pub_hd.date_audience = @date_du_jour and jo.jour = @jour_UTF8
+    LEFT JOIN non_disponibilite_autorite_date ndad on hd.id = ndad.id_heure_dispo and ndad.date_non_dispo = @date_du_jour and jo.jour = @jour_UTF8
+    LEFT JOIN non_disponibilite_autorite_jour ndaj on hd.id = ndaj.id_heure_dispo and jo.jour = @jour_UTF8
+    LEFT JOIN entretien_demande_stage eds on hd.id = eds.id_heure_dispo and eds.date_entretien = @date_du_jour and jo.jour = @jour_UTF8
+    WHERE 
+    jo.id_autorite = @id_autorite
+    and hddaa.id IS NULL
+    and dm_aud_pub_hd.id IS NULL
+    and ndad.id IS NULL
+    and ndaj.id IS NULL
+    and eds.id IS NULL);
+END
+
+CREATE  PROCEDURE `liste_place_disponible_public_par_jour`(IN date_du_jour date,IN session_navigateur varchar(50),in id_autorite int)
+BEGIN
+    SET @session_navigateur = 'session669.84399043559464';
+    SET @id_autorite = '1';
+    SET @date_du_jour = '2022-11-28';
+    set @jour_UTF8 = CONVERT(DAYNAME(@date_du_jour) USING utf8);
+
+    (SELECT 
+    had.id as id_heure_disponible, 
+    CONCAT(@date_du_jour,'T',had.heure_debut) as start,
+    CONCAT(@date_du_jour,'T',MAX(had.heure_fin)) as end, 
+	-- CONCAT(@date_du_jour,'T',had.heure_fin) as end,    
+	dap.id as id, 
+    hd_dap.date_audience, 
+    hd_dap.heure_debut, 
+    hd_dap.heure_fin, 
+    dap.motif as title,
+    dap.nom, 
+    dap.prenom, 
+    dap.cin, 
+    dap.numero_telephone, 
+    dap.email, 
+    CASE 
+        WHEN dap.action = 0 THEN 'Non validé' 
+        WHEN dap.action = 1 THEN 'Validé' 
+        WHEN dap.action = 2 THEN 'Reporté' 
+    ELSE 'Aucune' END as status_audience, 
+    CASE 
+        WHEN dap.session_navigateur = @session_navigateur and dap.action = 0 THEN "#407DFF" 
+        WHEN dap.session_navigateur = @session_navigateur and dap.action = 1 THEN "#FF0018" 
+        ELSE '#FF0018' END as color 
+    FROM stage3.heure_disponible had 
+    JOIN stage3.dm_aud_public_heure_dispo hd_dap on had.id = hd_dap.id_heure_dispo and  hd_dap.date_audience = @date_du_jour
+    JOIN stage3.demande_audience_public dap on hd_dap.id_aud_public = dap.id
+    where dap.action >=0 and dap.action <=1
+	GROUP by dap.id
+    )
+
+    union
+
+    (SELECT 
+    hd.id,
+    CONCAT(@date_du_jour,'T',hd.heure_debut) as start,
+    CONCAT(@date_du_jour,'T',hd.heure_fin) as end, 
+    '' id,
+    '' date_audience, 
+    '' heure_debut, 
+    '' heure_fin, 
+    'Disponible' title,
+    '' nom,
+    '' prenom,
+    '' cin,
+    '' numero_telephone,
+    '' email,
+    '' status_audience,
+    '#0AA913' color
+    FROM
+    stage3.heure_disponible hd
+    LEFT JOIN jour_ouvrable jo on hd.id_jour_ouvrable = jo.id and jo.jour = @jour_UTF8
+    LEFT JOIN heure_dispo_dm_aud_autorite hddaa on hd.id = hddaa.id_heure_dispo and hddaa.date_audience = @date_du_jour and jo.jour = @jour_UTF8
+    LEFT JOIN dm_aud_public_heure_dispo dm_aud_pub_hd on hd.id = dm_aud_pub_hd.id_heure_dispo and dm_aud_pub_hd.date_audience = @date_du_jour and jo.jour = @jour_UTF8
+    LEFT JOIN non_disponibilite_autorite_date ndad on hd.id = ndad.id_heure_dispo and ndad.date_non_dispo = @date_du_jour and jo.jour = @jour_UTF8
+    LEFT JOIN non_disponibilite_autorite_jour ndaj on hd.id = ndaj.id_heure_dispo and jo.jour = @jour_UTF8
+    LEFT JOIN entretien_demande_stage eds on hd.id = eds.id_heure_dispo and eds.date_entretien = @date_du_jour and jo.jour = @jour_UTF8
+    WHERE 
+    jo.id_autorite = @id_autorite
+    and hddaa.id IS NULL
+    and dm_aud_pub_hd.id IS NULL
+    and ndad.id IS NULL
+    and ndaj.id IS NULL
+    and eds.id IS NULL
+    and (select jf.time_event_debut from jour_ferie jf where CONVERT((select dayname(concat(YEAR(CURDATE()),'-',jf.mois_du_jour,'-',jf.numero_du_jour))) USING utf8) = @jour_UTF8 ) NOT BETWEEN hd.heure_debut and hd.heure_fin
+    and (select jf.time_event_fin from jour_ferie jf where CONVERT((select dayname(concat(YEAR(CURDATE()),'-',jf.mois_du_jour,'-',jf.numero_du_jour))) USING utf8) = @jour_UTF8 ) NOT BETWEEN hd.heure_debut and hd.heure_fin
+    and hd.heure_debut NOT BETWEEN (select jf.time_event_debut from jour_ferie jf where CONVERT((select dayname(concat(YEAR(CURDATE()),'-',jf.mois_du_jour,'-',jf.numero_du_jour))) USING utf8) = @jour_UTF8 ) and (select jf.time_event_fin from jour_ferie jf where CONVERT((select dayname(concat(YEAR(CURDATE()),'-',jf.mois_du_jour,'-',jf.numero_du_jour))) USING utf8) = @jour_UTF8)
+    and hd.heure_fin NOT BETWEEN (select jf.time_event_debut from jour_ferie jf where CONVERT((select dayname(concat(YEAR(CURDATE()),'-',jf.mois_du_jour,'-',jf.numero_du_jour))) USING utf8) = @jour_UTF8) and (select jf.time_event_fin from jour_ferie jf where CONVERT((select dayname(concat(YEAR(CURDATE()),'-',jf.mois_du_jour,'-',jf.numero_du_jour))) USING utf8) = @jour_UTF8)
+    );
+END
+
+
+
+call `liste_place_disponible_public_par_jour`('2022-11-28','session669.84399043559464',1)
