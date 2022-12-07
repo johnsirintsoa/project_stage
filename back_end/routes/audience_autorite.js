@@ -3,6 +3,18 @@ const router = express.Router();
 const db = require('../database')
 const mailing = require('../Controllers/MailingController')
 
+router.post('/autorite/heure_disponible_autorite/jour', async (req,res) =>{
+    const sql = `CALL liste_place_disponible_autorite_par_jour('${req.body.date_du_jour}','${req.body.session_navigateur}',${req.body.id_autorite})`
+    db.query(sql,function(err,result){
+        if(err){
+            return res.send({ err });
+        }
+        else{
+            return res.json(result[0])    
+        }
+    })
+})
+
 router.post('/autorite/all/mois/', async(req,res) => {
     const sql = `CALL LISTE_AUTORITE_PAR_MOIS(${req.body.id_autorite},'${req.body.date_du_jour}')`
     // console.log(sql)
@@ -725,23 +737,6 @@ router.post('/autorite/add',async(req,res)=>{
     })
 })
 
-// router.post('/autorite/update',async(req,res)=>{
-//     const audience = {
-//         date_debut: req.body.date_debut,
-//         date_fin: req.body.date_fin, 
-//         time_debut: req.body.time_debut,
-//         time_fin: req.body.time_fin,
-//         id_autorite_enfant_sender: req.body.id_autorite_enfant_sender,
-//         id_autorite_enfant_receiver: req.body.id_autorite_enfant_receiver,
-//         motif: req.body.motif,
-//         id: req.body.id
-//     }
-//     // const sql = `INSERT INTO stage.demande_audience( date_time_debut, date_time_fin, id_demande_stage, motif, id_direction, type_audience ) VALUES ( '${req.body.date_time_debut}', '${req.body.date_time_fin}', ${req.body.id_demande_stage}, '${req.body.motif}', ${req.body.id_direction}, '${req.body.type_audience}' )`
-//     db.query('UPDATE stage.demande_audience_autorite SET ? WHERE id = ' + req.body.id,audience, (error,result) => {
-//         if(error) res.send(error)
-//         res.json(result)
-//     })
-// })
 
 router.post('/autorite/update',async(req,res)=>{
     const audience = {
