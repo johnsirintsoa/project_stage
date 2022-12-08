@@ -136,9 +136,10 @@ const router = createRouter({
       // which is lazy-loaded when the route is visited.
       component: () => import('../views/backOffice/DemandeAudienceReporter.vue')
     },
+
     /** Administrateur routes */
 
-    /** Autorite routes */
+    // /** Autorite routes */
     {
       path: '/autorite/',
       name: 'middle-login',
@@ -206,12 +207,8 @@ const router = createRouter({
     {
       path: '/autorite/demande-audience/audience-reporter',
       name: 'middle-demande-audience-reporter',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
       component: () => import('../views/middleOffice/DemandeAudienceReporter.vue')
-    },
-    /** Autorite routes */
+    }
   ]
 })
 

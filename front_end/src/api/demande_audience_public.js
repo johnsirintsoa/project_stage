@@ -9,18 +9,13 @@ export default class DemandeAudience{
         return res.data
     }
 
-    static async audience_public_mois(id_autorite){
-        const res = await axios.post(url.concat('/all/mois'),id_autorite)
-        return res.data        
-    }
-
     static async audience_public_semaine(id_autorite){
         const res = await axios.post(url.concat('/all/semaine'),id_autorite)
         return res.data        
     }
 
-    static async audience_public_jour(id_autorite){
-        const res = await axios.post(url.concat('/all/jour'),id_autorite)
+    static async audience_public_jour(arg){
+        const res = await axios.post(url.concat('/heure_disponible_autorite/jour'),arg)
         return res.data        
     }
 

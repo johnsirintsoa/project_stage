@@ -6,6 +6,11 @@ export default class DemandeAudiencePublic {
         return res        
     }
 
+    static async audience_public_jour(arg){
+        const res = await Public.audience_public_jour(arg)
+        return res        
+    }
+
     static async add(audience_event){
         const res = await Public.add_event(audience_event)
         return res

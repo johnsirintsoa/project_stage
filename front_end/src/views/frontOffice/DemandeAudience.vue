@@ -8,7 +8,7 @@
     import interactionPlugin from '@fullcalendar/interaction'
     import listPlugin from '@fullcalendar/list'
     import timeLine from '@fullcalendar/timeline'
-    import { actual_events_public_MOIS } from '../../func/event-utils'
+    import { actual_events_public_jour } from '../../controllers/FrontOffice/DemandeAudience'
     import DemandeAudience from '../../api/demande_audience_public'
     import tippy from 'tippy.js';
     import 'tippy.js/dist/tippy.css'; // optional for styling
@@ -41,11 +41,13 @@
             headerToolbar: {
               left: 'prev,next today',
               center: 'title',
-              right: 'dayGridMonth,timeGridWeek,timeGridDay,listDay',
+              // right: 'dayGridMonth,timeGridWeek,timeGridDay,listDay',
+              right: 'timeGridDay,listDay',
+
               
             },
             // initialView: 'dayGridMonth',
-            initialView: 'timeGridWeek',
+            initialView: 'timeGridDay',
             // initialEvents: INITIAL_EVENTS, // alternatively, use the `events` setting to fetch from a feed
             // initialEvents: this.actual_events, // alternatively, use the `events` setting to fetch from a feed
             // initialDate: '2022-10-21',
@@ -54,7 +56,7 @@
             // buttonIcons: false, // show the prev/next text
             weekNumbers: true,
             dayMaxEvents: true,
-            selectable: true,
+            // selectable: true,
             droppable: true,
             selectMirror: true,
             dayMaxEvents: true,
@@ -109,7 +111,7 @@
       methods: {
         async all_actual_events(){
           // return await actual_events()
-          return await actual_events_public_MOIS(this.audience.direction)  
+          return await actual_events_public_jour(this.audience.direction)  
         }, 
         async autorites_enfant(){
           return await AutoriteAPI.autorite_enfant()
