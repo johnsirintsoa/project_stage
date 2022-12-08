@@ -831,3 +831,27 @@ set @jour_UTF8 = CONVERT(DAYNAME(@date_du_jour) USING utf8);
 
 
 call `liste_place_disponible_public_par_jour`('2022-11-28','session669.84399043559464',1)
+
+
+
+CREATE  PROCEDURE `ajouter_audience_public`(session_navigateur VARCHAR(100),nom varchar(30),prenom varchar(30),cin varchar(15),numero_telephone varchar(10),email varchar(30),IN id_heure_dispo INT,motif VARCHAR(200),id_autorite int)
+BEGIN 
+	SET @session_navigateur = session_navigateur; 
+	SET @nom = (SELECT UPPER(nom)); 
+	SET @prenom = (SELECT LOWER(prenom)); 
+	SET @cin = cin; 
+	SET @numero_telephone = numero_telephone; 
+	SET @mail = email; 
+	SET @motif = motif; 
+	SET @id_hd = id_heure_dispo; 
+	SET @id_autorite = id_autorite; 
+
+	set @id_audience = (SELECT max(dap.id) FROM stage3.demande_audience_public dap where dap.cin = @cin and dap.session_navigateur = @session_navigateur);
+	IF @id_audience IS NULL THEN 
+		SELECT 'Ajouter une audience' as message;
+	ELSE 
+		select concat('Misy',@id_audience) as message;
+		INSERT INTO stage3.dm_aud_public_heure_dispo
+		( id_aud_public, id_heure_dispo, date_audience, heure_debut, heure_fin) VALUES ( ?, ?, ?, ?, ?, ? );
+	END IF;
+END

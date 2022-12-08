@@ -94,6 +94,7 @@
           }
         }
       },
+
       async created(){
         this.directions = await this.autorites_enfant()
 
@@ -146,52 +147,57 @@
     
         async handleEventClick(clickInfo) {
           // console.log(clickInfo.event.id)
-          console.log(clickInfo)
-          if(clickInfo.event.extendedProps.session_navigateur){
-            const audience_infos = {
-              session_navigateur: clickInfo.event.extendedProps.session_navigateur,
-              id: clickInfo.event.id
-            }
+          console.log(clickInfo.event)
+          Swal.fire({
+            title: 'Ajouter un audience',
+            html: `<p>Nom: <input type="text" id="nom" class="swal2-input" placeholder="Nom" required></p>
+            <p>Prénom: <input type="text" id="prenom" class="swal2-input" placeholder="Prénom" required></p>
+            <p>CIN: <input type="text" id="cin" class="swal2-input" placeholder="CIN" pattern="[0-9]{12}" required></p>
+            <p>Tél: <input type="text" id="telephone" class="swal2-input" placeholder="Numéro de téléphone" pattern="[0-9]{10}"  required></p>
+            <p>Mail: <input type="email" id="mail" class="swal2-input" placeholder="Adresse éléctronique" required></p>
+            <p style="text-align: left;padding: 3rem 3rem 3rem 3rem;">Motif: <textarea id="motif" class="swal2-textarea" placeholder="Saisissez votre motif " style="display: flex;"></textarea></p>`,
+            inputAttributes: {
+              input: 'text',
+              required: 'true'
+            },
+            confirmButtonText: 'Ajouter',
+            heightAuto: true,
+            cancelButtonText: 'Annuler',
+            showCancelButton: true,
+            focusConfirm: false,
+            preConfirm: () => {
 
-            const swalWithBootstrapButtons = Swal.mixin({
-              customClass: {
-                confirmButton: 'btn btn-success',
-                cancelButton: 'btn btn-danger'
-              },
-              buttonsStyling: false
-            })
+              this.audience.nom = Swal.getPopup().querySelector('#nom').value
+              this.audience.prenom = Swal.getPopup().querySelector('#prenom').value
+              this.audience.cin = Swal.getPopup().querySelector('#cin').value
+              this.audience.numero_telephone = Swal.getPopup().querySelector('#telephone').value
+              this.audience.email = Swal.getPopup().querySelector('#mail').value
+              this.audience.motif = Swal.getPopup().querySelector('#motif').value
 
-            swalWithBootstrapButtons.fire({
-              title: 'Etes vous sure de vouloir supprimer cette audience?',
-              text: "Cette action sera irréversible",
-              icon: 'warning',
-              showCancelButton: true,
-              confirmButtonText: 'Oui, supprimer',
-              cancelButtonText: 'Non, annuler',
-              reverseButtons: true
-            }).then(async(result) => {
-              if (result.isConfirmed) {
-                await DemandeAudience.delete(audience_infos)
-                swalWithBootstrapButtons.fire(
-                  'Supprimé',
-                  'Votre audience a bien été supprimée',
-                  'success'
-                )
-                setInterval( () => {
-                  window.location.reload()
-                }, 1000)
-              } else if (
-                /* Read more about handling dismissals below */
-                result.dismiss === Swal.DismissReason.cancel
-              ) {
-                swalWithBootstrapButtons.fire(
-                  'Annulé',
-                  'Suppression annulé',
-                  'error'
-                )
+              // if (!this.audience.nom || !this.audience.prenom || !this.audience.cin || !this.audience.numero_telephone || !this.audience.email || !this.audience.motif) {
+              //   Swal.showValidationMessage(`Veuillez remplir le formulaire`)
+              // }
+              return { 
+                nom: this.audience.nom, 
+                prenom: this.audience.prenom, 
+                cin: this.audience.cin,
+                numero_telephone: this.audience.numero_telephone,
+                email: this.audience.email,
+                motif: this.audience.motif,
+                session_navigateur: this.audience.session_navigateur,
+                id_autorite: this.audience.direction,
+                id_heure_dispo: clickInfo.event.extendedProps.id_heure_disponible
               }
-            })            
-          }
+            }
+          }).then(async (result) => {
+            console.log(result)
+            const data = await DemandeAudiencePublicController.ajouter(result.value)
+            console.log(data)
+            // Swal.fire(`
+            //   Login: ${result.value.login}
+            //   Password: ${result.value.password}
+            // `.trim())
+          })
         },
     
         handleEvents(events) {
@@ -501,6 +507,9 @@
             </div>
         </div>
     </main>
+    <div id="test">
+      Hello world
+    </div>
 </template>
 <style lang='css'>
   @import url('./css/style.css');    

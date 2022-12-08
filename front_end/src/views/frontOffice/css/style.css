@@ -190,15 +190,20 @@ transform: scale(0.3) translateY(-50%);
 
 .swal2-input, .swal2-file, .swal2-textarea, .swal2-select, .swal2-radio, .swal2-checkbox {
   margin: 1em 0em 0px 1rem;
-  /* padding: 0px 0px 0px 0px; */
 }
 
-.swal2-textarea{
+#motif{
+  margin-left: 4rem;
+  margin-top: -40px;
+  margin-bottom: -3rem;
+  width: 284px;
+}
+/* .swal2-textarea{
   padding-right: 8.5rem;
   display: flex;
   margin-left: 60px;
   margin-top: -2.5rem;
-}
+} */
 
 /* .swal2-popup{
   width: 50rem;

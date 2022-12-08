@@ -24,6 +24,11 @@ export default class DemandeAudience{
         return res.data
     }
 
+    static async ajouter(audience_event){
+        const res = await axios.post(url.concat('/ajouter'), audience_event)
+        return res.data
+    }
+
     static async update(audience_event){
         const res = await axios.post(url.concat('/update'), audience_event)
         return res.data

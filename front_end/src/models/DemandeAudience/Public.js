@@ -45,4 +45,10 @@ export default class DemandeAudiencePublic {
         const res = await Public.reporter_public_plus_tard(audience)
         return res
     }
+
+    static async ajouter(audience){
+        const res = await Public.ajouter(audience)
+        return res
+    }
+
 }

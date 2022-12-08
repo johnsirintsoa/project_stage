@@ -47,5 +47,12 @@ export default class DemandeAudiencePublicController{
         const response = await DemandeAudiencePublic.update(audience)
         return response
     }
+
+    static async ajouter(audience) {
+      const response = await DemandeAudiencePublic.ajouter(audience)
+      return response
+    }
+
+    
 }
 
