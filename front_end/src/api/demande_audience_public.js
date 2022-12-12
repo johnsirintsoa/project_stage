@@ -29,6 +29,11 @@ export default class DemandeAudience{
         return res.data
     }
 
+    static async supprimer(id){
+        const res = await axios.post(url.concat('/supprimer/',id))
+        return res.data
+    }
+
     static async update(audience_event){
         const res = await axios.post(url.concat('/update'), audience_event)
         return res.data

@@ -1,5 +1,18 @@
 // import DemandeAudiencePublic from '../api/demande_audience_public'
 export default class Function{
+
+    static initcap(arg){
+        const arg_split = arg.split(' ')
+        let name_formatted = ''
+        for (let index = 0; index < arg_split.length; index++) {
+            const element = arg_split[index];
+            const char0  = element.charAt(0).toUpperCase()
+            const charN = element.substring(1).toLowerCase()
+            name_formatted = name_formatted.concat(char0.concat(charN),' ')
+        }
+        return name_formatted.trim()
+    }
+
     // nombre aleatoire
     static random_number(min, max) {
         return Math.random() * (max - min) + min;
@@ -133,95 +146,4 @@ export default class Function{
         const duree_decalage = 30
         return this.format_date_time(new Date(date.getTime() + (60000 * duree_decalage)))[1]
     }
-
-    // static set_intial_events(id_autorite,initialEvents){
-    //     // fullcalendar button left
-    //     const parDom1 = document.getElementsByClassName("fc-toolbar-chunk")
-    //     const parDom2 = parDom1[2].getElementsByClassName("fc-button-group")
-    //     const dayGridDom = parDom2[0].getElementsByClassName("fc-dayGridMonth-button fc-button fc-button-primary")
-    //     const timeGridWeekDom = parDom2[0].getElementsByClassName("fc-timeGridWeek-button fc-button fc-button-primary")
-    //     const timeGridDayDom = parDom2[0].getElementsByClassName("fc-timeGridDay-button fc-button fc-button-primary")
-    //     const listDayGridDom = parDom2[0].getElementsByClassName("fc-listDay-button fc-button fc-button-primary")
-    //     // fullcalendar button left
-
-    //     // fullcalendar button right
-    //     const parDom3 = parDom1[0].getElementsByClassName("fc-button-group")
-    //     const precedentButton = parDom3[0].getElementsByClassName("fc-prev-button fc-button fc-button-primary")
-    //     const nextButton = parDom3[0].getElementsByClassName("fc-next-button fc-button fc-button-primary")
-    //     const todayGridDom = parDom1[0].getElementsByClassName("fc-today-button fc-button fc-button-primary")
-    //     // fullcalendar button right
-
-    //     dayGridDom[0].addEventListener("click",async ()=>{
-    //         console.log('DayGridMonth clicked...')
-    //         let date_html = parDom1[1].getElementsByClassName("fc-toolbar-title")[0].innerHTML
-    //         const date_du_jour = this.format_date_html(date_html)
-    //         const audience_by_jour = {
-    //             id_autorite:id_autorite,
-    //             date_du_jour:date_du_jour
-    //         }
-    //         const data = await DemandeAudiencePublic.audience_public_mois(audience_by_jour)
-    //         console.log(data)
-    //         // this.format_date_html(date_html)
-    //     })
-
-    //     timeGridWeekDom[0].addEventListener("click",async ()=>{
-    //         let date_html = parDom1[1].getElementsByClassName("fc-toolbar-title")[0].innerHTML
-    //         console.log('timeGridWeek clicked...')
-    //         // this.format_date_html(date_html)
-    //         const date_actu = this.format_date_html(date_html)
-    //         console.log(date_actu)
-    //         const audience_by_jour = {
-    //             id_autorite: id_autorite,
-    //             date_du_jour: date_actu
-    //         }
-    //         // console.log('timeGridWeek clicked...')
-    //         const data = await DemandeAudiencePublic.audience_public_semaine(audience_by_jour)
-    //         console.log(data)
-    //     })
-
-    //     timeGridDayDom[0].addEventListener("click",async ()=>{
-    //         let date_html = parDom1[1].getElementsByClassName("fc-toolbar-title")[0].innerHTML
-    //         console.log('timeGridDay clicked...')
-    //         const date_actu = this.format_date_html(date_html)
-    //         console.log(date_actu)
-    //         const audience_by_jour = {
-    //             id_autorite:id_autorite,
-    //             date_du_jour:date_actu
-    //         }
-    //         const data = await DemandeAudiencePublic.audience_public_jour(audience_by_jour)
-    //         initialEvents = data
-    //         console.log(data)
-    //     })
-
-    //     listDayGridDom[0].addEventListener("click",async ()=>{
-    //         let date_html = parDom1[1].getElementsByClassName("fc-toolbar-title")[0].innerHTML
-    //         console.log('listDayGrid clicked...')
-    //         // this.format_date_html(date_html)
-    //         const date_du_jour = this.format_date_html(date_html)
-    //         const audience_by_jour = {
-    //             id_autorite:id_autorite,
-    //             date_du_jour:date_du_jour
-    //         }
-    //         const data = await DemandeAudiencePublic.audience_public_jour(audience_by_jour)
-    //         console.log(data)
-    //     })
-
-    //     todayGridDom[0].addEventListener("click",()=>{
-    //         let date_html = parDom1[1].getElementsByClassName("fc-toolbar-title")[0].innerHTML
-    //         console.log('todayGridDom clicked...')
-    //         this.format_date_html(date_html)
-    //     })
-
-    //     precedentButton[0].addEventListener("click",()=>{
-    //         let date_html = parDom1[1].getElementsByClassName("fc-toolbar-title")[0].innerHTML
-    //         console.log('precedentButton clicked...')
-    //         this.format_date_html(date_html)
-    //     })
-
-    //     nextButton[0].addEventListener("click",()=>{
-    //         let date_html = parDom1[1].getElementsByClassName("fc-toolbar-title")[0].innerHTML
-    //         console.log('nextButton clicked...')
-    //         this.format_date_html(date_html)
-    //     })
-    // }
 }

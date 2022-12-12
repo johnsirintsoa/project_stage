@@ -100,6 +100,7 @@
 
         this.audience.session_navigateur = JSON.parse(sessionStorage.getItem('session_navigateur')).value
         // this.audience.session_navigateur = 'TEST123456789'
+        // console.log(Function.initcap('hAGA'))
       },
 
       async mounted() {
@@ -147,57 +148,124 @@
     
         async handleEventClick(clickInfo) {
           // console.log(clickInfo.event.id)
-          console.log(clickInfo.event)
-          Swal.fire({
-            title: 'Ajouter un audience',
-            html: `<p>Nom: <input type="text" id="nom" class="swal2-input" placeholder="Nom" required></p>
-            <p>Prénom: <input type="text" id="prenom" class="swal2-input" placeholder="Prénom" required></p>
-            <p>CIN: <input type="text" id="cin" class="swal2-input" placeholder="CIN" pattern="[0-9]{12}" required></p>
-            <p>Tél: <input type="text" id="telephone" class="swal2-input" placeholder="Numéro de téléphone" pattern="[0-9]{10}"  required></p>
-            <p>Mail: <input type="email" id="mail" class="swal2-input" placeholder="Adresse éléctronique" required></p>
-            <p style="text-align: left;padding: 3rem 3rem 3rem 3rem;">Motif: <textarea id="motif" class="swal2-textarea" placeholder="Saisissez votre motif " style="display: flex;"></textarea></p>`,
-            inputAttributes: {
-              input: 'text',
-              required: 'true'
-            },
-            confirmButtonText: 'Ajouter',
-            heightAuto: true,
-            cancelButtonText: 'Annuler',
-            showCancelButton: true,
-            focusConfirm: false,
-            preConfirm: () => {
-
-              this.audience.nom = Swal.getPopup().querySelector('#nom').value
-              this.audience.prenom = Swal.getPopup().querySelector('#prenom').value
-              this.audience.cin = Swal.getPopup().querySelector('#cin').value
-              this.audience.numero_telephone = Swal.getPopup().querySelector('#telephone').value
-              this.audience.email = Swal.getPopup().querySelector('#mail').value
-              this.audience.motif = Swal.getPopup().querySelector('#motif').value
-
-              // if (!this.audience.nom || !this.audience.prenom || !this.audience.cin || !this.audience.numero_telephone || !this.audience.email || !this.audience.motif) {
-              //   Swal.showValidationMessage(`Veuillez remplir le formulaire`)
-              // }
-              return { 
-                nom: this.audience.nom, 
-                prenom: this.audience.prenom, 
-                cin: this.audience.cin,
-                numero_telephone: this.audience.numero_telephone,
-                email: this.audience.email,
-                motif: this.audience.motif,
-                session_navigateur: this.audience.session_navigateur,
-                id_autorite: this.audience.direction,
-                id_heure_dispo: clickInfo.event.extendedProps.id_heure_disponible
-              }
+          
+          if(clickInfo.event.id != ''){
+            const sa = clickInfo.event.extendedProps.status_audience
+            if(sa == 'Non validé'){
+              console.log('On peut modifier ou supprimer')
+              Swal.fire({
+                title: 'Do you want to save the changes?',
+                width: 600,
+                showDenyButton: true,
+                showCancelButton: true,
+                confirmButtonText: 'Save',
+                denyButtonText: `Don't save`,
+              }).then((result) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (result.isConfirmed) {
+                  Swal.fire('Saved!', '', 'success')
+                } else if (result.isDenied) {
+                  Swal.fire('Changes are not saved', '', 'info')
+                }
+              })
             }
-          }).then(async (result) => {
-            console.log(result)
-            const data = await DemandeAudiencePublicController.ajouter(result.value)
-            console.log(data)
-            // Swal.fire(`
-            //   Login: ${result.value.login}
-            //   Password: ${result.value.password}
-            // `.trim())
-          })
+            else if (sa == 'Validé'){
+              console.log(clickInfo.event.id)
+              const id_audience = clickInfo.event.id
+              const id_heure_disponible = clickInfo.event.extendedProps.id_heure_disponible
+              Swal.fire({
+                title: 'Supprimer une audience',
+                text: "Voulez vous vraiment supprimer votre audience?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'Annuler',
+                confirmButtonText: 'Supprimer!'
+              }).then(async (result) => {
+                if (result.isConfirmed) {
+                  const infos_audience = {
+                    id_aud_public: id_audience,
+                    id_heure_dispo: id_heure_disponible
+                  } 
+                  console.log(infos_audience)
+                  const response = await DemandeAudiencePublicController.supprimer(id_audience)
+                  Swal.fire(
+                    'Entretien supprimé',
+                    `Votre audience a bien été supprimée`,
+                    'success'
+                  )
+                  // setInterval( () => {
+                  //   window.location.reload()
+                  // }, 1000)
+                }
+              }) 
+            }
+          }
+          else{
+            const start_date_time = Function.format_date_time(clickInfo.event.start)
+            const end_date_time = Function.format_date_time(clickInfo.event.end)
+            this.audience.date_debut = start_date_time[0]
+            this.audience.date_fin = end_date_time[0]
+            this.audience.time_debut = start_date_time[1]
+            this.audience.time_fin = end_date_time[1]
+            Swal.fire({
+              title: 'Ajouter un audience',
+              html: `<p>Nom: <input type="text" id="nom" class="swal2-input" placeholder="Nom" required></p>
+              <p>Prénom: <input type="text" id="prenom" class="swal2-input" placeholder="Prénom" required></p>
+              <p>CIN: <input type="text" id="cin" class="swal2-input" placeholder="CIN" pattern="[0-9]{12}" required></p>
+              <p>Tél: <input type="text" id="telephone" class="swal2-input" placeholder="Numéro de téléphone" pattern="[0-9]{10}"  required></p>
+              <p>Mail: <input type="email" id="mail" class="swal2-input" placeholder="Adresse éléctronique" required></p>
+              <p style="text-align: left;padding: 3rem 3rem 3rem 3rem;">Motif: <textarea id="motif" class="swal2-textarea" placeholder="Saisissez votre motif " style="display: flex;"></textarea></p>`,
+              inputAttributes: {
+                input: 'text',
+                required: 'true'
+              },
+              confirmButtonText: 'Ajouter',
+              heightAuto: true,
+              cancelButtonText: 'Annuler',
+              showCancelButton: true,
+              focusConfirm: false,
+              preConfirm: () => {
+
+                this.audience.nom = Swal.getPopup().querySelector('#nom').value
+                this.audience.prenom = Swal.getPopup().querySelector('#prenom').value
+                this.audience.cin = Swal.getPopup().querySelector('#cin').value
+                this.audience.numero_telephone = Swal.getPopup().querySelector('#telephone').value
+                this.audience.email = Swal.getPopup().querySelector('#mail').value
+                this.audience.motif = Swal.getPopup().querySelector('#motif').value
+
+                // if (!this.audience.nom || !this.audience.prenom || !this.audience.cin || !this.audience.numero_telephone || !this.audience.email || !this.audience.motif) {
+                //   Swal.showValidationMessage(`Veuillez remplir le formulaire`)
+                // }
+                return { 
+                  nom: this.audience.nom, 
+                  prenom: Function.initcap(this.audience.prenom), 
+                  cin: this.audience.cin,
+                  numero_telephone: this.audience.numero_telephone,
+                  email: this.audience.email,
+                  motif: this.audience.motif,
+                  session_navigateur: this.audience.session_navigateur,
+                  date_audience: this.audience.date_debut,
+                  heure_debut: this.audience.time_debut,
+                  heure_fin: this.audience.time_fin,
+                  id_autorite: this.audience.direction,
+                  id_heure_dispo: clickInfo.event.extendedProps.id_heure_disponible
+                }
+              }
+            }).then(async (result) => {
+              console.log(result)
+              const response = await DemandeAudiencePublicController.ajouter(result.value)
+              if(response.message){
+                swal("Audience enregistrée", `${response.message}`, "success");
+              }
+              // else{
+              //   swal("Audience non enregistrée", "Votre audience n'a pas été enregistrée", "error");
+              // }
+            }).catch((err) => {
+              console.log(err)
+            });
+          }
         },
     
         handleEvents(events) {
@@ -418,41 +486,6 @@
               window.location.reload()
             }, 1000)
           }
-          // console.log(response)
-          // const response =  await DemandeAudience.add_event(audience_event)
-          // console.log(audience_event)
-          // console.log(response)
-          // if(response.code == 'ER_BAD_FIELD_ERROR'){
-          //   swal("Audience non enregistrée", "Veuillez remplir le formulaire", "error");
-          // }
-          // else if(response.message == 'pas disponible'){
-          //   swal("Audience non enregistrée", "Cette place est occupé ou pas disponible.", "error");
-          // }
-          // else if(response.message == 'Jour férié et pas disponible'){
-          //   swal("Audience non enregistrée", "On est férié et le directeur n'est pas disponible", "error");
-          // }
-          // else if(response.message == 'Jour férié'){
-          //   swal("Audience non enregistrée", "On est férié", "error");
-          // }
-          // else if(response.message == "date fin invalid"){
-          //   swal("Audience non enregistrée", "La date de fin d'événement doit être égal à la date de début", "warning");
-          // }
-          // else if(response.message == "formulaire vide"){
-          //   swal("Audience non enregistrée", "Veuillez remplir le formulaire", "warning");
-          // }
-          // else if(response.affectedRows == 1){
-          //   swal("Audience enregistrée", "Votre audience a bien été enregistrée", "success");
-          //   // window.location.reload()
-          //   // setInterval( () => {
-          //   //   window.location.reload()
-          //   // }, 1000)
-          // }
-          // else if(response.message == "time fin invalid"){
-          //   swal("Audience non enregistrée", "L'heure fin doit être supérieur à l'heure début", "warning");
-          // }
-          // setInterval( () => {
-          //   window.location.reload()
-          // }, 1000)
         },
       }
     }

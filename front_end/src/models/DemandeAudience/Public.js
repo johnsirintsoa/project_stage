@@ -51,4 +51,8 @@ export default class DemandeAudiencePublic {
         return res
     }
 
+    static async supprimer(audience){
+        const res = await Public.supprimer(audience)
+        return res
+    }
 }

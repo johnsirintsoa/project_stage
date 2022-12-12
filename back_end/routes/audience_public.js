@@ -593,14 +593,30 @@ router.post('/public/add',async(req,res)=>{
 })
 
 router.post('/public/ajouter',async(req,res)=>{
-    const sql = `CALL ajouter_audience_public('${req.body.session_navigateur}','${req.body.nom}','${req.body.prenom}','${req.body.cin}','${req.body.numero_telephone}','${req.body.email}',${req.body.id_heure_dispo},'${req.body.motif}','${req.body.id_autorite}')`
+    const sql = `CALL ajouter_audience_public('${req.body.session_navigateur}','${req.body.nom}','${req.body.prenom}','${req.body.cin}','${req.body.numero_telephone}','${req.body.email}',${req.body.id_heure_dispo},'${req.body.motif}','${req.body.date_audience}','${req.body.heure_debut}','${req.body.heure_fin}','${req.body.id_autorite}')`
         db.query(sql, (error,result) => {
         if(error){
             res.send(error)
         } 
-        // else if(result.length > 0 ){
-        //     res.json(result[0][0])
-        // }
+        else if(result.length > 0 ){
+            res.json(result[0][0])
+        }
+        else{
+            res.json(result[0])
+        }
+        
+    })
+})
+
+router.post('/public/supprimer/:id',async(req,res)=>{
+    const sql = `call supprimer_aud_public (${req.params.id})`
+        db.query(sql, (error,result) => {
+        if(error){
+            res.send(error)
+        } 
+        else if(result.length > 0 ){
+            res.json(result[0][0])
+        }
         else{
             res.json(result[0])
         }

@@ -311,5 +311,27 @@ CALL si_disponible_public_temp('2022-11-09','2022-11-09','06:00:00','07:45:00','
 CALL si_disponible_public('2022-11-09','2022-11-09','07:40:00','08:40:00','TEST',1)
 CALL si_disponible_public_tmp('2022-11-09','2022-11-09','07:40:00','08:40:00','TEST',1)	
 
+--- Procedure pour supprimer les foreign keys null
+CREATE  PROCEDURE `supprimer_columns_null`()
+BEGIN 
+	DELETE FROM dm_aud_public_heure_dispo WHERE id_aud_public IS NULL;
+	DELETE FROM heure_dispo_dm_aud_autorite where id_dm_aud_autorite IS NULL;
+	DELETE FROM heure_disponible where id_jour_ouvrable IS NULL;
+	DELETE FROM entretien_demande_stage WHERE entretien_demande_stage.id_demande_stage is null;
+	DELETE FROM demande_stage where id_autorite_enfant is null;
+	DELETE FROM demande_audience_autorite where id_autorite_enfant_sender is null;
+END
 
 
+-- Evenement pour supprimer les audiences null dans dm_aud_public_heure_disponible
+SHOW PROCESSLIST;
+
+SET GLOBAL event_scheduler = ON;
+
+CREATE EVENT supprimer_columns_null
+ON SCHEDULE EVERY concat(CURRENT_DATE,' ','09:40:00')
+    COMMENT 'Supprimer les audience nulls dans aud_pub_heure_disponible'
+    DO
+		BEGIN
+			DELETE FROM dm_aud_public_heure_dispo where id_aud_public is null;
+		END

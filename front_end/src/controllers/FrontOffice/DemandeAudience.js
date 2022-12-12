@@ -24,8 +24,8 @@ export const actual_events_public_jour = async (id_autorite_enfant) => {
   const audience_public_mois = {
     id_autorite: id_autorite_enfant,
     date_du_jour: date_actu,
-    session_navigateur: JSON.parse(sessionStorage.getItem('session_navigateur')).value
-    // session_navigateur: 'TEST123456789'
+    // session_navigateur: JSON.parse(sessionStorage.getItem('session_navigateur')).value
+    session_navigateur: 'session884.5824087825326'
   }
   const audience = DemandeAudiencePublic.audience_public_jour(audience_public_mois)
   try {
@@ -53,6 +53,14 @@ export default class DemandeAudiencePublicController{
       return response
     }
 
-    
+    static async supprimer(id) {
+      const response = await DemandeAudiencePublic.supprimer(id)
+      return response
+    }
+
+    static async delete(infos) {
+      const response = await DemandeAudiencePublic.supprimer(audience)
+      return response
+    }
 }
 
