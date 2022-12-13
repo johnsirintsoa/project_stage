@@ -624,17 +624,21 @@ router.post('/public/supprimer/:id',async(req,res)=>{
     })
 })
 
+router.post('/public/modifier',async(req,res)=>{
+    const sql = `call modifier_audience_public_front ('${req.body.session_navigateur}','${req.body.nom }','${req.body.prenom }','${req.body.cin }','${req.body.numero_telephone }','${req.body.email }','${req.body.motif}','${req.body.id_audience}',${req.body.id_heure_disponible},${req.body.id_dm_aud_public_heure_dispo},${req.body.id_autorite})`
+    db.query(sql, (error,result) => {
+        if(error){
+            res.send(error)
+        } 
+        else if(result.length > 0 ){
+            res.json(result[0][0])
+        }else{
+            res.json(result)
+        }
+    })
+})
+
 router.post('/public/update',async(req,res)=>{
-    // const audience = {
-    //     date_event_debut: req.body.date_event_debut,
-    //     date_event_fin: req.body.date_event_fin, 
-    //     time_event_debut: req.body.time_event_debut,
-    //     time_event_fin: req.body.time_event_fin,
-    //     motif: req.body.motif,
-    //     id: req.body.id,
-    //     session_navigateur: req.session_navigateur
-    // }
-    // const sql = `INSERT INTO stage.demande_audience( date_time_debut, date_time_fin, id_demande_stage, motif, id_direction, type_audience ) VALUES ( '${req.body.date_time_debut}', '${req.body.date_time_fin}', ${req.body.id_demande_stage}, '${req.body.motif}', ${req.body.id_direction}, '${req.body.type_audience}' )`
     const sql = `CALL update_audience_public ('${req.body.session_navigateur}','${req.body.nom }','${req.body.prenom }','${req.body.cin }','${req.body.numero_telephone }','${req.body.email }','${req.body.date_event_debut}','${req.body.date_event_fin}','${req.body.time_event_debut}','${req.body.time_event_fin}','${req.body.motif}',${req.body.id_autorite_enfant},${req.body.id})`
     db.query(sql, (error,result) => {
         if(error){

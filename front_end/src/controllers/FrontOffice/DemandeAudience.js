@@ -53,6 +53,11 @@ export default class DemandeAudiencePublicController{
       return response
     }
 
+    static async modifier(audience) {
+      const response = await DemandeAudiencePublic.modifier(audience)
+      return response
+    }
+
     static async supprimer(id) {
       const response = await DemandeAudiencePublic.supprimer(id)
       return response

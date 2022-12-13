@@ -146,4 +146,5 @@ export default class Function{
         const duree_decalage = 30
         return this.format_date_time(new Date(date.getTime() + (60000 * duree_decalage)))[1]
     }
+
 }

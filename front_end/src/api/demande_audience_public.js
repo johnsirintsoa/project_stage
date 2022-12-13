@@ -34,6 +34,11 @@ export default class DemandeAudience{
         return res.data
     }
 
+    static async modifier(audience){
+        const res = await axios.post(url.concat('/modifier'),audience)
+        return res.data
+    }
+
     static async update(audience_event){
         const res = await axios.post(url.concat('/update'), audience_event)
         return res.data
