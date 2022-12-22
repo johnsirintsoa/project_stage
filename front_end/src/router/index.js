@@ -141,8 +141,13 @@ const router = createRouter({
 
     // /** Autorite routes */
     {
-      path: '/autorite/',
+      path: '/autorite/login',
       name: 'middle-login',
+      component: () => import('../views/middleOffice/LoginView.vue')
+    },
+    {
+      path: '/autorite/',
+      name: 'middle-home',
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.

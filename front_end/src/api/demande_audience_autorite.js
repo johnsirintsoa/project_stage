@@ -9,18 +9,23 @@ export default class DemandeAudienceAutorite{
         return res.data
     }
 
-    static async faire_audience_mois(audience){
-        const res = await axios.post(url.concat('/all/faire_audience'),audience)
+    static async faire_audience(audience){
+        const res = await axios.post(url.concat('/faire_audience'),audience)
         return res.data
     }
 
-    static async add_audience_autorite(audience){
-        const res = await axios.post(url.concat('/add'),audience)
+    static async ajouter(audience){
+        const res = await axios.post(url.concat('/ajouter'),audience)
         return res.data
     }
 
-    static async update_audience_autorite(audience_event){
-        const res = await axios.post(url.concat('/update'), audience_event)
+    static async modifier(audience_event){
+        const res = await axios.post(url.concat('/modifier'), audience_event)
+        return res.data
+    }
+
+    static async supprimer(id){
+        const res = await axios.post(url.concat('/supprimer'), id)
         return res.data
     }
 
@@ -29,10 +34,10 @@ export default class DemandeAudienceAutorite{
         return res.data
     }
 
-    static async notifications(id){
-        const res =  await axios.get(url.concat('/notification/',id))
-        return res.data
-    }
+    // static async notifications(id){
+    //     const res =  await axios.get(url.concat('/notification/',id))
+    //     return res.data
+    // }
 
     static async valider(dm_aud_autorite){
         const res = await axios.post(url.concat('/valider'),dm_aud_autorite)

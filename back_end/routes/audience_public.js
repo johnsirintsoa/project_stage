@@ -18,281 +18,18 @@ router.post('/public/heure_disponible_autorite/jour',async(req,res) =>{
 })
 
 // Liste audiences par jour
-router.post('/public/all/jour', async(req,res) =>{
+router.post('/public/all', async(req,res) =>{
     // const date_du_jour = new Date().getFullYear()+'-'+new Date().getMonth()+'-'+new Date().getDate();
-    const sql =`CALL LISTE_PUBLIC_PAR_JOUR(${req.body.id_autorite},'${req.body.date_du_jour}')`
-    db.query(sql,function(err, result) {
+    const sql =`call liste_disponible_public('${req.body.session_navigateur}',${req.body.id_autorite})`
+    db.query(sql,function(err,result){
         if(err){
             return res.send({ err });
-        }else{
-            // res.send(sql)
-            const result_array = [];
-            result[0].forEach(element => {
-                if(element.type_audience == 'Public'){
-                    const date_time_start = String(element.dd_aud_public).concat('T',element.td_aud_public)
-                    const date_time_fin = String(element.df_aud_public).concat('T',element.tf_aud_public)
-                    result_array.push({
-                        id: String(element.id),
-                        title: element.motif,
-                        start: date_time_start,
-                        end: date_time_fin,
-                        color:'#ff9f89',
-                        type_audience: element.type_audience
-                    })
-                }
-                else if(element.type_audience =='Autorite'){
-                    const date_time_start = String(element.dd_aud_autorite).concat('T',element.td_aud_autorite)
-                    const date_time_fin = String(element.df_aud_autorite).concat('T',element.tf_aud_autorite)
-                    result_array.push({
-                        id: String(element.id),
-                        title: element.motif,
-                        start: date_time_start,
-                        end: date_time_fin,
-                        color:'#ff9f89',
-                        type_audience: element.type_audience
-                    })
-                }
-                else if(element.type_audience == 'Pas disponible date'){
-                    const date_time_start = String(element.dd_non_dispo_date).concat('T',element.td_non_dispo_date)
-                    const date_time_fin = String(element.df_non_dispo_date).concat('T',element.tf_non_dispo_date)
-                    result_array.push({
-                        id: String(element.id),
-                        title: element.motif,
-                        start: date_time_start,
-                        end: date_time_fin,
-                        color:'#2B2B2B',
-                        type_audience: element.type_audience
-                    })
-                }
-                else if(element.type_audience == 'Jour ferie'){
-                    const date_ferie_debut = String(element.date_ferie).concat('T',element.td_ferie)
-                    const date_ferie_fin = String(element.date_ferie).concat('T',element.tf_ferie)
-                    result_array.push({
-                        id: String(element.id),
-                        title: element.motif,
-                        start: date_ferie_debut,
-                        end: date_ferie_fin,
-                        color:'#EFEC27',
-                        type_audience: element.type_audience
-                    })
-                }
-                else if(element.type_audience == 'Pas disponible jour'){
-                    const date_ferie_debut = String(element.date_ferie).concat('T',element.td_ferie)
-                    const date_ferie_fin = String(element.date_ferie).concat('T',element.tf_ferie)
-                    if(element.jour_non_dispo_jour == 'Sunday'){
-                        result_array.push({
-                        title: element.motif,
-                        daysOfWeek: [ '0' ], // these recurrent events move separately
-                        startTime: element.td_non_dispo_jour,
-                        endTime: element.tf_non_dispo_jour,
-                        type_audience: element.type_audience,
-                        color: '#2B2B2B'
-                    })
-                }
-                else if(element.jour_non_dispo_jour == 'Monday'){
-                    result_array.push({
-                        title: element.motif,
-                        daysOfWeek: [ '1' ], // these recurrent events move separately
-                        startTime: element.td_non_dispo_jour,
-                        endTime: element.tf_non_dispo_jour,
-                        type_audience: element.type_audience,
-                        color: '#2B2B2B'
-                    })
-                }
-                else if(element.jour_non_dispo_jour == 'Tuesday'){
-                    result_array.push({
-                        title: element.motif,
-                        daysOfWeek: [ '2' ], // these recurrent events move separately
-                        startTime: element.td_non_dispo_jour,
-                        endTime: element.tf_non_dispo_jour,
-                        type_audience: element.type_audience,
-                        color: '#2B2B2B'
-                    })
-                }
-                else if(element.jour_non_dispo_jour == 'Wednesday'){
-                    result_array.push({
-                        title: element.motif,
-                        daysOfWeek: [ '3' ], // these recurrent events move separately
-                        startTime: element.td_non_dispo_jour,
-                        endTime: element.tf_non_dispo_jour,
-                        type_audience: element.type_audience,
-                        color: '#2B2B2B'
-                    })
-                }
-                else if(element.jour_non_dispo_jour == 'Thursday'){
-                    result_array.push({
-                        title: element.motif,
-                        daysOfWeek: [ '4' ], // these recurrent events move separately
-                        startTime: element.td_non_dispo_jour,
-                        endTime: element.tf_non_dispo_jour,
-                        type_audience: element.type_audience,
-                        color: '#2B2B2B'
-                    })
-                }
-                else if(element.jour_non_dispo_jour == 'Friday'){
-                    result_array.push({
-                        title: element.motif,
-                        daysOfWeek: [ '5' ], // these recurrent events move separately
-                        startTime: element.td_non_dispo_jour,
-                        endTime: element.tf_non_dispo_jour,
-                        type_audience: element.type_audience,
-                        color: '#2B2B2B'
-                    })
-                }
-                else if(element.jour_non_dispo_jour == 'Saturday'){
-                    result_array.push({
-                        title: element.motif,
-                        daysOfWeek: [ '6' ], // these recurrent events move separately
-                        startTime: element.td_non_dispo_jour,
-                        endTime: element.tf_non_dispo_jour,
-                        type_audience: element.type_audience,
-                        color: '#2B2B2B'
-                    })
-                }
-                }               
-            });
-            return res.json(result_array);
-            // return res.json(result[0]);
-
+        }
+        else{
+            return res.json(result[0])    
         }
     })
 
-})
-
-router.post('/public/all/semaine', async(req,res) =>{
-    const sql =`CALL LISTE_PUBLIC_PAR_SEMAINE(${req.body.id_autorite},'${req.body.date_actu}')`
-    db.query(sql,function(err, result) {
-        if(err){
-            return res.send({ err });
-        }else{
-            const result_array = [];
-            result[0].forEach(element => {
-                if(element.type_audience == 'Public'){
-                    const date_time_start = String(element.dd_aud_public).concat('T',element.td_aud_public)
-                    const date_time_fin = String(element.df_aud_public).concat('T',element.tf_aud_public)
-                    result_array.push({
-                        id: String(element.id),
-                        title: element.motif,
-                        start: date_time_start,
-                        end: date_time_fin,
-                        color:'#ff9f89',
-                        type_audience: element.type_audience
-                    })
-                }
-                else if(element.type_audience =='Autorite'){
-                    const date_time_start = String(element.dd_aud_autorite).concat('T',element.td_aud_autorite)
-                    const date_time_fin = String(element.df_aud_autorite).concat('T',element.tf_aud_autorite)
-                    result_array.push({
-                        id: String(element.id),
-                        title: element.motif,
-                        start: date_time_start,
-                        end: date_time_fin,
-                        color:'#ff9f89',
-                        type_audience: element.type_audience
-                    })
-                }
-                else if(element.type_audience == 'Pas disponible date'){
-                    const date_time_start = String(element.dd_non_dispo_date).concat('T',element.td_non_dispo_date)
-                    const date_time_fin = String(element.df_non_dispo_date).concat('T',element.tf_non_dispo_date)
-                    result_array.push({
-                        id: String(element.id),
-                        title: element.motif,
-                        start: date_time_start,
-                        end: date_time_fin,
-                        color:'#2B2B2B',
-                        type_audience: element.type_audience
-                    })
-                }
-                else if(element.type_audience == 'Jour ferie'){
-                    const date_ferie_debut = String(element.date_ferie).concat('T',element.td_ferie)
-                    const date_ferie_fin = String(element.date_ferie).concat('T',element.tf_ferie)
-                    result_array.push({
-                        id: String(element.id),
-                        title: element.motif,
-                        start: date_ferie_debut,
-                        end: date_ferie_fin,
-                        color:'#EFEC27',
-                        type_audience: element.type_audience
-                    })
-                }
-                else if(element.type_audience == 'Pas disponible jour'){
-                    const date_ferie_debut = String(element.date_ferie).concat('T',element.td_ferie)
-                    const date_ferie_fin = String(element.date_ferie).concat('T',element.tf_ferie)
-                    if(element.jour_non_dispo_jour == 'Sunday'){
-                        result_array.push({
-                        title: element.motif,
-                        daysOfWeek: [ '0' ], // these recurrent events move separately
-                        startTime: element.td_non_dispo_jour,
-                        endTime: element.tf_non_dispo_jour,
-                        type_audience: element.type_audience,
-                        color: '#2B2B2B'
-                    })
-                }
-                else if(element.jour_non_dispo_jour == 'Monday'){
-                    result_array.push({
-                        title: element.motif,
-                        daysOfWeek: [ '1' ], // these recurrent events move separately
-                        startTime: element.td_non_dispo_jour,
-                        endTime: element.tf_non_dispo_jour,
-                        type_audience: element.type_audience,
-                        color: '#2B2B2B'
-                    })
-                }
-                else if(element.jour_non_dispo_jour == 'Tuesday'){
-                    result_array.push({
-                        title: element.motif,
-                        daysOfWeek: [ '2' ], // these recurrent events move separately
-                        startTime: element.td_non_dispo_jour,
-                        endTime: element.tf_non_dispo_jour,
-                        type_audience: element.type_audience,
-                        color: '#2B2B2B'
-                    })
-                }
-                else if(element.jour_non_dispo_jour == 'Wednesday'){
-                    result_array.push({
-                        title: element.motif,
-                        daysOfWeek: [ '3' ], // these recurrent events move separately
-                        startTime: element.td_non_dispo_jour,
-                        endTime: element.tf_non_dispo_jour,
-                        type_audience: element.type_audience,
-                        color: '#2B2B2B'
-                    })
-                }
-                else if(element.jour_non_dispo_jour == 'Thursday'){
-                    result_array.push({
-                        title: element.motif,
-                        daysOfWeek: [ '4' ], // these recurrent events move separately
-                        startTime: element.td_non_dispo_jour,
-                        endTime: element.tf_non_dispo_jour,
-                        type_audience: element.type_audience,
-                        color: '#2B2B2B'
-                    })
-                }
-                else if(element.jour_non_dispo_jour == 'Friday'){
-                    result_array.push({
-                        title: element.motif,
-                        daysOfWeek: [ '5' ], // these recurrent events move separately
-                        startTime: element.td_non_dispo_jour,
-                        endTime: element.tf_non_dispo_jour,
-                        type_audience: element.type_audience,
-                        color: '#2B2B2B'
-                    })
-                }
-                else if(element.jour_non_dispo_jour == 'Saturday'){
-                    result_array.push({
-                        title: element.motif,
-                        daysOfWeek: [ '6' ], // these recurrent events move separately
-                        startTime: element.td_non_dispo_jour,
-                        endTime: element.tf_non_dispo_jour,
-                        type_audience: element.type_audience,
-                        color: '#2B2B2B'
-                    })
-                }
-                }               
-            });
-            return res.json(result_array);
-        }
-    })
 })
 
 router.post('/public/all/mois', async(req,res) =>{
@@ -593,14 +330,14 @@ router.post('/public/add',async(req,res)=>{
 })
 
 router.post('/public/ajouter',async(req,res)=>{
-    const sql = `CALL ajouter_audience_public('${req.body.session_navigateur}','${req.body.nom}','${req.body.prenom}','${req.body.cin}','${req.body.numero_telephone}','${req.body.email}',${req.body.id_heure_dispo},'${req.body.motif}','${req.body.date_audience}','${req.body.heure_debut}','${req.body.heure_fin}','${req.body.id_autorite}')`
+    const sql = `CALL ajouter_audience_public('${req.body.session_navigateur}','${req.body.nom}','${req.body.prenom}','${req.body.cin}','${req.body.numero_telephone}','${req.body.email}',${req.body.id_date_heure_disponible_autorite},'${req.body.motif}','${req.body.heure_debut}','${req.body.heure_fin}')`
         db.query(sql, (error,result) => {
         if(error){
             res.send(error)
         } 
         else if(result.length > 0 ){
             res.json(result[0][0])
-        }
+        }   
         else{
             res.json(result[0])
         }
@@ -609,7 +346,7 @@ router.post('/public/ajouter',async(req,res)=>{
 })
 
 router.post('/public/supprimer/:id',async(req,res)=>{
-    const sql = `call supprimer_aud_public (${req.params.id})`
+    const sql = `call supprimer_audience_public (${req.params.id})`
         db.query(sql, (error,result) => {
         if(error){
             res.send(error)
@@ -625,7 +362,7 @@ router.post('/public/supprimer/:id',async(req,res)=>{
 })
 
 router.post('/public/modifier',async(req,res)=>{
-    const sql = `call modifier_audience_public_front ('${req.body.session_navigateur}','${req.body.nom }','${req.body.prenom }','${req.body.cin }','${req.body.numero_telephone }','${req.body.email }','${req.body.motif}','${req.body.id_audience}',${req.body.id_heure_disponible},${req.body.id_dm_aud_public_heure_dispo},${req.body.id_autorite})`
+    const sql = `call modifier_audience_public ('${req.body.nom }','${req.body.prenom }','${req.body.cin }','${req.body.numero_telephone }','${req.body.email }','${req.body.motif}',${req.body.id_audience},${req.body.id_date_heure_disponible},${req.body.id_date_heure_disponible_autorite},${req.body.id_dm_aud_public_heure_dispo})`
     db.query(sql, (error,result) => {
         if(error){
             res.send(error)

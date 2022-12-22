@@ -2,7 +2,6 @@
 import { RouterLink, RouterView } from 'vue-router'
 // import HelloWorld from './components/HelloWorld.vue'
 import dm_autorite_controller from './controllers/BackOffice/DemandeAudienceAutoriteController'
-import notificationController from './controllers/BackOffice/NotificationController';
 </script>
 <template>
 
@@ -34,42 +33,6 @@ import notificationController from './controllers/BackOffice/NotificationControl
               <i class="bi bi-search"></i>
             </a>
           </li><!-- End Search Icon-->
-
-          <li class="nav-item dropdown">
-
-            <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
-              <i class="bi bi-bell"></i>
-              <span class="badge bg-primary badge-number">{{notifications.length}}</span>
-            </a><!-- End Notification Icon -->
-
-            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
-              <li class="dropdown-header">
-                Vous avez {{notifications.length}} audiences
-                <RouterLink to="/administrateur/demande-audience/mes-audiences" >
-                  <span class="badge rounded-pill bg-primary p-2 ms-2">Voir tout</span>
-                </RouterLink>
-              </li>
-              <li>
-                <hr class="dropdown-divider">
-              </li>
-              
-              <RouterLink to="/administrateur/demande-audience/mes-audiences" >
-              <li v-for="notification in notifications" :key="notifications.id" class="notification-item">
-                <i v-if="notification.type_audience === 'Public' "><span style="background-color: #331999" class="dot"></span></i>
-                <i v-else-if="notification.type_audience === 'Autorité'" ><span style="background-color: #f10586" class="dot"></span></i>
-                <!-- <i><span :style="{ 'background-color': styleObject.color}" class="dot"></span></i> -->
-                <div>
-                  <h4>{{notification.title}}</h4>
-                  <p>{{notification.type_audience}}</p>
-                  <p>{{notification.start}}</p>
-                </div>
-              </li>
-              </RouterLink>
-
-              <li><hr class="dropdown-divider"></li>
-            </ul><!-- End Notification Dropdown Items -->
-
-          </li><!-- End Notification Nav -->
 
 
           <li class="nav-item dropdown pe-3">
@@ -219,27 +182,21 @@ export default {
   data() {
     return {
       active: false,
-      notifications: '',
       autorite:''
     }
   },
+  
   async created() {
     if(sessionStorage.getItem('administrateur')){
       // redirect vers la page d'accueil
       this.$router.push({path: '/administrateur/'});
       this.autorite = JSON.parse(sessionStorage.getItem('administrateur')).autorite_enfant
-      notificationController.notification_back_end()
     }else{
       // redirect vers la page de login
       this.$router.push({path: '/administrateur/login'});
       this.active = true
     }
 
-
-    //Notifications
-    const id_autorite = JSON.parse(sessionStorage.getItem('administrateur')).autorite_enfant.id
-    this.notifications = await dm_autorite_controller.notifications(id_autorite)
-    // console.log(this.notifications)
   },
   methods: {
     getSessionId(){
@@ -249,7 +206,7 @@ export default {
     deconnection(){
       sessionStorage.removeItem('administrateur')
       window.location.reload()
-      this.$router.push({path: '/administrateur/login'});
+      this.$router.push({path: '/'});
     }
   },
 }

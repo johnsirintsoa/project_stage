@@ -13,9 +13,10 @@ router.post('/administrateur/login/:nom_utilisateur/:mot_de_passe',async (req,re
         l.id,
         l.id_autorite_enfant,
         ae.intitule,
-        ae.intitule_code
+        ae.intitule_code,
+        ae.addresse_electronique
     FROM
-        stage.profil l JOIN autorite_enfant ae on l.id_autorite_enfant = ae.id where l.nom_utilisateur ='${username}' and l.mot_de_passe ='${pwd}' and est_administrateur = 1`
+        profil l JOIN autorite_enfant ae on l.id_autorite_enfant = ae.id where l.nom_utilisateur ='${username}' and l.mot_de_passe ='${pwd}' and est_administrateur = 1`
     var query = db.query(sql, function(err, result) {
         return res.json(result[0]);
     });
@@ -33,7 +34,7 @@ router.post('/autorite/login/:nom_utilisateur/:mot_de_passe',async (req,res)=>{
         ae.intitule,
         ae.intitule_code
     FROM
-        stage.profil l JOIN autorite_enfant ae on l.id_autorite_enfant = ae.id where l.nom_utilisateur ='${username}' and l.mot_de_passe ='${pwd}' and est_administrateur = 0`
+        profil l JOIN autorite_enfant ae on l.id_autorite_enfant = ae.id where l.nom_utilisateur ='${username}' and l.mot_de_passe ='${pwd}' and est_administrateur = 0`
     var query = db.query(sql, function(err, result) {
         return res.json(result[0]);
     });

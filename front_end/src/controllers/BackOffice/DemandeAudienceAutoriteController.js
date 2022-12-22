@@ -1,10 +1,24 @@
 import DemandeAudienceAutorite from '../../models/DemandeAudience/Autorite';
-import NotificationsModels from '../../models/BackOffice/Notification';
 
 export default class DemandeAudienceAutoriteController{
 
-    static async notifications(id){
-        const response = await NotificationsModels.notifications(id)
+    static async faire_audience(audience){
+        const res = await DemandeAudienceAutorite.faire_audience(audience)
+        return res
+    }
+
+    static async ajouter(audience){
+        const res = await DemandeAudienceAutorite.ajouter(audience)
+        return res
+    }
+
+    static async modifier(audience){
+        const res = await DemandeAudienceAutorite.modifier(audience)
+        return res
+    }
+
+    static async supprimer(audience){
+        const response = await DemandeAudienceAutorite.supprimer(audience)
         return response
     }
 

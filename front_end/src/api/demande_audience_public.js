@@ -4,14 +4,9 @@ const url = domaine.concat("/api/audience/public")
 
 export default class DemandeAudience{
 
-    static async audience_public_all(id_autorite_enfant){
-        const res = await axios.get(url.concat('/all/',id_autorite_enfant))
+    static async liste(arg){
+        const res = await axios.post(url.concat('/all'),arg)
         return res.data
-    }
-
-    static async audience_public_semaine(id_autorite){
-        const res = await axios.post(url.concat('/all/semaine'),id_autorite)
-        return res.data        
     }
 
     static async audience_public_jour(arg){

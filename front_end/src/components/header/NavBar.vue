@@ -21,6 +21,9 @@
                 <li>
                     <RouterLink to="/demande-audience/autorite">Audience</RouterLink>
                 </li>
+                <li style="margin-left: 25rem;">
+                    <RouterLink to="/autorite/login">Se connecter</RouterLink>
+                </li>
             </ul>
         </div>
     </header>

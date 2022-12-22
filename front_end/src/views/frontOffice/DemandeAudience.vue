@@ -8,7 +8,7 @@
     import interactionPlugin from '@fullcalendar/interaction'
     import listPlugin from '@fullcalendar/list'
     import timeLine from '@fullcalendar/timeline'
-    import { actual_events_public_jour } from '../../controllers/FrontOffice/DemandeAudience'
+    import { actual_events_public } from '../../controllers/FrontOffice/DemandeAudience'
     import DemandeAudience from '../../api/demande_audience_public'
     import tippy from 'tippy.js';
     import 'tippy.js/dist/tippy.css'; // optional for styling
@@ -41,8 +41,8 @@
             headerToolbar: {
               left: 'prev,next today',
               center: 'title',
-              // right: 'dayGridMonth,timeGridWeek,timeGridDay,listDay',
-              right: 'timeGridDay,listDay',
+              right: 'dayGridMonth,timeGridWeek,timeGridDay,listDay',
+              // right: 'timeGridDay,listDay',
 
               
             },
@@ -65,8 +65,10 @@
             eventClick: this.handleEventClick,
             // eventsSet: this.handleEvents,
             eventDidMount: this.detailEvent,
-            eventResize: this.eventDragged,
-            eventDrop: this.eventDropped,
+            slotMinTime: '08:00:00',
+            slotMaxTime: '16:00:00'
+            // eventResize: this.eventDragged,
+            // eventDrop: this.eventDropped,
             // Overlap: true
             /* you can update a remote database when these fire:
             eventAdd:
@@ -97,24 +99,18 @@
 
       async created(){
         this.directions = await this.autorites_enfant()
-
         this.audience.session_navigateur = JSON.parse(sessionStorage.getItem('session_navigateur')).value
         // this.audience.session_navigateur = 'TEST123456789'
         // console.log(Function.initcap('hAGA'))
       },
 
       async mounted() {
-        // console.log(this.all_actual_events())
-        // this.directions = await this.autorites_enfant()
-        // const init_events = this.calendarOptions.initialEvents
-        // console.log(init_events)
-        // Function.set_intial_events(this.audience.direction,init_events);
-        // console.log(this.calendarOptions.initialEvents)
+        
       },
       methods: {
         async all_actual_events(){
           // return await actual_events()
-          return await actual_events_public_jour(this.audience.direction)  
+          return await actual_events_public(this.audience.direction)  
         }, 
         async autorites_enfant(){
           return await AutoriteAPI.autorite_enfant()
@@ -128,42 +124,19 @@
           const map = new Map()
 
           array.forEach(element => {
-            const id_hd = element.id_heure_disponible
+            const id = [
+              element.id_date_heure_disponible,
+              element.id_date_heure_disponible_autorite
+            ]
+            // const id = element.id_date_heure_disponible_autorite
             const hd = element.hd 
             const hf = element.hf
-            map.set(id_hd,hd+' - '+hf)
+            map.set(id,hd+' - '+hf)
             // console.log('Obejct '+element.id_heure_disponible+': '+element.heure_debut+' - '+element.heure_fin)
           });
           return map
-          console.log(map)
         },
 
-        
-
-        handleDateSelect(selectInfo) {
-          // let title = prompt('Please enter a new title for your event')
-          let calendarApi = selectInfo.view.calendar
-          this.is_clicked = true
-          this.audience.nom = ''
-          this.audience.prenom = ''  
-          this.audience.motif = ''
-          this.audience.cin = ''
-          this.audience.numero_telephone = ''
-          // calendarApi.unselect() // clear date selection
-          // console.log(selectInfo.startStr)
-          if(selectInfo.startStr.includes('T') || selectInfo.endStr.includes('T')){
-            this.audience.date_debut = selectInfo.startStr.split('T')[0]
-            this.audience.date_fin = selectInfo.endStr.split('T')[0]
-            this.audience.time_debut = selectInfo.startStr.split('T')[1].split('+')[0]
-            this.audience.time_fin = selectInfo.endStr.split('T')[1].split('+')[0]
-          }else{
-            this.audience.date_debut = selectInfo.startStr
-            this.audience.date_fin = selectInfo.endStr
-            this.audience.time_debut = "10:00:00"
-            this.audience.time_fin = "11:00:00"
-          }
-        },
-    
         async list_heure_dispo(id_dm_aud_public_heure_dispo){
           const hd =  await this.all_actual_events()
           let html_value = ''
@@ -191,13 +164,16 @@
           this.audience.email = clickInfo.event.extendedProps.email
           this.audience.time_debut = clickInfo.event.extendedProps.heure_debut
           this.audience.time_fin = clickInfo.event.extendedProps.heure_fin
-          this.audience.date_debut = clickInfo.event.extendedProps.date_audience
-          this.audience.date_fin = clickInfo.event.extendedProps.date_audience
+          this.audience.date_debut = clickInfo.event.extendedProps.date_disponible
+          this.audience.date_fin = clickInfo.event.extendedProps.date_disponible
 
           if(clickInfo.event.id != ''){
             const sa = clickInfo.event.extendedProps.status_audience
             const id_dm_aud_public_heure_dispo = clickInfo.event.extendedProps.id_dm_aud_public_heure_dispo
 
+            let id_date_heure_disponible = clickInfo.event.extendedProps.id_date_heure_disponible
+            let id_date_heure_disponible_autorite = clickInfo.event.extendedProps.id_date_heure_disponible_autorite
+            
             if(sa == 'Non validé'){
               console.log('On peut modifier ou supprimer')
               Swal.fire({
@@ -208,25 +184,23 @@
                 <p>CIN: <input type="text" id="cin" class="swal2-input" value="${this.audience.cin}" placeholder="CIN" pattern="[0-9]{12}" required></p>
                 <p>Tél: <input type="text" id="telephone" class="swal2-input" value="${this.audience.numero_telephone}" placeholder="Numéro de téléphone" pattern="[0-9]{10}"  required></p>
                 <p>Mail: <input type="email" id="mail" class="swal2-input" value="${this.audience.email}" placeholder="Adresse éléctronique" required></p>
-                <p style="text-align: left;padding: 3rem 3rem 3rem 3rem;">Motif: <textarea id="motif" class="swal2-textarea" placeholder="Saisissez votre motif " style="display: flex;">${this.audience.motif}</textarea></p>
-                <p>Heure disponible: 
-                  <select  class="swal2-select" style="display: flex; id="heure_dispo">
-                    ${ await this.list_heure_dispo()}  
-                  </select>
-                </p>`,
+                <p style="text-align: left;padding: 3rem 3rem 3rem 3rem;">Motif: <textarea id="motif" class="swal2-textarea" placeholder="Saisissez votre motif " style="display: flex;">${this.audience.motif}</textarea></p>`,
+                input: 'select',
+                inputOptions: await this.promise_array_to_map(),
+                inputValidator: (value) => {
+                  const id = value.split(',')
+                  id_date_heure_disponible = id[0]
+                  id_date_heure_disponible_autorite = id[1]
+                
+                },
                 preConfirm: () => {
-                  console.log(Swal.getPopup().querySelector('#heure_dispo'))
                   this.audience.nom = Swal.getPopup().querySelector('#nom').value
                   this.audience.prenom = Swal.getPopup().querySelector('#prenom').value
                   this.audience.cin = Swal.getPopup().querySelector('#cin').value
                   this.audience.numero_telephone = Swal.getPopup().querySelector('#telephone').value
                   this.audience.email = Swal.getPopup().querySelector('#mail').value
                   this.audience.motif = Swal.getPopup().querySelector('#motif').value
-                  // const select = document.getElementById('heure_dispo')
-                  // const opt =  select.options[select.selectedIndex].value;
-                  // if (!this.audience.nom || !this.audience.prenom || !this.audience.cin || !this.audience.numero_telephone || !this.audience.email || !this.audience.motif) {
-                  //   Swal.showValidationMessage(`Veuillez remplir le formulaire`)
-                  // }
+                  
                   return { 
                     nom: this.audience.nom, 
                     prenom: Function.initcap(this.audience.prenom), 
@@ -234,14 +208,10 @@
                     numero_telephone: this.audience.numero_telephone,
                     email: this.audience.email,
                     motif: this.audience.motif,
-                    session_navigateur: this.audience.session_navigateur,
-                    date_audience: this.audience.date_debut,
-                    heure_debut: this.audience.time_debut,
-                    heure_fin: this.audience.time_fin,
-                    id_autorite: this.audience.direction,
                     id_audience: this.audience.id,
-                    id_heure_disponible: clickInfo.event.extendedProps.id_heure_disponible,
-                    id_dm_aud_public_heure_dispo: id_dm_aud_public_heure_dispo
+                    id_date_heure_disponible: id_date_heure_disponible,
+                    id_dm_aud_public_heure_dispo: id_dm_aud_public_heure_dispo,
+                    id_date_heure_disponible_autorite: id_date_heure_disponible_autorite
                   }
                 },
                 showDenyButton: true,
@@ -250,21 +220,38 @@
                 denyButtonText: `Supprimer`,
                 cancelButtonText: 'Annuler',
               }).then(async (result) => {
-                /* Read more about isConfirmed, isDenied below */
-                // console.log(document.getElementsByClassName('swal2-select').value)
-                // console.log(result.value)
+                
                 if (result.isConfirmed) {
-                  // console.log(result.value)
                   const response = await DemandeAudiencePublicController.modifier(result.value)
                   if(response.message){
                     swal("Audience enregistrée", `${response.message}`, "success");
                   }
-                  // else{
-                  //   swal("Audience enregistrée", "Votre audience a bien été enregistrée", "success");
-                  // }
+                  else{
+                    swal("Audience n'est pas enregistrée", "Votre audience n'a pas été enregistrée", "error");
+                  }
                   // Swal.fire('Saved!', '', 'success')
                 } else if (result.isDenied) {
-                  Swal.fire('Changes are not saved', '', 'info')
+                  const response = await DemandeAudiencePublicController.supprimer(this.audience.id)
+                  Swal.fire({
+                    title: 'Supprimer votre audience',
+                    text: "Voulez vous vraiment supprimer votre audience?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    cancelButtonText: 'Annuler',
+                    confirmButtonText: 'Supprimer!'
+                  }).then(async (result) => {
+                      const response = await DemandeAudiencePublicController.supprimer(id_audience)
+                      Swal.fire(
+                        'Audience supprimée',
+                        `Votre audience a bien été supprimée`,
+                        'success'
+                      )
+                      // setInterval( () => {
+                      //   window.location.reload()
+                      // }, 1000)
+                  }) 
                 }
               })
             }
@@ -290,7 +277,7 @@
                   console.log(infos_audience)
                   const response = await DemandeAudiencePublicController.supprimer(id_audience)
                   Swal.fire(
-                    'Entretien supprimé',
+                    'Audience supprimé',
                     `Votre audience a bien été supprimée`,
                     'success'
                   )
@@ -349,8 +336,7 @@
                   date_audience: this.audience.date_debut,
                   heure_debut: this.audience.time_debut,
                   heure_fin: this.audience.time_fin,
-                  id_autorite: this.audience.direction,
-                  id_heure_dispo: clickInfo.event.extendedProps.id_heure_disponible
+                  id_date_heure_disponible_autorite: clickInfo.event.extendedProps.id_date_heure_disponible_autorite
                 }
               }
             }).then(async (result) => {
@@ -359,177 +345,13 @@
               if(response.message){
                 swal("Audience enregistrée", `${response.message}`, "success");
               }
-              // else{
-              //   swal("Audience non enregistrée", "Votre audience n'a pas été enregistrée", "error");
-              // }
+              else{
+                swal("Audience non enregistrée", "Votre audience n'a pas été enregistrée", "error");
+              }
             }).catch((err) => {
               console.log(err)
             });
           }
-        },
-    
-        handleEvents(events) {
-          // this.currentEvents = events
-          // console.log(events)
-          // console.log(events)
-          // console.log(events)
-        },
-
-        async eventDropped(event){
-          console.log(event.event)
-          const start_date_time = Function.format_date_time(event.event.start)
-          const end_date_time = Function.format_date_time(event.event.end)
-          this.audience.id = event.event.id
-          // this.audience.direction = event.event.extendedProps.id_autorite_enfant
-          this.audience.motif = event.event.title
-          this.audience.date_debut = start_date_time[0]
-          this.audience.date_fin = end_date_time[0]
-          this.audience.time_debut = start_date_time[1]
-          this.audience.time_fin = end_date_time[1]
-          this.audience.nom = event.event.extendedProps.nom 
-          this.audience.prenom = event.event.extendedProps.prenom
-          this.audience.cin = event.event.extendedProps.cin
-          this.audience.numero_telephone = event.event.extendedProps.numero_telephone
-          this.audience.email = event.event.extendedProps.email
-      
-          if(event.event.extendedProps.status_audience == 'Non validé'){
-            const form = await Swal.fire({
-              title: 'Modifier votre audience',
-              html:
-                  `<p align="left" style="margin-left: 2.6rem;">De <input type=Date style="width:10rem;" value="${this.audience.date_debut}" id="date1" class="swal2-input"> <input type=time value="${this.audience.time_debut}" id="duree1" class="swal2-input"> </p>` +
-                  `<p align="left" style="margin-left: 3.4rem;">à <input type=Date style="width:10rem;" value="${this.audience.date_fin}" id="date2" class="swal2-input" > <input type=time value="${this.audience.time_fin}" id="duree2" class="swal2-input"></p>` +
-                  `<p align="left" style="margin:3.5rem 0px 0px 1.5rem;">Motif<textarea id="motif" class="swal2-textarea" placeholder="Saisissez votre motif" style="display: flex;padding-right: 6.3rem;">${this.audience.motif}</textarea></p>`+
-                  `<p align="left" style="margin-left: 1.6rem;">Nom <input type=text value="${this.audience.nom}" id="nom" class="swal2-input" style="width:21.4rem"> </p>`+
-                  `<p align="left" style="margin-left: 0px;">Prénom <input type=text value="${this.audience.prenom}" id="prenom" class="swal2-input" style="width:21.4rem"></p>` +
-                  `<p align="left" style="margin-left: 32px;">CIN <input type=number value="${this.audience.cin}" id="cin" class="swal2-input" style="width:21.4rem"></p>` +
-                  `<p align="left" style="margin-left: 38px;">Tél <input type=number value="${this.audience.numero_telephone}" id="numero_telephone" class="swal2-input" style="width:21.4rem"></p>` +
-                  `<p align="left" style="margin-left: 29px;">mail <input type=email value="${this.audience.email}" id="email" class="swal2-input" style="width:21.4rem"></p>`,
-              showCancelButton: true,
-              confirmButtonText: 'Valider',    
-              focusConfirm: false,
-              preConfirm: () => {
-                return [
-                  document.getElementById('date1').value,
-                  document.getElementById('duree1').value,
-                  document.getElementById('date2').value,
-                  document.getElementById('duree2').value,
-                  document.getElementById('motif').value,
-                  document.getElementById('nom').value, 
-                  document.getElementById('prenom').value, 
-                  document.getElementById('cin').value,  
-                  document.getElementById('numero_telephone').value,                  
-                  document.getElementById('email').value,                  
-                ]
-              }
-            }).then( async(result) => {
-              if(result.isConfirmed){
-                console.log(result.value)
-                const audience_event = {
-                  date_event_debut: result.value[0],
-                  date_event_fin: result.value[2], 
-                  time_event_debut: result.value[1],
-                  time_event_fin: result.value[3],
-                  motif: result.value[4],
-                  nom:result.value[5],                  
-                  prenom:result.value[6],
-                  cin:result.value[7],
-                  numero_telephone:result.value[8],
-                  email:result.value[9],
-                  session_navigateur: this.audience.session_navigateur,
-                  id_autorite_enfant: this.audience.direction,
-                  id: this.audience.id
-                }                
-                const response = await DemandeAudiencePublicController.update(audience_event)
-                if(response.message){
-                  swal("Audience non enregistrée", `${response.message}`, "error");
-                }
-                else{
-                  swal("Audience enregistrée", "Votre audience a bien été enregistrée", "success");
-                }
-              }
-            }).catch((err) => {
-              console.log(err)
-            });
-          } 
-          
-        },
-
-        async eventDragged(event){
-          console.log(event.event)
-          const start_date_time = Function.format_date_time(event.event.start)
-          const end_date_time = Function.format_date_time(event.event.end)
-          this.audience.id = event.event.id
-          // this.audience.direction = event.event.extendedProps.id_autorite_enfant
-          this.audience.motif = event.event.title
-          this.audience.date_debut = start_date_time[0]
-          this.audience.date_fin = end_date_time[0]
-          this.audience.time_debut = start_date_time[1]
-          this.audience.time_fin = end_date_time[1]
-          this.audience.nom = event.event.extendedProps.nom 
-          this.audience.prenom = event.event.extendedProps.prenom
-          this.audience.cin = event.event.extendedProps.cin
-          this.audience.numero_telephone = event.event.extendedProps.numero_telephone
-          this.audience.email = event.event.extendedProps.email
-      
-          if(event.event.extendedProps.status_audience == 'Non validé'){
-            const form = await Swal.fire({
-              title: 'Modifier votre audience',
-              html:
-                  `<p align="left" style="margin-left: 2.6rem;">De <input type=Date style="width:10rem;" value="${this.audience.date_debut}" id="date1" class="swal2-input"> <input type=time value="${this.audience.time_debut}" id="duree1" class="swal2-input"> </p>` +
-                  `<p align="left" style="margin-left: 3.4rem;">à <input type=Date style="width:10rem;" value="${this.audience.date_fin}" id="date2" class="swal2-input" > <input type=time value="${this.audience.time_fin}" id="duree2" class="swal2-input"></p>` +
-                  `<p align="left" style="margin:3.5rem 0px 0px 1.5rem;">Motif<textarea id="motif" class="swal2-textarea" placeholder="Saisissez votre motif" style="display: flex;padding-right: 6.3rem;">${this.audience.motif}</textarea></p>`+
-                  `<p align="left" style="margin-left: 1.6rem;">Nom <input type=text value="${this.audience.nom}" id="nom" class="swal2-input" style="width:21.4rem"> </p>`+
-                  `<p align="left" style="margin-left: 0px;">Prénom <input type=text value="${this.audience.prenom}" id="prenom" class="swal2-input" style="width:21.4rem"></p>` +
-                  `<p align="left" style="margin-left: 32px;">CIN <input type=number value="${this.audience.cin}" id="cin" class="swal2-input" style="width:21.4rem"></p>` +
-                  `<p align="left" style="margin-left: 38px;">Tél <input type=number value="${this.audience.numero_telephone}" id="numero_telephone" class="swal2-input" style="width:21.4rem"></p>` +
-                  `<p align="left" style="margin-left: 29px;">mail <input type=email value="${this.audience.email}" id="email" class="swal2-input" style="width:21.4rem"></p>`,
-              showCancelButton: true,
-              confirmButtonText: 'Valider',    
-              focusConfirm: false,
-              preConfirm: () => {
-                return [
-                  document.getElementById('date1').value,
-                  document.getElementById('duree1').value,
-                  document.getElementById('date2').value,
-                  document.getElementById('duree2').value,
-                  document.getElementById('motif').value,
-                  document.getElementById('nom').value, 
-                  document.getElementById('prenom').value, 
-                  document.getElementById('cin').value,  
-                  document.getElementById('numero_telephone').value,                  
-                  document.getElementById('email').value,                  
-                ]
-              }
-            }).then( async(result) => {
-              if(result.isConfirmed){
-                console.log(result.value)
-                const audience_event = {
-                  date_event_debut: result.value[0],
-                  date_event_fin: result.value[2], 
-                  time_event_debut: result.value[1],
-                  time_event_fin: result.value[3],
-                  motif: result.value[4],
-                  nom:result.value[5],                  
-                  prenom:result.value[6],
-                  cin:result.value[7],
-                  numero_telephone:result.value[8],
-                  email:result.value[9],
-                  session_navigateur: this.audience.session_navigateur,
-                  id_autorite_enfant: this.audience.direction,
-                  id: this.audience.id
-                }                
-                const response = await DemandeAudiencePublicController.update(audience_event)
-                if(response.message){
-                  swal("Audience non enregistrée", `${response.message}`, "error");
-                }
-                else{
-                  swal("Audience enregistrée", "Votre audience a bien été enregistrée", "success");
-                }
-              }
-            }).catch((err) => {
-              console.log(err)
-            });
-          } 
         },
 
         detailEvent(info) {
@@ -545,48 +367,7 @@
               delay:[1000,0]
             });
           }
-        },
-
-        remove_event(){
-          this.is_clicked = false
-          this.audience.motif = '',
-          this.audience.date_debut = '',
-          this.audience.date_fin = '',
-          this.audience.time_debut = '',
-          this.audience.time_fin = '',
-          this.audience.id = ''
-        },
-
-        // add event
-        async add_event(){
-          const audience_event = {
-            date_event_debut: this.audience.date_debut,
-            date_event_fin: this.audience.date_fin, 
-            time_event_debut: this.audience.time_debut,
-            time_event_fin: this.audience.time_fin,
-            motif: this.audience.motif,
-            id_autorite_enfant: this.audience.direction,
-            nom: this.audience.nom,
-            prenom :this.audience.prenom,
-            cin : this.audience.cin,
-            numero_telephone :this.audience.numero_telephone,
-            email: this.audience.email,
-            session_navigateur: this.audience.session_navigateur
-            // session_navigateur: JSON.parse(sessionStorage.getItem("session_navigateur")).value
-          }
-
-          const response = await DemandeAudiencePublicController.add(audience_event)
-          if(response.message){
-            swal("Audience non enregistrée", `${response.message}`, "error");
-                        // window.location.reload()
-          }
-          else{
-            swal("Audience enregistrée", "Votre audience a bien été enregistrée", "success");
-            setInterval( () => {
-              window.location.reload()
-            }, 1000)
-          }
-        },
+        }
       }
     }
 </script>

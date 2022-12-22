@@ -18,16 +18,14 @@ export const actual_events_public_MOIS = async (id_autorite_enfant) => {
     return audience
 }
 
-export const actual_events_public_jour = async (id_autorite_enfant) => {
+export const actual_events_public = async (id_autorite_enfant) => {
   const mois = parseInt(new Date().getMonth())+1
-  const date_actu = new Date().getFullYear()+"-"+mois+"-"+new Date().getDate()
   const audience_public_mois = {
     id_autorite: id_autorite_enfant,
-    date_du_jour: date_actu,
     // session_navigateur: JSON.parse(sessionStorage.getItem('session_navigateur')).value
-    session_navigateur: 'session884.5824087825326'
+    session_navigateur: '123456789'
   }
-  const audience = DemandeAudiencePublic.audience_public_jour(audience_public_mois)
+  const audience = DemandeAudiencePublic.liste(audience_public_mois)
   try {
     return await audience
   } catch (error) {

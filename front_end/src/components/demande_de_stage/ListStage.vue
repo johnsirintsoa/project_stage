@@ -32,22 +32,22 @@ import func from '../../func/function'
             </thead>
             <tbody>
                 <tr v-for="(stage,index) in stages" >
-                <th scope="row">{{stage['id_demande_stage']}}</th>
+                <th scope="row">{{stage['id']}}</th>
                 <td>{{stage['nom']}}</td>
                 <td>{{stage['prenom']}}</td>
                 <td>{{stage['nom_domaine']}}</td>
                 <td>{{stage['duree']}}</td>
                 <td>
-                    <span class="badge bg-success" v-if="stage['demande_status'] == 'validé'">{{stage['demande_status']}}</span>
+                    <span class="badge bg-success" v-if="stage['demande_status'] == 'Validé'">{{stage['demande_status']}}</span>
                     <span class="badge bg-warning text-dark" v-else >{{stage['demande_status']}}</span>
                 </td>
                 <td>
-                    <RouterLink :to="{name: 'back-detail-demande-stage',params:{id_demande_stage:stage['id_demande_stage']}}">
+                    <!-- <RouterLink :to="{name: 'back-detail-demande-stage',params:{id_demande_stage:stage['id_demande_stage']}}">
                     
                         <button type="button" class="btn btn-info">
                             <i class="bi bi-info-circle"></i>
                         </button>
-                    </RouterLink>
+                    </RouterLink> -->
                     <button type="button" v-if="stage['demande_status'] == 'validé'" @click="getDemandeStage(stage)" class="btn btn-warning"> 
                         <i class="ri-edit-2-line"></i>
                     </button>
@@ -68,6 +68,7 @@ import func from '../../func/function'
 <script>
 import emailjs from 'emailjs-com';
 import DemandeStageAPI from '../../api/demande_stage';
+import StageController from '../../controllers/StageController'
 import EntretienStage from '../../api/entretien_stage';
 export default {
     data() {
@@ -85,9 +86,11 @@ export default {
     },
     async created(){
         const ses = JSON.parse(sessionStorage.getItem('administrateur'))
-        const id_autorite = ses.autorite_enfant.id
-        // console.log(id_autorite)
-        this.stages = await DemandeStageAPI.all_status(id_autorite)
+        const filtre = {
+          id_autorite_enfant: ses.autorite_enfant.id
+        }
+        // this.stages = await DemandeStageAPI.all_status(id_autorite)
+        this.stages = await StageController.liste(filtre)
         console.log(func.format_date_time(new Date())[1].substring(0,5))
     },
     methods:{

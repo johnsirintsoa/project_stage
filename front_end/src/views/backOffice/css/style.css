@@ -127,7 +127,7 @@ transform: scale(0.3) translateY(-50%);
 /*
   Sweet Alert 2 
 */
-.swal2-input, .swal2-file, .swal2-textarea, .swal2-select, .swal2-radio, .swal2-checkbox {
+.swal2-input, .swal2-file, .swal2-textarea, /*.swal2-select,*/ .swal2-radio, .swal2-checkbox {
   margin: 1em 0em 0px 1rem;
   /* padding: 0px 0px 0px 0px; */
 }

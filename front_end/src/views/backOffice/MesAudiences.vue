@@ -88,10 +88,6 @@
       async created(){
         const ses = JSON.parse(sessionStorage.getItem('administrateur'))
         this.audience.direction = ses.autorite_enfant.id
-
-        // Notifications
-        const data = await dm_autorite_controller.notifications(this.audience.direction)
-        this.displayNotifications(data);
       },
       
       async mounted() {

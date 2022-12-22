@@ -1,13 +1,9 @@
 import Public from '../../api/demande_audience_public'
 export default class DemandeAudiencePublic {
-    
-    static async audience_public_mois(id_autorite){
-        const res = await Public.audience_public_mois(id_autorite)
-        return res        
-    }
 
-    static async audience_public_jour(arg){
-        const res = await Public.audience_public_jour(arg)
+
+    static async liste(arg){
+        const res = await Public.liste(arg)
         return res        
     }
 

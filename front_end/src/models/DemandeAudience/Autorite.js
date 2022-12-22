@@ -1,6 +1,26 @@
 import Autorite from '../../api/demande_audience_autorite'
 export default class DemandeAudienceAutorite {
 
+    static async faire_audience(audience){
+        const res = await Autorite.faire_audience(audience)
+        return res
+    }
+
+    static async ajouter(audience){
+        const res = await Autorite.ajouter(audience)
+        return res
+    }
+
+    static async modifier(audience){
+        const res = await Autorite.modifier(audience)
+        return res
+    }
+
+    static async supprimer(audience){
+        const res = await Autorite.supprimer(audience)
+        return res
+    }
+
     static async valider(audience){
         const res = await Autorite.valider(audience)
         return res

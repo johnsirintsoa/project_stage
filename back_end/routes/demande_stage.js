@@ -44,6 +44,38 @@ router.post('/add',upload.fields([{name: 'curriculum_vitae'},{name: 'lettre_moti
     }
 })
 
+router.post('/liste',async(req,res)=>{
+    let sql = `SELECT
+    ds.id,
+    ds.nom,
+    ds.prenom,
+    ds.duree, 
+    d.nom_domaine,
+    CASE 
+        when eds.id IS NULL THEN 'Non validé'
+        ELSE 'Validé'
+    END as demande_status,
+    eds.id as id_entretien_stage
+    FROM
+    stage5.demande_stage ds
+    JOIN stage5.domaine d on ds.id_domaine = d.id
+    LEFT JOIN stage5.entretien_demande_stage eds on ds.id = eds.id_demande_stage
+    WHERE ds.id_autorite_enfant = ${req.body.id_autorite_enfant}`
+    
+    var query = db.query(sql, function(err, result) {
+        if(err){
+            return res.json(err);
+        }
+        res.json(result)
+        // else if(result.length > 0 ){
+        //     res.json(result[0][0])
+        // }else{
+        //     res.json(result)
+        // }
+    })
+})
+
+
 // liste des demandes stages status
 router.get('/all_status/:id_autorite_enfant',async(req,res)=>{
     let sql = `
