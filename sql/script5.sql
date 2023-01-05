@@ -644,3 +644,432 @@ and (
 	and hd.heure_debut NOT BETWEEN (select jf.time_event_debut from jour_ferie jf where CONVERT((select concat(YEAR(CURDATE()),'-',jf.mois_du_jour,'-',jf.numero_du_jour)) USING utf8) = dhd.date_disponible ) and (select jf.time_event_fin from jour_ferie jf where CONVERT((select concat(YEAR(CURDATE()),'-',jf.mois_du_jour,'-',jf.numero_du_jour)) USING utf8) = dhd.date_disponible) 
 	and hd.heure_fin NOT BETWEEN (select jf.time_event_debut from jour_ferie jf where CONVERT((select concat(YEAR(CURDATE()),'-',jf.mois_du_jour,'-',jf.numero_du_jour)) USING utf8) = dhd.date_disponible) and (select jf.time_event_fin from jour_ferie jf where CONVERT((select concat(YEAR(CURDATE()),'-',jf.mois_du_jour,'-',jf.numero_du_jour)) USING utf8) = dhd.date_disponible) 
 )
+
+
+
+
+-- Calendrier autorite
+-- v1
+CREATE  PROCEDURE `calendrier_autorite`(IN id_autorite INT)
+BEGIN
+	set @id_autorite = id_autorite;
+	
+	SELECT 
+	daadhd.id as id,
+	dhda.id as id_date_heure_disponible_autorite,
+	dhd.id as id_date_heure_disponible,
+
+	ae.id as id_autorite,
+	ae.intitule as intitule_autorite,
+	ae.intitule_code as intitule_code_autorite,
+	ae.porte as porte_autorite,
+	ae.addresse_electronique as addresse_electronique_autorite,
+	ae.mot_de_passe_mailing as mot_de_passe_mailing_autorite,
+
+	aes.id as id_autorite_sender,
+	aes.intitule as intitule_autorite_sender,
+	aes.intitule_code as intitule_code_sender,
+	aes.addresse_electronique as addresse_electronique_autorite_sender,
+
+	CONCAT(dhd.date_disponible,'T',daadhd.heure_debut) as start,
+	CONCAT(dhd.date_disponible,'T',daadhd.heure_fin) as end,
+	daa.id as id_evenement,
+	'Audience autorité' as title,
+	daa.motif as motif,
+	daadhd.date_debut as date_debut,
+	daadhd.date_fin as date_fin,
+	daadhd.heure_debut as heure_debut,
+	daadhd.heure_fin as heure_fin,
+	CASE
+		WHEN daa.action = 0 THEN 'Non validé'
+		WHEN daa.action = 1 THEN 'Validé'
+		ELSE 'Reporté'
+	END AS status_audience,
+	'' nom,
+	'' prenom,
+	'' numero_telephone,
+	'' cin,
+	'' addresse_electronique_sender_externe,
+	'#FF0000' color,
+	CASE
+		WHEN daa.action = 0 THEN '#35AF11'
+		WHEN daa.action = 1 THEN '#E61212'
+		ELSE '#9A9393'
+	END AS color_status,
+	'Autorité' type_audience,
+	true as editable 
+	FROM
+	stage5.date_heure_disponible_autorite dhda 
+	join date_heure_disponible dhd on dhda.id_date_heure_disponible = dhd.id 
+	Join autorite_enfant ae on dhda.id_autorite = ae.id
+	join dm_aud_autorite_date_heure_dispo daadhd on dhda.id = daadhd.id_date_heure_disponible_autorite
+	join demande_audience_autorite daa on daadhd.id_dm_aud_autorite = daa.id
+	join autorite_enfant aes on daa.id_autorite_enfant_sender = aes.id
+	where dhd.date_disponible >= CURDATE() and dhda.id_autorite = @id_autorite
+	
+	UNION
+	
+	-- Demande audience public
+	SELECT 
+	dapdhd.id,
+	dhda.id as id_date_heure_disponible_autorite,
+	dhd.id as id_date_heure_disponible,
+
+	ae.id as id_autorite,
+	ae.intitule as intitule_autorite,
+	ae.intitule_code as intitule_code_autorite,
+	ae.porte as porte_autorite,
+	ae.addresse_electronique as addresse_electronique_autorite,
+	ae.mot_de_passe_mailing as mot_de_passe_mailing_autorite,
+
+	'' id_autorite_sender,
+	'' intitule_autorite_sender,
+	'' intitule_code_sender,
+	'' addresse_electronique_autorite_sender,
+
+	CONCAT(dhd.date_disponible,'T',dapdhd.heure_debut) as start,
+	CONCAT(dhd.date_disponible,'T',dapdhd.heure_fin) as end,
+	dap.id as id_evenement,
+	'Audience public' as title,
+	dap.motif as motif,
+	dapdhd.date_debut as date_debut,
+	dapdhd.date_fin as date_fin,
+	dapdhd.heure_debut as heure_debut,
+	dapdhd.heure_fin as heure_fin,
+	CASE
+		WHEN dap.action = 0 THEN 'Non validé'
+		WHEN dap.action = 1 THEN 'Validé'
+		ELSE 'Reporté'
+	END AS status_audience,
+	dap.nom as nom,
+	dap.prenom as prenom,
+	dap.numero_telephone as numero_telephone,
+	dap.cin as cin,
+	dap.email as addresse_electronique_sender_externe,
+	'#008000' color,
+	CASE
+		WHEN dap.action = 0 THEN '#35AF11'
+		WHEN dap.action = 1 THEN '#E61212'
+		ELSE '#9A9393'
+	END AS color_status,
+	'Public' type_audience,
+	true as editable
+	FROM stage5.date_heure_disponible_autorite dhda
+	JOIN date_heure_disponible dhd on dhda.id_date_heure_disponible = dhd.id
+	JOIN autorite_enfant ae on dhda.id_autorite = ae.id
+	JOIN dm_aud_public_date_heure_dispo dapdhd on dhda.id = dapdhd.id_date_heure_disponible_autorite
+	JOIN demande_audience_public dap on dapdhd.id_aud_public = dap.id
+	WHERE dhd.date_disponible >= CURDATE() and dhda.id_autorite = @id_autorite
+	
+	UNION
+	
+	-- Demande entretien stage
+
+	select
+	eds.id,
+	dhda.id as id_date_heure_disponible_autorite,
+	dhd.id as id_date_heure_disponible,
+
+	ae.id as id_autorite,
+	ae.intitule as intitule_autorite,
+	ae.intitule_code as intitule_code_autorite,
+	ae.porte as porte_autorite,
+	ae.addresse_electronique as addresse_electronique_autorite,
+	ae.mot_de_passe_mailing as mot_de_passe_mailing_autorite,
+
+	'' id_autorite_sender,
+	'' intitule_autorite_sender,
+	'' intitule_code_sender,
+	'' addresse_electronique_autorite_sender,
+
+	CONCAT(dhd.date_disponible,'T',eds.heure_debut) as start,
+	CONCAT(dhd.date_disponible,'T',eds.heure_fin) as end,
+	ds.id as id_evenement,
+	'Entretien' as title,
+	CONCAT('Entretien de ',ds.nom,' ',ds.prenom) as motif,
+	eds.date_debut as date_debut,
+	eds.date_fin as date_fin,
+	eds.heure_debut as heure_debut,
+	eds.heure_fin as heure_fin,
+	'Entretien' status_audience,
+	ds.nom as nom,
+	ds.prenom as prenom,
+	ds.telephone as numero_telephone,
+	ds.cin as cin,
+	ds.e_mail as addresse_electronique_sender_externe,
+	'#FFA500' color,
+	'#FFA500' color_status,
+	'Entretien' type_audience,
+	true as editable
+	from entretien_demande_stage eds
+	JOIN date_heure_disponible_autorite dhda on eds.id_date_heure_disponible_autorite = dhda.id
+	JOIN date_heure_disponible dhd on dhda.id_date_heure_disponible = dhd.id
+	JOIN demande_stage ds on eds.id_demande_stage = ds.id
+	JOIN autorite_enfant ae on dhda.id_autorite = ae.id
+	where dhd.date_disponible >= CURDATE() and dhda.id_autorite = @id_autorite
+	group by ds.id;
+
+END
+
+-- v2
+CREATE  PROCEDURE `calendrier_autorite`(IN id_autorite INT)
+BEGIN
+	set @id_autorite = id_autorite;
+	
+	SELECT 
+	daadhd.id as id,
+	dhda.id as id_date_heure_disponible_autorite,
+	dhd.id as id_date_heure_disponible,
+
+	ae.id as id_autorite,
+	ae.intitule as intitule_autorite,
+	ae.intitule_code as intitule_code_autorite,
+	ae.porte as porte_autorite,
+	ae.addresse_electronique as addresse_electronique_autorite,
+	ae.mot_de_passe_mailing as mot_de_passe_mailing_autorite,
+
+	aes.id as id_autorite_sender,
+	aes.intitule as intitule_autorite_sender,
+	aes.intitule_code as intitule_code_sender,
+	aes.addresse_electronique as addresse_electronique_autorite_sender,
+
+	CONCAT(dhd.date_disponible,'T',daadhd.heure_debut) as start,
+	CONCAT(dhd.date_disponible,'T',daadhd.heure_fin) as end,
+	daa.id as id_evenement,
+	'Audience autorité' as title,
+	daa.motif as motif,
+	daadhd.date_debut as date_debut,
+	daadhd.date_fin as date_fin,
+	daadhd.heure_debut as heure_debut,
+	daadhd.heure_fin as heure_fin,
+	CASE
+		WHEN daa.action = 0 THEN 'Non validé'
+		WHEN daa.action = 1 THEN 'Validé'
+		ELSE 'Reporté'
+	END AS status_audience,
+	'' nom,
+	'' prenom,
+	'' numero_telephone,
+	'' cin,
+	'' addresse_electronique_sender_externe,
+	'#FF0000' color,
+	CASE
+		WHEN daa.action = 0 THEN '#35AF11'
+		WHEN daa.action = 1 THEN '#E61212'
+		ELSE '#9A9393'
+	END AS color_status,
+	'Autorité' type_audience,
+	true as editable 
+	FROM
+	stage5.date_heure_disponible_autorite dhda 
+	join date_heure_disponible dhd on dhda.id_date_heure_disponible = dhd.id 
+	Join autorite_enfant ae on dhda.id_autorite = ae.id
+	join dm_aud_autorite_date_heure_dispo daadhd on dhda.id = daadhd.id_date_heure_disponible_autorite
+	join demande_audience_autorite daa on daadhd.id_dm_aud_autorite = daa.id
+	join autorite_enfant aes on daa.id_autorite_enfant_sender = aes.id
+	where dhd.date_disponible >= CURDATE() and dhda.id_autorite = @id_autorite
+	
+	UNION
+	
+	-- Demande audience public
+	SELECT 
+	dapdhd.id,
+	dhda.id as id_date_heure_disponible_autorite,
+	dhd.id as id_date_heure_disponible,
+
+	ae.id as id_autorite,
+	ae.intitule as intitule_autorite,
+	ae.intitule_code as intitule_code_autorite,
+	ae.porte as porte_autorite,
+	ae.addresse_electronique as addresse_electronique_autorite,
+	ae.mot_de_passe_mailing as mot_de_passe_mailing_autorite,
+
+	'' id_autorite_sender,
+	'' intitule_autorite_sender,
+	'' intitule_code_sender,
+	'' addresse_electronique_autorite_sender,
+
+	CONCAT(dhd.date_disponible,'T',dapdhd.heure_debut) as start,
+	CONCAT(dhd.date_disponible,'T',dapdhd.heure_fin) as end,
+	dap.id as id_evenement,
+	'Audience public' as title,
+	dap.motif as motif,
+	dapdhd.date_debut as date_debut,
+	dapdhd.date_fin as date_fin,
+	dapdhd.heure_debut as heure_debut,
+	dapdhd.heure_fin as heure_fin,
+	CASE
+		WHEN dap.action = 0 THEN 'Non validé'
+		WHEN dap.action = 1 THEN 'Validé'
+		ELSE 'Reporté'
+	END AS status_audience,
+	dap.nom as nom,
+	dap.prenom as prenom,
+	dap.numero_telephone as numero_telephone,
+	dap.cin as cin,
+	dap.email as addresse_electronique_sender_externe,
+	'#008000' color,
+	CASE
+		WHEN dap.action = 0 THEN '#35AF11'
+		WHEN dap.action = 1 THEN '#E61212'
+		ELSE '#9A9393'
+	END AS color_status,
+	'Public' type_audience,
+	true as editable
+	FROM stage5.date_heure_disponible_autorite dhda
+	JOIN date_heure_disponible dhd on dhda.id_date_heure_disponible = dhd.id
+	JOIN autorite_enfant ae on dhda.id_autorite = ae.id
+	JOIN dm_aud_public_date_heure_dispo dapdhd on dhda.id = dapdhd.id_date_heure_disponible_autorite
+	JOIN demande_audience_public dap on dapdhd.id_aud_public = dap.id
+	WHERE dhd.date_disponible >= CURDATE() and dhda.id_autorite = @id_autorite
+	GROUP by dapdhd.id_aud_public
+	
+	UNION
+	
+	-- Demande entretien stage
+
+	select
+	eds.id,
+	dhda.id as id_date_heure_disponible_autorite,
+	dhd.id as id_date_heure_disponible,
+
+	ae.id as id_autorite,
+	ae.intitule as intitule_autorite,
+	ae.intitule_code as intitule_code_autorite,
+	ae.porte as porte_autorite,
+	ae.addresse_electronique as addresse_electronique_autorite,
+	ae.mot_de_passe_mailing as mot_de_passe_mailing_autorite,
+
+	'' id_autorite_sender,
+	'' intitule_autorite_sender,
+	'' intitule_code_sender,
+	'' addresse_electronique_autorite_sender,
+
+	CONCAT(dhd.date_disponible,'T',eds.heure_debut) as start,
+	CONCAT(dhd.date_disponible,'T',eds.heure_fin) as end,
+	ds.id as id_evenement,
+	'Entretien' as title,
+	CONCAT('Entretien de ',ds.nom,' ',ds.prenom) as motif,
+	eds.date_debut as date_debut,
+	eds.date_fin as date_fin,
+	eds.heure_debut as heure_debut,
+	eds.heure_fin as heure_fin,
+	'Entretien' status_audience,
+	ds.nom as nom,
+	ds.prenom as prenom,
+	ds.telephone as numero_telephone,
+	ds.cin as cin,
+	ds.e_mail as addresse_electronique_sender_externe,
+	'#FFA500' color,
+	'#FFA500' color_status,
+	'Entretien' type_audience,
+	true as editable
+	from entretien_demande_stage eds
+	JOIN date_heure_disponible_autorite dhda on eds.id_date_heure_disponible_autorite = dhda.id
+	JOIN date_heure_disponible dhd on dhda.id_date_heure_disponible = dhd.id
+	JOIN demande_stage ds on eds.id_demande_stage = ds.id
+	JOIN autorite_enfant ae on dhda.id_autorite = ae.id
+	where dhd.date_disponible >= CURDATE() and dhda.id_autorite = @id_autorite
+	group by ds.id;
+
+END
+
+
+-- Generer date heure disponible entre deux date
+CALL date_heure_dispo_entre_deux_dates('2022-12-26','2023-01-03',3)
+
+CREATE PROCEDURE `verifier_date_heure_dispo_entre_deux_dates`(IN date1 DATE,IN date2 DATE,IN id_autorite INT)
+BEGIN
+	set @id_autorite = id_autorite;
+	looping: LOOP
+	set date1 = (select DATE_ADD(date(date1), INTERVAL 1 DAY));
+	set  @daten = date1;
+	IF @daten <= date2 then
+		set @nbr_rows = (SELECT count(id) 
+		FROM stage5.date_heure_disponible dhd where dhd.date_disponible = @daten);
+
+		IF @nbr_rows = 0 THEN 
+			CALL `ajouter_date_heure_disponible_autorite`(@id_autorite,'08:00:00', '16:00:00' , @daten);	
+		END IF;
+
+		iterate looping;
+	end if;
+	LEAVE looping;
+	END LOOP looping;
+END;
+
+
+-- Valider audience public
+CREATE  PROCEDURE `valider_audience_public`(IN id_dm_aud_public_date_heure_dispo int,IN id_audience INT,IN date_debut date,IN date_fin date,IN heure_debut time,in heure_fin time, IN id_autorite INT)
+BEGIN
+	set @id_autorite = id_autorite;
+	set @date_debut = date_debut;
+	set @date_fin = date_fin;
+	
+	set @heure_debut = heure_debut;
+	set @heure_fin = heure_fin;
+	
+	SET @hd = SUBTIME(@heure_debut,"-00:01:00");
+	SET @hf = SUBTIME(@heure_fin,"00:01:00");
+	
+	set @hd_timestamp = SUBTIME(@hd,"03:00:00");
+	set @hf_timestamp = SUBTIME(@hf,"03:00:00");
+
+	set @timestamp_debut = timestamp(concat(@date_debut,' ',SUBTIME(@hd,"03:00:00")));
+	set @timestamp_fin = timestamp(concat(@date_fin,' ',SUBTIME(@hf,"03:00:00")));
+
+	set @nbr_rows = ( 
+	SELECT 
+	count(dhda.id)
+	FROM
+	stage5.date_heure_disponible_autorite dhda 
+	JOIN stage5.date_heure_disponible dhd on dhda.id_date_heure_disponible = dhd.id
+	where 
+	dhda.id_autorite = @id_autorite
+	and 
+	(timestamp(CONCAT(dhd.date_disponible,' ',SUBTIME(dhd.heure_debut,"03:00:00"))) BETWEEN @timestamp_debut and @timestamp_fin
+	OR timestamp(CONCAT(dhd.date_disponible,' ',SUBTIME(dhd.heure_fin,"03:00:00"))) BETWEEN @timestamp_debut and @timestamp_fin)
+	OR
+	dhda.id_autorite = @id_autorite
+	and 
+	(@timestamp_debut BETWEEN timestamp(CONCAT(dhd.date_disponible,' ',SUBTIME(dhd.heure_debut,"03:00:00"))) and timestamp(CONCAT(dhd.date_disponible,' ',SUBTIME(dhd.heure_fin,"03:00:00")))
+	and @timestamp_fin BETWEEN timestamp(CONCAT(dhd.date_disponible,' ',SUBTIME(dhd.heure_debut,"03:00:00"))) and timestamp(CONCAT(dhd.date_disponible,' ',SUBTIME(dhd.heure_fin,"03:00:00")))));
+
+	IF @nbr_rows = 0 THEN
+		SELECT 'Il n''existe aucune place disponible' as message;
+	ELSEIF @nbr_rows = 1 THEN 
+		-- Update
+		UPDATE stage5.dm_aud_public_date_heure_dispo set date_debut = @date_debut, date_fin = @date_fin, heure_debut = @heure_debut, heure_fin = @heure_fin where id = id_dm_aud_public_date_heure_dispo;
+		UPDATE stage5.demande_audience_public set action = 1 where id = id_audience;	
+	ELSE
+		set @id_aud_public = id_audience;
+		-- Delete 
+		CALL supprimer_audience_public(@id_aud_public);
+
+		-- insert
+		INSERT INTO stage5.dm_aud_public_date_heure_dispo (id_aud_public, id_date_heure_disponible_autorite, heure_debut, heure_fin, date_debut, date_fin)
+		SELECT 
+		@id_aud_public,
+		dhda.id,
+		@heure_debut,
+		@heure_fin,
+		@date_debut,
+		@date_fin
+		FROM
+		stage5.date_heure_disponible_autorite dhda 
+		JOIN stage5.date_heure_disponible dhd on dhda.id_date_heure_disponible = dhd.id
+		where 
+		dhda.id_autorite = @id_autorite
+		and 
+		(timestamp(CONCAT(dhd.date_disponible,' ',SUBTIME(dhd.heure_debut,"03:00:00"))) BETWEEN @timestamp_debut and @timestamp_fin
+		OR timestamp(CONCAT(dhd.date_disponible,' ',SUBTIME(dhd.heure_fin,"03:00:00"))) BETWEEN @timestamp_debut and @timestamp_fin)
+		OR
+		dhda.id_autorite = @id_autorite
+		and 
+		(@timestamp_debut BETWEEN timestamp(CONCAT(dhd.date_disponible,' ',SUBTIME(dhd.heure_debut,"03:00:00"))) and timestamp(CONCAT(dhd.date_disponible,' ',SUBTIME(dhd.heure_fin,"03:00:00")))
+		and @timestamp_fin BETWEEN timestamp(CONCAT(dhd.date_disponible,' ',SUBTIME(dhd.heure_debut,"03:00:00"))) and timestamp(CONCAT(dhd.date_disponible,' ',SUBTIME(dhd.heure_fin,"03:00:00"))));
+		UPDATE stage5.demande_audience_public set action = 1 where id = @id_aud_public;
+	END IF;
+END
+
+CALL valider_audience_public (13,12, '2023-01-02','2023-01-02','08:30:00','09:00:00',3)

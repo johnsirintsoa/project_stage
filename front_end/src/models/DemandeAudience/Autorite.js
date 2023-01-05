@@ -1,6 +1,8 @@
 import Autorite from '../../api/demande_audience_autorite'
 export default class DemandeAudienceAutorite {
 
+
+
     static async faire_audience(audience){
         const res = await Autorite.faire_audience(audience)
         return res

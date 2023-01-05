@@ -1,30 +1,6 @@
 <script setup>
-    // MesAudiences V2
-    import HeaderNavbar from '../../components/header/HeaderBack.vue'
+    import HeaderNavbar from '../../components/header/HeaderMiddle.vue'
 </script>
-
-
-<template>
-    <HeaderNavbar/>
-    <main id="main-audience" class="main-audience">
-        <div  class='demo-app' >
-            <!-- <div  class='demo-app-sidebar'> -->
-            
-            <div class='demo-app-main'>
-            <FullCalendar
-                ref="fullCalendar"
-                class='demo-app-calendar'
-                :options='calendarOptions'
-            >
-                <template v-slot:eventContent='arg'>
-                <b>{{ arg.timeText }}</b>
-                <i>{{ arg.event.title }}</i>
-                </template>
-            </FullCalendar>
-            </div>
-        </div>
-    </main>
-</template>
 
 <script>
     import '@fullcalendar/core/vdom'
@@ -36,9 +12,6 @@
     import timeLine from '@fullcalendar/timeline'
     import { actual_events_autorite} from '../../func/event-utils'
     import DemandeAudience from '../../api/demande_audience'
-    import EntretienDemandeStage from '../../api/entretien_stage'
-    import NonDispoAutoriteDate from '../../api/pas_dispo_date'
-    import NonDispoAutoriteJour from '../../api/pas_dispo_jour'
     import tippy from 'tippy.js';
     import 'tippy.js/dist/tippy.css'; // optional for styling
     import 'tippy.js/themes/light.css';
@@ -50,10 +23,11 @@
     import dm_autorite_controller from '../../controllers/BackOffice/DemandeAudienceAutoriteController'
     import dm_public_controller from '../../controllers/BackOffice/DemandeAudiencePublicController'
     
-    export default{
+
+    export default {
         components: {
             FullCalendar
-        },
+        },  
         data() {
             return {
                 calendarOptions: {
@@ -102,15 +76,14 @@
                     date_fin: '',
                     heure_debut:'',
                     heure_fin:''
-                }
+                }                
             }
-        },
-
+        }, 
         async created(){
-            const ses = JSON.parse(sessionStorage.getItem('administrateur'))
+            const ses = JSON.parse(sessionStorage.getItem('autorite'))
             this.session_autorite = ses.id_autorite_enfant
-        },
-
+        },   
+        
         computed:{
             autoriteObject:{
                 get(){
@@ -124,6 +97,7 @@
                         addresse_electronique : obj.addresse_electronique,
                         mot_de_passe_mailing : obj.mot_de_passe_mailing,
                         porte: obj.porte
+                        // id_event_date_heure_dispo: obj.id_event_date_heure_dispo
                     }   
                 }
             },
@@ -183,7 +157,7 @@
             async handleEventClick(clickInfo){
                 const start_date_time = Function.format_date_time(clickInfo.event.start)
                 const end_date_time = Function.format_date_time(clickInfo.event.end)                
-                console.log(clickInfo.event.extendedProps)
+                // console.log(clickInfo.event.extendedProps)
                 // Instance autorité
                 this.autoriteObject = {
                     id: clickInfo.event.extendedProps.id_autorite,
@@ -236,6 +210,21 @@
                             this.audience.heure_debut = formValues[2]
                             this.audience.heure_fin = formValues[3]
 
+                            // console.log(clickInfo.event)
+
+                            // const audience_event = {
+                            //     // IN id_dm_aud_public_date_heure_dispo int,IN id_audience INT,IN date_debut date,IN date_fin date,IN heure_debut time,in heure_fin time, IN id_autorite INT
+                            //     id_dm_aud_public_date_heure_dispo: clickInfo.event.id,
+                            //     autorite: clickInfo.event.extendedProps.autorite,
+                            //     sender: clickInfo.event.extendedProps.sender,
+                            //     date_debut: this.audience.date_debut,
+                            //     date_fin: this.audience.date_fin, 
+                            //     heure_debut: this.audience.time_debut,
+                            //     heure_fin: this.audience.time_fin,
+                            //     id_autorite: this.audience.direction,
+                            //     motif: this.audience.motif,
+                            //     id: this.audience.id
+                            // }
                             const response = await dm_public_controller.valider(this.audience)
                             if(response.data){
                                 Swal.fire('Succès',`${response.message}`,'success')
@@ -483,7 +472,6 @@
 
             },
 
-
             async eventDropped(event){
                 const start_date_time = Function.format_date_time(event.event.start)
                 const end_date_time = Function.format_date_time(event.event.end)
@@ -511,6 +499,19 @@
                         nom: event.event.extendedProps.nom,
                         prenom: event.event.extendedProps.prenom,
                         addresse_electronique: event.event.extendedProps.addresse_electronique_sender_externe,
+                        id_event_date_heure_dispo:event.event.id
+                    }
+                } else if(type === 'Autorité'){
+                    this.evenementAutorite = {
+                        id_evenement : event.event.extendedProps.id_evenement,
+                        id_autorite_sender: event.event.extendedProps.id_autorite_sender,
+                        intitule_autorite_sender: event.event.extendedProps.intitule_autorite_sender,
+                        intitule_code_sender: event.event.extendedProps.intitule_code_sender,
+                        addresse_electronique_autorite_sender: event.event.extendedProps.addresse_electronique_autorite_sender,
+                        date_debut: event.event.extendedProps.date_debut,
+                        date_fin: event.event.extendedProps.date_fin,
+                        heure_debut: event.event.extendedProps.heure_debut,
+                        heure_fin: event.event.extendedProps.heure_fin,
                         id_event_date_heure_dispo:event.event.id
                     }
                 }
@@ -574,7 +575,27 @@
 
 </script>
 
-
+<template>
+    <HeaderNavbar/>
+    <main id="main-audience" class="main-audience">
+        <div  class='demo-app' >
+            <!-- <div  class='demo-app-sidebar'> -->
+            
+            <div class='demo-app-main'>
+            <FullCalendar
+                ref="fullCalendar"
+                class='demo-app-calendar'
+                :options='calendarOptions'
+            >
+                <template v-slot:eventContent='arg'>
+                <b>{{ arg.timeText }}</b>
+                <i>{{ arg.event.title }}</i>
+                </template>
+            </FullCalendar>
+            </div>
+        </div>
+    </main>
+</template>
 <style lang='css'>
     @import url('./css/style.css');
 </style>

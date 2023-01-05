@@ -2,8 +2,13 @@
 <script setup>
 import FormDoleance from '../../components/boite_a_doleance/FormDoleance.vue';
 import MyDoleances from '../../components/boite_a_doleance/MyDoleances.vue';
+import NavBarFront from '../../components/header/NavBarFront.vue'
 </script>
 <template>
+
+    <!-- header -->
+    <NavBarFront/>
+    <!-- body -->
     <main id="main" class="main">
         <div class="demande-audience">
             <h1>Boite à doléance</h1>

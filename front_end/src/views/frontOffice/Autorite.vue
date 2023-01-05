@@ -1,8 +1,13 @@
 <script setup>
     import { RouterLink, RouterView } from 'vue-router'
+    import NavBarFront from '../../components/header/NavBarFront.vue'
     // import HelloWorld from './components/HelloWorld.vue'
 </script>
 <template>
+
+    <!-- header -->
+    <NavBarFront/>
+    <!-- body -->
     <main>
         <div class="autorite-enfant">
             <ul>

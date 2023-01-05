@@ -1,3 +1,6 @@
+<script setup>
+    import HeaderNavbar from '../../components/header/HeaderBack.vue'
+</script>
 <script>
 // import { audience_reporter} from '../../func/event-utils'
 import DemandeAudienceController from '../../controllers/BackOffice/DemandeAudienceAutoriteController'
@@ -129,6 +132,7 @@ import Swal from 'sweetalert2';
     }
 </script>
 <template>
+    <HeaderNavbar/>
     <main id="main-audience" class="main-audience">
     <div class="card">
         <div class="card-body">

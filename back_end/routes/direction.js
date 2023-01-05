@@ -1,7 +1,8 @@
 const express = require('express')
 const router = express.Router();
 const Direction = require('../models/Direction')
-const db = require('../database')
+const db = require('../database').conn
+const db_name = require('../database').db_name
 
 // router.get('/all',async (req,res)=>{
 //     res.send('Hello world')

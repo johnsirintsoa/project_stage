@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router();
-const db = require('../database')
+const db = require('../database').conn
+const db_name = require('../database').db_name
 
 router.get('/all',async (req,res)=>{
     let sql = "SELECT * FROM domaine"

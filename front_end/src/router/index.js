@@ -141,12 +141,17 @@ const router = createRouter({
 
     // /** Autorite routes */
     {
-      path: '/autorite/login',
+      path: '/login',
       name: 'middle-login',
-      component: () => import('../views/middleOffice/LoginView.vue')
+      component: () => import('../views/LoginView.vue')
     },
     {
-      path: '/autorite/',
+      path: '/inscription',
+      name: 'middle-register',
+      component: () => import('../views/Inscription.vue')
+    },
+    {
+      path: '/autorite',
       name: 'middle-home',
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
@@ -194,12 +199,12 @@ const router = createRouter({
       component: () => import('../views/middleOffice/FaireAudience.vue')
     },
     {
-      path: '/autorite/demande-audience/mes-demandes-audiences',
+      path: '/autorite/demande-audience/mes-audiences',
       name: 'middle-mes-demandes-audiences',
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('../views/middleOffice/DemandeAudiences.vue')
+      component: () => import('../views/middleOffice/MesAudiences.vue')
     },
     {
       path: '/autorite/demande-audience/audience-valider',

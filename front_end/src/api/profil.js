@@ -4,9 +4,9 @@ const url = domaine.concat("/api/profil")
 
 export default class ProfilAPI{
     // login
-    static async login(username,pwd){
+    static async login(log){
         try {
-            const response = await axios.post(url.concat('/administrateur/login/',username,'/',pwd));
+            const response = await axios.post(url.concat('/login'),log);
             // console.log(response);
             return response.data
         }
@@ -15,9 +15,9 @@ export default class ProfilAPI{
         }
     }
 
-    static async login_autorite(username,pwd){
+    static async inscription(infos){
         try {
-            const response = await axios.post(url.concat('/autorite/login/',username,'/',pwd));
+            const response = await axios.post(url.concat('/inscription'),infos);
             // console.log(response);
             return response.data
         }

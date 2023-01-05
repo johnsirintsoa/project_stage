@@ -87,7 +87,7 @@ export default {
     async created(){
         const ses = JSON.parse(sessionStorage.getItem('administrateur'))
         const filtre = {
-          id_autorite_enfant: ses.autorite_enfant.id
+          id_autorite_enfant: ses.id_autorite_enfant
         }
         // this.stages = await DemandeStageAPI.all_status(id_autorite)
         this.stages = await StageController.liste(filtre)

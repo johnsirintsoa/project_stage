@@ -1,4 +1,9 @@
+<script setup>
+    import HeaderNavbar from '../../components/header/HeaderBack.vue'
+</script>
+
 <template>
+    <HeaderNavbar/>
     <main id="main" class="main">
         <div class="boite-a-doleance">
             <section class="section">

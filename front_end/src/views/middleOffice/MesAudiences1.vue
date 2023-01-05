@@ -1,3 +1,6 @@
+<script setup>
+  import HeaderNavbar from '../../components/header/HeaderMiddle.vue'
+</script>
 
 <script>
 // import { createPopper } from '@popperjs/core';
@@ -83,7 +86,7 @@ export default {
 
   created(){
     const ses = JSON.parse(sessionStorage.getItem('autorite'))
-    this.audience.direction = ses.autorite_enfant.id
+    this.audience.direction = ses.id_autorite_enfant
   },
   
   async mounted() {
@@ -1131,6 +1134,7 @@ export default {
 }
 </script>
 <template>
+<HeaderNavbar/>
 <main id="main-audience" class="main-audience">
     <div  class='demo-app' >
         <!-- <div  class='demo-app-sidebar'> -->

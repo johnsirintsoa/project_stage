@@ -4,7 +4,7 @@ import DemandeAudienceAutorite from '../api/demande_audience_autorite'
 import DemandeAudiencePublic from '../api/demande_audience_public'
 import func from './function'
 import DemandeAudienceAutoriteController from '../controllers/BackOffice/DemandeAudienceAutoriteController'
-
+import AutoriteController from '../controllers/AutoriteController'
 // import Jour_ferie from '../api/jour_ferie'
 
 let eventGuid = 0
@@ -62,14 +62,10 @@ export const faire_audience = async (id_autorite_sender,id_autorite_receiver) =>
 
 // Actual events autorite v3 
 export const actual_events_autorite = async (id_autorite_enfant) =>{
-  const mois = parseInt(new Date().getMonth())+1
-  const date1 =  new Date().getFullYear()+"-"+mois+"-"+new Date().getDate()
-  // console.log(date1)
   const audience_mois = {
-    id_autorite: id_autorite_enfant,
-    date_du_jour: date1
+    id_autorite: id_autorite_enfant
   }
-  const audiences =  DemandeAudienceAutorite.audience_autorite_all(audience_mois)  
+  const audiences = AutoriteController.calendrier(audience_mois)  
   try {
     return await audiences 
   } catch (error) {

@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router();
-const db = require('../database')
+const db = require('../database').conn
+const db_name = require('../database').db_name
 const multer = require("multer")
 const FUNC = require('../func/function')
 // const FUNC = require('../func/function')

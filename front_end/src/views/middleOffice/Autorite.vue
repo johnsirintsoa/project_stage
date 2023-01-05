@@ -1,18 +1,19 @@
 <script setup>
     import { RouterLink, RouterView } from 'vue-router'
-    // import HelloWorld from './components/HelloWorld.vue'
+    import HeaderNavbar from '../../components/header/HeaderMiddle.vue'
 </script>
 <template>
-    <main id="main-audience" class="main-audience">
-        <div class="autorite-enfant">
-            <ul>
-                <li v-for="autorite in autorites">
-                    <!-- <RouterLink to="/demande-audience/autorite">{{autorite.intitule}}</RouterLink> -->
-                    <RouterLink :to="{ name: 'middle-demande-audience-autorite-faire-audience', params: { id_autorite_enfant: autorite.id }}">{{autorite.intitule}}</RouterLink>
-                </li>
-            </ul>
-        </div>
-    </main>
+  <HeaderNavbar/>
+  <main id="main-audience" class="main-audience">
+      <div class="autorite-enfant">
+          <ul>
+              <li v-for="autorite in autorites">
+                  <!-- <RouterLink to="/demande-audience/autorite">{{autorite.intitule}}</RouterLink> -->
+                  <RouterLink :to="{ name: 'middle-demande-audience-autorite-faire-audience', params: { id_autorite_enfant: autorite.id }}">{{autorite.intitule}}</RouterLink>
+              </li>
+          </ul>
+      </div>
+  </main>
     <!-- < RouterView/> -->
 </template>
 <script>
@@ -26,7 +27,7 @@
         async created() {
           const profil = JSON.parse(sessionStorage.getItem('autorite'));
           // console.log(profil)
-          this.autorites = await AutoriteAPI.autorite_enfant_autorite(profil.autorite_enfant.id)
+          this.autorites = await AutoriteAPI.autorite_enfant_autorite(profil.id_autorite_enfant)
           // console.log(this.autorites)
         },
     }

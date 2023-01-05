@@ -4,6 +4,8 @@ const url = domaine.concat("/api/audience/autorite")
 
 export default class DemandeAudienceAutorite{
 
+
+
     static async audience_autorite_all(audience_mois){
         const res = await axios.post(url.concat('/all/mois'),audience_mois)
         return res.data

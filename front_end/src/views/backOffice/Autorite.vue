@@ -1,8 +1,9 @@
 <script setup>
     import { RouterLink, RouterView } from 'vue-router'
-    // import HelloWorld from './components/HelloWorld.vue'
+    import HeaderNavbar from '../../components/header/HeaderBack.vue'
 </script>
 <template>
+  <HeaderNavbar/>
     <main id="main-audience" class="main-audience">
         <div class="autorite-enfant">
             <ul>
@@ -26,7 +27,7 @@
         async created() {
           const profil = JSON.parse(sessionStorage.getItem('administrateur'));
           // console.log(profil)
-          this.autorites = await AutoriteAPI.autorite_enfant_autorite(profil.autorite_enfant.id)
+          this.autorites = await AutoriteAPI.autorite_enfant_autorite(profil.id_autorite_enfant)
           // console.log(this.autorites)
         },
     }

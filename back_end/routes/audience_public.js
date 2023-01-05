@@ -1,7 +1,9 @@
 const express = require('express')
 const router = express.Router();
-const db = require('../database')
+const db = require('../database').conn
+const db_name = require('../database').db_name
 const mailing = require('../Controllers/MailingController')
+
 
 
 // Liste audience disponible
@@ -307,7 +309,7 @@ router.post('/public/all/mois', async(req,res) =>{
 
 // delete audiences
 router.post('/public/delete',async(req,res)=>{
-    let sql = `DELETE FROM stage.demande_audience_public where id = ${req.body.id} and session_navigateur = '${req.body.session_navigateur}'`
+    let sql = `DELETE FROM ${db_name}.demande_audience_public where id = ${req.body.id} and session_navigateur = '${req.body.session_navigateur}'`
     db.query(sql, (error,result) => {
         if(error) res.send(error)
         res.json(result)
@@ -330,7 +332,7 @@ router.post('/public/add',async(req,res)=>{
 })
 
 router.post('/public/ajouter',async(req,res)=>{
-    const sql = `CALL ajouter_audience_public('${req.body.session_navigateur}','${req.body.nom}','${req.body.prenom}','${req.body.cin}','${req.body.numero_telephone}','${req.body.email}',${req.body.id_date_heure_disponible_autorite},'${req.body.motif}','${req.body.heure_debut}','${req.body.heure_fin}')`
+    const sql = `CALL ajouter_audience_public('${req.body.session_navigateur}','${req.body.nom}','${req.body.prenom}','${req.body.cin}','${req.body.numero_telephone}','${req.body.email}',${req.body.id_date_heure_disponible_autorite},'${req.body.motif}','${req.body.date_debut}','${req.body.date_fin}','${req.body.heure_debut}','${req.body.heure_fin}')`
         db.query(sql, (error,result) => {
         if(error){
             res.send(error)
@@ -390,61 +392,48 @@ router.post('/public/update',async(req,res)=>{
 })
 
 router.post('/public/valider',async(req,res)=>{
-    const audience = {
-        date_event_debut: req.body.date_debut,
-        date_event_fin: req.body.date_fin, 
-        time_event_debut: req.body.time_debut,
-        time_event_fin: req.body.time_fin,
-        id_autorite_enfant: req.body.id_autorite_enfant,
-        motif: req.body.motif,
-        action: 1,
-        id: req.body.id
-    }
-
+ 
     const autorite = req.body.autorite
-    const sender = req.body.sender
+    const evenement = req.body.evenement
 
-    const sql = `UPDATE stage.demande_audience_public SET ? where id = ${req.body.id}`
-    db.query(sql,audience,async (error,result) => {
+    const sql = ` CALL valider_audience_public (${evenement.id_dm_aud_public_date_heure_dispo},${evenement.id}, '${req.body.date_debut}','${req.body.date_fin}','${req.body.heure_debut}','${req.body.heure_fin}',${autorite.id})`
+    
+    const entretien_date_time = String(req.body.date_debut).concat('T',req.body.heure_debut)
+    const response = await mailing.audience_public_valide(autorite,evenement,entretien_date_time)
+        
+    // res.json(response)
+    db.query(sql,req.body,async (error,result) => {
         if(error) {
             res.send(error)
         }
+        // res.json(sql)
         else{
-            const entretien_date_time = String(req.body.date_debut).concat('T',req.body.time_debut)
-            const response = await mailing.audience_public_valide(autorite,sender,entretien_date_time)
-            if(response && result ){
-                res.json({message:'Audience validé et envoyé',mail:response,data:result})
+            if(result ){
+                res.json({message:'Audience revalidé et envoyé',data:{db:result,mail:response}})
             }
             else {
-                res.json({message:'Audience non validé '})
+                res.json({message:'Audience non revalidé ',data:{db:result,mail:response}})
             }
         }
     })
 })
 
 router.post('/public/revalider',async(req,res)=>{
-    const audience = {
-        date_event_debut: req.body.date_debut,
-        date_event_fin: req.body.date_fin, 
-        time_event_debut: req.body.time_debut,
-        time_event_fin: req.body.time_fin,
-        id_autorite_enfant: req.body.id_autorite_enfant,
-        motif: req.body.motif,
-        action: 1,
-        id: req.body.id
-    }
+
 
     const autorite = req.body.autorite
-    const sender = req.body.sender
+    const evenement = req.body.evenement
 
-    const sql = `UPDATE stage.demande_audience_public SET ? where id = ${req.body.id}`
-    db.query(sql,audience,async (error,result) => {
+    const entretien_date_time = String(req.body.date_debut).concat('T',req.body.heure_debut)
+    const response = await mailing.audience_public_revalide(autorite,evenement,entretien_date_time)
+    
+    // const sql = `UPDATE ${db_name}.demande_audience_public SET ? where id = ${req.body.id}`
+    const sql = `CALL revalider_audience_public(${evenement.id_dm_aud_public_date_heure_dispo},${evenement.id}, '${req.body.date_debut}','${req.body.date_fin}','${req.body.heure_debut}','${req.body.heure_fin}',${autorite.id})`
+    db.query(sql,req.body,async (error,result) => {
         if(error) {
             res.send(error)
         }
         else{
-            const entretien_date_time = String(req.body.date_debut).concat('T',req.body.time_debut)
-            const response = await mailing.audience_public_revalide(autorite,sender,entretien_date_time)
             if(response && result ){
                 res.json({message:'Audience validé et envoyé',mail:response,data:result})
             }
@@ -456,63 +445,54 @@ router.post('/public/revalider',async(req,res)=>{
 })
 
 router.post('/public/reporter/now',async(req,res)=>{
-    const audience = {
-        date_event_debut: req.body.date_debut,
-        date_event_fin: req.body.date_fin, 
-        time_event_debut: req.body.time_debut,
-        time_event_fin: req.body.time_fin,
-        id_autorite_enfant: req.body.id_autorite_enfant,
-        motif: req.body.motif,
-        action: 1,
-        id: req.body.id
-    }
+
     const autorite = req.body.autorite
-    const sender = req.body.sender
-    const sql = `UPDATE stage.demande_audience_public SET ? where id = ${req.body.id}`
+    const evenement = req.body.evenement
+    // const sql = `UPDATE ${db_name}.demande_audience_public SET ? where id = ${req.body.id}`
+    const sql = `CALL reporter_audience_public_maintenant (${evenement.id_dm_aud_public_date_heure_dispo},${evenement.id}, '${req.body.date_debut}','${req.body.date_fin}','${req.body.heure_debut}','${req.body.heure_fin}',${autorite.id})`
     
-    db.query(sql,audience, async (error,result) => {
+    // res.json(req.body)
+
+    const entretien_date_time = String(req.body.date_debut).concat('T',req.body.heure_debut)
+    const response = await mailing.audience_public_reporte(autorite,evenement,entretien_date_time)
+
+    db.query(sql,req.body,async (error,result) => {
         if(error) {
             res.send(error)
-        // res.json(result)
         }
+        // res.json(sql)
         else{
-            const entretien_date_time = String(req.body.date_debut).concat('T',req.body.time_debut)
-            const response = await mailing.audience_public_reporte(autorite,sender,entretien_date_time)
-            if(response && result ){
-                res.json({message:'Audience reporté et envoyé',mail:response,data:result})
+            if(result ){
+                res.json({message:'Audience reporté et envoyé',data:{db:result,mail:response}})
             }
             else {
-                res.json({message:'Audience non reporté'})
+                res.json({message:'Audience non validé ',data:{db:result,mail:response}})
             }
         }
     })
 })
 
 router.post('/public/reporter/later',async(req,res)=>{
-    const audience = {
-        date_event_debut: req.body.date_debut,
-        date_event_fin: req.body.date_fin, 
-        time_event_debut: req.body.time_debut,
-        time_event_fin: req.body.time_fin,
-        id_autorite_enfant: req.body.id_autorite_enfant,
-        motif: req.body.motif,
-        action: 2,
-        id: req.body.id
-    }
+
     const autorite = req.body.autorite
-    const sender = req.body.sender
+    const evenement = req.body.evenement
     
     // console.log(audience)
     // const sql = `CALL si_disponible_autorite('${req.body.date_event_debut}','${req.body.date_event_fin}','${req.body.time_event_debut}','${req.body.time_event_fin}',${req.body.id_autorite_enfant},'${req.body.motif}')`
     
-    const sql = `UPDATE stage.demande_audience_public SET action = 2 where id = ${req.body.id}`
+    // const sql = `UPDATE ${db_name}.demande_audience_public SET action = 2 where id = ${req.body.id}`
+    
+    const sql = `CALL reporter_audience_public_plus_tard (${evenement.id_dm_aud_public_date_heure_dispo},${evenement.id}, '${req.body.date_debut}','${req.body.date_fin}','${req.body.heure_debut}','${req.body.heure_fin}',${autorite.id})`
+    
+    // res.json(sql)
+
     db.query(sql, async (error,result) => {
         if(error) {
             res.send(error)
         }
         else{
-            const entretien_date_time = String(req.body.date_debut).concat('T',req.body.time_debut)
-            const response = await mailing.audience_public_reporte_plus_tard(autorite,sender,entretien_date_time)
+            const entretien_date_time = String(req.body.date_debut).concat('T',req.body.heure_debut)
+            const response = await mailing.audience_public_reporte_plus_tard(autorite,evenement,entretien_date_time)
             if(response && result ){
                 res.json({message:'Audience reporté et envoyé',mail:response,data:result})
             }

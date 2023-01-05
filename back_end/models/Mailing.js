@@ -112,7 +112,7 @@ const entretien_supprimer = async (autorite,stagiaire) =>{
     return data
 }
 
-const audience_public_valide = async (autorite,sender,entretien_date_time) =>{
+const audience_public_valide = async (autorite,evenement,entretien_date_time) =>{
     const autorite_mail = {
         user: autorite.addresse_electronique,
         pass: autorite.mot_de_passe_mailing
@@ -134,9 +134,9 @@ const audience_public_valide = async (autorite,sender,entretien_date_time) =>{
     // send email
     await transporter.sendMail({
         from: autorite_mail.user,
-        to: sender.email,
+        to: evenement.addresse_electronique,
         subject: 'Audience validé',
-        html: `<p>Bonjour ${sender.nom} ${sender.prenom}.</p> 
+        html: `<p>Bonjour ${evenement.nom} ${evenement.prenom}.</p> 
                 <p>Votre audience auprès de la ${autorite.intitule}(${autorite.intitule_code}) a été validée, vous pouvez venir le ${date_entretien} 
                 Porte <strong>${autorite.porte}</strong></p>`
     }).then((result) => {
@@ -147,7 +147,7 @@ const audience_public_valide = async (autorite,sender,entretien_date_time) =>{
     return data
 }
 
-const audience_public_revalide = async (autorite,sender,entretien_date_time) =>{
+const audience_public_revalide = async (autorite,evenement,entretien_date_time) =>{
     const autorite_mail = {
         user: autorite.addresse_electronique,
         pass: autorite.mot_de_passe_mailing
@@ -169,9 +169,9 @@ const audience_public_revalide = async (autorite,sender,entretien_date_time) =>{
     // send email
     await transporter.sendMail({
         from: autorite_mail.user,
-        to: sender.addresse_electronique,
+        to: evenement.addresse_electronique,
         subject: 'Audience validé',
-        html: `<p>Bonjour ${sender.nom} ${sender.prenom}.</p> 
+        html: `<p>Bonjour ${evenement.nom} ${evenement.prenom}.</p> 
                 <p>Votre audience auprès de la ${autorite.intitule}(${autorite.intitule_code}) a été revalidée, vous pouvez venir le ${date_entretien} 
                 Porte <strong>${autorite.porte}</strong></p>`
     }).then((result) => {
@@ -182,7 +182,7 @@ const audience_public_revalide = async (autorite,sender,entretien_date_time) =>{
     return data
 }
 
-const audience_public_reporte = async (autorite,sender,entretien_date_time) =>{
+const audience_public_reporte = async (autorite,evenement,entretien_date_time) =>{
     const autorite_mail = {
         user: autorite.addresse_electronique,
         pass: autorite.mot_de_passe_mailing
@@ -204,9 +204,9 @@ const audience_public_reporte = async (autorite,sender,entretien_date_time) =>{
     // send email
     await transporter.sendMail({
         from: autorite_mail.user,
-        to: sender.email,
+        to: evenement.addresse_electronique,
         subject: 'Audience reporté',
-        html: `<p>Bonjour ${sender.nom} ${sender.prenom}.</p> 
+        html: `<p>Bonjour ${evenement.nom} ${evenement.prenom}.</p> 
                 <p>En raison de certains évenements au sein de l'organisation, la ${autorite.intitule}(${autorite.intitule_code}) a du reporté votre audience le ${date_entretien}.</p>
                 <p>Merci pour votre compréhension</p>`
     }).then((result) => {
@@ -217,7 +217,7 @@ const audience_public_reporte = async (autorite,sender,entretien_date_time) =>{
     return data
 }
 
-const audience_public_reporte_plus_tard = async (autorite,sender) =>{
+const audience_public_reporte_plus_tard = async (autorite,evenement) =>{
     const autorite_mail = {
         user: autorite.addresse_electronique,
         pass: autorite.mot_de_passe_mailing
@@ -239,9 +239,9 @@ const audience_public_reporte_plus_tard = async (autorite,sender) =>{
     // send email
     await transporter.sendMail({
         from: autorite_mail.user,
-        to: sender.email,
+        to: evenement.addresse_electronique,
         subject: 'Audience reporté',
-        html: `<p>Bonjour ${sender.nom} ${sender.prenom}.</p> 
+        html: `<p>Bonjour ${evenement.nom} ${evenement.prenom}.</p> 
                 <p>En raison de certains évenements au sein de l'organisation, la ${autorite.intitule}(${autorite.intitule_code}) a du reporté votre audience.
                 Nous vous informerons une suite à votre audience</p>
                 <p>Merci pour votre compréhension</p>`
@@ -253,7 +253,8 @@ const audience_public_reporte_plus_tard = async (autorite,sender) =>{
     return data
 }
 
-const audience_autorite_valide = async (autorite,sender,entretien_date_time) =>{
+const audience_autorite_valide = async (autorite,evenement,entretien_date_time) =>{
+    const sender = evenement.autorite_sender
     const autorite_mail = {
         user: autorite.addresse_electronique,
         pass: autorite.mot_de_passe_mailing
@@ -288,7 +289,10 @@ const audience_autorite_valide = async (autorite,sender,entretien_date_time) =>{
     return data
 }
 
-const audience_autorite_reporte = async (autorite,sender,entretien_date_time) =>{
+const audience_autorite_reporte = async (autorite,evenement,entretien_date_time) =>{
+
+    const sender = evenement.autorite_sender
+
     const autorite_mail = {
         user: autorite.addresse_electronique,
         pass: autorite.mot_de_passe_mailing
@@ -323,7 +327,10 @@ const audience_autorite_reporte = async (autorite,sender,entretien_date_time) =>
     return data
 }
 
-const audience_autorite_reporte_plus_tard = async (autorite,sender) =>{
+const audience_autorite_reporte_plus_tard = async (autorite,evenement) =>{
+
+    const sender = evenement.autorite_sender
+
     const autorite_mail = {
         user: autorite.addresse_electronique,
         pass: autorite.mot_de_passe_mailing
@@ -359,7 +366,7 @@ const audience_autorite_reporte_plus_tard = async (autorite,sender) =>{
     return data
 }
 
-const audience_autorite_revalide = async (autorite,sender,entretien_date_time) =>{
+const audience_autorite_revalide = async (autorite,evenement,entretien_date_time) =>{
     const autorite_mail = {
         user: autorite.addresse_electronique,
         pass: autorite.mot_de_passe_mailing
@@ -381,9 +388,9 @@ const audience_autorite_revalide = async (autorite,sender,entretien_date_time) =
     // send email
     await transporter.sendMail({
         from: autorite_mail.user,
-        to: sender.email,
+        to: evenement.addresse_electronique,
         subject: 'Audience validé',
-        html: `<p>Bonjour Monsieur ou Madame le ${sender.intitule_code}</p> 
+        html: `<p>Bonjour Monsieur ou Madame le ${evenement.intitule_code}</p> 
                 <p>Votre audience auprès de la ${autorite.intitule}(${autorite.intitule_code}) a été revalidée, vous pouvez venir le ${date_entretien} 
                 Porte <strong>${autorite.porte}</strong></p>`
     }).then((result) => {

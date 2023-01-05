@@ -1,7 +1,7 @@
-
 <script setup>
-import { RouterLink, RouterView } from 'vue-router'
-// import HelloWorld from './components/HelloWorld.vue'
+    import { RouterLink, RouterView } from 'vue-router'
+    // import HelloWorld from './components/HelloWorld.vue'
+    // import dm_autorite_controller from './controllers/BackOffice/DemandeAudienceAutoriteController'
 </script>
 
 <template>
@@ -39,7 +39,7 @@ import { RouterLink, RouterView } from 'vue-router'
           <li class="nav-item dropdown pe-3">
 
             <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
-              <img src="./assets/img/profile-img.jpg" alt="Profile" class="rounded-circle">
+              <img src="../../assets/img/profile-img.jpg" alt="Profile" class="rounded-circle">
               <span class="d-none d-md-block dropdown-toggle ps-2">{{autorite.intitule_code}}</span>
             </a><!-- End Profile Iamge Icon -->
 
@@ -100,116 +100,100 @@ import { RouterLink, RouterView } from 'vue-router'
     <!-- ======= Sidebar ======= -->
     <aside id="sidebar" class="sidebar">
 
-        <ul class="sidebar-nav" id="sidebar-nav">
+      <ul class="sidebar-nav" id="sidebar-nav">
 
         <li class="nav-heading">Pages</li>
 
         <li class="nav-item">
-            <RouterLink to="/autorite/" :class="{ disabled: active }">
-            <a class="nav-link collapsed">
+          <RouterLink to="/administrateur/" >
+          <a class="nav-link collapsed">
             <i class="bi bi-person"></i>
-            <span>Home</span>
-            </a>
-            </RouterLink>
+            <span>Accueil</span>
+          </a>
+          </RouterLink>
         </li><!-- End Profile Page Nav -->
 
         <li class="nav-item" >
-            <RouterLink to="/autorite/boite-a-doleance" :class="{ disabled: active }">
-            <a class="nav-link collapsed" >
+          <RouterLink to="/administrateur/boite-a-doleance" >
+          <a class="nav-link collapsed" >
             <i class="bi bi-question-circle"></i>
             <span>Doléance</span>
-            </a>
-            </RouterLink>
+          </a>
+          </RouterLink>
         </li><!-- End F.A.Q Page Nav -->
 
         <li class="nav-item">
-            <RouterLink to="/autorite/demande-stage" :class="{ disabled: active }">
-            <a class="nav-link collapsed" href="">
+          <RouterLink to="/administrateur/demande-stage" >
+          <a class="nav-link collapsed" href="">
             <i class="bi bi-envelope"></i>
             <span>Stage</span>
-            </a>
-            </RouterLink>
+          </a>
+          </RouterLink>
         </li><!-- End Contact Page Nav -->
 
         <li class="nav-item">
-            <RouterLink to="/autorite/demande-emploi" :class="{ disabled: active }" >
+          <RouterLink to='/administrateur/demande-audience/autorite' >
             <a class="nav-link collapsed" href="">
-            <i class="bi bi-card-list"></i>
-            <span>Emploi</span>
+            <i class="bi bi-calendar-plus"></i><span>Faire une audience</span>
             </a>
-            </RouterLink>
-        </li><!-- End Register Page Nav -->
-
+          </RouterLink>
+        </li>
         <li class="nav-item">
-            <RouterLink to='/autorite/demande-audience/autorite' :class="{ disabled: active }">
-              <a class="nav-link collapsed" href="">
-              <i class="bi bi-calendar-plus"></i><span>Faire une audience</span>
-              </a>
-            </RouterLink>
-          </li>
-          <li class="nav-item">
-            <RouterLink to='/autorite/demande-audience/mes-demandes-audiences' :class="{ disabled: active }">
-              <a class="nav-link collapsed" href="">
-              <i class="bi bi-calendar3-range"></i><span>Mes Audiences</span>
-              </a>
-            </RouterLink>
-          </li>
-          <li class="nav-item">
-            <RouterLink to='/autorite/demande-audience/audience-valider' :class="{ disabled: active }">
-              <a class="nav-link collapsed" href="">
-              <i class="bi bi-calendar-check"></i><span>Audience validées</span>
-              </a>
-            </RouterLink>
-          </li>
-          <li class="nav-item">
-            <RouterLink to='/autorite/demande-audience/audience-reporter' :class="{ disabled: active }">
-              <a class="nav-link collapsed" href="">
-              <i class="bi bi-calendar-x"></i><span>Audience reportées</span>
-              </a>
-            </RouterLink>
-          </li>
-        <!-- End Login Page Nav -->
+          <RouterLink to='/administrateur/demande-audience/mes-audiences' >
+            <a class="nav-link collapsed" href="">
+            <i class="bi bi-calendar3-range"></i><span>Mes audiences</span>
+            </a>
+          </RouterLink>
+        </li>
+        <li class="nav-item">
+          <RouterLink to='/administrateur/demande-audience/audience-valider' >
+            <a class="nav-link collapsed" href="">
+            <i class="bi bi-calendar-check"></i><span>Audience validées</span>
+            </a>
+          </RouterLink>
+        </li>
+        <li class="nav-item">
+          <RouterLink to='/administrateur/demande-audience/audience-reporter' >
+            <a class="nav-link collapsed" href="">
+            <i class="bi bi-calendar-x"></i><span>Audience reportées</span>
+            </a>
+          </RouterLink>
+        </li>
 
 
-        </ul>
+      </ul>
 
     </aside><!-- End Sidebar-->
-    <RouterView/>
+    
+    <RouterView />
+    
 </template>
 
 <script>
-export default {
-    data(){
-        return {
-            active : false,
-            autorite:''
-        }
+
+  export default {
+    data() {
+      return {
+        autorite:''
+      }
+      
     },
-    async created() {
-      console.log(sessionStorage.getItem('autorite'))
-      if(sessionStorage.getItem('autorite') == null){
-        // redirect vers la page d'accueil
-        console.log('Tafiditra ato')
-        this.$router.push({path: '/autorite/'});
-        this.autorite = JSON.parse(sessionStorage.getItem('autorite')).autorite_enfant
+    created() {
+      const ses_admin = JSON.parse(sessionStorage.getItem('administrateur'))
+      // this.autorite = JSON.parse(sessionStorage.getItem('administrateur'))
+      if(ses_admin == null){
+        this.$router.push({path: '/login'});
       }
       else{
-        // redirect vers la page de login
-        this.$router.push({path: '/autorite/login'});
-        this.active = true
+        this.autorite = JSON.parse(sessionStorage.getItem('administrateur'))
       }
-
-    },
+    }, 
     methods: {
-      getSessionId(){
-        return JSON.parse(sessionStorage.getItem('autorite')).autorite_enfant.id
-      },
       deconnection(){
-        sessionStorage.removeItem('autorite')
-        window.location.reload()
-        this.$router.push({path: '/'});
+        sessionStorage.removeItem('administrateur')
+        this.$router.push({path: '/login'});
       }
-    },
-}
-</script>
+    }, 
+  }
 
+</script>

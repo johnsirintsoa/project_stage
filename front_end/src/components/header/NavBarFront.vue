@@ -10,19 +10,16 @@
                     <RouterLink to="/">Accueil</RouterLink>
                 </li>
                 <li>
-                    <RouterLink to="/boite-a-doleance">Boite</RouterLink>
+                    <RouterLink to="/boite-a-doleance">Boite à doléance</RouterLink>
                 </li>
                 <li>
                     <RouterLink to="/demande-stage">Stage</RouterLink>
                 </li>
                 <li>
-                    <RouterLink to="/demande-emploi">Emploi</RouterLink>
-                </li>
-                <li>
                     <RouterLink to="/demande-audience/autorite">Audience</RouterLink>
                 </li>
                 <li style="margin-left: 25rem;">
-                    <RouterLink to="/autorite/login">Se connecter</RouterLink>
+                    <RouterLink to="/login">Se connecter</RouterLink>
                 </li>
             </ul>
         </div>

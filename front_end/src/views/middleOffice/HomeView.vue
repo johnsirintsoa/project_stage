@@ -1,4 +1,10 @@
+<script setup>
+    import HeaderNavbar from '../../components/header/HeaderMiddle.vue'
+// import {r RouterLink, RouterView } from 'vue-router'
+</script>
+
 <template>
+    <HeaderNavbar/>
     <main id="main" class="main">
         <h1>Bienvenue </h1>
     </main><!-- End #main -->
