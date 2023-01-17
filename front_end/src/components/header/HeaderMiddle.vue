@@ -1,6 +1,6 @@
 <script setup>
     import { RouterLink, RouterView } from 'vue-router'
-    // import HelloWorld from './components/HelloWorld.vue'
+    import Load from '../icons/IconLoading.vue'
     // import dm_autorite_controller from './controllers/BackOffice/DemandeAudienceAutoriteController'
 </script>
 
@@ -14,7 +14,8 @@
           <!-- <img src="./assets/img/logo.png" alt=""> -->
           <span class="d-none d-lg-block">MEF</span>
         </a>
-        <i class="bi bi-list toggle-sidebar-btn"></i>
+        <!-- <Load/> -->
+        <!-- <i class="bi bi-list toggle-sidebar-btn"></i> -->
       </div>
       <!-- End Logo -->
 
@@ -117,7 +118,7 @@
           <RouterLink to="/autorite/boite-a-doleance" >
           <a class="nav-link collapsed" >
             <i class="bi bi-question-circle"></i>
-            <span>Doléance</span>
+            <span>Boite à doléance</span>
           </a>
           </RouterLink>
         </li><!-- End F.A.Q Page Nav -->
@@ -126,7 +127,7 @@
           <RouterLink to="/autorite/demande-stage" >
           <a class="nav-link collapsed" href="">
             <i class="bi bi-envelope"></i>
-            <span>Stage</span>
+            <span>Demande de stage</span>
           </a>
           </RouterLink>
         </li><!-- End Contact Page Nav -->
@@ -134,31 +135,31 @@
         <li class="nav-item">
           <RouterLink to='/autorite/demande-audience/autorite' >
             <a class="nav-link collapsed" href="">
-            <i class="bi bi-calendar-plus"></i><span>Faire une audience</span>
+            <i class="bi bi-calendar-plus"></i><span>Demande d'audience</span>
             </a>
           </RouterLink>
         </li>
         <li class="nav-item">
-          <RouterLink to='/autorite/demande-audience/mes-audiences' >
+          <RouterLink to='/autorite/demande-audience/mes-evenements' >
             <a class="nav-link collapsed" href="">
-            <i class="bi bi-calendar3-range"></i><span>Mes audiences</span>
+            <i class="bi bi-calendar3-range"></i><span>Mes évènements</span>
             </a>
           </RouterLink>
         </li>
-        <li class="nav-item">
-          <RouterLink to='/autorite/demande-audience/audience-valider' >
+        <!-- <li class="nav-item">
+          <RouterLink to='/autorite/evenements-calendrier' >
             <a class="nav-link collapsed" href="">
-            <i class="bi bi-calendar-check"></i><span>Audience validées</span>
+            <i class="bi bi-calendar-check"></i><span>Evènements calendrier</span>
             </a>
           </RouterLink>
-        </li>
-        <li class="nav-item">
+        </li> -->
+        <!-- <li class="nav-item">
           <RouterLink to='/autorite/demande-audience/audience-reporter' >
             <a class="nav-link collapsed" href="">
             <i class="bi bi-calendar-x"></i><span>Audience reportées</span>
             </a>
           </RouterLink>
-        </li>
+        </li> -->
 
 
       </ul>

@@ -891,6 +891,110 @@ BEGIN
             where ndaj.id_autorite_enfant = id_autorite;    
 END
 
+CREATE  PROCEDURE `liste_disponible_autorite`(IN id_autorite_sender int,in id_autorite int)
+BEGIN
+
+	set @sender = id_autorite_sender;
+	set @id_autorite = id_autorite;
+	
+	SELECT 
+	ae.id as id_autorite_receiver,
+	ae.intitule as intitule_receiver,
+	ae.intitule_code as intitule_code_receiver,
+	ae.addresse_electronique as addresse_electronique_receiver,
+	dhd.id as id_date_heure_disponible,
+	dhda.id as id_date_heure_disponible_autorite,
+	CONCAT(daadhd.date_debut,'T', daadhd.heure_debut) as start, 
+	CONCAT(daadhd.date_fin,'T', daadhd.heure_fin) as end, 
+	dhd.heure_debut as hd,
+	dhd.heure_fin as hf,
+	daa.id as id,
+	daadhd.id as id_dm_aud_autorite_date_heure_dispo,
+	dhd.date_disponible,
+	daadhd.heure_debut,
+	daadhd.heure_fin,
+	aes.id as id_autorite_sender,
+	aes.intitule as intitule_sender,
+	aes.intitule_code as intitule_code_sender,
+	aes.addresse_electronique as addresse_electronique_sender,
+	daa.motif as title,
+	CASE 
+	    WHEN daa.action = 0 THEN 'Non validé' 
+	    WHEN daa.action = 1 THEN 'Validé' 
+	    WHEN daa.action = 2 THEN 'Reporté' 
+	    ELSE 'Aucune' 
+	END as status_audience,
+	CASE 
+	    WHEN daa.id_autorite_enfant_sender = @sender and daa.action = 0 THEN "#407DFF" 
+	    WHEN daa.id_autorite_enfant_sender = @sender and daa.action = 1 THEN "#FF0018" 
+		WHEN daa.id_autorite_enfant_sender = @sender and daa.action = 2 THEN "#1F1F1F"
+	    ELSE '#FF0018' 
+	END as color,
+	CASE 
+	    WHEN daa.id_autorite_enfant_sender = @sender and daa.action = 0 THEN "#407DFF" 
+	    WHEN daa.id_autorite_enfant_sender = @sender and daa.action = 1 THEN "#FF0018"
+		WHEN daa.id_autorite_enfant_sender = @sender and daa.action = 2 THEN "#1F1F1F" 
+	    ELSE '#FF0018'
+	END as color_status,
+	false editable
+	FROM
+	stage5.dm_aud_autorite_date_heure_dispo daadhd
+	JOIN demande_audience_autorite daa on daadhd.id_dm_aud_autorite = daa.id
+	JOIN autorite_enfant aes on daa.id_autorite_enfant_sender = aes.id 
+	JOIN date_heure_disponible_autorite dhda on daadhd.id_date_heure_disponible_autorite = dhda.id
+	JOIN autorite_enfant ae on dhda.id_autorite = ae.id
+	JOIN date_heure_disponible dhd on dhda.id_date_heure_disponible = dhd.id
+	WHERE 
+	daa.id_autorite_enfant_sender = @sender
+	and dhda.id_autorite = @id_autorite
+	and (daa.action >= 0 and daa.action <=2)
+	and dhd.date_disponible >= CURDATE()
+	group by daadhd.id_dm_aud_autorite
+	
+	UNION
+	
+	(SELECT
+	'' id_autorite_receiver,
+	'' intitule_receiver,
+	'' intitule_code_receiver,
+	'' addresse_electronique_receiver,
+	dhd.id as id_date_heure_disponible,
+	dhda.id as id_date_heure_disponible_autorite,
+	CONCAT(dhd.date_disponible,'T', dhd.heure_debut) as start, 
+	CONCAT(dhd.date_disponible,'T', dhd.heure_fin) as end,
+	dhd.heure_debut as hd,
+	dhd.heure_fin as hf,
+	'' id, 
+	daadhd.id as id_dm_aud_autorite_date_heure_dispo,
+	dhd.date_disponible,
+	dapdhd.heure_debut, 
+	dapdhd.heure_fin, 
+	'' id_autorite_sender,
+	'' intitule_sender,
+	'' intitule_code_sender,
+	'' addresse_electronique_sender,
+	'Disponible' title,
+	'' status_audience, 
+	'#0AA913' color, 
+	'' color_status, 
+	false editable  
+	FROM
+	stage5.date_heure_disponible_autorite dhda
+	join date_heure_disponible dhd on dhda.id_date_heure_disponible = dhd.id 
+	LEFT JOIN dm_aud_autorite_date_heure_dispo daadhd on dhda.id = daadhd.id_date_heure_disponible_autorite
+	LEFT JOIN demande_audience_autorite daa on daa.id = daadhd.id_dm_aud_autorite
+	LEFT JOIN dm_aud_public_date_heure_dispo dapdhd on dhda.id = dapdhd.id_date_heure_disponible_autorite 
+	LEFT JOIN demande_audience_public dap on dap.id = dapdhd.id_aud_public
+	LEFT JOIN entretien_demande_stage eds on dhda.id = eds.id_date_heure_disponible_autorite 
+	where 
+	dhda.id_autorite = @id_autorite 
+	and dhd.date_disponible >= CURDATE()
+	and dhda.est_disponible is true 
+	and eds.id is null 
+	and daadhd.id is null 
+	and dapdhd.id is null);
+END
+
 CALL si_disponible_autorite('2022-11-09','2022-11-09','14:30:00','15:00:00',2,1,'Test 09 Night')
 
 

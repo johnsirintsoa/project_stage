@@ -16,6 +16,8 @@ router.post('/login',async (req,res)=>{
         ae.intitule,
         ae.intitule_code,
         ae.addresse_electronique,
+        ae.mot_de_passe_mailing,
+        ae.porte,
         l.est_administrateur
     FROM
         profil l JOIN autorite_enfant ae on l.id_autorite_enfant = ae.id where l.nom_utilisateur ='${username}' and l.mot_de_passe ='${pwd}'`

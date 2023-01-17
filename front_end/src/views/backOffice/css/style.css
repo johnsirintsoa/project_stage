@@ -1,7 +1,10 @@
-#main-audience{
+/* #main-audience{
     margin-top: 20px;
     margin-left: 300px;
-}
+} */
+
+
+
 h2 {
   margin: 0;
   font-size: 16px;
@@ -41,7 +44,7 @@ b { /* used for event dates/times */
 
 .demo-app-main {
   flex-grow: 1;
-  padding: 3em;
+  /* padding: 3em; */
   z-index: 1;
 }
 

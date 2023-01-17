@@ -6,4 +6,14 @@ export default class Stage {
         const res = await StageApi.liste(filtre)
         return res
     }    
+
+    static async detail(id){
+        const res = await StageApi.detail(id)
+        return res
+    } 
+    
+    static async filtre(filtre){
+        const res = await StageApi.filtre(filtre)
+        return res
+    } 
 }

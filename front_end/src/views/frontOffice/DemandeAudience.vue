@@ -112,6 +112,7 @@
           // initialEvents: INITIAL_EVENTS, // alternatively, use the `events` setting to fetch from a feed
           // initialEvents: this.actual_events, // alternatively, use the `events` setting to fetch from a feed
           // initialDate: '2022-10-21',
+          
           initialEvents: this.all_actual_events,
           // editable: true,
           // buttonIcons: false, // show the prev/next text
@@ -122,6 +123,7 @@
           selectMirror: true,
           dayMaxEvents: true,
           weekends: false,
+          contentHeight: 500,
           select: this.handleDateSelect,
           eventClick: this.handleEventClick,
           // eventsSet: this.handleEvents,

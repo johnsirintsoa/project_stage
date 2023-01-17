@@ -29,10 +29,10 @@ const entretien_valide = async (autorite,stagiaire,entretien_date_time) =>{
     // send email
     await transporter.sendMail({
         from: autorite_mail.user,
-        to: stagiaire.e_mail,
+        to: stagiaire.addresse_electronique,
         subject: 'Demande de stage approuvé et lu',
         html: `<p>Bonjour ${stagiaire.nom} ${stagiaire.prenom}.</p> 
-                <p>Vous avez un entretien avec le ${autorite.intitule}(${autorite.intitule_code}) le ${date_entretien} 
+                <p>Vous avez un entretien avec la ${autorite.intitule}(${autorite.intitule_code}) le ${date_entretien} 
                 Porte <strong>${autorite.porte}</strong></p>`
     }).then((result) => {
         data = result
@@ -64,10 +64,46 @@ const entretien_reporte = async (autorite,stagiaire,entretien_date_time) =>{
     // send email
     await transporter.sendMail({
         from: autorite_mail.user,
-        to: stagiaire.e_mail,
+        to: stagiaire.addresse_electronique,
         subject: 'Demande de stage reporté ',
         html: `<p>Bonjour ${stagiaire.nom} ${stagiaire.prenom}.</p> 
                 <p>En raison de certains évenements au sein de l'organisation, la ${autorite.intitule}(${autorite.intitule_code}) a du reporté votre entretien le ${date_entretien}.</p>
+                <p>Merci pour votre compréhension</p>`
+    }).then((result) => {
+        data = result
+    }).catch((err) => {
+        data = err
+    });
+    return data
+}
+
+const entretien_reporte_plus_tard = async (autorite,stagiaire) =>{
+    const autorite_mail = {
+        user: autorite.addresse_electronique,
+        pass: autorite.mot_de_passe_mailing
+    }
+    // const date_entretien = FUNC.date_in_string(entretien_date_time)
+    const transporter = nodemailer.createTransport({
+        host: 'smtp.gmail.com',
+        port: 587,
+        secure:false,
+        auth: {
+            user: autorite_mail.user,
+            pass: autorite_mail.pass
+            // user: 'mefstage2022@gmail.com',
+            // pass: 'wswrgxbntbumffqs'
+        }
+    });
+    
+    let data = ''
+    // send email
+    await transporter.sendMail({
+        from: autorite_mail.user,
+        to: stagiaire.addresse_electronique,
+        subject: 'Demande de stage reporté ',
+        html: `<p>Bonjour ${stagiaire.nom} ${stagiaire.prenom}.</p> 
+                <p>En raison de certains évenements au sein de l'organisation, la ${autorite.intitule}(${autorite.intitule_code}) a du reporté votre entretien.
+                Nous vous informerons une suite à votre demande</p>
                 <p>Merci pour votre compréhension</p>`
     }).then((result) => {
         data = result
@@ -98,7 +134,7 @@ const entretien_supprimer = async (autorite,stagiaire) =>{
     // send email
     await transporter.sendMail({
         from: autorite_mail.user,
-        to: stagiaire.e_mail,
+        to: stagiaire.addresse_electronique,
         subject: 'Demande de stage reporté ',
         html: `<p>Bonjour ${stagiaire.nom} ${stagiaire.prenom}.</p> 
                 <p>En raison de certains évenements au sein de l'organisation, la ${autorite.intitule}(${autorite.intitule_code}) a du reporté votre entretien. 
@@ -401,9 +437,47 @@ const audience_autorite_revalide = async (autorite,evenement,entretien_date_time
     return data
 }
 
+const reporter_evenement = async (autorite,sender) =>{
+
+    
+    const autorite_mail = {
+        user: autorite.addresse_electronique,
+        pass: autorite.mot_de_passe_mailing
+    }
+    const transporter = nodemailer.createTransport({
+        host: 'smtp.gmail.com',
+        port: 587,
+        secure:false,
+        auth: {
+            user: autorite_mail.user,
+            pass: autorite_mail.pass
+            // user: 'mefstage2022@gmail.com',
+            // pass: 'wswrgxbntbumffqs'
+        }
+    });
+    
+    let data = ''
+    // send email
+    await transporter.sendMail({
+        from: autorite_mail.user,
+        to: sender.addresse_electronique,
+        subject: 'Audience reporté',
+        html: `<p>Bonjour Monsieur ou Madame ${sender.nom} ${sender.prenom}</p> 
+                <p>En raison de certains évenements au sein de l'organisation, la ${autorite.intitule}(${autorite.intitule_code}) a du reporté votre demande.</p>
+                <p>Merci pour votre compréhension</p>`
+    }).then((result) => {
+        data = result
+    }).catch((err) => {
+        data = err
+    });
+    return data
+}
+
 module.exports = {
+    reporter_evenement,
     entretien_valide,
     entretien_reporte,
+    entretien_reporte_plus_tard,
     entretien_supprimer,
     audience_public_valide,
     audience_public_revalide,

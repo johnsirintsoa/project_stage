@@ -9,21 +9,31 @@ const FUNC = require('../func/function')
 // const candymail = require('candymail')
 const nodemailer = require('nodemailer');
 const path = require('path')
+const fs = require('fs')
+
 require('./.env')
+const baseURL = HOSTING_URL
+// const env  = require('./.env')
 
 
 // add form demande stage
+
+const maxSize = 2 * 1024 * 1024;
 const storage = multer.diskStorage({
     destination: function(req,file,cb){
+        // cb(null, baseURL+"/uploads/demande_stage");
         cb(null, "./uploads/demande_stage");
+
     },
     filename: function(req,file,cb){
+        console.log(file.originalname)
         cb(null, file.fieldname+"_"+Date.now()+"_"+file.originalname)
     }
 });
 
 var upload = multer({
-    storage: storage
+    storage: storage,
+    limits: { fileSize: maxSize },
 });
 
 // Add demande de stage
@@ -34,7 +44,7 @@ router.post('/add',upload.fields([{name: 'curriculum_vitae'},{name: 'lettre_moti
     }else{
         // return res.status(200).send({ message: 'Nice we got it...' });
         // let sql = "INSERT INTO demande_stage(nom,prenom,e_mail,cin,telephone,duree,curriculum_vitae,lettre_motivation,lettre_introduction,message,id_domaine) VALUES ('"+req.body.nom+"','"+req.body.prenom+"','"+req.body.e_mail+"','"+req.body.cin+"','"+req.body.telephone+"','"+req.body.duree+"','"+req.files['curriculum_vitae'][0].filename+"','"+req.files['lettre_motivation'][0].filename+"','"+req.files['lettre_introduction'][0].filename+"','"+req.body.message+"','"+req.body.id_domaine+"')"
-        let sql = `INSERT INTO demande_stage(nom,prenom,e_mail,cin,telephone,duree,curriculum_vitae,lettre_motivation,lettre_introduction,message,id_domaine,id_autorite_enfant) VALUES ('${req.body.nom}','${req.body.prenom}','${req.body.e_mail}','${req.body.cin}','${req.body.telephone}','${req.body.duree}','${req.files['curriculum_vitae'][0].filename}','${req.files['lettre_motivation'][0].filename}','${req.files['lettre_introduction'][0].filename}','${req.body.message}',${req.body.id_domaine},${req.body.id_autorite_enfant})`
+        let sql = `INSERT INTO demande_stage(nom,prenom,e_mail,cin,telephone,duree,curriculum_vitae,lettre_motivation,lettre_introduction,message,id_domaine,id_autorite_enfant,date_creation) VALUES ('${req.body.nom}','${req.body.prenom}','${req.body.e_mail}','${req.body.cin}','${req.body.telephone}','${req.body.duree}','${req.files['curriculum_vitae'][0].filename}','${req.files['lettre_motivation'][0].filename}','${req.files['lettre_introduction'][0].filename}','${req.body.message}',${req.body.id_domaine},${req.body.id_autorite_enfant},(SELECT CURDATE()))`
         var query = db.query(sql, function(err, result) {
             if(err){
                 return res.json(err);
@@ -46,22 +56,26 @@ router.post('/add',upload.fields([{name: 'curriculum_vitae'},{name: 'lettre_moti
 })
 
 router.post('/liste',async(req,res)=>{
-    let sql = `SELECT
-    ds.id,
-    ds.nom,
-    ds.prenom,
-    ds.duree, 
-    d.nom_domaine,
-    CASE 
-        when eds.id IS NULL THEN 'Non validé'
-        ELSE 'Validé'
-    END as demande_status,
-    eds.id as id_entretien_stage
-    FROM
-    stage5.demande_stage ds
-    JOIN stage5.domaine d on ds.id_domaine = d.id
-    LEFT JOIN stage5.entretien_demande_stage eds on ds.id = eds.id_demande_stage
-    WHERE ds.id_autorite_enfant = ${req.body.id_autorite_enfant}`
+        let sql = `SELECT
+        ds.id,
+        ds.nom,
+        ds.prenom,
+        ds.duree, 
+        ds.e_mail as addresse_electronique,
+        d.nom_domaine,
+        CASE 
+            when eds.id IS NULL THEN 'Non validé'
+            ELSE 'Validé'
+        END as demande_status,
+        eds.id as id_entretien_stage,
+        dhda.id as id_date_heure_disponible_autorite
+        FROM
+        stage5.demande_stage ds
+        JOIN stage5.domaine d on ds.id_domaine = d.id
+        LEFT JOIN stage5.entretien_demande_stage eds on ds.id = eds.id_demande_stage
+        LEFT JOIN stage5.date_heure_disponible_autorite dhda on eds.id_date_heure_disponible_autorite = dhda.id
+        WHERE ds.id_autorite_enfant = ${req.body.id_autorite_enfant}
+        GROUP BY ds.id`
     
     var query = db.query(sql, function(err, result) {
         if(err){
@@ -73,6 +87,18 @@ router.post('/liste',async(req,res)=>{
         // }else{
         //     res.json(result)
         // }
+    })
+})
+
+router.post('/filtre', async(req,res)=>{
+    const sql = `CALL filtre_stage ('${req.body.date1}','${req.body.date2}','${req.body.nom}','${req.body.prenom}',${req.body.id_domaine},${req.body.id_autorite_enfant})`
+    console.log(req.body)
+    var query = db.query(sql, function(err, result) {
+        if(err){
+            return res.json(err);
+        }
+        console.log(sql)
+        res.json(result[0])
     })
 })
 
@@ -109,7 +135,7 @@ router.get('/all_status/:id_autorite_enfant',async(req,res)=>{
             WHEN eds.id IS NULL THEN 'en attente' 
             ELSE 'validé' END as demande_status
     FROM
-        stage.demande_stage e 
+        ${db_name}.demande_stage e 
         JOIN autorite_enfant ae on e.id_autorite_enfant = ae.id
         JOIN domaine d on e.id_domaine = d.id
         LEFT JOIN entretien_demande_stage eds on e.id = eds.id_demande_stage where e.id_autorite_enfant = ${req.params.id_autorite_enfant}`
@@ -202,11 +228,12 @@ router.post('/detail',async(req,res)=>{
         e.id_autorite_enfant,
         IFNULL(eds.id,'0') as id_entretien_stage
     FROM
-        stage.demande_stage e 
-            JOIN domaine d on e.id_domaine = d.id	
-            LEFT JOIN entretien_demande_stage eds on  e.id = eds.id_demande_stage
-            where id_autorite_enfant = ${req.body.id_autorite_enfant} and e.id = ${req.body.id_demande_stage}`
-    
+        ${db_name}.demande_stage e 
+        JOIN domaine d on e.id_domaine = d.id	
+        LEFT JOIN entretien_demande_stage eds on  e.id = eds.id_demande_stage
+        WHERE e.id = ${req.body.id_demande_stage}`
+
+    // res.json(sql)
     var query = db.query(sql, function(err, result) {
         if(err){
             return res.json(err);
@@ -274,15 +301,43 @@ router.post('/sendSms', async(req,res)=>{
 })
 
 // get file 
+
+
 router.get('/file/:file_name',async(req,res)=>{
-    let file = req.params.file_name;
-    // console.log(file)
+
+    // const directoryPath = HOSTING_URL + "/uploads/demande_stage";
+    // fs.readdir(directoryPath, function (err, files) {
+    //     if (err) {
+    //         res.status(500).send({
+    //             message: "Unable to scan files!",
+    //         });
+    //     }
+    
+    //     let fileInfos = [];
+    
+    //     files.forEach((file) => {
+    //         fileInfos.push({
+    //             name: file,
+    //             url: baseUrl + file,
+    //         });
+    //     });
+    
+    //     res.status(200).send(fileInfos);
+    // })
+    // console.log(fs)
+    
+    
+    // res.download(fileLocation, file);
+    // console.log(HOSTING_URL)
+
+    const file = req.params.file_name
     try {
         let fileLocation = path.join('./uploads/demande_stage/',file);
-        res.download(fileLocation, file);
+        res.download(fileLocation, file)
     } catch (error) {
         res.send(error)
     }
+    
 })
 
 // Prolonger demande stage

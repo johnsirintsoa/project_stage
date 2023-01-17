@@ -8,6 +8,10 @@ const entretien_reporte = async (autorite,stagiare,entretien_datetime) =>{
     return mail.entretien_reporte(autorite,stagiare,entretien_datetime)
 }
 
+const entretien_reporte_plus_tard = async (autorite,stagiare) =>{
+    return mail.entretien_reporte_plus_tard(autorite,stagiare)
+}
+
 const entretien_supprimer = async (autorite,stagiare,entretien_datetime) =>{
     return mail.entretien_supprimer(autorite,stagiare,entretien_datetime)
 }
@@ -44,9 +48,15 @@ const audience_autorite_revalide = async (autorite,sender,audience_datetime) =>{
     return mail.audience_autorite_revalide(autorite,sender,audience_datetime)
 }
 
+const reporter_evenement = async (autorite,sender) =>{
+    return mail.reporter_evenement(autorite,sender)
+}
+
 module.exports = {
+    reporter_evenement,
     entretien_valide,
     entretien_reporte,
+    entretien_reporte_plus_tard,
     entretien_supprimer,
     audience_public_valide,
     audience_public_revalide,

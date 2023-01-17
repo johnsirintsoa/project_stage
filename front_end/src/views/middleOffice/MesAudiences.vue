@@ -1,5 +1,6 @@
 <script setup>
     import HeaderNavbar from '../../components/header/HeaderMiddle.vue'
+    import NavAudiences from '../../components/NavBar/NavAudiences.vue'
 </script>
 
 <script>
@@ -22,7 +23,9 @@
     import frLocale from '@fullcalendar/core/locales/fr';
     import dm_autorite_controller from '../../controllers/BackOffice/DemandeAudienceAutoriteController'
     import dm_public_controller from '../../controllers/BackOffice/DemandeAudiencePublicController'
-    
+    import entretienController from '../../controllers/EntretienController'
+    import autoriteController from '../../controllers/AutoriteController'
+    import nonDispoController from '../../controllers/NonDispoController'
 
     export default {
         components: {
@@ -45,11 +48,11 @@
                         right: 'dayGridMonth,timeGridWeek,timeGridDay,listDay'
                     },
                     initialView: 'timeGridDay',  
+                    contentHeight: 450,
                     initialEvents: this.actual_events,
-                    // editable: true,
-                    selectable: false,
-                    droppable: true,
-                    selectMirror: false,
+                    editable: true,
+                    selectable: true,
+                    selectMirror: true,
                     dayMaxEvents: true,
                     weekends: false,
                     select: this.handleDateSelect,
@@ -66,9 +69,6 @@
                     eventRemove:
                     */
                 },
-
-                session_autorite:'',
-                
                 audience :{
                     autorite:'',
                     evenement:'',
@@ -81,7 +81,7 @@
         }, 
         async created(){
             const ses = JSON.parse(sessionStorage.getItem('autorite'))
-            this.session_autorite = ses.id_autorite_enfant
+            this.session_autorite = ses
         },   
         
         computed:{
@@ -142,7 +142,8 @@
                 set(obj){
                     this.evenement = ''
                     this.audience.evenement = {
-                        id : obj.id,
+                        id : obj.id_demande_stage,
+                        id_entretien_stage: obj.id_entretien_stage,
                         nom: obj.nom,
                         prenom: obj.prenom,
                         addresse_electronique: obj.addresse_electronique
@@ -150,9 +151,45 @@
                     }   
                 }              
             },
+            evenementPasDispo:{
+                get(){
+                    return this.audience.evenemt
+                },
+                set(obj){
+                    this.evenement = ''
+                    this.audience.evenement = {
+                        id_pas_dispo: obj.id_pas_dispo,
+                        id_date_heure_non_dispo: obj.id_date_heure_non_dispo
+                        // id_entretien
+                    }   
+                }   
+            }
         },
 
         methods: {
+
+            async handleDateSelect(selectInfo){
+                let calendarApi = selectInfo.view.calendar
+                const start_date_time = Function.format_date_time(selectInfo.start)
+                const end_date_time = Function.format_date_time(selectInfo.end  )   
+                
+                const ses = JSON.parse(sessionStorage.getItem('autorite'))
+                this.autoriteObject = {
+                    id: ses.id_autorite_enfant,
+                    intitule: ses.intitule,
+                    intitule_code: ses.intitule_code,
+                    addresse_electronique: ses.addresse_electronique,
+                    mot_de_passe_mailing: ses.mot_de_passe_mailing,
+                    porte: ses.porte
+                }
+
+                this.audience.date_debut = start_date_time[0]
+                this.audience.date_fin = end_date_time[0]
+                this.audience.heure_debut = start_date_time[1]
+                this.audience.heure_fin = end_date_time[1]
+
+                const data = await nonDispoController.ajouter_non_disponible(this.audience)
+            },
 
             async handleEventClick(clickInfo){
                 const start_date_time = Function.format_date_time(clickInfo.event.start)
@@ -175,299 +212,306 @@
 
                 const type = clickInfo.event.extendedProps.type_audience
                 const action = clickInfo.event.extendedProps.status_audience
-                if(type === 'Public' ){
-                    this.evenementPublic = {
-                        id : clickInfo.event.extendedProps.id_evenement,
-                        motif: clickInfo.event.extendedProps.motif,
-                        nom: clickInfo.event.extendedProps.nom,
-                        prenom: clickInfo.event.extendedProps.prenom,
-                        addresse_electronique: clickInfo.event.extendedProps.addresse_electronique_sender_externe,
-                        id_event_date_heure_dispo:clickInfo.event.id
-                    }
-                    if(action === 'Non validé'){
-                        const { value: formValues } = await Swal.fire({
-                            title: 'Validation',
-                            showCancelButton: true,
-                            confirmButtonText: 'Valider',
-                            html:
-                            `<p>Date début: <input type=Date value="${this.audience.date_debut}" id="date1" class="swal2-input"></p>` +
-                            `<p style="margin-left:25px;" >Date fin: <input type=Date value="${this.audience.date_fin}" id="date2" class="swal2-input"></p>` +
-                            `<p style="margin-right:49px;">Durée début: <input type=time value="${this.audience.heure_debut}" id="duree1" class="swal2-input"></p>`+
-                            `<p style="margin-right:25px;">Durée fin: <input type=time value="${this.audience.heure_fin}" id="duree2" class="swal2-input"></p>`,
-                            focusConfirm: false,
-                            preConfirm: () => {
-                                return[
-                                    document.getElementById('date1').value,
-                                    document.getElementById('date2').value,
-                                    document.getElementById('duree1').value,
-                                    document.getElementById('duree2').value
-                                ]
-                            }
-                        })
-                        if (formValues) {
-                            this.audience.date_debut = formValues[0]
-                            this.audience.date_fin = formValues[1]
-                            this.audience.heure_debut = formValues[2]
-                            this.audience.heure_fin = formValues[3]
+                // if(type === 'Public' ){
+                    // this.evenementPublic = {
+                    //     id : clickInfo.event.extendedProps.id_evenement,
+                    //     motif: clickInfo.event.extendedProps.motif,
+                    //     nom: clickInfo.event.extendedProps.nom,
+                    //     prenom: clickInfo.event.extendedProps.prenom,
+                    //     addresse_electronique: clickInfo.event.extendedProps.addresse_electronique_sender_externe,
+                    //     id_event_date_heure_dispo:clickInfo.event.id
+                    // }
+                    // if(action === 'Non validé'){
+                    //     const { value: formValues } = await Swal.fire({
+                    //         title: 'Validation',
+                    //         showCancelButton: true,
+                    //         confirmButtonText: 'Valider',
+                    //         html:
+                    //         `<p>Date début: <input type=Date value="${this.audience.date_debut}" id="date1" class="swal2-input"></p>` +
+                    //         `<p style="margin-left:25px;" >Date fin: <input type=Date value="${this.audience.date_fin}" id="date2" class="swal2-input"></p>` +
+                    //         `<p style="margin-right:49px;">Durée début: <input type=time value="${this.audience.heure_debut}" id="duree1" class="swal2-input"></p>`+
+                    //         `<p style="margin-right:25px;">Durée fin: <input type=time value="${this.audience.heure_fin}" id="duree2" class="swal2-input"></p>`,
+                    //         focusConfirm: false,
+                    //         preConfirm: () => {
+                    //             return[
+                    //                 document.getElementById('date1').value,
+                    //                 document.getElementById('date2').value,
+                    //                 document.getElementById('duree1').value,
+                    //                 document.getElementById('duree2').value
+                    //             ]
+                    //         }
+                    //     })
+                    //     if (formValues) {
+                    //         this.audience.date_debut = formValues[0]
+                    //         this.audience.date_fin = formValues[1]
+                    //         this.audience.heure_debut = formValues[2]
+                    //         this.audience.heure_fin = formValues[3]
 
-                            // console.log(clickInfo.event)
+                    //         // console.log(clickInfo.event)
 
-                            // const audience_event = {
-                            //     // IN id_dm_aud_public_date_heure_dispo int,IN id_audience INT,IN date_debut date,IN date_fin date,IN heure_debut time,in heure_fin time, IN id_autorite INT
-                            //     id_dm_aud_public_date_heure_dispo: clickInfo.event.id,
-                            //     autorite: clickInfo.event.extendedProps.autorite,
-                            //     sender: clickInfo.event.extendedProps.sender,
-                            //     date_debut: this.audience.date_debut,
-                            //     date_fin: this.audience.date_fin, 
-                            //     heure_debut: this.audience.time_debut,
-                            //     heure_fin: this.audience.time_fin,
-                            //     id_autorite: this.audience.direction,
-                            //     motif: this.audience.motif,
-                            //     id: this.audience.id
-                            // }
-                            const response = await dm_public_controller.valider(this.audience)
-                            if(response.data){
-                                Swal.fire('Succès',`${response.message}`,'success')
-                                // setInterval( () => {
-                                //   window.location.reload()
-                                // }, 1000)
-                            }
-                            else{
-                                Swal.fire('Error',`${response.message}`,'error')
-                            }
-                        }
-                    }
-                    else if (action === 'Validé'){
-                        const form = await Swal.fire({
-                            title: 'A reporter',
-                            showDenyButton: true,
-                            showCancelButton: true,
-                            confirmButtonText: 'Maintenant',
+                    //         // const audience_event = {
+                    //         //     // IN id_dm_aud_public_date_heure_dispo int,IN id_audience INT,IN date_debut date,IN date_fin date,IN heure_debut time,in heure_fin time, IN id_autorite INT
+                    //         //     id_dm_aud_public_date_heure_dispo: clickInfo.event.id,
+                    //         //     autorite: clickInfo.event.extendedProps.autorite,
+                    //         //     sender: clickInfo.event.extendedProps.sender,
+                    //         //     date_debut: this.audience.date_debut,
+                    //         //     date_fin: this.audience.date_fin, 
+                    //         //     heure_debut: this.audience.time_debut,
+                    //         //     heure_fin: this.audience.time_fin,
+                    //         //     id_autorite: this.audience.direction,
+                    //         //     motif: this.audience.motif,
+                    //         //     id: this.audience.id
+                    //         // }
+                    //         const response = await dm_public_controller.valider(this.audience)
+                    //         if(response.data){
+                    //             Swal.fire('Succès',`${response.message}`,'success')
+                    //             // setInterval( () => {
+                    //             //   window.location.reload()
+                    //             // }, 1000)
+                    //         }
+                    //         else{
+                    //             Swal.fire('Error',`${response.message}`,'error')
+                    //         }
+                    //     }
+                    // }
+                    // else if (action === 'Validé'){
+                    //     const form = await Swal.fire({
+                    //         title: 'A reporter',
+                    //         showDenyButton: true,
+                    //         showCancelButton: true,
+                    //         confirmButtonText: 'Maintenant',
                             
-                            denyButtonText:'Plus tard',
-                            html:
-                                `<p>Date début: <input type=Date value="${this.audience.date_debut}"  id="date1" class="swal2-input"></p>` +
-                                `<p style="margin-left:25px;" >Date fin: <input type=Date value="${this.audience.date_fin}" id="date2" class="swal2-input"></p>` +
-                                `<p style="margin-right:49px;">Durée début: <input type=time value="${this.audience.heure_debut}" id="duree1" class="swal2-input"></p>`+
-                                `<p style="margin-right:25px;">Durée fin: <input type=time value="${this.audience.heure_fin}" id="duree2" class="swal2-input"></p>`,
-                            focusConfirm: false,
-                            preConfirm: () => {
-                                return[
-                                    document.getElementById('date1').value,
-                                    document.getElementById('date2').value,
-                                    document.getElementById('duree1').value,
-                                    document.getElementById('duree2').value
-                                ]
-                            } 
-                        }).then(async (result) => {
-                            // console.log(result)
+                    //         denyButtonText:'Plus tard',
+                    //         html:
+                    //             `<p>Date début: <input type=Date value="${this.audience.date_debut}"  id="date1" class="swal2-input"></p>` +
+                    //             `<p style="margin-left:25px;" >Date fin: <input type=Date value="${this.audience.date_fin}" id="date2" class="swal2-input"></p>` +
+                    //             `<p style="margin-right:49px;">Durée début: <input type=time value="${this.audience.heure_debut}" id="duree1" class="swal2-input"></p>`+
+                    //             `<p style="margin-right:25px;">Durée fin: <input type=time value="${this.audience.heure_fin}" id="duree2" class="swal2-input"></p>`,
+                    //         focusConfirm: false,
+                    //         preConfirm: () => {
+                    //             return[
+                    //                 document.getElementById('date1').value,
+                    //                 document.getElementById('date2').value,
+                    //                 document.getElementById('duree1').value,
+                    //                 document.getElementById('duree2').value
+                    //             ]
+                    //         } 
+                    //     }).then(async (result) => {
+                    //         // console.log(result)
 
-                            // console.log(result)
-                            if(result.isConfirmed){
-                                this.audience.date_debut = result.value[0]
-                                this.audience.date_fin = result.value[1] 
-                                this.audience.heure_debut = result.value[2]
-                                this.audience.heure_fin = result.value[3] 
-                                console.log(result)     
-                                await dm_public_controller.reporter_maintenant(this.audience)
-                                    Swal.fire('Succès','Vous avez reportée avec succès','success')
-                                // setInterval( () => {
-                                //     window.location.reload()
-                                // }, 1000)
-                            }
-                            else if(result.isDenied){           
-                                const data = await dm_public_controller.reporter_plus_tard(this.audience)
-                                Swal.fire('Audience reporter plus tard', `${data.message}`, 'success')
-                                // setInterval( () => {
-                                // window.location.reload()
-                                // }, 1000)
-                            }
-                        }).catch((err) => {
-                            console.log(err)
-                        });
-                    }
-                    else if(action === 'Reporté'){
-                        const { value: formValues } = await Swal.fire({
-                            title: 'Revalider',
-                            showCancelButton: true,
-                            confirmButtonText: 'Valider',
-                            html:
-                            `<p>Date début: <input type=Date value="${this.audience.date_debut}" id="date1" class="swal2-input"></p>` +
-                            `<p style="margin-left:25px;" >Date fin: <input type=Date value="${this.audience.date_fin}" id="date2" class="swal2-input"></p>` +
-                            `<p style="margin-right:49px;">Durée début: <input type=time value="${this.audience.heure_debut}" id="duree1" class="swal2-input"></p>`+
-                            `<p style="margin-right:25px;">Durée fin: <input type=time value="${this.audience.heure_fin}" id="duree2" class="swal2-input"></p>`,
-                            focusConfirm: false,
-                            preConfirm: () => {
-                                return[
-                                    document.getElementById('date1').value,
-                                    document.getElementById('date2').value,
-                                    document.getElementById('duree1').value,
-                                    document.getElementById('duree2').value
-                                ]
-                            }
-                        })
-                        if (formValues) {
-                            this.audience.date_debut = formValues[0]
-                            this.audience.date_fin = formValues[1]
-                            this.audience.heure_debut = formValues[2]
-                            this.audience.heure_fin = formValues[3]
-                            const response = await dm_public_controller.revalider(this.audience)
-                            if(response.message){
-                                Swal.fire('Succès',`${response.message}`,'success')
-                            }
-                            else{
-                                Swal.fire('Error',`${response.message}`,'error')
-                            }
-                        }
-                    }
-                }
-                else if(type === 'Autorité'){
-                    this.evenementAutorite = {
-                        id_evenement : clickInfo.event.extendedProps.id_evenement,
-                        id_autorite_sender: clickInfo.event.extendedProps.id_autorite_sender,
-                        intitule_autorite_sender: clickInfo.event.extendedProps.intitule_autorite_sender,
-                        intitule_code_sender: clickInfo.event.extendedProps.intitule_code_sender,
-                        addresse_electronique_autorite_sender: clickInfo.event.extendedProps.addresse_electronique_autorite_sender,
-                        date_debut: clickInfo.event.extendedProps.date_debut,
-                        date_fin: clickInfo.event.extendedProps.date_fin,
-                        heure_debut: clickInfo.event.extendedProps.heure_debut,
-                        heure_fin: clickInfo.event.extendedProps.heure_fin,
-                        id_event_date_heure_dispo:clickInfo.event.id
-                    }
-                    if(action === 'Non validé'){
-                        const { value: formValues } = await Swal.fire({
-                            title: 'Validation',
-                            showCancelButton: true,
-                            confirmButtonText: 'Valider',
-                            html:
-                            `<p>Date début: <input type=Date value="${this.audience.date_debut}" id="date1" class="swal2-input"></p>` +
-                            `<p style="margin-left:25px;" >Date fin: <input type=Date value="${this.audience.date_fin}" id="date2" class="swal2-input"></p>` +
-                            `<p style="margin-right:49px;">Durée début: <input type=time value="${this.audience.heure_debut}" id="duree1" class="swal2-input"></p>`+
-                            `<p style="margin-right:25px;">Durée fin: <input type=time value="${this.audience.heure_fin}" id="duree2" class="swal2-input"></p>`,
-                            focusConfirm: false,
-                            preConfirm: () => {
-                                return[
-                                    document.getElementById('date1').value,
-                                    document.getElementById('date2').value,
-                                    document.getElementById('duree1').value,
-                                    document.getElementById('duree2').value
-                                ]
-                            }
-                        })
-                        if (formValues) {
-                            this.audience.date_debut = formValues[0]
-                            this.audience.date_fin = formValues[1]
-                            this.audience.heure_debut = formValues[2]
-                            this.audience.heure_fin = formValues[3]
+                    //         // console.log(result)
+                    //         if(result.isConfirmed){
+                    //             this.audience.date_debut = result.value[0]
+                    //             this.audience.date_fin = result.value[1] 
+                    //             this.audience.heure_debut = result.value[2]
+                    //             this.audience.heure_fin = result.value[3] 
+                    //             console.log(result)     
+                    //             await dm_public_controller.reporter_maintenant(this.audience)
+                    //                 Swal.fire('Succès','Vous avez reportée avec succès','success')
+                    //             // setInterval( () => {
+                    //             //     window.location.reload()
+                    //             // }, 1000)
+                    //         }
+                    //         else if(result.isDenied){           
+                    //             const data = await dm_public_controller.reporter_plus_tard(this.audience)
+                    //             Swal.fire('Audience reporter plus tard', `${data.message}`, 'success')
+                    //             // setInterval( () => {
+                    //             // window.location.reload()
+                    //             // }, 1000)
+                    //         }
+                    //     }).catch((err) => {
+                    //         console.log(err)
+                    //     });
+                    // }
+                    // else if(action === 'Reporté'){
+                    //     const { value: formValues } = await Swal.fire({
+                    //         title: 'Revalider',
+                    //         showCancelButton: true,
+                    //         confirmButtonText: 'Valider',
+                    //         html:
+                    //         `<p>Date début: <input type=Date value="${this.audience.date_debut}" id="date1" class="swal2-input"></p>` +
+                    //         `<p style="margin-left:25px;" >Date fin: <input type=Date value="${this.audience.date_fin}" id="date2" class="swal2-input"></p>` +
+                    //         `<p style="margin-right:49px;">Durée début: <input type=time value="${this.audience.heure_debut}" id="duree1" class="swal2-input"></p>`+
+                    //         `<p style="margin-right:25px;">Durée fin: <input type=time value="${this.audience.heure_fin}" id="duree2" class="swal2-input"></p>`,
+                    //         focusConfirm: false,
+                    //         preConfirm: () => {
+                    //             return[
+                    //                 document.getElementById('date1').value,
+                    //                 document.getElementById('date2').value,
+                    //                 document.getElementById('duree1').value,
+                    //                 document.getElementById('duree2').value
+                    //             ]
+                    //         }
+                    //     })
+                    //     if (formValues) {
+                    //         this.audience.date_debut = formValues[0]
+                    //         this.audience.date_fin = formValues[1]
+                    //         this.audience.heure_debut = formValues[2]
+                    //         this.audience.heure_fin = formValues[3]
+                    //         const response = await dm_public_controller.revalider(this.audience)
+                    //         if(response.message){
+                    //             Swal.fire('Succès',`${response.message}`,'success')
+                    //         }
+                    //         else{
+                    //             Swal.fire('Error',`${response.message}`,'error')
+                    //         }
+                    //     }
+                    // }
+                
+                // }
+                // else if(type === 'Autorité'){
+                //     this.evenementAutorite = {
+                //         id_evenement : clickInfo.event.extendedProps.id_evenement,
+                //         id_autorite_sender: clickInfo.event.extendedProps.id_autorite_sender,
+                //         intitule_autorite_sender: clickInfo.event.extendedProps.intitule_autorite_sender,
+                //         intitule_code_sender: clickInfo.event.extendedProps.intitule_code_sender,
+                //         addresse_electronique_autorite_sender: clickInfo.event.extendedProps.addresse_electronique_autorite_sender,
+                //         date_debut: clickInfo.event.extendedProps.date_debut,
+                //         date_fin: clickInfo.event.extendedProps.date_fin,
+                //         heure_debut: clickInfo.event.extendedProps.heure_debut,
+                //         heure_fin: clickInfo.event.extendedProps.heure_fin,
+                //         id_event_date_heure_dispo:clickInfo.event.id
+                //     }
+                //     if(action === 'Non validé'){
+                //         const { value: formValues } = await Swal.fire({
+                //             title: 'Validation',
+                //             showCancelButton: true,
+                //             confirmButtonText: 'Valider',
+                //             html:
+                //             `<p>Date début: <input type=Date value="${this.audience.date_debut}" id="date1" class="swal2-input"></p>` +
+                //             `<p style="margin-left:25px;" >Date fin: <input type=Date value="${this.audience.date_fin}" id="date2" class="swal2-input"></p>` +
+                //             `<p style="margin-right:49px;">Durée début: <input type=time value="${this.audience.heure_debut}" id="duree1" class="swal2-input"></p>`+
+                //             `<p style="margin-right:25px;">Durée fin: <input type=time value="${this.audience.heure_fin}" id="duree2" class="swal2-input"></p>`,
+                //             focusConfirm: false,
+                //             preConfirm: () => {
+                //                 return[
+                //                     document.getElementById('date1').value,
+                //                     document.getElementById('date2').value,
+                //                     document.getElementById('duree1').value,
+                //                     document.getElementById('duree2').value
+                //                 ]
+                //             }
+                //         })
+                //         if (formValues) {
+                //             this.audience.date_debut = formValues[0]
+                //             this.audience.date_fin = formValues[1]
+                //             this.audience.heure_debut = formValues[2]
+                //             this.audience.heure_fin = formValues[3]
 
-                            // console.log(this)
-                            const response = await dm_autorite_controller.valider(this.audience)
-                            if(response.data){
-                                Swal.fire('Succès',`${response.message}`,'success')
-                                // setInterval( () => {
-                                //   window.location.reload()
-                                // }, 1000)
-                            }
-                            else{
-                                Swal.fire('Error',`${response.message}`,'error')
-                            }
-                        }
-                    }
-                    else if (action === 'Validé'){
-                        const form = await Swal.fire({
-                            title: 'A reporter',
-                            showDenyButton: true,
-                            showCancelButton: true,
-                            confirmButtonText: 'Maintenant',
+                //             // console.log(this)
+                //             const response = await dm_autorite_controller.valider(this.audience)
+                //             if(response.data){
+                //                 Swal.fire('Succès',`${response.message}`,'success')
+                //                 // setInterval( () => {
+                //                 //   window.location.reload()
+                //                 // }, 1000)
+                //             }
+                //             else{
+                //                 Swal.fire('Error',`${response.message}`,'error')
+                //             }
+                //         }
+                //     }
+                //     else if (action === 'Validé'){
+                //         const form = await Swal.fire({
+                //             title: 'A reporter',
+                //             showDenyButton: true,
+                //             showCancelButton: true,
+                //             confirmButtonText: 'Maintenant',
                             
-                            denyButtonText:'Plus tard',
-                            html:
-                                `<p>Date début: <input type=Date value="${this.audience.date_debut}"  id="date1" class="swal2-input"></p>` +
-                                `<p style="margin-left:25px;" >Date fin: <input type=Date value="${this.audience.date_fin}" id="date2" class="swal2-input"></p>` +
-                                `<p style="margin-right:49px;">Durée début: <input type=time value="${this.audience.heure_debut}" id="duree1" class="swal2-input"></p>`+
-                                `<p style="margin-right:25px;">Durée fin: <input type=time value="${this.audience.heure_fin}" id="duree2" class="swal2-input"></p>`,
-                            focusConfirm: false,
-                            preConfirm: () => {
-                                return[
-                                    document.getElementById('date1').value,
-                                    document.getElementById('date2').value,
-                                    document.getElementById('duree1').value,
-                                    document.getElementById('duree2').value
-                                ]
-                            } 
-                        }).then(async (result) => {
-                            // console.log(result)
+                //             denyButtonText:'Plus tard',
+                //             html:
+                //                 `<p>Date début: <input type=Date value="${this.audience.date_debut}"  id="date1" class="swal2-input"></p>` +
+                //                 `<p style="margin-left:25px;" >Date fin: <input type=Date value="${this.audience.date_fin}" id="date2" class="swal2-input"></p>` +
+                //                 `<p style="margin-right:49px;">Durée début: <input type=time value="${this.audience.heure_debut}" id="duree1" class="swal2-input"></p>`+
+                //                 `<p style="margin-right:25px;">Durée fin: <input type=time value="${this.audience.heure_fin}" id="duree2" class="swal2-input"></p>`,
+                //             focusConfirm: false,
+                //             preConfirm: () => {
+                //                 return[
+                //                     document.getElementById('date1').value,
+                //                     document.getElementById('date2').value,
+                //                     document.getElementById('duree1').value,
+                //                     document.getElementById('duree2').value
+                //                 ]
+                //             } 
+                //         }).then(async (result) => {
+                //             // console.log(result)
 
-                            // console.log(result)
-                            if(result.isConfirmed){
-                                this.audience.date_debut = result.value[0]
-                                this.audience.date_fin = result.value[1] 
-                                this.audience.heure_debut = result.value[2]
-                                this.audience.heure_fin = result.value[3] 
-                                console.log(result)     
-                                await dm_autorite_controller.reporter_maintenant(this.audience)
-                                    Swal.fire('Succès','Vous avez reportée avec succès','success')
-                                // setInterval( () => {
-                                //     window.location.reload()
-                                // }, 1000)
-                            }
-                            else if(result.isDenied){           
-                                const data = await dm_autorite_controller.reporter_plus_tard(this.audience)
-                                Swal.fire('Audience reporter plus tard', `${data.message}`, 'success')
-                                // setInterval( () => {
-                                // window.location.reload()
-                                // }, 1000)
-                            }
-                        }).catch((err) => {
-                            console.log(err)
-                        });
-                    }
-                    else if(action === 'Reporté'){
-                        const { value: formValues } = await Swal.fire({
-                            title: 'Revalider',
-                            showCancelButton: true,
-                            confirmButtonText: 'Valider',
-                            html:
-                            `<p>Date début: <input type=Date value="${this.audience.date_debut}" id="date1" class="swal2-input"></p>` +
-                            `<p style="margin-left:25px;" >Date fin: <input type=Date value="${this.audience.date_fin}" id="date2" class="swal2-input"></p>` +
-                            `<p style="margin-right:49px;">Durée début: <input type=time value="${this.audience.heure_debut}" id="duree1" class="swal2-input"></p>`+
-                            `<p style="margin-right:25px;">Durée fin: <input type=time value="${this.audience.heure_fin}" id="duree2" class="swal2-input"></p>`,
-                            focusConfirm: false,
-                            preConfirm: () => {
-                                return[
-                                    document.getElementById('date1').value,
-                                    document.getElementById('date2').value,
-                                    document.getElementById('duree1').value,
-                                    document.getElementById('duree2').value
-                                ]
-                            }
-                        })
-                        if (formValues) {
-                            this.audience.date_debut = formValues[0]
-                            this.audience.date_fin = formValues[1]
-                            this.audience.heure_debut = formValues[2]
-                            this.audience.heure_fin = formValues[3]
-                            const response = await dm_autorite_controller.revalider(this.audience)
-                            if(response.message){
-                                Swal.fire('Succès',`${response.message}`,'success')
-                            }
-                            else{
-                                Swal.fire('Error',`${response.message}`,'error')
-                            }
-                        }
-                    }
-                }
-                else if(type === 'Entretien'){
-                    this.evenementEntretien = {
-                        id: clickInfo.event.extendedProps.id_evenement,
-                        nom: clickInfo.event.extendedProps.nom,
-                        prenom: clickInfo.event.extendedProps.prenom,
-                        addresse_electronique: clickInfo.event.extendedProps.addresse_electronique_sender_externe,
-                        date_debut: clickInfo.event.extendedProps.date_debut,
-                        date_fin: clickInfo.event.extendedProps.date_fin,
-                        heure_debut: clickInfo.event.extendedProps.heure_debut,
-                        heure_fin: clickInfo.event.extendedProps.heure_fin,
-                    }
+                //             // console.log(result)
+                //             if(result.isConfirmed){
+                //                 this.audience.date_debut = result.value[0]
+                //                 this.audience.date_fin = result.value[1] 
+                //                 this.audience.heure_debut = result.value[2]
+                //                 this.audience.heure_fin = result.value[3] 
+                //                 console.log(result)     
+                //                 await dm_autorite_controller.reporter_maintenant(this.audience)
+                //                     Swal.fire('Succès','Vous avez reportée avec succès','success')
+                //                 // setInterval( () => {
+                //                 //     window.location.reload()
+                //                 // }, 1000)
+                //             }
+                //             else if(result.isDenied){           
+                //                 const data = await dm_autorite_controller.reporter_plus_tard(this.audience)
+                //                 Swal.fire('Audience reporter plus tard', `${data.message}`, 'success')
+                //                 // setInterval( () => {
+                //                 // window.location.reload()
+                //                 // }, 1000)
+                //             }
+                //         }).catch((err) => {
+                //             console.log(err)
+                //         });
+                //     }
+                //     else if(action === 'Reporté'){
+                //         const { value: formValues } = await Swal.fire({
+                //             title: 'Revalider',
+                //             showCancelButton: true,
+                //             confirmButtonText: 'Valider',
+                //             html:
+                //             `<p>Date début: <input type=Date value="${this.audience.date_debut}" id="date1" class="swal2-input"></p>` +
+                //             `<p style="margin-left:25px;" >Date fin: <input type=Date value="${this.audience.date_fin}" id="date2" class="swal2-input"></p>` +
+                //             `<p style="margin-right:49px;">Durée début: <input type=time value="${this.audience.heure_debut}" id="duree1" class="swal2-input"></p>`+
+                //             `<p style="margin-right:25px;">Durée fin: <input type=time value="${this.audience.heure_fin}" id="duree2" class="swal2-input"></p>`,
+                //             focusConfirm: false,
+                //             preConfirm: () => {
+                //                 return[
+                //                     document.getElementById('date1').value,
+                //                     document.getElementById('date2').value,
+                //                     document.getElementById('duree1').value,
+                //                     document.getElementById('duree2').value
+                //                 ]
+                //             }
+                //         })
+                //         if (formValues) {
+                //             this.audience.date_debut = formValues[0]
+                //             this.audience.date_fin = formValues[1]
+                //             this.audience.heure_debut = formValues[2]
+                //             this.audience.heure_fin = formValues[3]
+                //             const response = await dm_autorite_controller.revalider(this.audience)
+                //             if(response.message){
+                //                 Swal.fire('Succès',`${response.message}`,'success')
+                //             }
+                //             else{
+                //                 Swal.fire('Error',`${response.message}`,'error')
+                //             }
+                //         }
+                //     }
+                // }
+                // else if(type === 'Entretien'){
+                //     this.evenementEntretien = {
+                //         id: clickInfo.event.extendedProps.id_evenement,
+                //         nom: clickInfo.event.extendedProps.nom,
+                //         prenom: clickInfo.event.extendedProps.prenom,
+                //         addresse_electronique: clickInfo.event.extendedProps.addresse_electronique_sender_externe,
+                //         date_debut: clickInfo.event.extendedProps.date_debut,
+                //         date_fin: clickInfo.event.extendedProps.date_fin,
+                //         heure_debut: clickInfo.event.extendedProps.heure_debut,
+                //         heure_fin: clickInfo.event.extendedProps.heure_fin,
+                //     }
+                // }
+                if (type === 'Pas disponible'){
+                    this.evenementPasDispo = {
+                        id_pas_dispo: clickInfo.event.id,
+                        id_date_heure_non_dispo: clickInfo.event.extendedProps.id_evenement
+                    }                    
                 }
 
             },
@@ -501,7 +545,17 @@
                         addresse_electronique: event.event.extendedProps.addresse_electronique_sender_externe,
                         id_event_date_heure_dispo:event.event.id
                     }
-                } else if(type === 'Autorité'){
+                    if(action === 'Non validé'){
+                        const response = await dm_public_controller.valider(this.audience)
+                    }
+                    else if(action === 'Validé'){
+                        const response = await dm_public_controller.reporter_maintenant(this.audience)
+                    }
+                    else if(action === 'Reporté'){
+                        const response = await dm_public_controller.revalider(this.audience)
+                    } 
+                } 
+                else if(type === 'Autorité'){
                     this.evenementAutorite = {
                         id_evenement : event.event.extendedProps.id_evenement,
                         id_autorite_sender: event.event.extendedProps.id_autorite_sender,
@@ -514,14 +568,121 @@
                         heure_fin: event.event.extendedProps.heure_fin,
                         id_event_date_heure_dispo:event.event.id
                     }
+                    if(action === 'Non validé'){
+                        const response = await dm_autorite_controller.valider(this.audience)
+                    }
+                    else if(action === 'Validé'){
+                        const response = await dm_autorite_controller.reporter_maintenant(this.audience)
+                    }
+                    else if(action === 'Reporté'){
+                        const response = await dm_autorite_controller.reporter_plus_tard(this.audience)
+                    }
+                }
+                else if (type === 'Entretien'){
+                    this.evenementEntretien = {
+                        id_entretien_stage: event.event.id,
+                        id_demande_stage : event.event.extendedProps.id_evenement,
+                        nom: event.event.extendedProps.nom,
+                        prenom: event.event.extendedProps.prenom,
+                        addresse_electronique: event.event.extendedProps.addresse_electronique_sender_externe
+                        // id_entretien
+                    }
+                    const response = await entretienController.modifier_calendrier(this.audience)
+                }
+                else if(type === 'Pas disponible'){
+                    this.evenementPasDispo = {
+                        id_pas_dispo: event.event.id,
+                        id_date_heure_non_dispo: event.event.extendedProps.id_evenement
+                    }
+                    const response = await nonDispoController.modifier_non_disponible(this.audience)
                 }
             },
 
+            async eventDragged(event){
+                const start_date_time = Function.format_date_time(event.event.start)
+                const end_date_time = Function.format_date_time(event.event.end)
+                // console.log(event.event.extendedProps)
+                this.autoriteObject = {
+                    id: event.event.extendedProps.id_autorite,
+                    intitule: event.event.extendedProps.intitule_autorite,
+                    intitule_code: event.event.extendedProps.intitule_code_autorite,
+                    addresse_electronique: event.event.extendedProps.addresse_electronique_autorite,
+                    mot_de_passe_mailing: event.event.extendedProps.mot_de_passe_mailing_autorite,
+                    porte: event.event.extendedProps.porte_autorite
+                }
+                this.audience.date_debut = start_date_time[0]
+                this.audience.date_fin = end_date_time[0]
+                this.audience.heure_debut = start_date_time[1]
+                this.audience.heure_fin = end_date_time[1]
+
+                const type = event.event.extendedProps.type_audience
+                const action = event.event.extendedProps.status_audience
+
+                if(type === 'Public'){
+                    this.evenementPublic = {
+                        id : event.event.extendedProps.id_evenement,
+                        motif: event.event.extendedProps.motif,
+                        nom: event.event.extendedProps.nom,
+                        prenom: event.event.extendedProps.prenom,
+                        addresse_electronique: event.event.extendedProps.addresse_electronique_sender_externe,
+                        id_event_date_heure_dispo:event.event.id
+                    }
+                    if(action === 'Non validé'){
+                        const response = await dm_public_controller.valider(this.audience)
+                    }
+                    else if(action === 'Validé'){
+                        const response = await dm_public_controller.reporter_maintenant(this.audience)
+                    }
+                    else if(action === 'Reporté'){
+                        const response = await dm_public_controller.revalider(this.audience)
+                    } 
+                } 
+                else if(type === 'Autorité'){
+                    this.evenementAutorite = {
+                        id_evenement : event.event.extendedProps.id_evenement,
+                        id_autorite_sender: event.event.extendedProps.id_autorite_sender,
+                        intitule_autorite_sender: event.event.extendedProps.intitule_autorite_sender,
+                        intitule_code_sender: event.event.extendedProps.intitule_code_sender,
+                        addresse_electronique_autorite_sender: event.event.extendedProps.addresse_electronique_autorite_sender,
+                        date_debut: event.event.extendedProps.date_debut,
+                        date_fin: event.event.extendedProps.date_fin,
+                        heure_debut: event.event.extendedProps.heure_debut,
+                        heure_fin: event.event.extendedProps.heure_fin,
+                        id_event_date_heure_dispo:event.event.id
+                    }
+                    if(action === 'Non validé'){
+                        const response = await dm_autorite_controller.valider(this.audience)
+                    }
+                    else if(action === 'Validé'){
+                        const response = await dm_autorite_controller.reporter_maintenant(this.audience)
+                    }
+                    else if(action === 'Reporté'){
+                        const response = await dm_autorite_controller.reporter_plus_tard(this.audience)
+                    }
+                }
+                else if (type === 'Entretien'){
+                    this.evenementEntretien = {
+                        id_entretien_stage: event.event.id,
+                        id_demande_stage : event.event.extendedProps.id_evenement,
+                        nom: event.event.extendedProps.nom,
+                        prenom: event.event.extendedProps.prenom,
+                        addresse_electronique: event.event.extendedProps.addresse_electronique_sender_externe
+                        // id_entretien
+                    }
+                    const response = await entretienController.modifier_calendrier(this.audience)
+                }
+                else if(type === 'Pas disponible'){
+                    this.evenementPasDispo = {
+                        id_pas_dispo: event.event.id,
+                        id_date_heure_non_dispo: event.event.extendedProps.id_evenement
+                    }
+                    const response = await nonDispoController.modifier_non_disponible(this.audience)
+                }
+            },
+            
             async actual_events(){
                 return await actual_events_autorite(this.session_autorite)  
             },
-
-
 
             detailEvent(info) {
                 if(info.event.extendedProps.type_audience == 'Public'){
@@ -554,17 +715,17 @@
                 }
                 else if(info.event.extendedProps.type_audience == 'Entretien'){
                     tippy(info.el, {
-                    theme:'light',
-                    content: `<p><strong>${info.event.extendedProps.motif}</strong></p>
-                    <p> De ${Function.date_in_string(info.event.start)} à ${Function.date_in_string(info.event.end)}</p>
-                    <p>Nom: ${info.event.extendedProps.nom}</p>
-                    <p>Prénom: ${info.event.extendedProps.prenom}</p>
-                    <p>CIN: ${info.event.extendedProps.cin}</p>  
-                    <p>Numéro téléphone: ${info.event.extendedProps.numero_telephone}</p>  
-                    <p>mail: ${info.event.extendedProps.addresse_electronique_sender_externe}</p>  
-                    <p><span style="background-color: ${info.event.extendedProps.color_status};" class="dot"></span>  ${info.event.extendedProps.status_audience}</p>`,
-                    allowHTML: true,
-                    delay: [500,0]
+                        theme:'light',
+                        content: `<p><strong>${info.event.extendedProps.motif}</strong></p>
+                        <p> De ${Function.date_in_string(info.event.start)} à ${Function.date_in_string(info.event.end)}</p>
+                        <p>Nom: ${info.event.extendedProps.nom}</p>
+                        <p>Prénom: ${info.event.extendedProps.prenom}</p>
+                        <p>CIN: ${info.event.extendedProps.cin}</p>  
+                        <p>Numéro téléphone: ${info.event.extendedProps.numero_telephone}</p>  
+                        <p>mail: ${info.event.extendedProps.addresse_electronique_sender_externe}</p>  
+                        <p><span style="background-color: ${info.event.extendedProps.color_status};" class="dot"></span>  ${info.event.extendedProps.status_audience}</p>`,
+                        allowHTML: true,
+                        delay: [500,0]
 
                     })
                 }
@@ -577,7 +738,12 @@
 
 <template>
     <HeaderNavbar/>
-    <main id="main-audience" class="main-audience">
+    <!-- <main id="main-audience" class="main-audience"> -->
+    <main id="main" class="main">
+        <h1>Mes évènements</h1>
+        <NavAudiences 
+            :autorite="session_autorite"    
+        />
         <div  class='demo-app' >
             <!-- <div  class='demo-app-sidebar'> -->
             
@@ -595,7 +761,23 @@
             </div>
         </div>
     </main>
+
 </template>
 <style lang='css'>
     @import url('./css/style.css');
+    
+    /* .loader {
+        border: 3px solid #f3f3f3; 
+        border-top: 3px solid #012970; 
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        animation: spin 2s linear infinite;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    } */
+
 </style>

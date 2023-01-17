@@ -2,9 +2,10 @@ const express = require('express')
 const router = express.Router();
 const db = require('../database').conn
 const db_name = require('../database').db_name
+const mailing = require('../Controllers/MailingController')
 
 router.post('/calendrier', async (req,res) =>{
-    const sql = `CALL calendrier_autorite(${req.body.id_autorite})`
+    const sql = `CALL calendrier_autorite(${req.body.id_autorite},${req.body.est_admin})`
     db.query(sql,function(err,result){
         if(err){
             return res.send({ err });
@@ -14,6 +15,45 @@ router.post('/calendrier', async (req,res) =>{
         }
     })
 })
+
+router.post('/filtre_calendrier', async (req,res) =>{
+    // res.json(req.body)
+    const autorite = req.body.autorite
+    const sql = `CALL filtre_calendrier_evenement(
+                '${req.body.date_debut}',
+                '${req.body.date_fin}',
+                '${req.body.type_evenement}',
+                ${req.body.status},
+                ${autorite.id_autorite_enfant}
+            )`
+    // res.json(sql)
+    db.query(sql,function(err,result){
+        if(err){
+            return res.send({ err });
+        }
+        else{
+            return res.json(result[0])    
+        }
+    })
+})
+
+router.post('/place_disponible', async (req,res) =>{
+    const sql = `CALL places_disponible(${req.body.id_date_heure_disponible_autorite},${req.body.id_autorite})`
+    // console.log(sql)
+    // res.json(sql)
+    db.query(sql,function(err,result){
+        // console.log(result)
+        if(err){
+            return res.send({ err });
+        }
+        else{
+            return res.json(result[0] )    
+        }
+    })
+})
+
+
+
 
 
 router.get('/liste',async(req,res)=>{

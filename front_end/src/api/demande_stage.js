@@ -49,13 +49,14 @@ export default class DemandeStageAPI{
       return res.data
     }
 
+    static async filtre(filtre){
+      const res = await axios.post(url.concat('/filtre'),filtre)
+      return res.data
+    }
+
     // detail stage
-    static async detail(id_autorite_enfant,id_demande_stage){
-      const arg = {
-        id_autorite_enfant:id_autorite_enfant,
-        id_demande_stage:id_demande_stage
-      }
-      const res = await axios.post(url.concat('/detail'),arg)
+    static async detail(id_demande_stage){
+      const res = await axios.post(url.concat('/detail'),id_demande_stage)
       return res.data
     }
 

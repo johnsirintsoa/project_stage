@@ -1,5 +1,6 @@
 <script setup>
     import HeaderNavbar from '../../components/header/HeaderMiddle.vue'
+    import NavAudiences from '../../components/NavBar/NavAudiences.vue'
 </script>
 
 <script>
@@ -22,6 +23,7 @@
     import Swal from 'sweetalert2';
     import AutoriteAPI from '../../api/autorite';
     import frLocale from '@fullcalendar/core/locales/fr';
+    import {useRoute} from "vue-router";
 
     export default {
         components: {
@@ -45,6 +47,7 @@
                         right: 'dayGridMonth,timeGridWeek,timeGridDay,listDay'
                     },
                     initialView: 'timeGridDay',  
+                    contentHeight: 450,
                     initialEvents: this.actual_events,
                     selectable: false,
                     droppable: false,
@@ -70,7 +73,11 @@
         },
         async created(){
             const ses = JSON.parse(sessionStorage.getItem('autorite'))
-
+            const route = useRoute()
+            this.autorite = {
+                intitule_code: route.params.intitule_code,
+                id_autorite: route.params.id_autorite_enfant
+            }
             this.id_autorite_sender = ses.id_autorite_enfant
             this.id_autorite_receiver = window.location.pathname.split('/')[ window.location.pathname.split('/').length-1]
         },
@@ -312,7 +319,12 @@
 
 <template>
     <HeaderNavbar/>
-    <main id="main-audience" class="main-audience">
+
+    <main id="main" class="main">
+        <h1>Demande Audience</h1>
+        <NavAudiences 
+            :autorite="autorite"    
+        />
         <div  class='demo-app' >
             <!-- <div  class='demo-app-sidebar'> -->
             

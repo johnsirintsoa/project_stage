@@ -1,12 +1,17 @@
 <script setup>
     // MesAudiences V2
     import HeaderNavbar from '../../components/header/HeaderBack.vue'
+    import NavAudiences from '../../components/NavBar/NavAudiences.vue' 
 </script>
 
 
 <template>
     <HeaderNavbar/>
-    <main id="main-audience" class="main-audience">
+    <main id="main" class="main">
+        <h1>Mes Audiences</h1>
+        <NavAudiences 
+            :autorite="autorite"    
+        />
         <div  class='demo-app' >
             <!-- <div  class='demo-app-sidebar'> -->
             
@@ -73,13 +78,14 @@
                     initialView: 'timeGridDay',  
                     initialEvents: this.actual_events,
                     // editable: true,
+                    contentHeight: 450,
                     selectable: false,
                     droppable: true,
                     selectMirror: false,
                     dayMaxEvents: true,
                     weekends: false,
                     select: this.handleDateSelect,
-                    eventClick: this.handleEventClick,
+                    // eventClick: this.handleEventClick,
                     // eventsSet: this.handleEvents,
                     eventDidMount: this.detailEvent,
                     eventResize: this.eventDragged,
@@ -93,8 +99,6 @@
                     */
                 },
 
-                session_autorite:'',
-                
                 audience :{
                     autorite:'',
                     evenement:'',
@@ -108,7 +112,9 @@
 
         async created(){
             const ses = JSON.parse(sessionStorage.getItem('administrateur'))
-            this.session_autorite = ses.id_autorite_enfant
+            this.session_autorite = ses
+            this.autorite = ses
+            // this.autorite_sender
         },
 
         computed:{
@@ -513,14 +519,77 @@
                         addresse_electronique: event.event.extendedProps.addresse_electronique_sender_externe,
                         id_event_date_heure_dispo:event.event.id
                     }
+                    const response = await dm_public_controller.valider(this.audience)
+                }
+                else if(type === 'Autorité'){
+                    this.evenementAutorite = {
+                        id_evenement : event.event.extendedProps.id_evenement,
+                        id_autorite_sender: event.event.extendedProps.id_autorite_sender,
+                        intitule_autorite_sender: event.event.extendedProps.intitule_autorite_sender,
+                        intitule_code_sender: event.event.extendedProps.intitule_code_sender,
+                        addresse_electronique_autorite_sender: event.event.extendedProps.addresse_electronique_autorite_sender,
+                        date_debut: event.event.extendedProps.date_debut,
+                        date_fin: event.event.extendedProps.date_fin,
+                        heure_debut: event.event.extendedProps.heure_debut,
+                        heure_fin: event.event.extendedProps.heure_fin,
+                        id_event_date_heure_dispo:event.event.id
+                    }
+                    const response = await dm_autorite_controller.valider(this.audience)
                 }
             },
 
+            async eventDragged(event){
+                const start_date_time = Function.format_date_time(event.event.start)
+                const end_date_time = Function.format_date_time(event.event.end)
+                // console.log(event.event.extendedProps)
+                this.autoriteObject = {
+                    id: event.event.extendedProps.id_autorite,
+                    intitule: event.event.extendedProps.intitule_autorite,
+                    intitule_code: event.event.extendedProps.intitule_code_autorite,
+                    addresse_electronique: event.event.extendedProps.addresse_electronique_autorite,
+                    mot_de_passe_mailing: event.event.extendedProps.mot_de_passe_mailing_autorite,
+                    porte: event.event.extendedProps.porte_autorite
+                }
+                this.audience.date_debut = start_date_time[0]
+                this.audience.date_fin = end_date_time[0]
+                this.audience.heure_debut = start_date_time[1]
+                this.audience.heure_fin = end_date_time[1]
+
+                const type = event.event.extendedProps.type_audience
+                const action = event.event.extendedProps.status_audience
+
+                if(type === 'Public'){
+                    this.evenementPublic = {
+                        id : event.event.extendedProps.id_evenement,
+                        motif: event.event.extendedProps.motif,
+                        nom: event.event.extendedProps.nom,
+                        prenom: event.event.extendedProps.prenom,
+                        addresse_electronique: event.event.extendedProps.addresse_electronique_sender_externe,
+                        id_event_date_heure_dispo:event.event.id
+                    }
+                    const response = await dm_public_controller.valider(this.audience)
+                }
+                else if(type === 'Autorité'){
+                    this.evenementAutorite = {
+                        id_evenement : event.event.extendedProps.id_evenement,
+                        id_autorite_sender: event.event.extendedProps.id_autorite_sender,
+                        intitule_autorite_sender: event.event.extendedProps.intitule_autorite_sender,
+                        intitule_code_sender: event.event.extendedProps.intitule_code_sender,
+                        addresse_electronique_autorite_sender: event.event.extendedProps.addresse_electronique_autorite_sender,
+                        date_debut: event.event.extendedProps.date_debut,
+                        date_fin: event.event.extendedProps.date_fin,
+                        heure_debut: event.event.extendedProps.heure_debut,
+                        heure_fin: event.event.extendedProps.heure_fin,
+                        id_event_date_heure_dispo:event.event.id
+                    }
+                    const response = await dm_autorite_controller.valider(this.audience)
+                }
+            },
+            
             async actual_events(){
+                console.log(await actual_events_autorite(this.session_autorite))
                 return await actual_events_autorite(this.session_autorite)  
             },
-
-
 
             detailEvent(info) {
                 if(info.event.extendedProps.type_audience == 'Public'){

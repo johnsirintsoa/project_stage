@@ -9,7 +9,7 @@
           <ul>
               <li v-for="autorite in autorites">
                   <!-- <RouterLink to="/demande-audience/autorite">{{autorite.intitule}}</RouterLink> -->
-                  <RouterLink :to="{ name: 'middle-demande-audience-autorite-faire-audience', params: { id_autorite_enfant: autorite.id }}">{{autorite.intitule}}</RouterLink>
+                  <RouterLink :to="{ name: 'middle-demande-audience-autorite-faire-audience', params: { intitule_code: autorite.intitule_code,id_autorite_enfant: autorite.id }}">{{autorite.intitule}}</RouterLink>
               </li>
           </ul>
       </div>

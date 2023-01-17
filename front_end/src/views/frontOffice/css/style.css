@@ -105,7 +105,7 @@ li {
 
 .demo-app-main {
   flex-grow: 1;
-  padding: 3em;
+  /* padding: 2em; */
   z-index: 1;
 }
 

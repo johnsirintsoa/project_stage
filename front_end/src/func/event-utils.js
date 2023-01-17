@@ -61,9 +61,10 @@ export const faire_audience = async (id_autorite_sender,id_autorite_receiver) =>
 }
 
 // Actual events autorite v3 
-export const actual_events_autorite = async (id_autorite_enfant) =>{
+export const actual_events_autorite = async (session) =>{
   const audience_mois = {
-    id_autorite: id_autorite_enfant
+    id_autorite: session.id_autorite_enfant,
+    est_admin: session.est_administrateur
   }
   const audiences = AutoriteController.calendrier(audience_mois)  
   try {

@@ -9,6 +9,16 @@ export default class AutoriteAPI{
         return res.data       
     }
 
+    static async place_disponible(id_autorite){
+        const res = await axios.post(url.concat('/place_disponible'),id_autorite)
+        return res.data       
+    }
+
+    static async filtre_calendrier(arg){
+        const res = await axios.post(url.concat('/filtre_calendrier'),arg)
+        return res.data       
+    }
+
     static async liste(){
         const res = await axios.get(url.concat('/liste'))
         return res.data

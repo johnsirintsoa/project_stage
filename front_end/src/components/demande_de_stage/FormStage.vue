@@ -58,7 +58,7 @@
             <div class="col-sm-10">
                 <select class="form-select" id="domaine" name="domaine" v-model="stage.id_domaine" aria-label="Default select example" required="">
                     <option selected disabled value="">Domaine</option>
-                    <option v-for="(domaine,index)  in domaines"  :value="index+1" > {{domaine.nom_domaine}}</option>
+                    <option v-for="(domaine,index)  in domaines"  :value="domaine.id" > {{domaine.nom_domaine}}</option>
                 </select>
             </div>
             <div class="invalid-feedback">
@@ -71,7 +71,7 @@
             <div class="col-sm-10">
                 <select class="form-select" id="autorite" name="autorite" v-model="stage.id_autorite_enfant" aria-label="Default select example" required="">
                     <option selected disabled value="">Direction</option>
-                    <option v-for="(autorite,index)  in autorites"  :value="index+1" > {{autorite.intitule}}</option>
+                    <option v-for="(autorite,index)  in autorites"  :value="autorite.id" > {{autorite.intitule}}</option>
                 </select>
             </div>
             <div class="invalid-feedback">
@@ -122,6 +122,7 @@ import axios from 'axios';
 import DemandeStageAPI from '../../api/demande_stage';
 import DomaineAPI from '../../api/domaine';
 import AutoriteApi from '../../api/autorite';
+import swal from 'sweetalert';
 
 export default {
     data(){
@@ -195,6 +196,7 @@ export default {
             // console.log(demande_stage.get('lettre_introduction'))
             
             const response =  await DemandeStageAPI.addDemandeStage(demande_stage)
+            swal("Demande de stage enregistrée", `Votre demande de stage a bien été ajoutée`, "success");
         }
     },
 }

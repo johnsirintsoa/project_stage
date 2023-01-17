@@ -104,7 +104,7 @@ const router = createRouter({
       component: () => import('../views/backOffice/Autorite.vue')
     },
     {
-      path: '/administrateur/demande-audience/autorite/faire-audience/:id_autorite_enfant',
+      path: '/administrateur/demande-audience/autorite/faire-audience/:intitule_code/:id_autorite_enfant',
       name: 'back-demande-audience-faire-audience',
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
@@ -191,7 +191,7 @@ const router = createRouter({
       component: () => import('../views/middleOffice/Autorite.vue')
     },
     {
-      path: '/autorite/demande-audience/autorite/faire-audience/:id_autorite_enfant',
+      path: '/autorite/demande-audience/autorite/faire-audience/:intitule_code/:id_autorite_enfant',
       name: 'middle-demande-audience-autorite-faire-audience',
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
@@ -199,8 +199,8 @@ const router = createRouter({
       component: () => import('../views/middleOffice/FaireAudience.vue')
     },
     {
-      path: '/autorite/demande-audience/mes-audiences',
-      name: 'middle-mes-demandes-audiences',
+      path: '/autorite/demande-audience/mes-evenements',
+      name: 'middle-mes-evenements',
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
@@ -218,6 +218,11 @@ const router = createRouter({
       path: '/autorite/demande-audience/audience-reporter',
       name: 'middle-demande-audience-reporter',
       component: () => import('../views/middleOffice/DemandeAudienceReporter.vue')
+    },
+    {
+      path: '/autorite/evenements-calendrier',
+      name: 'middle-liste-evenements',
+      component: () => import('../views/middleOffice/EvenementsCalendrier.vue')
     }
   ]
 })

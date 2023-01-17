@@ -6,4 +6,14 @@ export default class StageController{
         const res = await StageModel.liste(filtre)
         return res
     }
+
+    static async detail(id){
+        const res = await StageModel.detail(id)
+        return res
+    }
+
+    static async filtre(filtre){
+        const res = await StageModel.filtre(filtre)
+        return res
+    }
 }

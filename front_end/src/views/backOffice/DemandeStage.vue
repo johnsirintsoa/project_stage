@@ -7,7 +7,7 @@ import HeaderNavbar from '../../components/header/HeaderBack.vue'
     <HeaderNavbar/>
     <main id="main" class="main">
         <div class="demande-stage">
-            <h1>Demande de stage</h1>
+            <h1>Demandes de stages</h1>
             <div class="row">
                 <ListStage/>
             </div>

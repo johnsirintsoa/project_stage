@@ -323,15 +323,198 @@ BEGIN
 END
 
 
--- Evenement pour supprimer les audiences null dans dm_aud_public_heure_disponible
-SHOW PROCESSLIST;
+--- Liste des places disponibles 
+--- V1
+CREATE  PROCEDURE `liste_disponible_public`(IN session_navigateur varchar(100), IN id_autorite int)
+BEGIN
+	SET @session_navigateur = session_navigateur;
+	set @id_autorite = id_autorite;
 
-SET GLOBAL event_scheduler = ON;
+	(SELECT 
+	dhd.id as id_date_heure_disponible,
+	dhda.id as id_date_heure_disponible_autorite,
+	CONCAT(dapdhd.date_debut,'T', dapdhd.heure_debut) as start, 
+	CONCAT(dapdhd.date_fin,'T', dapdhd.heure_fin) as end, 
+	dhd.heure_debut as hd,
+	dhd.heure_fin as hf,
+	dap.id as id, 
+	dapdhd.id as id_dm_aud_public_heure_dispo,
+	dhd.date_disponible,
+	dapdhd.heure_debut, 
+	dapdhd.heure_fin, 
+	dap.motif as title, 
+	dap.nom, 
+	dap.prenom, 
+	dap.cin, 
+	dap.numero_telephone, 
+	dap.email, 
+	CASE 
+	    WHEN dap.action = 0 THEN 'Non validé' 
+	    WHEN dap.action = 1 THEN 'Validé' 
+	    WHEN dap.action = 2 THEN 'Reporté' 
+	    ELSE 'Aucune' 
+	END as status_audience,
+	CASE 
+	    WHEN dap.session_navigateur = @session_navigateur and dap.action = 0 THEN "#407DFF" 
+	    WHEN dap.session_navigateur = @session_navigateur and dap.action = 1 THEN "#FF0018" 
+	    ELSE '#FF0018' 
+	END as color, 
+	CASE 
+	    WHEN dap.session_navigateur = @session_navigateur and dap.action = 0 THEN "#407DFF" 
+	    WHEN dap.session_navigateur = @session_navigateur and dap.action = 1 THEN "#FF0018" 
+	    ELSE '#FF0018'
+	END as color_status, 
+	false editable 
+	FROM date_heure_disponible_autorite dhda
+	JOIN date_heure_disponible dhd on dhda.id_date_heure_disponible = dhd.id
+	JOIN dm_aud_public_date_heure_dispo dapdhd on dhda.id = dapdhd.id_date_heure_disponible_autorite
+	JOIN demande_audience_public dap on dapdhd.id_aud_public = dap.id
+	WHERE 
+	dhda.id_autorite = @id_autorite
+	and dhd.date_disponible >= CURDATE()
+	and dhda.est_disponible is true
+	and dap.session_navigateur = @session_navigateur
+	and dap.action >=0 and dap.action <=1
+	GROUP BY dapdhd.id_aud_public)
+	
+	UNION
+	(SELECT 
+	dhd.id as id_date_heure_disponible,
+	dhda.id as id_date_heure_disponible_autorite,
+	CONCAT(dhd.date_disponible,'T', dhd.heure_debut) as start, 
+	CONCAT(dhd.date_disponible,'T', dhd.heure_fin) as end, 
+	dhd.heure_debut as hd,
+	dhd.heure_fin as hf,
+	'' id, 
+	dapdhd.id as id_dm_aud_public_heure_dispo,
+	dhd.date_disponible,
+	dapdhd.heure_debut, 
+	dapdhd.heure_fin, 
+	'Disponible' title, 
+	'' nom, 
+	'' prenom, 
+	'' cin, 
+	'' numero_telephone, 
+	'' email, 
+	'' status_audience, 
+	'#0AA913' color, 
+	'' color_status, 
+	false editable  
+	FROM stage5.date_heure_disponible_autorite dhda 
+	join date_heure_disponible dhd on dhda.id_date_heure_disponible = dhd.id 
+	LEFT JOIN dm_aud_autorite_date_heure_dispo daadhd on dhda.id = daadhd.id_date_heure_disponible_autorite
+	LEFT JOIN demande_audience_autorite daa on daa.id = daadhd.id_dm_aud_autorite
+	LEFT JOIN dm_aud_public_date_heure_dispo dapdhd on dhda.id = dapdhd.id_date_heure_disponible_autorite 
+	LEFT JOIN demande_audience_public dap on dap.id = dapdhd.id_aud_public
+	LEFT JOIN entretien_demande_stage eds on dhda.id = eds.id_date_heure_disponible_autorite 
+	where 
+	dhda.id_autorite = @id_autorite 
+	and dhd.date_disponible >= CURDATE()
+	and dhda.est_disponible is true 
+	and eds.id is null 
+	and daadhd.id is null 
+	and dapdhd.id is null
+	or
+	dhda.id_autorite = @id_autorite 
+	and dhd.date_disponible >= CURDATE()
+	and dap.action = 2);
 
-CREATE EVENT supprimer_columns_null
-ON SCHEDULE EVERY concat(CURRENT_DATE,' ','09:40:00')
-    COMMENT 'Supprimer les audience nulls dans aud_pub_heure_disponible'
-    DO
-		BEGIN
-			DELETE FROM dm_aud_public_heure_dispo where id_aud_public is null;
-		END
+END
+
+--- v2
+CREATE  PROCEDURE `liste_disponible_public`(IN session_navigateur varchar(100), IN id_autorite int)
+BEGIN
+	SET @session_navigateur = session_navigateur;
+	set @id_autorite = id_autorite;
+
+	(SELECT 
+	dhd.id as id_date_heure_disponible,
+	dhda.id as id_date_heure_disponible_autorite,
+	CONCAT(dapdhd.date_debut,'T', dapdhd.heure_debut) as start, 
+	CONCAT(dapdhd.date_fin,'T', dapdhd.heure_fin) as end, 
+	dhd.heure_debut as hd,
+	dhd.heure_fin as hf,
+	dap.id as id, 
+	dapdhd.id as id_dm_aud_public_heure_dispo,
+	dhd.date_disponible,
+	dapdhd.heure_debut, 
+	dapdhd.heure_fin, 
+	dap.motif as title, 
+	dap.nom, 
+	dap.prenom, 
+	dap.cin, 
+	dap.numero_telephone, 
+	dap.email, 
+	CASE 
+	    WHEN dap.action = 0 THEN 'Non validé' 
+	    WHEN dap.action = 1 THEN 'Validé' 
+	    WHEN dap.action = 2 THEN 'Reporté' 
+	    ELSE 'Aucune' 
+	END as status_audience,
+	CASE 
+	    WHEN dap.session_navigateur = @session_navigateur and dap.action = 0 THEN "#407DFF" 
+	    WHEN dap.session_navigateur = @session_navigateur and dap.action = 1 THEN "#FF0018" 
+	    ELSE '#FF0018' 
+	END as color, 
+	CASE 
+	    WHEN dap.session_navigateur = @session_navigateur and dap.action = 0 THEN "#407DFF" 
+	    WHEN dap.session_navigateur = @session_navigateur and dap.action = 1 THEN "#FF0018" 
+	    ELSE '#FF0018'
+	END as color_status, 
+	false editable 
+	FROM date_heure_disponible_autorite dhda
+	JOIN date_heure_disponible dhd on dhda.id_date_heure_disponible = dhd.id
+	JOIN dm_aud_public_date_heure_dispo dapdhd on dhda.id = dapdhd.id_date_heure_disponible_autorite
+	JOIN demande_audience_public dap on dapdhd.id_aud_public = dap.id
+	WHERE 
+	dhda.id_autorite = @id_autorite
+	and dhd.date_disponible >= CURDATE()
+	and dhda.est_disponible is true
+	and dap.session_navigateur = @session_navigateur
+	and dap.action >=0 and dap.action <=1
+	GROUP BY dapdhd.id_aud_public)
+	
+	UNION
+	(SELECT 
+	dhd.id as id_date_heure_disponible,
+	dhda.id as id_date_heure_disponible_autorite,
+	CONCAT(dhd.date_disponible,'T', dhd.heure_debut) as start, 
+	CONCAT(dhd.date_disponible,'T', dhd.heure_fin) as end, 
+	dhd.heure_debut as hd,
+	dhd.heure_fin as hf,
+	'' id, 
+	dapdhd.id as id_dm_aud_public_heure_dispo,
+	dhd.date_disponible,
+	dapdhd.heure_debut, 
+	dapdhd.heure_fin, 
+	'Disponible' title, 
+	'' nom, 
+	'' prenom, 
+	'' cin, 
+	'' numero_telephone, 
+	'' email, 
+	'' status_audience, 
+	'#0AA913' color, 
+	'' color_status, 
+	false editable  
+	FROM date_heure_disponible_autorite dhda
+	JOIN date_heure_disponible dhd on dhda.id_date_heure_disponible = dhd.id 
+	LEFT JOIN pas_disponible pd on dhda.id = pd.id_date_heure_disponible_autorite
+	LEFT JOIN dm_aud_autorite_date_heure_dispo daadhd on dhda.id = daadhd.id_date_heure_disponible_autorite
+	LEFT JOIN demande_audience_autorite daa on daa.id = daadhd.id_dm_aud_autorite
+	LEFT JOIN dm_aud_public_date_heure_dispo dapdhd on dhda.id = dapdhd.id_date_heure_disponible_autorite 
+	LEFT JOIN demande_audience_public dap on dap.id = dapdhd.id_aud_public
+	LEFT JOIN entretien_demande_stage eds on dhda.id = eds.id_date_heure_disponible_autorite 
+	WHERE 
+	dhda.id_autorite = @id_autorite
+	and timestamp(CONCAT(dhd.date_disponible,' ',dhd.heure_debut)) >= (select CURRENT_TIMESTAMP())
+	and eds.id is null 
+	and daadhd.id is null 
+	and dapdhd.id is null
+	and pd.id is NULL
+	or
+	dhda.id_autorite = @id_autorite
+	and timestamp(CONCAT(dhd.date_disponible,' ',dhd.heure_debut)) >= (select CURRENT_TIMESTAMP())
+	and dap.action = 2);
+
+END
