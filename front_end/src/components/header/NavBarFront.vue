@@ -3,26 +3,25 @@
     // import HelloWorld from './components/HelloWorld.vue'
 </script>
 <template>
-    <header>
-        <div class="navbar">
-            <ul style="margin-left: 30rem;font-size: 20px;">
-                <li>
-                    <RouterLink to="/">Accueil</RouterLink>
-                </li>
-                <li>
-                    <RouterLink to="/boite-a-doleance">Boite à doléance</RouterLink>
-                </li>
-                <li>
-                    <RouterLink to="/demande-stage">Stage</RouterLink>
-                </li>
-                <li>
-                    <RouterLink to="/demande-audience/autorite">Audience</RouterLink>
-                </li>
-                <li style="margin-left: 25rem;">
-                    <RouterLink to="/login">Se connecter</RouterLink>
-                </li>
-            </ul>
-        </div>
+    <header id="header" class="header fixed-top d-flex align-items-center header-scrolled">
+
+        <ul>
+            <li>
+                <RouterLink to="/">Accueil</RouterLink>
+            </li>
+            <li>
+                <RouterLink to="/boite-a-doleance">Boite à doléance</RouterLink>
+            </li>
+            <li>
+                <RouterLink to="/demande-stage">Demande de stage</RouterLink>
+            </li>
+            <li>
+                <RouterLink to="/demande-audience/autorite">Demande d'audience</RouterLink>
+            </li>
+            <li>
+                <RouterLink to="/login">Se connecter</RouterLink>
+            </li>
+        </ul>
     </header>
 </template>
 <style>
@@ -33,6 +32,8 @@
     }
 </style>
 <style scoped>
+
+
 .navbar{
     /* color: white; */
     justify-content: center;
@@ -43,16 +44,19 @@
     align-items: center;
     justify-content: space-between;
 }
-.navbar ul {
+ul {
     margin: 0;
+    margin-left: 4rem;
     padding: 0;
     display: flex;
     list-style: none;
     align-items: center;
+    font-size: 20px;
+    /* margin-left: 30rem */
 }
-.navbar li {
+ul li {
     position: relative;
-    padding: 1rem;
+    padding: 4rem;
     align-items: center;
 }
 </style>

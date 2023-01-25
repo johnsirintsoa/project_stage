@@ -12,7 +12,8 @@ const router = createRouter({
     {
       path: '/boite-a-doleance',
       name: 'front-boite-a-doleance',
-      component: () => import('../views/frontOffice/BoiteDoleance.vue')
+      component: () => import('../views/frontOffice/BoiteDoleance2.vue')
+
     },
     {
       path: '/demande-stage',

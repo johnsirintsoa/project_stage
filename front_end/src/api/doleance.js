@@ -5,6 +5,33 @@ const url = domaine.concat("/api/doleance")
 export default class DoleanceAPI{
 
     // filtrer doleance
+
+    static async liste_public(arg){
+        const res = await axios.post(url.concat('/liste/public'), arg)
+        return res.data
+    }
+
+
+    static async ajouter_anonyme(arg){
+        const res = await axios.post(url.concat('/ajouter/anonyme'), arg)
+        return res.data
+    }
+
+    static async filtre(arg){
+        const res = await axios.post(url.concat('/filtre'), arg)
+        return res.data
+    }
+
+    static async ajouter_non_anonyme(arg){
+        const res = await axios.post(url.concat('/ajouter/non_anonyme'), arg)
+        return res.data
+    }
+
+    static async modifier_anonyme(arg){
+        const res = await axios.post(url.concat('/modifier/anonyme'), arg)
+        return res.data
+    }
+
     static async filter_doleance(date_1,date_2,direction){
         const res = await axios.get(url.concat('/filter/',date_1,'/',date_2,'/',direction))
         return res.data

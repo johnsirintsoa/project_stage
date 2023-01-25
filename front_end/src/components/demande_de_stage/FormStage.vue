@@ -6,56 +6,56 @@
         <form @submit.prevent="addDemandeStage" ref="formStage" enctype="multipart/form-data" >
             <div class="row mb-3">
             <label for="validationDefault01" class="form-label">Nom:</label>
-            <div class="col-sm-10">
+            <div class="col-sm-12">
                 <input type="text" class="form-control" id="nom" name="nom" v-model="stage.nom" required="" >
             </div>
             </div>
 
             <div class="row mb-3">
             <label for="validationDefault01" class="form-label">Prénom:</label>
-            <div class="col-sm-10">
+            <div class="col-sm-12">
                 <input type="text" class="form-control" id="prenom" name="prenom" v-model="stage.prenom" required="">
             </div>
             </div>
 
             <div class="row mb-3">
             <label for="validationDefault01" class="form-label">Téléphone:</label>
-            <div class="col-sm-10">
+            <div class="col-sm-12">
                 <input type="number" class="form-control" id="telephone" name="telephone" v-model="stage.telephone" required="">
             </div>
             </div>
 
             <div class="row mb-3">
             <label for="validationCustomUsername" class="form-label">Email</label>
-            <div class="col-sm-10">
+            <div class="col-sm-12">
                 <input type="email" class="form-control" id="email" name="email" v-model="stage.e_mail" required="">
             </div>
             </div>
 
             <div class="row mb-3">
             <label for="validationDefault01" class="form-label">CIN:</label>
-            <div class="col-sm-10">
+            <div class="col-sm-12">
                 <input type="number" class="form-control" id="cin" name="cin" v-model="stage.cin" required="">
             </div>
             </div>
 
             <div class="row mb-3">
             <label for="validationDefault01" class="form-label">Durée de stage:</label>
-            <div class="col-sm-10">
+            <div class="col-sm-12">
                 <input type="number" class="form-control" id="duree" name="duree" v-model="stage.duree" required="">
             </div>
             </div>
 
             <div class="row mb-3">
             <label for="validationDefault01" class="form-label">Votre message:</label>
-            <div class="col-sm-10">
+            <div class="col-sm-12">
                 <textarea class="form-control" style="height: 100px" id="message" name="message" v-model="stage.message" required=""></textarea>
             </div>
             </div>
 
             <div class="row mb-3">
             <label for="validationCustom02" class="form-label">Domaine:</label>
-            <div class="col-sm-10">
+            <div class="col-sm-12">
                 <select class="form-select" id="domaine" name="domaine" v-model="stage.id_domaine" aria-label="Default select example" required="">
                     <option selected disabled value="">Domaine</option>
                     <option v-for="(domaine,index)  in domaines"  :value="domaine.id" > {{domaine.nom_domaine}}</option>
@@ -68,7 +68,7 @@
 
             <div class="row mb-3">
             <label for="validationCustom02" class="form-label">Direction:</label>
-            <div class="col-sm-10">
+            <div class="col-sm-12">
                 <select class="form-select" id="autorite" name="autorite" v-model="stage.id_autorite_enfant" aria-label="Default select example" required="">
                     <option selected disabled value="">Direction</option>
                     <option v-for="(autorite,index)  in autorites"  :value="autorite.id" > {{autorite.intitule}}</option>
@@ -81,21 +81,21 @@
 
             <div class="row mb-3">
             <label for="validationDefault01" class="form-label">CV:</label>
-            <div class="col-sm-10">
+            <div class="col-sm-12">
                 <input type="file" @change="selectCV($event)" ref="file_cv" id="curriculum_vitae" name="curriculum_vitae" class="form-control"  required="">
             </div>
             </div>
             
             <div class="row mb-3">
             <label for="validationDefault01" class="form-label">Lettre de motivation:</label>
-            <div class="col-sm-10">
+            <div class="col-sm-12">
                 <input type="file" @change="selectLM($event)"  ref="file_lm" class="form-control"  id="lettre_motivation" name="lettre_motivation" required="">
             </div>
             </div>
 
             <div class="row mb-3">
             <label for="validationDefault01" class="form-label">Lettre d'introduction: </label>
-            <div class="col-sm-10">
+            <div class="col-sm-12">
                 <input type="file" @change="selectLI($event)" ref="file_li" class="form-control" id="lettre_introduction" name="lettre_introduction" required="" >
             </div>
             </div>
@@ -206,4 +206,5 @@ export default {
     opacity: 0.5;
     pointer-events: none;
 }
+
 </style>

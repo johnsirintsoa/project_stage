@@ -33,32 +33,18 @@ import { faUserSecret } from '@fortawesome/free-solid-svg-icons'
 library.add(faUserSecret)
 
 let app = null
-// sessionStorage.setItem('administrateur','138749183943')
 
-// const path = window.location.pathname.split('/')
-// // console.log(path)
-// if(path[1] == 'administrateur'){
-//     app = createApp(AppBack)
-// }
-// else if(path[1] == 'autorite'){
-//     app =  createApp(AppMiddle)
-// }
-// else{
-//     // expiration du session navigateur
-//     // start
-    const duree_expiration = 2
-    const date_expiration = new Date(new Date().getTime() + (60000 * duree_expiration))
-    // console.log("Date d'expiration "+date_expiration)
+const duree_expiration = 2
+const date_expiration = new Date(new Date().getTime() + (60000 * duree_expiration))
+// console.log("Date d'expiration "+date_expiration)
 
-    FUNC.session_navigateur(date_expiration)
-    const session = sessionStorage.getItem('session_navigateur')
-    if(session == null){
-        window.location.reload()
-    }
-//     // sessionStorage.setItem('session_navigateur','TEST123456789')
-//     // end
-//     app = createApp(AppFront)
-// }
+FUNC.session_navigateur(date_expiration)
+const session = sessionStorage.getItem('session_navigateur')
+if(session == null){
+    window.location.reload()
+}
+
+// FUNC.setGeneratedTokenIntoSession()
 
 app = createApp(App)
 // console.log(app)

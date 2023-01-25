@@ -23,7 +23,8 @@
             'update:nom',
             'update:prenom',
             'update:domaine',
-            'update:autorite'
+            'update:autorite',
+            'rechercherStages'
         ],
         async created() {
             this.domaines = await DomaineApi.allDomaine()

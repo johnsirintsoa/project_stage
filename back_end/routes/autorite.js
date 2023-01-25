@@ -62,7 +62,7 @@ router.get('/liste',async(req,res)=>{
     ae.intitule ,
     ae.intitule_code
     FROM
-    stage5.autorite_enfant ae`
+    ${db_name}.autorite_enfant ae`
     var query = db.query(sql, function(err, result) {
         if(err){
             return res.send({ err });

@@ -148,7 +148,7 @@
             </a>
           </RouterLink>
         </li>
-        <li class="nav-item">
+        <!-- <li class="nav-item">
           <RouterLink to='/administrateur/demande-audience/audience-valider' >
             <a class="nav-link collapsed" href="">
             <i class="bi bi-calendar-check"></i><span>Audience validées</span>
@@ -161,7 +161,7 @@
             <i class="bi bi-calendar-x"></i><span>Audience reportées</span>
             </a>
           </RouterLink>
-        </li>
+        </li> -->
 
 
       </ul>

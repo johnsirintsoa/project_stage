@@ -1259,3 +1259,20 @@ h6 {
   font-size: 13px;
   color: #012970;
 }
+
+.popupDoleance {
+ 
+  background: lavender;
+  padding: 10px 20px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  width: auto;
+  height: auto;
+  z-index:1 ;
+  box-shadow: 10px 10px 10px 10px;
+}
+.doleance-popup{
+  position: initial;
+}

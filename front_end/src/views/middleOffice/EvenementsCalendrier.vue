@@ -5,6 +5,15 @@
     // ChampsRecherche
 </script>
 
+<script>
+    export default {
+        async created() {
+          const profil = JSON.parse(sessionStorage.getItem('autorite'));
+          this.autorite = profil
+        },
+    }
+</script>
+
 <template>
     <HeaderNavbar/>
 
@@ -14,6 +23,12 @@
             <nav>
                 <ol class="breadcrumb">
                   <li class="breadcrumb-item"><a href="">Evènements calendrier</a></li>
+                  <li class="breadcrumb-item"><a href="">{{autorite.intitule_code}}</a></li>
+                  <li class="breadcrumb-item">
+                    <RouterLink to='/autorite/demande-audience/mes-evenements' >
+                        <a href="">Calendrier évènementiel</a>
+                    </RouterLink>
+                </li>
                   <li class="breadcrumb-item active">Liste</li>
                 </ol>
             </nav>

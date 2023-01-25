@@ -1,5 +1,6 @@
 <script setup>
     import HeaderNavbar from '../../components/header/HeaderBack.vue'
+    import Filtre from '../../components/boite_a_doleance/FiltreDoleance.vue'
 </script>
 
 <template>
@@ -7,37 +8,38 @@
     <main id="main" class="main">
         <div class="boite-a-doleance">
             <section class="section">
+                <h1>Boite à doléances</h1>
                 <div class="row">
-                    <div class="col-lg-7">
+                    <nav>
+                        <ol class="breadcrumb">
+                          <li class="breadcrumb-item"><a href="">Boite à doléances</a></li>
+                          <li class="breadcrumb-item active">Liste</li>
+                        </ol>
+                    </nav>
+                    <Filtre
+                        v-model:date1="filter.date1"
+                        v-model:date2="filter.date2"
+                        v-model:type_doleance="filter.type_doleance"
+                        v-model:nbr_filtre="filter.nbr_filtre"
+                        v-model:autorite="autorite"
+                        @rechercherDoleance="getData($event)"
+                    />
+                    <div class="col-lg-12">
                         <!-- <ListDoleance/> -->
                         <div class="card" v-for="doleance in doleances" :key="doleance._id">
                             <div class="card-body">
                                 <div class="d-flex w-100 justify-content-between">
                                     <h5 class="card-title">{{ doleance['titre'] }}</h5>
-                                    <small class="text-muted">{{ new String(doleance['date_publication']).substring(0,10) }}</small>
+                                    <small class="text-muted">{{ doleance['date_heure_publication']}}</small>
                                 </div>
                                 
                                 <!-- <small class="text-muted">{{ doleance['date_publication']}}</small> -->
-                                <h6 class="card-subtitle mb-2 text-muted">{{ doleance['direction'] }}</h6>
+                                <h6 class="card-subtitle mb-2 text-muted">{{ doleance['type_doleance'] }}</h6>
                                 {{ doleance['message']}}
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-5">
-                        <!-- <MyDoleances/> -->
-                        Direction :
-                        <select class="form-select" v-model="filter.direction" aria-label="Default select example" required>
-                            <option selected disabled value="">Direction</option>
-                            <option v-for="direction in directions" :key="direction._id"> {{direction['direction_nickname']}}</option>
-                            <!-- <option value="1">One</option>
-                            <option value="2">Two</option>
-                            <option value="3">Three</option> -->
-                        </select>
-                        De <input type="date" class="form-control" v-model="filter.date_1"> à <input type="date" v-model="filter.date_2" class="form-control">
-                        <button type="button" class="btn btn-primary position-relative" @click="filtrer()">
-                            Flitrer
-                        </button>
-                    </div>
+
                 </div>
             </section>
         </div>
@@ -54,23 +56,40 @@ export default {
             doleances:[],
             directions:[],
             filter:{
-                direction:'',
-                date_1:'',
-                date_2:new Date().toISOString().substring(0,10)
+                date1:this.date_actu(),
+                date2:this.date_actu(),
+                type_doleance: 2,
+                nbr_filtre: 0
             }
         };
     },
     async created() {
-        this.doleances = await DoleanceAPI.getAllDoleance();
+        const ses = JSON.parse(sessionStorage.getItem('administrateur'))
+        this.autorite = ses
+        const filtre = {
+            date1: this.filter.date1,
+            date2: this.filter.date2,
+            type_doleance: this.filter.type_doleance,
+            nbr_filtre: this.filter.nbr_filtre,
+            id_autorite: this.autorite.id_autorite_enfant
+        }
+        this.doleances = await DoleanceAPI.filtre(filtre)
+        // this.doleances = await DoleanceAPI.getAllDoleance();
         this.directions = await DirectionAPI.getAllDirection();
-        // console.log(this.doleances)
         // console.log(new Date().toISOString().substring(0,10))
     },
     methods:{
+        date_actu(){
+          return new Date().toJSON().slice(0, 10)
+        },
         async filtrer(){
             this.doleances = await DoleanceAPI.filter_doleance(this.filter.date_1,this.filter.date_2,this.filter.direction);
             // console.log(this.filter.date_1)
             // console.log(this.filter.date_2)
+        },
+        getData(value){
+            console.log(value)
+            this.doleances = value
         }
     }
 }

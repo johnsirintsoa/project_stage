@@ -1,4 +1,10 @@
     // date
+// const 
+
+const genererNbr = () => {
+    return  Math.floor(Math.random() * 2000000);
+}
+
 function date_in_string(date) {
     const date_splited = date.split('T')
     let mois = [
@@ -23,4 +29,4 @@ function date_in_string(date) {
     return date_string
 }
 
-module.exports = {date_in_string }
+module.exports = {date_in_string,genererNbr }

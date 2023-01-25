@@ -1,4 +1,5 @@
 // import DemandeAudiencePublic from '../api/demande_audience_public'
+import TokenApi from '../api/token'
 export default class Function{
 
     static initcap(arg){
@@ -147,4 +148,8 @@ export default class Function{
         return this.format_date_time(new Date(date.getTime() + (60000 * duree_decalage)))[1]
     }
 
+    static async setGeneratedTokenIntoSession(){
+        sessionStorage.setItem('session-token',await TokenApi.generer())
+        console.log(await TokenApi.generer())
+    }
 }
