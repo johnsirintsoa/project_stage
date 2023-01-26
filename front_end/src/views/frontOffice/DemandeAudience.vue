@@ -1,6 +1,7 @@
 
 <script setup>
   import NavBarFront from '../../components/header/NavBarFront.vue'
+  import FooterFront from '../../components/footer/FooterFront.vue'
 </script>
 
 <template>
@@ -8,55 +9,26 @@
   <NavBarFront/>
 
   <!-- Body -->
-  <main id="main-audience" class="main-audience">
+  <main id="main" class="main">
+    <h1>Demande d'audience</h1>
+    <section class="section">
       <div  class='demo-app' >
-          <!-- <div  class='demo-app-sidebar'> -->
-          <div v-if="is_clicked" class='demo-app-sidebar'>
-            <div class='demo-app-sidebar-section'>
-                <h1>Prendre un rendez-vous</h1>
-                <form class="form-audience">
-                    <ul>
-                    <li id="li_date_time_debut">De <input id="date_debut" name="date_debut" type="date" required v-model="audience.date_debut"  />  <input id="time_debut" name="time_debut" type="time" required v-model="audience.time_debut"  /></li>
-                    <li id="li_date_time_fin">à <input id="date_fin" name="date_fin" type="date" required v-model="audience.date_fin"  />  <input id="time_fin" name="time_fin" type="time" required v-model="audience.time_fin"  /></li>
-                    <li id="li_motif"> Motif <textarea id="input_motif" name="motif" required v-model="audience.motif" placeholder="Motif"></textarea></li>
-                    <li id="li_nom">Nom <input id="nom" name="nom" type="text" required v-model="audience.nom"  placeholder="Nom"/></li>
-                    <li id="li_prenom">Prénom <input id="prenom" name="prenom" type="text" required v-model="audience.prenom" placeholder="Prénom"/></li>
-                    <!-- <li id="li_prenom">Prénom</li> -->
-                    <li id="li_cin">CIN <input id="cin" name="cin" type="text" required v-model="audience.cin" placeholder="CIN"/></li>
-                    <li id="li_telephone">Tél <input id="numero_telephone" name="numero_telephone" type="text" required v-model="audience.numero_telephone" placeholder="Numéro de téléphone"/></li>
-                    <li id="li_email">email <input id="email" name="email" type="email" required v-model="audience.email" placeholder="Addresse email"/></li>
-                    <!-- <li>Type audience: <input v-model="audience.type_audience" placeholder="Type d'audience..." /></li> -->
-                    <li id="li_button_event"> 
-                      <button type="button" class="btn btn-light" @click="remove_event()">Annuler</button>
-                      <button type="button" class="btn btn-primary" @click="add_event()">Valider</button>
-                    </li>
-                    </ul>
-                </form>
-            </div>
-          <div class='demo-app-sidebar-section'>
-              <ul>
-              <li v-for='event in currentEvents' :key='event.id'>
-                  <b>{{ event.startStr }}</b>
-                  <b>{{ event.endStr }}</b>
-                  <i>{{ event.title }}</i>
-              </li>
-              </ul>
-          </div>
-          </div>
-          <div class='demo-app-main'>
-            <FullCalendar
-                ref="fullCalendar"
-                class='demo-app-calendar'
-                :options='calendarOptions'
-            >
-                <template v-slot:eventContent='arg'>
-                <b>{{ arg.timeText }}</b>
-                <i>{{ arg.event.title }}</i>
-                </template>
-            </FullCalendar>
-          </div>
+        <div class='demo-app-main'>
+          <FullCalendar
+              ref="fullCalendar"
+              class='demo-app-calendar'
+              :options='calendarOptions'
+          >
+              <template v-slot:eventContent='arg'>
+              <b>{{ arg.timeText }}</b>
+              <i>{{ arg.event.title }}</i>
+              </template>
+          </FullCalendar>
+        </div>
       </div>
+    </section>
   </main>
+  <FooterFront/>
 </template>
 
 <script>

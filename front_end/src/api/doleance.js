@@ -27,8 +27,8 @@ export default class DoleanceAPI{
         return res.data
     }
 
-    static async modifier_anonyme(arg){
-        const res = await axios.post(url.concat('/modifier/anonyme'), arg)
+    static async modifier(arg){
+        const res = await axios.post(url.concat('/modifier'), arg)
         return res.data
     }
 

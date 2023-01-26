@@ -9,15 +9,20 @@
     <!-- header -->
     <NavBarFront/>
     <!-- body -->
-    <main>
-        <div class="autorite-enfant">
-            <ul>
-                <li v-for="autorite in autorites">
-                    <!-- <RouterLink to="/demande-audience/autorite">{{autorite.intitule}}</RouterLink> -->
-                    <RouterLink :to="{ name: 'front-demande-audience-autorite-enfant', params: { id_autorite_enfant: autorite.id }}">{{autorite.intitule}}</RouterLink>
-                </li>
-            </ul>
-        </div>
+    <main id="main" class="main">
+        <section class="section"> 
+            <div class="row">
+                <div class="col-lg-12">
+                    <ul>
+                        <li v-for="autorite in autorites">
+                            <!-- <RouterLink to="/demande-audience/autorite">{{autorite.intitule}}</RouterLink> -->
+                            <RouterLink :to="{ name: 'front-demande-audience-autorite-enfant', params: { id_autorite_enfant: autorite.id }}">{{autorite.intitule}}</RouterLink>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
     </main>
 </template>
 
@@ -39,3 +44,8 @@
         }
     }
 </script>
+
+<style scoped>
+    @import url('./css/style.css');
+
+</style>
