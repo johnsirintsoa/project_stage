@@ -8,6 +8,7 @@ import NavBarFront from '../../components/header/NavBarFront.vue'
 
     <!-- header -->
     <NavBarFront/>
+    
     <!-- body -->
     <main id="main" class="main">
         <div class="demande-audience">

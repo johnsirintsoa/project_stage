@@ -21,7 +21,11 @@
                 <div v-if="showMenu" class='menu'>
                     
                     <div class='menu-item' v-for="a in autorites" @click='chooseAutorite(a)'>
-                        <RouterLink to="/demande-audience"  >{{a.intitule}}</RouterLink>
+                        <RouterLink 
+                            to="/demande-audience"
+                        >
+                            {{a.intitule}}
+                        </RouterLink>
                     </div>
                     
                 </div>
@@ -51,9 +55,7 @@
                 this.showMenu = !this.showMenu;
             },
             chooseAutorite(item) {
-                this.autorite = item
                 this.$emit('autoriteFromDropDown',item)
-                // this.toggleShow()
             }
         },
         async created() {

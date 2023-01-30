@@ -15,7 +15,7 @@
   <main id="main" class="main">
     <h1>Demande d'audience</h1>
     <section class="section">
-      <nav v-if="audience.direction !== undefined">
+      <nav v-if="audience.direction">
           <ol class="breadcrumb">
             <li class="breadcrumb-item">Calendrier disponibilité</li>
             <li class="breadcrumb-item active">{{audience.direction.intitule}}</li>
@@ -120,7 +120,6 @@
                 <div v-else>
                     <h2 class="card-title">Modifier ou suprpimer une audience</h2>
                     <form class="row g-3" @submit.prevent="" autocomplete="off">
-
                         <div class="col-md-4">
                           <div class="form-floating">
                             <input type="text" class="form-control" id="floatingName" placeholder="Votre nom" required v-model="audience.nom">
@@ -209,6 +208,7 @@
     </section>
     
   </main>
+  
   <!-- <div class="popupToShow"></div> -->
   <!-- Footer -->
   <FooterFront/>
@@ -258,19 +258,9 @@
             left: 'prev,next today',
             center: 'title',
             right: 'dayGridMonth,timeGridWeek,timeGridDay,listDay',
-            // right: 'timeGridDay,listDay',
-
-            
           },
-          // initialView: 'dayGridMonth',
           initialView: 'timeGridDay',
-          // initialEvents: INITIAL_EVENTS, // alternatively, use the `events` setting to fetch from a feed
-          // initialEvents: this.actual_events, // alternatively, use the `events` setting to fetch from a feed
-          // initialDate: '2022-10-21',
-          
           initialEvents: this.all_actual_events,
-          // editable: true,
-          // buttonIcons: false, // show the prev/next text
           weekNumbers: true,
           dayMaxEvents: true,
           dayMaxEvents: true,
@@ -282,9 +272,7 @@
           slotMinTime: '08:00:00',
           slotMaxTime: '16:00:00'
         },
-        // directions: [],
         showPopupAudience: false,
-        // autorite: null,
         audience:{
           direction: '',
           // direction: window.location.pathname.split('/')[ window.location.pathname.split('/').length-1],
@@ -305,9 +293,16 @@
     },
 
     async created(){
-      // this.directions = await this.autorites_enfant()
       this.audience.session_navigateur = JSON.parse(sessionStorage.getItem('session_navigateur')).value
     },
+
+    watch:{
+      'audience.direction': function (value){
+        // console.log(value)
+        this.setEventsAutorite(value.id)
+      }
+    },
+
     methods: {
       togglePopupAudience(){
         this.showPopupAudience = !this.showPopupAudience
@@ -315,20 +310,23 @@
       async places(arg){
         return await AutoriteApi.place_disponible(arg)
       },
+
       getAutoriteFromDropDwon(value){
         this.audience.direction = value
       },
 
       async all_actual_events(){
-        // return await actual_events()
-        return await actual_events_public(this.audience.direction)  
+        return await actual_events_public(this.audience.direction.id)  
       }, 
+
+      async setEventsAutorite(id){
+        this.calendarOptions.events = await actual_events_public(id)
+      },
+
       async autorites_enfant(){
         return await AutoriteAPI.autorite_enfant()
       },
-      handleWeekendsToggle() {
-        this.calendarOptions.weekends = !this.calendarOptions.weekends // update a property
-      },
+
       
       async promise_array_to_map(){
         const array = await this.all_actual_events()
