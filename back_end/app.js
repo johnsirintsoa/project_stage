@@ -1,5 +1,5 @@
 const express = require('express')
-const mongoose = require('mongoose')
+// const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 require('dotenv/config')
@@ -64,9 +64,9 @@ app.use('/api/token', token_route)
 
 
 // connection mongoDB
-mongoose.connect(process.env.DB_CONNECT,()=>{
-    console.log('connect to DB')
-})
+// mongoose.connect(process.env.DB_CONNECT,()=>{
+//     console.log('connect to DB')
+// })
 
 // port listener
 // Hello world

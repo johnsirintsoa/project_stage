@@ -23,6 +23,7 @@ router.post('/public/heure_disponible_autorite/jour',async(req,res) =>{
 router.post('/public/all', async(req,res) =>{
     // const date_du_jour = new Date().getFullYear()+'-'+new Date().getMonth()+'-'+new Date().getDate();
     const sql =`call liste_disponible_public('${req.body.session_navigateur}',${req.body.id_autorite})`
+    // console.log(sql)
     db.query(sql,function(err,result){
         if(err){
             return res.send({ err });
@@ -364,7 +365,8 @@ router.post('/public/supprimer/:id',async(req,res)=>{
 })
 
 router.post('/public/modifier',async(req,res)=>{
-    const sql = `call modifier_audience_public ('${req.body.nom }','${req.body.prenom }','${req.body.cin }','${req.body.numero_telephone }','${req.body.email }','${req.body.motif}',${req.body.id_audience},${req.body.id_date_heure_disponible},${req.body.id_date_heure_disponible_autorite},${req.body.id_dm_aud_public_heure_dispo})`
+    const sql = `call modifier_audience_public ('${req.body.nom }','${req.body.prenom }','${req.body.cin }','${req.body.numero_telephone }','${req.body.email }','${req.body.motif}',${req.body.id_audience},${req.body.id_date_heure_disponible_autorite},${req.body.id_dm_aud_public_heure_dispo})`
+    // console.log(sql)
     db.query(sql, (error,result) => {
         if(error){
             res.send(error)

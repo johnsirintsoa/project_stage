@@ -70,7 +70,7 @@
                     </div> -->
                 </div>
             </section>
-            <div class="doleance-popup"></div>
+            <div class="popupToShow"></div>
         </div>
     </main>  
     <FooterFront/>

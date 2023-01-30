@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router();
-const Direction = require('../models/Direction')
+// const Direction = require('../models/Direction')
 const db = require('../database').conn
 const db_name = require('../database').db_name
 
@@ -10,14 +10,14 @@ const db_name = require('../database').db_name
 
 
 // get all doleance direction from mongoDB
-router.get('/all',async (req,res)=>{
-    try {
-        const directions = await Direction.find()
-        res.json(directions)
-    } catch (err) {
-        res.json({message: err})
-    }
-})
+// router.get('/all',async (req,res)=>{
+//     try {
+//         const directions = await Direction.find()
+//         res.json(directions)
+//     } catch (err) {
+//         res.json({message: err})
+//     }
+// })
 
 // direction from MySQL
 router.get('/mysql/all',async (req,res)=>{

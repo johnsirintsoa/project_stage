@@ -3,102 +3,6 @@
 </script>
 
 <template>
-    <!-- <table class="table table-hover">
-        <tbody>
-            
-
-            <tr v-for="(doleance,i) in doleances" :key="doleance._id">
-                <td>
-                    {{doleance['titre']}}
-                    
-                </td>
-                <td><small class="text-muted">{{ doleance['direction'] }}</small></td>
-                <td>
-                    <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#exampleModal2" @click="getIndexDoleance(i)"><i class="bi bi-exclamation-triangle"></i></button>
-                    <button type="button" class="btn btn-danger" @click=removeTodo(doleance,i)><i class="bi bi-exclamation-octagon"></i></button>
-                </td>
-                <div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                    <div class="modal-content">
-                        <form class="row g-3 needs-validation" >
-                        <div class="modal-body">
-                            <div class="card mb-3">
-
-                                <div class="card-body">
-
-                                    <div class="pt-4 pb-2">
-                                        <h5 class="card-title text-center pb-0 fs-4">Modifier votre doléance</h5>
-                                    </div>
-
-                                        <div class="col-12">
-                                            <label for="validationCustom01" class="form-label">Nom</label>
-                                            <input type="text" class="form-control" id="validationCustom01" v-model="nom">
-
-                                        </div>
-
-                                        <div class="col-12">
-                                        <label for="validationCustom02" class="form-label">Prénom</label>
-                                            <input type="text" class="form-control" id="validationCustom02" v-model="prenom" name="prenom" >
-
-                                        </div>
-
-                                        <div class="col-12">
-                                        <label for="validationCustom02" class="form-label">CIN</label>
-                                            <input type="number" class="form-control" id="validationCustom02" v-model="cin" name="CIN">
-
-                                        </div>
-
-                                        <div class="col-12">
-                                        <label for="validationCustom02" class="form-label">Numéro de téléphone</label>
-                                            <input type="number" class="form-control" id="validationCustom02" v-model="numero_telephone" name="numero" >
-                                            <div class="invalid-feedback">
-                                                Entrez un votre numéro de téléphone
-                                            </div>
-                                        </div>
-
-                                        <div class="col-12">
-                                        <label for="validationCustomUsername" class="form-label">Votre adresse e-mail</label>
-                                        <div class="input-group has-validation">
-                                            <span class="input-group-text" id="inputGroupPrepend">@</span>
-                                            <input type="text" class="form-control" id="validationCustomUsername" aria-describedby="inputGroupPrepend" v-model="e_mail" name="mail" >
-                                        </div>
-                                        </div>
-
-                                        <div class="col-12">
-                                            <label for="validationCustom03" class="form-label">Titre</label>
-                                            <input type="text" class="form-control" id="validationCustom03" v-model="titre" name="titre" required>
-                                        </div>
-
-                                        <div class="col-12">
-                                            <label for="validationCustom03" class="form-label">Message</label>
-                                            <textarea class="form-control" style="height: 100px" v-model="message" name="message" required></textarea>
-                                        </div>
-
-                                        <div class="col-12">
-                                            <label for="validationCustom04" class="form-label">Direction</label>
-                                            <select class="form-select" v-model="doleance.direction" aria-label="Default select example" required>
-                                                <option selected disabled value="">Choose...</option>
-                                                <option v-for="direction in directions" :key="direction._id"> {{direction['direction_nickname']}}</option>
-
-                                            </select>
-                                        </div>
-                                    
-
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" >Close</button>
-                        <button class="btn btn-primary" type="submit" @click="updateDoleance(doleance._id)">Modifier</button>
-                        </div>
-                        </form>
-                    </div>
-                    </div>
-                </div>
-            </tr>
-        </tbody>
-    </table> -->
-  
     <table class="table table-hover">
         <thead>
           <tr>
@@ -117,14 +21,14 @@
                 <td>{{doleance.intitule_code}}</td>
                 <td>
                     <button type="button" class="btn btn-warning" @click="modifier(doleance)"><i class="ri-edit-2-line"></i></button>
-                    <button type="button" class="btn btn-danger" @click="detail(doleance)"><i class="ri-delete-bin-6-fill"></i></button>
+                    <button type="button" class="btn btn-danger" @click="supprimer(doleance)"><i class="ri-delete-bin-6-fill"></i></button>
                 </td>
             </tr>
         </tbody>
     </table> 
 
-    <teleport to=".doleance-popup">
-        <div v-if="showPopup" class="popupDoleance">
+    <teleport to=".popupToShow">
+        <div v-if="showPopup" class="popupShow">
             <p  @click="togglePopup"><i class="ri-close-line" style="font-size: 35px;position: fixed; margin-left: 88%;"></i></p>
             <div class="card-body">
                 <h2 class="card-title">Modifier votre doléance</h2>
@@ -138,6 +42,7 @@
 </template>
 <script>
 import DoleanceAPI from '../../api/doleance';
+import Swal from 'sweetalert2'
 export default {
     props:{
         autorite:Object
@@ -161,8 +66,8 @@ export default {
     async created() {
         const session = JSON.parse(sessionStorage.getItem('session_navigateur')).value
         const arg = {
-            session_navigateur : 'session948.1640243568852',
-            // session_navigateur : session,
+            // session_navigateur : 'session701.2027086467638',
+            session_navigateur : session,
 
         }
         this.doleances = await DoleanceAPI.liste_public(arg);
@@ -180,9 +85,26 @@ export default {
         getDataPopup(value){
             this.showPopup = value
         },
-        async delete(value){
-            console.log('A supprimer')
-            console.log(value)
+        async supprimer(value){
+            Swal.fire({
+                title: 'Supprimer doléance',
+                text: "Voulez vous vraiment supprimer votre doléance?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'Annuler',
+                confirmButtonText: 'Supprimer!'
+            }).then(async (result) => {
+                const response = await DoleanceAPI.supprimer(value.id)
+                if(response.message){
+                    Swal.fire('Doléance supprimée',`${response.message}`,'success')
+                }
+                // 
+            }).catch((err) => {
+                Swal.fire('error',`Vous avez une error`,'error')
+                console.log(err)
+            });
         },
 
         async removeTodo(doleance, i) {

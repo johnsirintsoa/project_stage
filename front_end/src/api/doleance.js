@@ -31,6 +31,10 @@ export default class DoleanceAPI{
         const res = await axios.post(url.concat('/modifier'), arg)
         return res.data
     }
+    static async supprimer(id){
+        const res = await axios.get(url.concat('/supprimer/',id))
+        return res.data
+    }
 
     static async filter_doleance(date_1,date_2,direction){
         const res = await axios.get(url.concat('/filter/',date_1,'/',date_2,'/',direction))

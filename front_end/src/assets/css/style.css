@@ -1260,7 +1260,7 @@ h6 {
   color: #012970;
 }
 
-.popupDoleance {
+.popupShow {
  
   background: lavender;
   padding: 10px 20px;
@@ -1270,9 +1270,9 @@ h6 {
   transform: translateX(-50%) translateY(-50%);
   width: auto;
   height: auto;
-  z-index:999;
+  z-index:996;
   box-shadow: 10px 10px 10px 10px;
 }
-.doleance-popup{
+.popupToShow{
   position: initial;
 }
