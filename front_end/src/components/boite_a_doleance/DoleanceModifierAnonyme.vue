@@ -3,7 +3,13 @@
   <form class="row g-3" @submit.prevent="modifier" autocomplete="off">
     <div class="col-md-12">
       <div class="form-floating">
-        <input type="text" class="form-control" id="floatingName" placeholder="Titre" v-model="titre" required>
+        <input 
+          type="text" 
+          class="form-control" 
+          id="floatingName" 
+          placeholder="Titre" 
+          v-model="titre" 
+          required>
         <label for="floatingName">Titre</label>
       </div>
     </div>

@@ -12,7 +12,7 @@ const router = createRouter({
     {
       path: '/boite-a-doleance',
       name: 'front-boite-a-doleance',
-      component: () => import('../views/frontOffice/BoiteDoleance2.vue')
+      component: () => import('../views/frontOffice/BoiteDoleance.vue')
 
     },
     {
@@ -122,22 +122,7 @@ const router = createRouter({
       // component: () => import('../views/backOffice/MesAudiences.vue')
       component: () => import('../views/backOffice/MesAudiences.vue')
     },
-    {
-      path: '/administrateur/demande-audience/audience-valider',
-      name: 'back-demande-audience-valider',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/backOffice/DemandeAudienceValider.vue')
-    },
-    {
-      path: '/administrateur/demande-audience/audience-reporter',
-      name: 'back-demande-audience-reporter',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/backOffice/DemandeAudienceReporter.vue')
-    },
+
 
     /** Administrateur routes */
 
@@ -208,19 +193,7 @@ const router = createRouter({
       // which is lazy-loaded when the route is visited.
       component: () => import('../views/middleOffice/MesAudiences.vue')
     },
-    {
-      path: '/autorite/demande-audience/audience-valider',
-      name: 'middle-demande-audience-valider',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/middleOffice/DemandeAudienceValider.vue')
-    },
-    {
-      path: '/autorite/demande-audience/audience-reporter',
-      name: 'middle-demande-audience-reporter',
-      component: () => import('../views/middleOffice/DemandeAudienceReporter.vue')
-    },
+
     {
       path: '/autorite/evenements-calendrier',
       name: 'middle-liste-evenements',

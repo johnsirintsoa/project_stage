@@ -39,6 +39,7 @@
             <!-- <button class="btn btn-secondary" @click="togglePopup">Annuler</button> -->
         </div>
     </teleport>
+    
 </template>
 <script>
 import DoleanceAPI from '../../api/doleance';
@@ -49,10 +50,10 @@ export default {
     },
     data(){
         return {
-            // doleanceMofifierForm: null,
-            showPopup:false,
-            doleances:[],
-            directions:[],
+            showPopup: false,
+            doleances: [],
+            directions: [],
+
             nom: "",
             prenom: "",
             e_mail: "",
@@ -68,10 +69,8 @@ export default {
         const arg = {
             // session_navigateur : 'session701.2027086467638',
             session_navigateur : session,
-
         }
-        this.doleances = await DoleanceAPI.liste_public(arg);
-        // console.log(this.doleances)
+        this.doleances = await DoleanceAPI.liste_public(arg)
     },
     methods:{
         async modifier(value){
@@ -107,41 +106,8 @@ export default {
             });
         },
 
-        async removeTodo(doleance, i) {
-            await DoleanceAPI.deleteDoleance(doleance._id)
-            this.doleances.splice(i, 1);
-        },
-        async getIndexDoleance(i){
-            this.nom = this.doleances[i].nom,
-            this.prenom = this.doleances[i].prenom,
-            this.e_mail = this.doleances[i].e_mail,
-            this.cin = this.doleances[i].cin,
-            this.numero_telephone = this.doleances[i].numero_telephone,
-            this.titre = this.doleances[i].titre,
-            this.message = this.doleances[i].message,
-            this.direction = this.doleances[i].direction
-        },
-        async updateDoleance(doleance_id){
-            const doleance ={
-                nom : this.nom,
-                prenom : this.prenom,
-                e_mail : this.e_mail,
-                cin : this.cin,
-                numero_telephone : this.numero_telephone,
-                titre : this.titre,
-                message : this.message,
-                direction : this.direction
-            }
-            await DoleanceAPI.updateDoleance(doleance_id,doleance)
-            this.nom ="",
-            this.prenom ="",
-            this.e_mail ="",
-            this.cin ="",
-            this.numero_telephone =""
-            this.titre ="",
-            this.message ="",
-            this.direction =""
-        }
+
+
     }
 }
 </script>

@@ -1,34 +1,41 @@
+<script setup>
+    import InputAutorite from './ChoisirAutorite.vue'
+</script>
+
 <template>
     
-    <nav v-if="autorite !== undefined">
+    <!-- <nav v-if="audience.autorite !== ''">
         <ol class="breadcrumb">
           <li class="breadcrumb-item">Calendrier disponibilité</li>
-          <li class="breadcrumb-item active">{{autorite.intitule}}</li>
+          <li class="breadcrumb-item active">{{audience.autorite.intitule}}</li>
         </ol>
-    </nav>
+    </nav> -->
 
     <div  class='demo-app' >
         <div class='demo-app-main'>
-          <FullCalendar
-              ref="fullCalendar"
-              class='demo-app-calendar'
-              :options='calendarOptions'
-          >
-              <template v-slot:eventContent='arg'>
-              <b>{{ arg.timeText }}</b>
-              <i>{{ arg.event.title }}</i>
-              </template>
-          </FullCalendar>
+            <InputAutorite
+                @events="getEvents($event)"
+                @autorite="getAutorite($event)"
+            />
+            <FullCalendar
+                ref="fullCalendar"
+                class='demo-app-calendar'
+                :options='calendarOptions'
+            >
+                <template v-slot:eventContent='arg'>
+                <b>{{ arg.timeText }}</b>
+                <i>{{ arg.event.title }}</i>
+                </template>
+            </FullCalendar>
         </div>
     </div>
-
+    <div class="popupToShow"></div>
     <teleport to=".popupToShow">
         <div v-if="showPopupAudience" class="popupShow">
             <p  @click="togglePopupAudience"><i class="ri-close-line" style="font-size: 35px;position: fixed; margin-left: 88%;"></i></p>
             <div class="card-body">
                 
-                <!-- Formulaire ajouter/modifier/supprimer -->
-                <!-- Ajouter -->
+
                  <div v-if="audience.id === '' ">
                     <h2 class="card-title">Ajouter une audience</h2>
                     <form class="row g-3" @submit.prevent="ajouter" autocomplete="off">
@@ -99,7 +106,6 @@
                     </form> 
                  </div>  
                  
-                <!-- Modifier & Supprimer -->
                 <div v-else>
                     <h2 class="card-title">Modifier ou suprpimer une audience</h2>
                     <form class="row g-3" @submit.prevent="" autocomplete="off">
@@ -211,7 +217,11 @@
             FullCalendar
         },
         props:{
-            autorite: Object,
+            // autorite: Object,
+            // interface: {
+            //     type: String,
+            //     required: true
+            // },
         },
         data() {
             return {
@@ -230,7 +240,7 @@
                         right: 'dayGridMonth,timeGridWeek,timeGridDay,listDay',
                     },
                     initialView: 'timeGridDay',
-                    initialEvents: this.all_actual_events,
+                    // initialEvents: this.all_actual_events,
                     weekNumbers: true,
                     dayMaxEvents: true,
                     dayMaxEvents: true,
@@ -245,6 +255,7 @@
                 showPopupAudience: false,
                 audience: {
                     // direction: this.autorite,
+                    autorite:'',
                     nom:'',
                     prenom:'',  
                     motif:'',
@@ -266,6 +277,16 @@
             async places(arg){
                 return await AutoriteApi.place_disponible(arg)
             },
+
+            getEvents(value){
+              // console.log(value)
+                this.calendarOptions.events = value
+            },
+
+            getAutorite(value){
+              this.audience.autorite = value
+            },
+
 
             async ajouter(){
                 const audience = {
@@ -324,18 +345,18 @@
             togglePopupAudience(){
                 this.showPopupAudience = !this.showPopupAudience
             },
-            async all_actual_events(){
-                // console.log('Ato amin actual events venant initial')
-                const data = actual_events_public(this.autorite.id)
-                data.then((result) => {
-                    this.calendarOptions.events = result
-                }).catch((err) => {
-                    console.log(err)
-                })
-            },
-            async all_actual_events(){
-                return await actual_events_public(this.autorite.id)  
-            }, 
+            // async all_actual_events(){
+            //     // console.log('Ato amin actual events venant initial')
+            //     const data = actual_events_public(this.autorite.id)
+            //     data.then((result) => {
+            //         this.calendarOptions.events = result
+            //     }).catch((err) => {
+            //         console.log(err)
+            //     })
+            // },
+            // async all_actual_events(){
+            //     return await actual_events_public(this.autorite.id)  
+            // }, 
 
             async handleEventClick(event){
                 // Show the popup
@@ -360,7 +381,7 @@
                 // console.log(event.event.extendedProps) 
                 this.audience.places_disponible =  await this.places({
                     id_date_heure_disponible_autorite: this.audience.id_date_heure_disponible_autorite,
-                    id_autorite: this.autorite.id 
+                    id_autorite: this.audience.autorite.id 
                 })
                 // console.log(this.audience.places_disponible)
                 this.audience.actual_place = this.audience.places_disponible[0]
@@ -368,21 +389,7 @@
             }
 
         },
-        watch:{
-            autorite: async function (autorite){
-                console.log('Autorite changed...')
-                // console.log('the new ',autorite)
-                // console.log('the old ',oldAutorite)
-                if(autorite !== undefined) {
-                    await this.all_actual_events()
-                }
-                else{
-                    await this.all_actual_events()
-                }
-            },
 
-            
-        },
         async created() {
             this.audience.session_navigateur = JSON.parse(sessionStorage.getItem('session_navigateur')).value
         },

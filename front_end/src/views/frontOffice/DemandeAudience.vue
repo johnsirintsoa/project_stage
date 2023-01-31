@@ -2,7 +2,7 @@
 <script setup>
   import NavBarFront from '../../components/header/NavBarFront.vue'
   import FooterFront from '../../components/footer/FooterFront.vue'
-  // import Calendrier from '../../components/demande_audience/CalendrierDisponibleAutorite.vue'
+  import Calendrier from '../../components/demande_audience/CalendrierDisponibleAutorite.vue'
 </script>
 
 <template>
@@ -15,14 +15,16 @@
   <main id="main" class="main">
     <h1>Demande d'audience</h1>
     <section class="section">
-      <nav v-if="audience.direction">
+      
+      <Calendrier/>
+      <!-- <nav v-if="audience.direction">
           <ol class="breadcrumb">
             <li class="breadcrumb-item">Calendrier disponibilité</li>
             <li class="breadcrumb-item active">{{audience.direction.intitule}}</li>
           </ol>
-      </nav>
+      </nav> -->
 
-      <div  class='demo-app' >
+      <!-- <div  class='demo-app' >
         <div class='demo-app-main'>
           <FullCalendar
               ref="fullCalendar"
@@ -35,17 +37,15 @@
             </template>
           </FullCalendar>
         </div>
-      </div>  
+      </div>   -->
       
       <!-- <div class="popupToShow"></div> -->
 
-      <teleport to=".popupToShow">
+      <!-- <teleport to=".popupToShow">
         <div v-if="showPopupAudience" class="popupShow">
             <p  @click="togglePopupAudience"><i class="ri-close-line" style="font-size: 35px;position: fixed; margin-left: 88%;"></i></p>
             <div class="card-body">
-                
-                <!-- Formulaire ajouter/modifier/supprimer -->
-                <!-- Ajouter -->
+
                  <div v-if="audience.id === '' ">
                     <h2 class="card-title">Ajouter une audience</h2>
                     <form class="row g-3" @submit.prevent="ajouter" autocomplete="off">
@@ -116,7 +116,6 @@
                     </form> 
                  </div>  
                  
-                <!-- Modifier & Supprimer -->
                 <div v-else>
                     <h2 class="card-title">Modifier ou suprpimer une audience</h2>
                     <form class="row g-3" @submit.prevent="" autocomplete="off">
@@ -203,10 +202,10 @@
                 </div>
             </div>
         </div>
-      </teleport>   
+      </teleport>    -->
 
     </section>
-    
+    <!-- <div class="popupToShow"></div> -->
   </main>
   
   <!-- <div class="popupToShow"></div> -->

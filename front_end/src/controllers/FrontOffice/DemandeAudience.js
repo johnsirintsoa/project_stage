@@ -23,7 +23,7 @@ export const actual_events_public = async (id_autorite_enfant) => {
   const audience_public_mois = {
     id_autorite: id_autorite_enfant,
     session_navigateur: JSON.parse(sessionStorage.getItem('session_navigateur')).value
-    // session_navigateur: 'session816.4775646328426'
+    // session_navigateur: 'session450.4483452423846'
   }
   const audience = DemandeAudiencePublic.liste(audience_public_mois)
   try {

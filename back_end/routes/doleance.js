@@ -42,7 +42,16 @@ router.post('/ajouter/non_anonyme', async(req,res) =>{
 
 router.post('/modifier', async(req,res) =>{
     const sql = `
-    UPDATE doleance SET titre = '${req.body.titre}',message = '${req.body.message}',id_autorite = ${req.body.id_autorite} where id = ${req.body.id};
+    UPDATE doleance SET 
+    titre = '${req.body.titre}',
+    message = '${req.body.message}',
+    id_autorite = ${req.body.id_autorite} 
+    nom = '${req.body.nom}',
+    prenom = '${req.body.prenom}',
+    numero_telephone = '${req.body.numero_telephone}',
+    cin = '${req.body.cin}',
+    e_mail = '${req.body.nom}',
+    where id = ${req.body.id};
     `
     // res.json(sql)
     db.query(sql,async (error,result) => {
