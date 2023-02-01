@@ -1,8 +1,3 @@
-<script setup>
-    import ModfierAnonyme from './DoleanceModifierAnonyme.vue'
-    import ModifierNonAnonyme from './DoleanceModifierNonAnonyme.vue'
-</script>
-
 <script>
     import AutoriteApi from '../../api/autorite'
     import DoleanceAPI from '../../api/doleance';
@@ -62,6 +57,7 @@
                     id_autorite: this.id_autorite,
                     nom: this.nom,
                     prenom: this.prenom,
+                    numero_telephone: this.numero_telephone,
                     cin: this.cin,
                     e_mail: this.e_mail
 

@@ -51,11 +51,6 @@ const router = createRouter({
 
     /** Administrateur routes */
     {
-      path: '/administrateur/login',
-      name: 'loginAdmin',
-      component: () => import('../views/backOffice/LoginView.vue')
-    },
-    {
       path: '/administrateur/',
       name: 'back-home',
       component: () => import('../views/backOffice/HomeView.vue')
@@ -132,11 +127,7 @@ const router = createRouter({
       name: 'middle-login',
       component: () => import('../views/LoginView.vue')
     },
-    {
-      path: '/inscription',
-      name: 'middle-register',
-      component: () => import('../views/Inscription.vue')
-    },
+
     {
       path: '/autorite',
       name: 'middle-home',

@@ -21,7 +21,17 @@
             <div class="row mb-3">
             <label for="validationDefault01" class="form-label">Téléphone:</label>
             <div class="col-sm-12">
-                <input type="number" class="form-control" id="telephone" name="telephone" v-model="stage.telephone" required="">
+                <input 
+                    type="tel" 
+                    class="form-control" 
+                    id="telephone" 
+                    name="telephone" 
+                    v-model="stage.telephone" 
+                    required
+                    pattern="[0-9]{3}[0-9]{2}[0-9]{3}[0-9]{2}"
+                    minlength="10"
+                    maxlength="10"
+                >
             </div>
             </div>
 
@@ -35,14 +45,24 @@
             <div class="row mb-3">
             <label for="validationDefault01" class="form-label">CIN:</label>
             <div class="col-sm-12">
-                <input type="number" class="form-control" id="cin" name="cin" v-model="stage.cin" required="">
+                <input 
+                    type="text"
+                    class="form-control"
+                    id="cin"
+                    name="cin"
+                    v-model="stage.cin"
+                    pattern="[0-9]{12}"
+                    minlength="12"
+                    maxlength="12"
+                    required  
+                >
             </div>
             </div>
 
             <div class="row mb-3">
             <label for="validationDefault01" class="form-label">Durée de stage:</label>
             <div class="col-sm-12">
-                <input type="number" class="form-control" id="duree" name="duree" v-model="stage.duree" required="">
+                <input type="number" class="form-control" id="duree" name="duree" v-model="stage.duree" required>
             </div>
             </div>
 
@@ -200,7 +220,9 @@ export default {
         }
     },
 }
+
 </script>
+
 <style>
 .disabled {
     opacity: 0.5;

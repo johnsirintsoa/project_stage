@@ -2,6 +2,7 @@
   import { RouterLink, RouterView } from 'vue-router'
   // import HelloWorld from './components/HelloWorld.vue'
 </script>
+
 <template>
     <main>
         <div class="container">
@@ -31,18 +32,6 @@
                         novalidate=""
                         @submit.prevent="register"
                       >
-                        <!-- <div class="col-12">
-                          <label for="yourName" class="form-label">Nom</label>
-                          <input type="text" name="name" class="form-control" id="yourName" required="">
-                          <div class="invalid-feedback">Please, enter your name!</div>
-                        </div>
-    
-                        <div class="col-12">
-                          <label for="yourEmail" class="form-label">Your Email</label>
-                          <input type="email" name="email" class="form-control" id="yourEmail" required="">
-                          <div class="invalid-feedback">Please enter a valid Email adddress!</div>
-                        </div> -->
-    
                         <div class="col-12">
                           <label for="yourUsername" class="form-label">Nom d'utilisateur</label>
                           <div class="input-group has-validation">
@@ -97,6 +86,7 @@
         </div>
       </main>
 </template>
+
 <script>
 
 import AutoriteController from '../controllers/AutoriteController'
@@ -127,56 +117,52 @@ export default{
 
         },
         async register(){
-            const validForm = this.nom_utilisateur && this.mot_de_passe && this.autorite
-            // const invalidForm = !this.nom_utilisateur || !this.mot_de_passe || !this.autorite
-            // if(invalidForm){
-            //     this.errors = ''
-            //     this.errors = 'Veuillez remplir le formulaire'
-            // }
-            if(!this.nom_utilisateur){
-                this.errors = ''
-                this.errors = `Veuillez entrer votre nom d'utilisateur`;
-            }
-            else if(!this.mot_de_passe){
-                this.errors = '' 
-                this.errors = `Veuillez entrer votre mot de passe`;
-            }
-            else if (!this.autorite){
-                this.errors = '' 
-                this.errors = `Veuillez choisir un autorité`; 
-            }
+          const validForm = this.nom_utilisateur && this.mot_de_passe && this.autorite
 
-            else{
-                if(this.est_administrateur == true){
-                    const infos = {
-                        nom_utilisateur: this.nom_utilisateur,
-                        mot_de_passe: this.mot_de_passe,
-                        id_autorite_enfant: this.autorite.id,
-                        est_administrateur: 1
-                    }
-                    const response = await ProfilApi.inscription(infos)
-                    Swal.fire(
-                        'Inscription avec succès',
-                        `${response.message}`,
-                        'success'
-                    )
-                }
-                else{
-                    const infos = {
-                        nom_utilisateur: this.nom_utilisateur,
-                        mot_de_passe: this.mot_de_passe,
-                        id_autorite_enfant: this.autorite.id,
-                        est_administrateur: 0
-                    }
-                    const response = await ProfilApi.inscription(infos)
-                    Swal.fire(
-                        'Inscription avec succès',
-                        `${response.message}.Veuillez vous connecter après avoir crée un compte.`,
-                        'success'
-                    )
-                }
-                console.log('Register')
-            }
+          if(!this.nom_utilisateur){
+              this.errors = ''
+              this.errors = `Veuillez entrer votre nom d'utilisateur`;
+          }
+          else if(!this.mot_de_passe){
+              this.errors = '' 
+              this.errors = `Veuillez entrer votre mot de passe`;
+          }
+          else if (!this.autorite){
+              this.errors = '' 
+              this.errors = `Veuillez choisir un autorité`; 
+          }
+
+          else{
+              if(this.est_administrateur == true){
+                  const infos = {
+                      nom_utilisateur: this.nom_utilisateur,
+                      mot_de_passe: this.mot_de_passe,
+                      id_autorite_enfant: this.autorite.id,
+                      est_administrateur: 1
+                  }
+                  const response = await ProfilApi.inscription(infos)
+                  Swal.fire(
+                      'Inscription avec succès',
+                      `${response.message}`,
+                      'success'
+                  )
+              }
+              else{
+                  const infos = {
+                      nom_utilisateur: this.nom_utilisateur,
+                      mot_de_passe: this.mot_de_passe,
+                      id_autorite_enfant: this.autorite.id,
+                      est_administrateur: 0
+                  }
+                  const response = await ProfilApi.inscription(infos)
+                  Swal.fire(
+                      'Inscription avec succès',
+                      `${response.message}.Veuillez vous connecter après avoir crée un compte.`,
+                      'success'
+                  )
+              }
+              console.log('Register')
+          }
         }
     },
 

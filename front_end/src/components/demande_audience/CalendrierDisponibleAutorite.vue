@@ -3,13 +3,6 @@
 </script>
 
 <template>
-    
-    <!-- <nav v-if="audience.autorite !== ''">
-        <ol class="breadcrumb">
-          <li class="breadcrumb-item">Calendrier disponibilité</li>
-          <li class="breadcrumb-item active">{{audience.autorite.intitule}}</li>
-        </ol>
-    </nav> -->
 
     <div  class='demo-app' >
         <div class='demo-app-main'>
@@ -29,7 +22,9 @@
             </FullCalendar>
         </div>
     </div>
+
     <div class="popupToShow"></div>
+    
     <teleport to=".popupToShow">
         <div v-if="showPopupAudience" class="popupShow">
             <p  @click="togglePopupAudience"><i class="ri-close-line" style="font-size: 35px;position: fixed; margin-left: 88%;"></i></p>
@@ -215,13 +210,6 @@
     export default{
         components: {
             FullCalendar
-        },
-        props:{
-            // autorite: Object,
-            // interface: {
-            //     type: String,
-            //     required: true
-            // },
         },
         data() {
             return {

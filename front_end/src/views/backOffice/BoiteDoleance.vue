@@ -5,6 +5,7 @@
 
 <template>
     <HeaderNavbar/>
+    
     <main id="main" class="main">
         <div class="boite-a-doleance">
             <section class="section">
@@ -34,7 +35,14 @@
                                 </div>
                                 
                                 <!-- <small class="text-muted">{{ doleance['date_publication']}}</small> -->
-                                <h6 class="card-subtitle mb-2 text-muted">{{ doleance['type_doleance'] }}</h6>
+                                <div v-if="doleance['type_doleance'] === 'Non anonyme'">
+                                    <h6 class="card-subtitle mb-2 text-muted">{{ doleance['nom'] }} {{doleance['prenom']}}</h6>
+                                    <!-- <h7 class="card-subtitle mb-2 text-muted">{{ doleance['cin'] }} </h7> -->
+
+                                </div>
+                                <div v-else-if="doleance['type_doleance'] === 'Anonyme'">
+                                    <h6 class="card-subtitle mb-2 text-muted">{{ doleance['type_doleance'] }}</h6>
+                                </div>
                                 {{ doleance['message']}}
                             </div>
                         </div>
@@ -48,7 +56,7 @@
 </template>
 <script>
 import DoleanceAPI from '../../api/doleance';
-import DirectionAPI from '../../api/direction';
+// import DirectionAPI from '../../api/direction';
 
 export default {
     data(){
@@ -58,8 +66,8 @@ export default {
             filter:{
                 date1:this.date_actu(),
                 date2:this.date_actu(),
-                type_doleance: 2,
-                nbr_filtre: 0
+                type_doleance: '2',
+                nbr_filtre: '0'
             }
         };
     },
@@ -75,7 +83,7 @@ export default {
         }
         this.doleances = await DoleanceAPI.filtre(filtre)
         // this.doleances = await DoleanceAPI.getAllDoleance();
-        this.directions = await DirectionAPI.getAllDirection();
+        // this.directions = await DirectionAPI.getAllDirection();
         // console.log(new Date().toISOString().substring(0,10))
     },
     methods:{

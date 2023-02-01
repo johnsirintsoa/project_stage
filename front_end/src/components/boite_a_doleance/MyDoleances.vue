@@ -36,14 +36,13 @@
                     v-model:doleance="doleanceObj"
                 />
             </div>
-            <!-- <button class="btn btn-secondary" @click="togglePopup">Annuler</button> -->
         </div>
     </teleport>
     
 </template>
 <script>
 import DoleanceAPI from '../../api/doleance';
-import Swal from 'sweetalert2'
+import Swal from 'sweetalert'
 export default {
     props:{
         autorite:Object
