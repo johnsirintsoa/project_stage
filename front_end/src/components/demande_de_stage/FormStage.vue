@@ -168,7 +168,7 @@ export default {
     async created() {
         // console.log(this.stage)
         this.domaines = await DomaineAPI.allDomaine();
-        this.autorites = await AutoriteApi.autorite_enfant()
+        this.autorites = await AutoriteApi.liste()
         // console.log(this.domaines.)
     },
     methods: {
