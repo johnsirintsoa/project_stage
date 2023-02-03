@@ -163,6 +163,8 @@ export default {
         <i class="bi bi-check-circle"></i>
     </button>
 
+    
+
     <!-- <div v-if="stage.id">
     <RouterLink :to="{name: 'back-detail-demande-stage',params:{id_demande_stage:stage.id}}">         
         <button type="button" class="btn btn-info">

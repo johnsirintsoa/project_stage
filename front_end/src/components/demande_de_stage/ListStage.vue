@@ -11,7 +11,6 @@ import DemandeStageAPI from '../../api/demande_stage';
 import StageController from '../../controllers/StageController'
 import EntretienStage from '../../api/entretien_stage';
 
-
 </script>
 <template>
     <nav>
@@ -58,7 +57,8 @@ import EntretienStage from '../../api/entretien_stage';
                 <td>{{stage['duree']}}</td>
                 <td>
                     <span class="badge bg-danger" v-if="stage['demande_status'] == 'Validé'">{{stage['demande_status']}}</span>
-                    <span class="badge bg-success" v-else >{{stage['demande_status']}}</span>
+                    <span class="badge bg-success" v-else-if="stage['demande_status'] == 'Non validé'" >{{stage['demande_status']}}</span>
+                    <span class="badge bg-dark" v-else-if="stage['demande_status'] == 'Reporté'" >{{stage['demande_status']}}</span>
                 </td>
                 <td>
                     <PopupEntretien 
@@ -92,8 +92,8 @@ export default {
 
     data() {
         return {
-            date1:this.date_actu(),
-            date2:this.date_actu(),
+            date1: this.date_actu(),
+            date2: this.date_actu(),
             nom:'',
             prenom:'',
             domaine: null,

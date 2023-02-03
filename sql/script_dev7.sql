@@ -4039,3 +4039,469 @@ INSERT INTO stage5.profil( mot_de_passe, nom_utilisateur, id, est_administrateur
 INSERT INTO stage5.profil( mot_de_passe, nom_utilisateur, id, est_administrateur, id_autorite_enfant ) VALUES ( 'tale414', 'tale414@gmail.com', 5, 0, 2);
 INSERT INTO stage5.profil( mot_de_passe, nom_utilisateur, id, est_administrateur, id_autorite_enfant ) VALUES ( 'jean', 'jean', 6, 1, 3);
 INSERT INTO stage5.profil( mot_de_passe, nom_utilisateur, id, est_administrateur, id_autorite_enfant ) VALUES ( 'taleDGI', 'taleDGI', 7, 0, 3);
+
+
+
+-- Filtre stage 
+-- v2
+CREATE  PROCEDURE `filtre_stage`(IN date_debut date, IN date_fin date, IN nom varchar(30), IN prenom VARCHAR(30), in id_domaine INT, IN id_autorite INT)
+BEGIN
+	set @date1 = date_debut;
+	set @date2 = date_fin;
+
+	IF nom = '' and prenom != '' and id_domaine IS NOT NULL THEN 
+		select 
+		ds.id,
+	    ds.nom,
+	    ds.prenom,
+	    ds.duree, 
+	    ds.e_mail as addresse_electronique,
+	    d.nom_domaine,
+		ds.date_creation,
+		CASE
+			WHEN ds.action = 0 THEN 'Non validé'
+			WHEN ds.action = 1 THEN 'Validé'
+			WHEN ds.action = 2 THEN 'Reporté'
+			ELSE 'Aucune'
+		END as demande_status,
+	    eds.id as id_entretien_stage,
+	    dhda.id as id_date_heure_disponible_autorite
+		from demande_stage ds
+		JOIN domaine d on ds.id_domaine = d.id
+	    LEFT JOIN entretien_demande_stage eds on ds.id = eds.id_demande_stage
+	    LEFT JOIN date_heure_disponible_autorite dhda on eds.id_date_heure_disponible_autorite = dhda.id
+		WHERE 
+		ds.date_creation between @date1 and @date2
+		and ds.id_autorite_enfant = id_autorite
+		and ds.id_domaine = id_domaine
+		and ds.prenom LIKE concat('%',prenom,'%')
+		GROUP BY ds.id order by ds.date_creation desc;
+
+	ELSEIF nom != '' and prenom = '' and id_domaine IS NOT NULL THEN
+		select 
+		ds.id,
+	    ds.nom,
+	    ds.prenom,
+	    ds.duree, 
+	    ds.e_mail as addresse_electronique,
+	    d.nom_domaine, 
+		ds.date_creation,
+		CASE
+			WHEN ds.action = 0 THEN 'Non validé'
+			WHEN ds.action = 1 THEN 'Validé'
+			WHEN ds.action = 2 THEN 'Reporté'
+			ELSE 'Aucune'
+		END as demande_status,
+	    eds.id as id_entretien_stage,
+	    dhda.id as id_date_heure_disponible_autorite
+		from demande_stage ds
+		JOIN domaine d on ds.id_domaine = d.id
+	    LEFT JOIN entretien_demande_stage eds on ds.id = eds.id_demande_stage
+	    LEFT JOIN date_heure_disponible_autorite dhda on eds.id_date_heure_disponible_autorite = dhda.id
+		WHERE 
+		ds.date_creation between @date1 and @date2
+		and ds.id_autorite_enfant = id_autorite
+		and ds.id_domaine = id_domaine
+		and ds.nom LIKE concat('%',nom,'%')
+		GROUP BY ds.id order by ds.date_creation desc;
+
+	elseif  nom != '' and prenom != '' and id_domaine IS NULL THEN
+		select 
+		ds.id,
+	    ds.nom,
+	    ds.prenom,
+	    ds.duree, 
+	    ds.e_mail as addresse_electronique,
+	    d.nom_domaine,
+		ds.date_creation,
+		CASE
+			WHEN ds.action = 0 THEN 'Non validé'
+			WHEN ds.action = 1 THEN 'Validé'
+			WHEN ds.action = 2 THEN 'Reporté'
+			ELSE 'Aucune'
+		END as demande_status,
+	    eds.id as id_entretien_stage,
+	    dhda.id as id_date_heure_disponible_autorite
+		from demande_stage ds
+		JOIN domaine d on ds.id_domaine = d.id
+	    LEFT JOIN entretien_demande_stage eds on ds.id = eds.id_demande_stage
+	    LEFT JOIN date_heure_disponible_autorite dhda on eds.id_date_heure_disponible_autorite = dhda.id
+		WHERE 
+		ds.date_creation between @date1 and @date2
+		and ds.id_autorite_enfant = id_autorite
+		and ds.nom LIKE concat('%',nom,'%')
+		and ds.prenom LIKE concat('%',prenom,'%')
+		GROUP BY ds.id order by ds.date_creation desc; 
+	elseif nom != '' and prenom != '' and id_domaine IS NOT NULL THEN
+		select 
+		ds.id,
+	    ds.nom,
+	    ds.prenom,
+	    ds.duree, 
+	    ds.e_mail as addresse_electronique,
+	    d.nom_domaine,
+		ds.date_creation,
+		CASE
+			WHEN ds.action = 0 THEN 'Non validé'
+			WHEN ds.action = 1 THEN 'Validé'
+			WHEN ds.action = 2 THEN 'Reporté'
+			ELSE 'Aucune'
+		END as demande_status,
+	    eds.id as id_entretien_stage,
+	    dhda.id as id_date_heure_disponible_autorite
+		from demande_stage ds
+		JOIN domaine d on ds.id_domaine = d.id
+	    LEFT JOIN entretien_demande_stage eds on ds.id = eds.id_demande_stage
+	    LEFT JOIN date_heure_disponible_autorite dhda on eds.id_date_heure_disponible_autorite = dhda.id
+		WHERE 
+		ds.date_creation between @date1 and @date2
+		and ds.id_autorite_enfant = id_autorite
+		and ds.id_domaine = id_domaine
+		and ds.nom LIKE concat('%',nom,'%')
+		and ds.prenom LIKE concat('%',prenom,'%')
+		GROUP BY ds.id order by ds.date_creation desc;  
+	elseif nom = '' and prenom = '' and id_domaine IS NOT NULL THEN
+		select 
+		ds.id,
+	    ds.nom,
+	    ds.prenom,
+	    ds.duree, 
+	    ds.e_mail as addresse_electronique,
+	    d.nom_domaine,
+		ds.date_creation,
+		CASE
+			WHEN ds.action = 0 THEN 'Non validé'
+			WHEN ds.action = 1 THEN 'Validé'
+			WHEN ds.action = 2 THEN 'Reporté'
+			ELSE 'Aucune'
+		END as demande_status,
+	    eds.id as id_entretien_stage,
+	    dhda.id as id_date_heure_disponible_autorite
+		from demande_stage ds
+		JOIN domaine d on ds.id_domaine = d.id
+	    LEFT JOIN entretien_demande_stage eds on ds.id = eds.id_demande_stage
+	    LEFT JOIN date_heure_disponible_autorite dhda on eds.id_date_heure_disponible_autorite = dhda.id
+		WHERE 
+		ds.date_creation between @date1 and @date2
+		and ds.id_autorite_enfant = id_autorite
+		and ds.id_domaine = id_domaine
+		GROUP BY ds.id order by ds.date_creation desc;  
+	else 
+		select 
+		ds.id,
+		ds.nom,
+		ds.prenom,
+		ds.duree, 
+		ds.e_mail as addresse_electronique,
+		d.nom_domaine,
+		ds.date_creation,
+		CASE
+			WHEN ds.action = 0 THEN 'Non validé'
+			WHEN ds.action = 1 THEN 'Validé'
+			WHEN ds.action = 2 THEN 'Reporté'
+			ELSE 'Aucune'
+		END as demande_status,
+		eds.id as id_entretien_stage,
+		dhda.id as id_date_heure_disponible_autorite
+		from demande_stage ds
+		JOIN domaine d on ds.id_domaine = d.id
+		LEFT JOIN entretien_demande_stage eds on ds.id = eds.id_demande_stage
+		LEFT JOIN date_heure_disponible_autorite dhda on eds.id_date_heure_disponible_autorite = dhda.id
+		WHERE 
+		ds.date_creation between @date1 and @date2
+		and ds.id_autorite_enfant = id_autorite
+		GROUP BY ds.id order by ds.date_creation desc;
+	END IF;
+END
+
+
+-- Calendrier evenementiel 
+-- v2
+CREATE  PROCEDURE `calendrier_autorite`(IN id_autorite INT,IN est_admin boolean)
+BEGIN
+	set @is_admin = est_admin;
+	set @id_autorite = id_autorite;
+
+	SELECT 
+	daadhd.id as id,
+	dhda.id as id_date_heure_disponible_autorite,
+	dhd.id as id_date_heure_disponible,
+
+	ae.id as id_autorite,
+	ae.intitule as intitule_autorite,
+	ae.intitule_code as intitule_code_autorite,
+	ae.porte as porte_autorite,
+	ae.addresse_electronique as addresse_electronique_autorite,
+	ae.mot_de_passe_mailing as mot_de_passe_mailing_autorite,
+
+	aes.id as id_autorite_sender,
+	aes.intitule as intitule_autorite_sender,
+	aes.intitule_code as intitule_code_sender,
+	aes.addresse_electronique as addresse_electronique_autorite_sender,
+
+	CONCAT(daadhd.date_debut,'T',daadhd.heure_debut) as start,
+	CONCAT(daadhd.date_fin,'T',daadhd.heure_fin) as end,
+	daa.id as id_evenement,
+	'Audience autorité' as title,
+	daa.motif as motif,
+	daadhd.date_debut as date_debut,
+	daadhd.date_fin as date_fin,
+	daadhd.heure_debut as heure_debut,
+	daadhd.heure_fin as heure_fin,
+	CASE
+		WHEN daa.action = 0 THEN 'Non validé'
+		WHEN daa.action = 1 THEN 'Validé'
+		ELSE 'Reporté'
+	END AS status_audience,
+	'' nom,
+	'' prenom,
+	'' numero_telephone,
+	'' cin,
+	'' addresse_electronique_sender_externe,
+	'#FF0000' color,
+	CASE
+		WHEN daa.action = 0 THEN '#35AF11'
+		WHEN daa.action = 1 THEN '#E61212'
+		ELSE '#000000'
+	END AS color_status,
+	'Autorité' type_audience,
+	CASE 
+		WHEN @is_admin = 1 and daa.action = 1 or @is_admin = 1 and daa.action >= 1 THEN false
+		ELSE true
+	END AS editable
+	FROM
+	dm_aud_autorite_date_heure_dispo daadhd
+	LEFT join date_heure_disponible_autorite dhda on daadhd.id_date_heure_disponible_autorite = dhda.id
+	LEFT JOIN date_heure_disponible dhd on dhda.id_date_heure_disponible = dhd.id 
+	LEFT JOIN autorite_enfant ae on dhda.id_autorite = ae.id
+	LEFT JOIN demande_audience_autorite daa on daadhd.id_dm_aud_autorite = daa.id
+	LEFT join autorite_enfant aes on daa.id_autorite_enfant_sender = aes.id	
+	where dhd.date_disponible >= CURDATE() and dhda.id_autorite = @id_autorite
+	GROUP by daadhd.id_dm_aud_autorite
+
+	UNION
+	
+	-- Demande audience public
+	SELECT 
+	dapdhd.id,
+	dhda.id as id_date_heure_disponible_autorite,
+	dhd.id as id_date_heure_disponible,
+
+	ae.id as id_autorite,
+	ae.intitule as intitule_autorite,
+	ae.intitule_code as intitule_code_autorite,
+	ae.porte as porte_autorite,
+	ae.addresse_electronique as addresse_electronique_autorite,
+	ae.mot_de_passe_mailing as mot_de_passe_mailing_autorite,
+
+	'' id_autorite_sender,
+	'' intitule_autorite_sender,
+	'' intitule_code_sender,
+	'' addresse_electronique_autorite_sender,
+
+	CONCAT(dapdhd.date_debut,'T',dapdhd.heure_debut) as start,
+	CONCAT(dapdhd.date_fin,'T',dapdhd.heure_fin) as end,
+	dap.id as id_evenement,
+	'Audience public' as title,
+	dap.motif as motif,
+	dapdhd.date_debut as date_debut,
+	dapdhd.date_fin as date_fin,
+	dapdhd.heure_debut as heure_debut,
+	dapdhd.heure_fin as heure_fin,
+	CASE
+		WHEN dap.action = 0 THEN 'Non validé'
+		WHEN dap.action = 1 THEN 'Validé'
+		ELSE 'Reporté'
+	END AS status_audience,
+	dap.nom as nom,
+	dap.prenom as prenom,
+	dap.numero_telephone as numero_telephone,
+	dap.cin as cin,
+	dap.email as addresse_electronique_sender_externe,
+	'#008000' color,
+	CASE
+		WHEN dap.action = 0 THEN '#35AF11'
+		WHEN dap.action = 1 THEN '#E61212'
+		ELSE '#000000'
+	END AS color_status,
+	'Public' type_audience,
+	CASE 
+		WHEN @is_admin = 1 and dap.action = 1 or @is_admin = 1 and dap.action >= 1 THEN false
+		ELSE true
+	END AS editable
+	FROM stage_temp.dm_aud_public_date_heure_dispo dapdhd
+	LEFT JOIN date_heure_disponible_autorite dhda on dapdhd.id_date_heure_disponible_autorite = dhda.id
+	LEFT JOIN date_heure_disponible dhd on dhda.id_date_heure_disponible = dhd.id
+	LEFT JOIN autorite_enfant ae on dhda.id_autorite = ae.id
+	LEFT JOIN demande_audience_public dap on dapdhd.id_aud_public = dap.id
+	WHERE dhd.date_disponible >= CURDATE() and dhda.id_autorite = @id_autorite
+
+
+	GROUP by dapdhd.id_aud_public
+	
+	UNION
+	
+	-- Demande entretien stage
+
+	select
+	eds.id,
+	dhda.id as id_date_heure_disponible_autorite,
+	dhd.id as id_date_heure_disponible,
+
+	ae.id as id_autorite,
+	ae.intitule as intitule_autorite,
+	ae.intitule_code as intitule_code_autorite,
+	ae.porte as porte_autorite,
+	ae.addresse_electronique as addresse_electronique_autorite,
+	ae.mot_de_passe_mailing as mot_de_passe_mailing_autorite,
+
+	'' id_autorite_sender,
+	'' intitule_autorite_sender,
+	'' intitule_code_sender,
+	'' addresse_electronique_autorite_sender,
+
+	CONCAT(eds.date_debut,'T',eds.heure_debut) as start,
+	CONCAT(eds.date_fin,'T',eds.heure_fin) as end,
+	ds.id as id_evenement,
+	'Entretien' as title,
+	CONCAT('Entretien de ',ds.nom,' ',ds.prenom) as motif,
+	eds.date_debut as date_debut,
+	eds.date_fin as date_fin,
+	eds.heure_debut as heure_debut,
+	eds.heure_fin as heure_fin,
+	'Entretien' status_audience,
+	ds.nom as nom,
+	ds.prenom as prenom,
+	ds.telephone as numero_telephone,
+	ds.cin as cin,
+	ds.e_mail as addresse_electronique_sender_externe,
+	'#FFA500' color,
+	CASE
+		WHEN ds.action = 0 THEN '#35AF11'
+		WHEN ds.action = 1 THEN '#E61212'
+		WHEN ds.action = 2 THEN '#000000'
+		ELSE '#FFFFFF'
+	END AS color_status,
+	'Entretien' type_audience,
+	CASE 
+		WHEN @is_admin = 1 THEN false
+		ELSE true
+	END AS editable
+	from entretien_demande_stage eds
+	JOIN date_heure_disponible_autorite dhda on eds.id_date_heure_disponible_autorite = dhda.id
+	JOIN date_heure_disponible dhd on dhda.id_date_heure_disponible = dhd.id
+	JOIN demande_stage ds on eds.id_demande_stage = ds.id
+	JOIN autorite_enfant ae on dhda.id_autorite = ae.id
+	where dhd.date_disponible >= CURDATE() and dhda.id_autorite = @id_autorite
+	group by ds.id
+
+	UNION
+	
+	select
+	pd.id as id,
+	'' id_date_heure_disponible_autorite,
+	'' id_date_heure_disponible,
+
+	ae.id as id_autorite,
+	ae.intitule as intitule_autorite,
+	ae.intitule_code as intitule_code_autorite,
+	ae.porte as porte_autorite,
+	ae.addresse_electronique as addresse_electronique_autorite,
+	ae.mot_de_passe_mailing as mot_de_passe_mailing_autorite,
+
+	'' id_autorite_sender,
+	'' intitule_autorite_sender,
+	'' intitule_code_sender,
+	'' addresse_electronique_autorite_sender,
+
+	CONCAT(dhnda.date_debut,'T',dhnda.heure_debut) as start,
+	CONCAT(dhnda.date_fin,'T',dhnda.heure_fin) as end,
+	dhnda.id id_evenement,
+	'Pas disponible' as title,
+	'' motif,
+	dhnda.date_debut as date_debut,
+	dhnda.date_fin as date_fin,
+	dhnda.heure_debut as heure_debut,
+	dhnda.heure_fin as heure_fin,
+	'Pas disponible' status_audience,
+	'' nom,
+	'' prenom,
+	'' numero_telephone,
+	'' cin,
+	'' addresse_electronique_sender_externe,
+	'#000000' color,
+	'' color_status,
+	'Pas disponible' type_audience,
+	CASE 
+		WHEN @is_admin = 1 THEN false
+		ELSE true
+	END AS editable
+	from date_heure_non_disponible_autorite dhnda
+	JOIN pas_disponible pd on dhnda.id = pd.id_date_heure_non_disponible_autorite
+	JOIN date_heure_disponible_autorite dhda on pd.id_date_heure_disponible_autorite = dhda.id
+	JOIN date_heure_disponible dhd on dhda.id_date_heure_disponible = dhd.id
+	JOIN autorite_enfant ae on dhda.id_autorite = ae.id
+	where dhd.date_disponible >= CURDATE() and dhda.id_autorite = @id_autorite
+	GROUP by dhnda.id;
+END
+
+-- Modifier entretien stage
+-- v2
+CREATE  PROCEDURE `modifier_entretien_stage_calendrier`(IN id_entretien_stage int,IN id_demande_stage INT,IN date_debut date,IN date_fin date,IN heure_debut time,in heure_fin time, IN id_autorite INT)
+BEGIN
+	set @id_autorite = id_autorite;
+	
+	SET @hd = SUBTIME(heure_debut,"-00:01:00");
+	SET @hf = SUBTIME(heure_fin,"00:01:00");
+
+	set @timestamp_debut = timestamp(concat(date_debut,' ',SUBTIME(@hd,"03:00:00")));
+	set @timestamp_fin = timestamp(concat(date_fin,' ',SUBTIME(@hf,"03:00:00")));
+
+	set @nbr_rows = ( 
+	SELECT 
+	count(dhda.id)
+	FROM
+	date_heure_disponible_autorite dhda 
+	JOIN date_heure_disponible dhd on dhda.id_date_heure_disponible = dhd.id
+	where 
+	dhda.id_autorite = @id_autorite
+	and dhda.est_disponible = 1
+	and 
+	(timestamp(CONCAT(dhd.date_disponible,' ',SUBTIME(dhd.heure_debut,"03:00:00"))) BETWEEN @timestamp_debut and @timestamp_fin
+	OR timestamp(CONCAT(dhd.date_disponible,' ',SUBTIME(dhd.heure_fin,"03:00:00"))) BETWEEN @timestamp_debut and @timestamp_fin)
+	OR
+	dhda.id_autorite = @id_autorite
+	and dhda.est_disponible = 1
+	and 
+	(@timestamp_debut BETWEEN timestamp(CONCAT(dhd.date_disponible,' ',SUBTIME(dhd.heure_debut,"03:00:00"))) and timestamp(CONCAT(dhd.date_disponible,' ',SUBTIME(dhd.heure_fin,"03:00:00")))
+	and @timestamp_fin BETWEEN timestamp(CONCAT(dhd.date_disponible,' ',SUBTIME(dhd.heure_debut,"03:00:00"))) and timestamp(CONCAT(dhd.date_disponible,' ',SUBTIME(dhd.heure_fin,"03:00:00")))));
+
+	-- SCENE 1
+	IF date_debut = date_fin THEN
+		IF @nbr_rows = 0 THEN 
+			DELETE FROM entretien_demande_stage where id_demande_stage = id_demande_stage;
+			CALL `ajouter_date_heure_disponible_autorite`(@id_autorite,'08:00:00' , '16:00:00' , date_debut );
+			CALL `ajouter_entretien_stage_date_heure_dispo_entre_deux_date`( id_demande_stage ,date_debut , date_fin , heure_debut ,heure_fin ,@id_autorite );
+		ELSEIF @nbr_rows = 1 THEN
+			set @id_date_heure_dispo_autorite = (
+				SELECT 
+				dhda.id 
+				from date_heure_disponible_autorite dhda 
+				JOIN date_heure_disponible dhd on dhda.id_date_heure_disponible = dhd.id
+				where dhda.id_autorite = @id_autorite 
+				and dhd.date_disponible = date_debut
+				and heure_debut between dhd.heure_debut and dhd.heure_fin
+				and heure_fin between dhd.heure_debut and dhd.heure_fin
+			);
+			UPDATE entretien_demande_stage set id_date_heure_disponible_autorite = @id_date_heure_dispo_autorite, date_debut = date_debut, date_fin = date_fin, heure_debut = heure_debut, heure_fin = heure_fin where id = id_entretien_stage;
+		ELSEIF @nbr_rows > 1 THEN
+			DELETE FROM entretien_demande_stage where id_demande_stage = id_demande_stage;
+			CALL `ajouter_entretien_stage_date_heure_dispo_entre_deux_date`( id_demande_stage ,date_debut , date_fin , heure_debut ,heure_fin ,@id_autorite );
+		END IF;
+	ELSEIF date_debut < date_fin THEN
+		DELETE FROM entretien_demande_stage where id_demande_stage = id_demande_stage;
+		CALL `verifier_date_heure_dispo_entre_deux_dates`(date_debut, date_fin, @id_autorite);
+		CALL `ajouter_entretien_stage_date_heure_dispo_entre_deux_date`( id_demande_stage ,date_debut , date_fin , heure_debut ,heure_fin ,@id_autorite );
+	END IF;
+	UPDATE demande_stage set action = 1 where id = id_audience;
+END

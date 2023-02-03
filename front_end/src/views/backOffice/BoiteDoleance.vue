@@ -54,12 +54,11 @@ export default {
     data(){
         return {
             doleances:[],
-            directions:[],
             filter:{
                 date1:this.date_actu(),
                 date2:this.date_actu(),
-                type_doleance: 2,
-                nbr_filtre: 0
+                type_doleance: '2',
+                nbr_filtre: '0'
             }
         };
     },
@@ -75,7 +74,7 @@ export default {
         }
         this.doleances = await DoleanceAPI.filtre(filtre)
         // this.doleances = await DoleanceAPI.getAllDoleance();
-        this.directions = await DirectionAPI.getAllDirection();
+        // this.directions = await DirectionAPI.getAllDirection();
         // console.log(new Date().toISOString().substring(0,10))
     },
     methods:{

@@ -5,6 +5,7 @@ import HeaderNavbar from '../../components/header/HeaderBack.vue'
 
 <template>
     <HeaderNavbar/>
+
     <main id="main" class="main">
         <div class="demande-stage">
             <h1>Demandes de stages</h1>
@@ -13,4 +14,5 @@ import HeaderNavbar from '../../components/header/HeaderBack.vue'
             </div>
         </div><!-- End #main -->
     </main>
+
 </template> 
