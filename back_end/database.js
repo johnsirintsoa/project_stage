@@ -1,6 +1,8 @@
 var mysql = require('mysql');
 
 const db_name = 'stage5'
+const rohi_db = 'rohi'
+
 var conn = mysql.createConnection({
   host: 'localhost', // Replace with your host name
   user: 'root',      // Replace with your database username
@@ -11,6 +13,22 @@ var conn = mysql.createConnection({
 }); 
 conn.connect(function(err) {
   if (err) throw err;
-  console.log('Database is connected successfully !');
+  console.log('Database is connected successfully in ',db_name);
 });
-module.exports = {conn,db_name};
+
+
+var rohi = mysql.createConnection({
+  host: 'localhost', // Replace with your host name
+  user: 'root',      // Replace with your database username
+  password: 'root',      // Replace with your database password
+  // database: 'stage', // // Replace with your database Name
+  database: rohi_db, // // Replace with your database Name
+  timezone: 'EAT'
+}); 
+rohi.connect(function(err) {
+  if (err) throw err;
+  console.log('Database is connected successfully in ',rohi_db);
+});
+
+module.exports = {conn,db_name,rohi};
+

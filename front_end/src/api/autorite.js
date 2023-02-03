@@ -4,6 +4,12 @@ const url = domaine.concat("/api/autorite")
 
 export default class AutoriteAPI{
 
+    static async getStructure(path){
+        const res = await axios.post(url.concat('/structure'),path)
+        return res.data
+    }
+
+
     static async calendrier(id_autorite){
         const res = await axios.post(url.concat('/calendrier'),id_autorite)
         return res.data       

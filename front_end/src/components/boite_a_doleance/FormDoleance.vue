@@ -20,15 +20,42 @@
                 <label for="floatingTextarea">Message</label>
               </div>
             </div>
+
+
+
             <div class="col-md-12">
               <div class="form-floating mb-3">
-                <select class="form-select" id="floatingSelect" aria-label="Autorité" v-model="doleance.autorite" required>
-                  <option selected="" value="">Choisir autorité</option>
-                  <option v-for="a in directions" :value="a.id" > {{a.intitule}}</option>
-                </select>
+                <input type="text" class="form-control" id="floatingName" placeholder="Titre" @input="setDoleanceAutorite(doleance.autorite)" v-model="doleance.autorite"  required>
                 <label for="floatingSelect">Autorité</label>
               </div>
+            </div>              
+
+            <div class="col-md-12" 
+              v-if="isSearching"
+              :style="{ marginTop: marginTop + 'px' }"
+            >
+
+              <div class="card">
+                <div class="card-body">
+                  <div class="list-group">
+                    
+                    <a href="#" class="list-group-item list-group-item-action"
+                      v-for="item in directions" :key="item.child_id" :value="item.child_libelle" @click="getAutorite(item)"
+                    >
+                      <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">{{item.child_libelle}}</h5>
+                      </div>
+                      <p class="mb-1">{{item.path}}</p>
+                      <small class="text-muted">{{item.sigle}}</small>
+                    </a>
+
+                    
+                  </div>
+                </div>
+              </div>
+
             </div>
+
             <div class="text-center">
               <button type="submit" class="btn btn-primary">Ajouter</button>
               <button type="reset" class="btn btn-secondary" @click="reset">Annuler</button>
@@ -44,18 +71,21 @@
                   <label for="floatingName">Titre</label>
                 </div>
             </div>
+
             <div class="col-md-4">
               <div class="form-floating">
                 <input type="text" class="form-control" id="floatingName" placeholder="Votre nom" v-model="doleance.nom" required>
                 <label for="floatingName">Votre nom</label>
               </div>
             </div>
+
             <div class="col-md-4">
                 <div class="form-floating">
                   <input type="text" class="form-control" id="floatingName" placeholder="Votre prénom" v-model="doleance.prenom" required>
                   <label for="floatingName">Votre prénom</label>
                 </div>
-              </div>
+            </div>
+
             <div class="col-md-4">
                 <div class="form-floating">
                     <input 
@@ -71,12 +101,14 @@
                     <label for="floatingName">CIN</label>
                 </div>
             </div>
+
             <div class="col-md-6">
               <div class="form-floating">
                 <input type="email" class="form-control" id="floatingEmail" placeholder="Votre mail" v-model="doleance.e_mail" required>
                 <label for="floatingEmail">Votre mail</label>
               </div>
             </div>
+
             <div class="col-md-6">
               <div class="form-floating">
                 <input 
@@ -93,25 +125,52 @@
                 <label for="floatingPassword">Numéro téléphone</label>
               </div>
             </div>
+
             <div class="col-12">
               <div class="form-floating">
                 <textarea required class="form-control" placeholder="Message" id="floatingTextarea" style="height: 100px;" v-model="doleance.message" ></textarea>
                 <label for="floatingTextarea">Message</label>
               </div>
             </div>
+
             <div class="col-md-12">
               <div class="form-floating mb-3">
-                <select class="form-select" id="floatingSelect" aria-label="Autorité" v-model="doleance.autorite" required>
-                  <option selected="" value="">Choisir autorité</option>
-                  <option v-for="a in directions" :value="a.id" > {{a.intitule}}</option>
-                </select>
+                <input type="text" class="form-control" id="floatingName" placeholder="Titre" @input="setDoleanceAutorite(doleance.autorite)" v-model="doleance.autorite"  required>
                 <label for="floatingSelect">Autorité</label>
               </div>
+            </div>  
+
+            <div class="col-md-12" 
+              v-if="isSearching"
+              :style="{ marginTop: marginTop + 'px' }"
+            >
+
+              <div class="card">
+                <div class="card-body">
+                  <div class="list-group">
+                    
+                    <a href="#" class="list-group-item list-group-item-action"
+                      v-for="item in directions" :key="item.child_id" :value="item.child_libelle"  @click="getAutorite(item)"
+                    >
+                      <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">{{item.child_libelle}}</h5>
+                      </div>
+                      <p class="mb-1">{{item.path}}</p>
+                      <small class="text-muted">{{item.sigle}}</small>
+                    </a>
+
+                    
+                  </div>
+                </div>
+              </div>
+
             </div>
+
             <div class="text-center">
               <button type="submit" class="btn btn-primary">Ajouter</button>
               <button type="reset" class="btn btn-secondary" @click="reset">Annuler</button>
             </div>
+
         </form> 
     </div>
 
@@ -124,8 +183,10 @@
     export default {
         data() {
             return {
+                marginTop: -16,
                 currentForm: 'AnonymusForm',
-                directions:'',
+                isSearching: false,
+                directions: 'Aucun résultats',
                 doleance:{
                     autorite:'',
                     titre:'',
@@ -133,31 +194,62 @@
                 }
             }
         },
-        computed:{
-            async autoritesComputed(){
-                return await AutoriteApi.liste()
+
+        watch:{
+          'doleance.autorite': function (input){
+            // c
+            if(input){
+              this.getAutorites(input)
+              // this.setAutorite(input)
+              // console.log(await AutoriteApi.getStructure({path: input}))
+              // this.directions = await AutoriteApi.getStructure({path: input})
             }
+          }
         },
         
         methods: {
-            async setAutorites(){
-                this.directions = await this.autoritesComputed
-            },
 
-            async ajouter() {
-                if(this.currentForm === 'AnonymusForm'){
-                    const data = await DoleanceApi.ajouter_anonyme(this.doleance)
-                    if(data.message){
-                        swal('Doléance ajoutée',`${data.message}`,'success')
-                    }
+          async setDoleanceAutorite(value){
+            
+            this.isSearching = true
+            if(value === ''){
+              this.isSearching = false
+            }
+          },
+
+          async getAutorites(input){
+            try {
+              this.directions = await AutoriteApi.getStructure({path: input})
+            } catch (error) {
+              console.log(error)
+            } 
+          },
+
+          // async setAutorite(value){
+          //   this.dataDoleance.autorite = value
+          // },
+
+          async getAutorite(value){
+            this.doleance.autorite = value.child_libelle
+            this.doleance.id_autorite = value.child_id
+            this.doleance.sigle = value.sigle
+            this.isSearching = false
+          },
+
+          async ajouter() {
+            if(this.currentForm === 'AnonymusForm'){
+                const data = await DoleanceApi.ajouter_anonyme(this.doleance)
+                if(data.message){
+                    swal('Doléance ajoutée',`${data.message}`,'success')
                 }
-                else if(this.currentForm === 'NonAnonymusForm'){
-                    const data = await DoleanceApi.ajouter_non_anonyme(this.doleance)
-                    if(data.message){
-                        swal('Doléance ajoutée',`${data.message}`,'success')
-                    }
+            }
+            else if(this.currentForm === 'NonAnonymusForm'){
+                const data = await DoleanceApi.ajouter_non_anonyme(this.doleance)
+                if(data.message){
+                    swal('Doléance ajoutée',`${data.message}`,'success')
                 }
-            },
+            }
+          },
 
             reset(){
                 this.doleance.titre = ''
@@ -174,7 +266,7 @@
         },
 
         async created() {
-            this.setAutorites()
+            // this.setAutorites()
             this.doleance.session_navigateur = JSON.parse(sessionStorage.getItem('session_navigateur')).value
         },
     }

@@ -11,7 +11,7 @@ CREATE TABLE stage5.date_heure_disponible (
 	heure_fin            TIME  NOT NULL    ,
 	date_disponible      DATE  NOT NULL    ,
 	duree                TIME  NOT NULL    
- ) ENGINE=InnoDB AUTO_INCREMENT=510 DEFAULT CHARSET=latin1;
+ ) ENGINE=InnoDB AUTO_INCREMENT=542 DEFAULT CHARSET=latin1;
 
 CREATE TABLE stage5.date_heure_non_disponible_autorite ( 
 	id                   INT  NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
@@ -20,7 +20,7 @@ CREATE TABLE stage5.date_heure_non_disponible_autorite (
 	heure_debut          TIME  NOT NULL    ,
 	heure_fin            TIME  NOT NULL    ,
 	id_autorite          INT  NOT NULL    
- ) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=latin1;
+ ) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=latin1;
 
 CREATE TABLE stage5.demande_audience_public ( 
 	motif                VARCHAR(200)  NOT NULL    ,
@@ -32,7 +32,7 @@ CREATE TABLE stage5.demande_audience_public (
 	nom                  VARCHAR(30)  NOT NULL    ,
 	prenom               VARCHAR(30)  NOT NULL    ,
 	session_navigateur   VARCHAR(100)  NOT NULL    
- ) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=latin1;
+ ) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=latin1;
 
 CREATE TABLE stage5.domaine ( 
 	id                   INT  NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
@@ -66,7 +66,7 @@ CREATE TABLE stage5.date_heure_disponible_autorite (
 	est_disponible       TINYINT  NOT NULL DEFAULT ('1')   ,
 	CONSTRAINT fk_date_disponible_autorite_id_autorite FOREIGN KEY ( id_autorite ) REFERENCES stage5.autorite_enfant( id ) ON DELETE SET NULL ON UPDATE NO ACTION,
 	CONSTRAINT fk_date_disponible_autorite_id_date_disponible FOREIGN KEY ( id_date_heure_disponible ) REFERENCES stage5.date_heure_disponible( id ) ON DELETE SET NULL ON UPDATE NO ACTION
- ) ENGINE=InnoDB AUTO_INCREMENT=911 DEFAULT CHARSET=latin1;
+ ) ENGINE=InnoDB AUTO_INCREMENT=1005 DEFAULT CHARSET=latin1;
 
 CREATE TABLE stage5.demande_audience_autorite ( 
 	id                   INT  NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
@@ -94,7 +94,7 @@ CREATE TABLE stage5.demande_stage (
 	action               INT  NOT NULL DEFAULT ('0')   ,
 	CONSTRAINT fk_demande_stage_id_autorite_enfant FOREIGN KEY ( id_autorite_enfant ) REFERENCES stage5.autorite_enfant( id ) ON DELETE SET NULL ON UPDATE NO ACTION,
 	CONSTRAINT fk_demande_stage_id_domaine FOREIGN KEY ( id_domaine ) REFERENCES stage5.domaine( id ) ON DELETE SET NULL ON UPDATE NO ACTION
- ) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=latin1;
+ ) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=latin1;
 
 CREATE TABLE stage5.dm_aud_autorite_date_heure_dispo ( 
 	id                   INT  NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
@@ -118,7 +118,7 @@ CREATE TABLE stage5.dm_aud_public_date_heure_dispo (
 	date_fin             DATE      ,
 	CONSTRAINT fk_dm_aud_public_date_heure_dispo FOREIGN KEY ( id_aud_public ) REFERENCES stage5.demande_audience_public( id ) ON DELETE CASCADE ON UPDATE NO ACTION,
 	CONSTRAINT fk_dm_aud_public_date_heure_dispo_id_date_heure_disponible FOREIGN KEY ( id_date_heure_disponible_autorite ) REFERENCES stage5.date_heure_disponible_autorite( id ) ON DELETE SET NULL ON UPDATE NO ACTION
- ) ENGINE=InnoDB AUTO_INCREMENT=515 DEFAULT CHARSET=latin1;
+ ) ENGINE=InnoDB AUTO_INCREMENT=531 DEFAULT CHARSET=latin1;
 
 CREATE TABLE stage5.doleance ( 
 	id                   INT  NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
@@ -133,9 +133,8 @@ CREATE TABLE stage5.doleance (
 	date_publication     DATE  NOT NULL    ,
 	id_autorite          INT      ,
 	heure_publication    TIME  NOT NULL    ,
-	message2             TEXT  NOT NULL    ,
 	CONSTRAINT fk_doleance_autorite_enfant FOREIGN KEY ( id_autorite ) REFERENCES stage5.autorite_enfant( id ) ON DELETE SET NULL ON UPDATE SET NULL
- ) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=latin1;
+ ) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=latin1;
 
 CREATE TABLE stage5.entretien_demande_stage ( 
 	heure_debut          TIME  NOT NULL    ,
@@ -147,7 +146,7 @@ CREATE TABLE stage5.entretien_demande_stage (
 	date_fin             DATE      ,
 	CONSTRAINT fk_entretien_demande_stage_id_date_heure_disponible_autorite FOREIGN KEY ( id_date_heure_disponible_autorite ) REFERENCES stage5.date_heure_disponible_autorite( id ) ON DELETE SET NULL ON UPDATE NO ACTION,
 	CONSTRAINT fk_entretien_demande_stage_id_demande_stage FOREIGN KEY ( id_demande_stage ) REFERENCES stage5.demande_stage( id ) ON DELETE SET NULL ON UPDATE NO ACTION
- ) ENGINE=InnoDB AUTO_INCREMENT=124 DEFAULT CHARSET=latin1;
+ ) ENGINE=InnoDB AUTO_INCREMENT=125 DEFAULT CHARSET=latin1;
 
 CREATE TABLE stage5.pas_disponible ( 
 	id                   INT  NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
@@ -155,7 +154,7 @@ CREATE TABLE stage5.pas_disponible (
 	id_date_heure_non_disponible_autorite INT  NOT NULL    ,
 	CONSTRAINT fk_pas_disponible_id_date_heure_disponible_autorite FOREIGN KEY ( id_date_heure_disponible_autorite ) REFERENCES stage5.date_heure_disponible_autorite( id ) ON DELETE CASCADE ON UPDATE CASCADE,
 	CONSTRAINT fk_pas_disponible_id_date_heure_non_disponible_autorite FOREIGN KEY ( id_date_heure_non_disponible_autorite ) REFERENCES stage5.date_heure_non_disponible_autorite( id ) ON DELETE CASCADE ON UPDATE CASCADE
- ) ENGINE=InnoDB AUTO_INCREMENT=197 DEFAULT CHARSET=latin1;
+ ) ENGINE=InnoDB AUTO_INCREMENT=215 DEFAULT CHARSET=latin1;
 
 CREATE TABLE stage5.profil ( 
 	mot_de_passe         VARCHAR(255)  NOT NULL    ,
@@ -3341,6 +3340,38 @@ INSERT INTO stage5.date_heure_disponible( id, heure_debut, heure_fin, date_dispo
 INSERT INTO stage5.date_heure_disponible( id, heure_debut, heure_fin, date_disponible, duree ) VALUES ( 507, '14:30:00', '15:00:00', '2023-01-31', '00:30:00');
 INSERT INTO stage5.date_heure_disponible( id, heure_debut, heure_fin, date_disponible, duree ) VALUES ( 508, '15:00:00', '15:30:00', '2023-01-31', '00:30:00');
 INSERT INTO stage5.date_heure_disponible( id, heure_debut, heure_fin, date_disponible, duree ) VALUES ( 509, '15:30:00', '16:00:00', '2023-01-31', '00:30:00');
+INSERT INTO stage5.date_heure_disponible( id, heure_debut, heure_fin, date_disponible, duree ) VALUES ( 510, '08:00:00', '08:30:00', '2023-02-01', '00:30:00');
+INSERT INTO stage5.date_heure_disponible( id, heure_debut, heure_fin, date_disponible, duree ) VALUES ( 511, '08:30:00', '09:00:00', '2023-02-01', '00:30:00');
+INSERT INTO stage5.date_heure_disponible( id, heure_debut, heure_fin, date_disponible, duree ) VALUES ( 512, '09:00:00', '09:30:00', '2023-02-01', '00:30:00');
+INSERT INTO stage5.date_heure_disponible( id, heure_debut, heure_fin, date_disponible, duree ) VALUES ( 513, '09:30:00', '10:00:00', '2023-02-01', '00:30:00');
+INSERT INTO stage5.date_heure_disponible( id, heure_debut, heure_fin, date_disponible, duree ) VALUES ( 514, '10:00:00', '10:30:00', '2023-02-01', '00:30:00');
+INSERT INTO stage5.date_heure_disponible( id, heure_debut, heure_fin, date_disponible, duree ) VALUES ( 515, '10:30:00', '11:00:00', '2023-02-01', '00:30:00');
+INSERT INTO stage5.date_heure_disponible( id, heure_debut, heure_fin, date_disponible, duree ) VALUES ( 516, '11:00:00', '11:30:00', '2023-02-01', '00:30:00');
+INSERT INTO stage5.date_heure_disponible( id, heure_debut, heure_fin, date_disponible, duree ) VALUES ( 517, '11:30:00', '12:00:00', '2023-02-01', '00:30:00');
+INSERT INTO stage5.date_heure_disponible( id, heure_debut, heure_fin, date_disponible, duree ) VALUES ( 518, '12:00:00', '12:30:00', '2023-02-01', '00:30:00');
+INSERT INTO stage5.date_heure_disponible( id, heure_debut, heure_fin, date_disponible, duree ) VALUES ( 519, '12:30:00', '13:00:00', '2023-02-01', '00:30:00');
+INSERT INTO stage5.date_heure_disponible( id, heure_debut, heure_fin, date_disponible, duree ) VALUES ( 520, '13:00:00', '13:30:00', '2023-02-01', '00:30:00');
+INSERT INTO stage5.date_heure_disponible( id, heure_debut, heure_fin, date_disponible, duree ) VALUES ( 521, '13:30:00', '14:00:00', '2023-02-01', '00:30:00');
+INSERT INTO stage5.date_heure_disponible( id, heure_debut, heure_fin, date_disponible, duree ) VALUES ( 522, '14:00:00', '14:30:00', '2023-02-01', '00:30:00');
+INSERT INTO stage5.date_heure_disponible( id, heure_debut, heure_fin, date_disponible, duree ) VALUES ( 523, '14:30:00', '15:00:00', '2023-02-01', '00:30:00');
+INSERT INTO stage5.date_heure_disponible( id, heure_debut, heure_fin, date_disponible, duree ) VALUES ( 524, '15:00:00', '15:30:00', '2023-02-01', '00:30:00');
+INSERT INTO stage5.date_heure_disponible( id, heure_debut, heure_fin, date_disponible, duree ) VALUES ( 525, '15:30:00', '16:00:00', '2023-02-01', '00:30:00');
+INSERT INTO stage5.date_heure_disponible( id, heure_debut, heure_fin, date_disponible, duree ) VALUES ( 526, '08:00:00', '08:30:00', '2023-02-02', '00:30:00');
+INSERT INTO stage5.date_heure_disponible( id, heure_debut, heure_fin, date_disponible, duree ) VALUES ( 527, '08:30:00', '09:00:00', '2023-02-02', '00:30:00');
+INSERT INTO stage5.date_heure_disponible( id, heure_debut, heure_fin, date_disponible, duree ) VALUES ( 528, '09:00:00', '09:30:00', '2023-02-02', '00:30:00');
+INSERT INTO stage5.date_heure_disponible( id, heure_debut, heure_fin, date_disponible, duree ) VALUES ( 529, '09:30:00', '10:00:00', '2023-02-02', '00:30:00');
+INSERT INTO stage5.date_heure_disponible( id, heure_debut, heure_fin, date_disponible, duree ) VALUES ( 530, '10:00:00', '10:30:00', '2023-02-02', '00:30:00');
+INSERT INTO stage5.date_heure_disponible( id, heure_debut, heure_fin, date_disponible, duree ) VALUES ( 531, '10:30:00', '11:00:00', '2023-02-02', '00:30:00');
+INSERT INTO stage5.date_heure_disponible( id, heure_debut, heure_fin, date_disponible, duree ) VALUES ( 532, '11:00:00', '11:30:00', '2023-02-02', '00:30:00');
+INSERT INTO stage5.date_heure_disponible( id, heure_debut, heure_fin, date_disponible, duree ) VALUES ( 533, '11:30:00', '12:00:00', '2023-02-02', '00:30:00');
+INSERT INTO stage5.date_heure_disponible( id, heure_debut, heure_fin, date_disponible, duree ) VALUES ( 534, '12:00:00', '12:30:00', '2023-02-02', '00:30:00');
+INSERT INTO stage5.date_heure_disponible( id, heure_debut, heure_fin, date_disponible, duree ) VALUES ( 535, '12:30:00', '13:00:00', '2023-02-02', '00:30:00');
+INSERT INTO stage5.date_heure_disponible( id, heure_debut, heure_fin, date_disponible, duree ) VALUES ( 536, '13:00:00', '13:30:00', '2023-02-02', '00:30:00');
+INSERT INTO stage5.date_heure_disponible( id, heure_debut, heure_fin, date_disponible, duree ) VALUES ( 537, '13:30:00', '14:00:00', '2023-02-02', '00:30:00');
+INSERT INTO stage5.date_heure_disponible( id, heure_debut, heure_fin, date_disponible, duree ) VALUES ( 538, '14:00:00', '14:30:00', '2023-02-02', '00:30:00');
+INSERT INTO stage5.date_heure_disponible( id, heure_debut, heure_fin, date_disponible, duree ) VALUES ( 539, '14:30:00', '15:00:00', '2023-02-02', '00:30:00');
+INSERT INTO stage5.date_heure_disponible( id, heure_debut, heure_fin, date_disponible, duree ) VALUES ( 540, '15:00:00', '15:30:00', '2023-02-02', '00:30:00');
+INSERT INTO stage5.date_heure_disponible( id, heure_debut, heure_fin, date_disponible, duree ) VALUES ( 541, '15:30:00', '16:00:00', '2023-02-02', '00:30:00');
 INSERT INTO stage5.date_heure_non_disponible_autorite( id, date_debut, date_fin, heure_debut, heure_fin, id_autorite ) VALUES ( 20, '2023-01-12', '2023-01-12', '12:00:00', '13:00:00', 3);
 INSERT INTO stage5.date_heure_non_disponible_autorite( id, date_debut, date_fin, heure_debut, heure_fin, id_autorite ) VALUES ( 22, '2023-01-12', '2023-01-12', '13:00:00', '14:30:00', 3);
 INSERT INTO stage5.date_heure_non_disponible_autorite( id, date_debut, date_fin, heure_debut, heure_fin, id_autorite ) VALUES ( 23, '2023-01-13', '2023-01-13', '11:30:00', '14:30:00', 3);
@@ -3353,6 +3384,10 @@ INSERT INTO stage5.date_heure_non_disponible_autorite( id, date_debut, date_fin,
 INSERT INTO stage5.date_heure_non_disponible_autorite( id, date_debut, date_fin, heure_debut, heure_fin, id_autorite ) VALUES ( 30, '2023-01-27', '2023-01-27', '11:00:00', '13:00:00', 3);
 INSERT INTO stage5.date_heure_non_disponible_autorite( id, date_debut, date_fin, heure_debut, heure_fin, id_autorite ) VALUES ( 31, '2023-01-30', '2023-01-30', '08:00:00', '10:00:00', 3);
 INSERT INTO stage5.date_heure_non_disponible_autorite( id, date_debut, date_fin, heure_debut, heure_fin, id_autorite ) VALUES ( 32, '2023-01-31', '2023-01-31', '09:00:00', '11:00:00', 3);
+INSERT INTO stage5.date_heure_non_disponible_autorite( id, date_debut, date_fin, heure_debut, heure_fin, id_autorite ) VALUES ( 33, '2023-02-01', '2023-02-01', '08:00:00', '10:30:00', 3);
+INSERT INTO stage5.date_heure_non_disponible_autorite( id, date_debut, date_fin, heure_debut, heure_fin, id_autorite ) VALUES ( 34, '2023-02-02', '2023-02-02', '09:00:00', '11:00:00', 3);
+INSERT INTO stage5.date_heure_non_disponible_autorite( id, date_debut, date_fin, heure_debut, heure_fin, id_autorite ) VALUES ( 35, '2023-02-01', '2023-02-01', '10:30:00', '12:00:00', 1);
+INSERT INTO stage5.date_heure_non_disponible_autorite( id, date_debut, date_fin, heure_debut, heure_fin, id_autorite ) VALUES ( 36, '2023-02-02', '2023-02-02', '09:30:00', '11:30:00', 1);
 INSERT INTO stage5.demande_audience_public( motif, id, action, cin, numero_telephone, email, nom, prenom, session_navigateur ) VALUES ( 'Hello world ???? ', 2, 1, '5545789628', '0341752875', 'joris@gmail.com', 'NAIVOSOA', 'Joris', 'session884.5824087825326');
 INSERT INTO stage5.demande_audience_public( motif, id, action, cin, numero_telephone, email, nom, prenom, session_navigateur ) VALUES ( 'fafa', 3, 1, '552552552552', '0341752875', 'johns.irintsoa@gmail.com', 'RAKOTONIRINA', 'nirina', '123456789');
 INSERT INTO stage5.demande_audience_public( motif, id, action, cin, numero_telephone, email, nom, prenom, session_navigateur ) VALUES ( 'Dadada', 4, 1, '121212', '0341752875', 'johns.irintsoa@gmail.com', 'RANDRIANARISON', 'teo', '123456789');
@@ -3371,6 +3406,7 @@ INSERT INTO stage5.demande_audience_public( motif, id, action, cin, numero_telep
 INSERT INTO stage5.demande_audience_public( motif, id, action, cin, numero_telephone, email, nom, prenom, session_navigateur ) VALUES ( 'Hello world ', 32, 1, '112112112112', '0341752875', 'johns.irintsoa@gmail.com', 'RANDRIANARISON', 'johns irintsoa', 'session675.9615947922701');
 INSERT INTO stage5.demande_audience_public( motif, id, action, cin, numero_telephone, email, nom, prenom, session_navigateur ) VALUES ( 'Never missed work out day', 34, 0, '552552552552', '0341752875', 'johnsirintsoa18@gmail.com', 'RANDRIANARISON', 'johns', 'session624.6196312374357');
 INSERT INTO stage5.demande_audience_public( motif, id, action, cin, numero_telephone, email, nom, prenom, session_navigateur ) VALUES ( 'Hello world Je suis johns', 35, 0, '112112112112', '0341752875', 'johns.irintsoa@gmail.com', 'RANDRIANARISON', 'johns', 'session145.28218943383163');
+INSERT INTO stage5.demande_audience_public( motif, id, action, cin, numero_telephone, email, nom, prenom, session_navigateur ) VALUES ( 'Hi I am looking for the DGI, Is he in? No I confess he is not right? If he will be there tell', 37, 1, '112112112112', '0341752875', 'johns.irintsoa@gmail.com', 'DYRAN', 'johns', 'session450.4483452423846');
 INSERT INTO stage5.domaine( id, nom_domaine ) VALUES ( 1, 'Informatique');
 INSERT INTO stage5.domaine( id, nom_domaine ) VALUES ( 2, 'Marketing');
 INSERT INTO stage5.domaine( id, nom_domaine ) VALUES ( 3, 'Finances et comptabilité');
@@ -3871,6 +3907,70 @@ INSERT INTO stage5.date_heure_disponible_autorite( id, id_date_heure_disponible,
 INSERT INTO stage5.date_heure_disponible_autorite( id, id_date_heure_disponible, id_autorite, est_disponible ) VALUES ( 893, 507, 3, 1);
 INSERT INTO stage5.date_heure_disponible_autorite( id, id_date_heure_disponible, id_autorite, est_disponible ) VALUES ( 894, 508, 3, 1);
 INSERT INTO stage5.date_heure_disponible_autorite( id, id_date_heure_disponible, id_autorite, est_disponible ) VALUES ( 895, 509, 3, 1);
+INSERT INTO stage5.date_heure_disponible_autorite( id, id_date_heure_disponible, id_autorite, est_disponible ) VALUES ( 896, 510, 3, 1);
+INSERT INTO stage5.date_heure_disponible_autorite( id, id_date_heure_disponible, id_autorite, est_disponible ) VALUES ( 897, 511, 3, 1);
+INSERT INTO stage5.date_heure_disponible_autorite( id, id_date_heure_disponible, id_autorite, est_disponible ) VALUES ( 898, 512, 3, 1);
+INSERT INTO stage5.date_heure_disponible_autorite( id, id_date_heure_disponible, id_autorite, est_disponible ) VALUES ( 899, 513, 3, 1);
+INSERT INTO stage5.date_heure_disponible_autorite( id, id_date_heure_disponible, id_autorite, est_disponible ) VALUES ( 900, 514, 3, 1);
+INSERT INTO stage5.date_heure_disponible_autorite( id, id_date_heure_disponible, id_autorite, est_disponible ) VALUES ( 901, 515, 3, 1);
+INSERT INTO stage5.date_heure_disponible_autorite( id, id_date_heure_disponible, id_autorite, est_disponible ) VALUES ( 902, 516, 3, 1);
+INSERT INTO stage5.date_heure_disponible_autorite( id, id_date_heure_disponible, id_autorite, est_disponible ) VALUES ( 903, 517, 3, 1);
+INSERT INTO stage5.date_heure_disponible_autorite( id, id_date_heure_disponible, id_autorite, est_disponible ) VALUES ( 904, 518, 3, 1);
+INSERT INTO stage5.date_heure_disponible_autorite( id, id_date_heure_disponible, id_autorite, est_disponible ) VALUES ( 905, 519, 3, 1);
+INSERT INTO stage5.date_heure_disponible_autorite( id, id_date_heure_disponible, id_autorite, est_disponible ) VALUES ( 906, 520, 3, 1);
+INSERT INTO stage5.date_heure_disponible_autorite( id, id_date_heure_disponible, id_autorite, est_disponible ) VALUES ( 907, 521, 3, 1);
+INSERT INTO stage5.date_heure_disponible_autorite( id, id_date_heure_disponible, id_autorite, est_disponible ) VALUES ( 908, 522, 3, 1);
+INSERT INTO stage5.date_heure_disponible_autorite( id, id_date_heure_disponible, id_autorite, est_disponible ) VALUES ( 909, 523, 3, 1);
+INSERT INTO stage5.date_heure_disponible_autorite( id, id_date_heure_disponible, id_autorite, est_disponible ) VALUES ( 910, 524, 3, 1);
+INSERT INTO stage5.date_heure_disponible_autorite( id, id_date_heure_disponible, id_autorite, est_disponible ) VALUES ( 911, 525, 3, 1);
+INSERT INTO stage5.date_heure_disponible_autorite( id, id_date_heure_disponible, id_autorite, est_disponible ) VALUES ( 927, 526, 3, 1);
+INSERT INTO stage5.date_heure_disponible_autorite( id, id_date_heure_disponible, id_autorite, est_disponible ) VALUES ( 928, 527, 3, 1);
+INSERT INTO stage5.date_heure_disponible_autorite( id, id_date_heure_disponible, id_autorite, est_disponible ) VALUES ( 929, 528, 3, 1);
+INSERT INTO stage5.date_heure_disponible_autorite( id, id_date_heure_disponible, id_autorite, est_disponible ) VALUES ( 930, 529, 3, 1);
+INSERT INTO stage5.date_heure_disponible_autorite( id, id_date_heure_disponible, id_autorite, est_disponible ) VALUES ( 931, 530, 3, 1);
+INSERT INTO stage5.date_heure_disponible_autorite( id, id_date_heure_disponible, id_autorite, est_disponible ) VALUES ( 932, 531, 3, 1);
+INSERT INTO stage5.date_heure_disponible_autorite( id, id_date_heure_disponible, id_autorite, est_disponible ) VALUES ( 933, 532, 3, 1);
+INSERT INTO stage5.date_heure_disponible_autorite( id, id_date_heure_disponible, id_autorite, est_disponible ) VALUES ( 934, 533, 3, 1);
+INSERT INTO stage5.date_heure_disponible_autorite( id, id_date_heure_disponible, id_autorite, est_disponible ) VALUES ( 935, 534, 3, 1);
+INSERT INTO stage5.date_heure_disponible_autorite( id, id_date_heure_disponible, id_autorite, est_disponible ) VALUES ( 936, 535, 3, 1);
+INSERT INTO stage5.date_heure_disponible_autorite( id, id_date_heure_disponible, id_autorite, est_disponible ) VALUES ( 937, 536, 3, 1);
+INSERT INTO stage5.date_heure_disponible_autorite( id, id_date_heure_disponible, id_autorite, est_disponible ) VALUES ( 938, 537, 3, 1);
+INSERT INTO stage5.date_heure_disponible_autorite( id, id_date_heure_disponible, id_autorite, est_disponible ) VALUES ( 939, 538, 3, 1);
+INSERT INTO stage5.date_heure_disponible_autorite( id, id_date_heure_disponible, id_autorite, est_disponible ) VALUES ( 940, 539, 3, 1);
+INSERT INTO stage5.date_heure_disponible_autorite( id, id_date_heure_disponible, id_autorite, est_disponible ) VALUES ( 941, 540, 3, 1);
+INSERT INTO stage5.date_heure_disponible_autorite( id, id_date_heure_disponible, id_autorite, est_disponible ) VALUES ( 942, 541, 3, 1);
+INSERT INTO stage5.date_heure_disponible_autorite( id, id_date_heure_disponible, id_autorite, est_disponible ) VALUES ( 958, 510, 1, 1);
+INSERT INTO stage5.date_heure_disponible_autorite( id, id_date_heure_disponible, id_autorite, est_disponible ) VALUES ( 959, 511, 1, 1);
+INSERT INTO stage5.date_heure_disponible_autorite( id, id_date_heure_disponible, id_autorite, est_disponible ) VALUES ( 960, 512, 1, 1);
+INSERT INTO stage5.date_heure_disponible_autorite( id, id_date_heure_disponible, id_autorite, est_disponible ) VALUES ( 961, 513, 1, 1);
+INSERT INTO stage5.date_heure_disponible_autorite( id, id_date_heure_disponible, id_autorite, est_disponible ) VALUES ( 962, 514, 1, 1);
+INSERT INTO stage5.date_heure_disponible_autorite( id, id_date_heure_disponible, id_autorite, est_disponible ) VALUES ( 963, 515, 1, 1);
+INSERT INTO stage5.date_heure_disponible_autorite( id, id_date_heure_disponible, id_autorite, est_disponible ) VALUES ( 964, 516, 1, 1);
+INSERT INTO stage5.date_heure_disponible_autorite( id, id_date_heure_disponible, id_autorite, est_disponible ) VALUES ( 965, 517, 1, 1);
+INSERT INTO stage5.date_heure_disponible_autorite( id, id_date_heure_disponible, id_autorite, est_disponible ) VALUES ( 966, 518, 1, 1);
+INSERT INTO stage5.date_heure_disponible_autorite( id, id_date_heure_disponible, id_autorite, est_disponible ) VALUES ( 967, 519, 1, 1);
+INSERT INTO stage5.date_heure_disponible_autorite( id, id_date_heure_disponible, id_autorite, est_disponible ) VALUES ( 968, 520, 1, 1);
+INSERT INTO stage5.date_heure_disponible_autorite( id, id_date_heure_disponible, id_autorite, est_disponible ) VALUES ( 969, 521, 1, 1);
+INSERT INTO stage5.date_heure_disponible_autorite( id, id_date_heure_disponible, id_autorite, est_disponible ) VALUES ( 970, 522, 1, 1);
+INSERT INTO stage5.date_heure_disponible_autorite( id, id_date_heure_disponible, id_autorite, est_disponible ) VALUES ( 971, 523, 1, 1);
+INSERT INTO stage5.date_heure_disponible_autorite( id, id_date_heure_disponible, id_autorite, est_disponible ) VALUES ( 972, 524, 1, 1);
+INSERT INTO stage5.date_heure_disponible_autorite( id, id_date_heure_disponible, id_autorite, est_disponible ) VALUES ( 973, 525, 1, 1);
+INSERT INTO stage5.date_heure_disponible_autorite( id, id_date_heure_disponible, id_autorite, est_disponible ) VALUES ( 989, 526, 1, 1);
+INSERT INTO stage5.date_heure_disponible_autorite( id, id_date_heure_disponible, id_autorite, est_disponible ) VALUES ( 990, 527, 1, 1);
+INSERT INTO stage5.date_heure_disponible_autorite( id, id_date_heure_disponible, id_autorite, est_disponible ) VALUES ( 991, 528, 1, 1);
+INSERT INTO stage5.date_heure_disponible_autorite( id, id_date_heure_disponible, id_autorite, est_disponible ) VALUES ( 992, 529, 1, 1);
+INSERT INTO stage5.date_heure_disponible_autorite( id, id_date_heure_disponible, id_autorite, est_disponible ) VALUES ( 993, 530, 1, 1);
+INSERT INTO stage5.date_heure_disponible_autorite( id, id_date_heure_disponible, id_autorite, est_disponible ) VALUES ( 994, 531, 1, 1);
+INSERT INTO stage5.date_heure_disponible_autorite( id, id_date_heure_disponible, id_autorite, est_disponible ) VALUES ( 995, 532, 1, 1);
+INSERT INTO stage5.date_heure_disponible_autorite( id, id_date_heure_disponible, id_autorite, est_disponible ) VALUES ( 996, 533, 1, 1);
+INSERT INTO stage5.date_heure_disponible_autorite( id, id_date_heure_disponible, id_autorite, est_disponible ) VALUES ( 997, 534, 1, 1);
+INSERT INTO stage5.date_heure_disponible_autorite( id, id_date_heure_disponible, id_autorite, est_disponible ) VALUES ( 998, 535, 1, 1);
+INSERT INTO stage5.date_heure_disponible_autorite( id, id_date_heure_disponible, id_autorite, est_disponible ) VALUES ( 999, 536, 1, 1);
+INSERT INTO stage5.date_heure_disponible_autorite( id, id_date_heure_disponible, id_autorite, est_disponible ) VALUES ( 1000, 537, 1, 1);
+INSERT INTO stage5.date_heure_disponible_autorite( id, id_date_heure_disponible, id_autorite, est_disponible ) VALUES ( 1001, 538, 1, 1);
+INSERT INTO stage5.date_heure_disponible_autorite( id, id_date_heure_disponible, id_autorite, est_disponible ) VALUES ( 1002, 539, 1, 1);
+INSERT INTO stage5.date_heure_disponible_autorite( id, id_date_heure_disponible, id_autorite, est_disponible ) VALUES ( 1003, 540, 1, 1);
+INSERT INTO stage5.date_heure_disponible_autorite( id, id_date_heure_disponible, id_autorite, est_disponible ) VALUES ( 1004, 541, 1, 1);
 INSERT INTO stage5.demande_audience_autorite( id, id_autorite_enfant_sender, motif, action ) VALUES ( 15, 1, 'hHALA', 1);
 INSERT INTO stage5.demande_audience_autorite( id, id_autorite_enfant_sender, motif, action ) VALUES ( 18, 2, 'Hiiii\n', 1);
 INSERT INTO stage5.demande_audience_autorite( id, id_autorite_enfant_sender, motif, action ) VALUES ( 19, 2, 'Hi Everyone. Happy new year', 1);
@@ -3894,6 +3994,7 @@ INSERT INTO stage5.demande_stage( id, nom, prenom, telephone, e_mail, cin, duree
 INSERT INTO stage5.demande_stage( id, nom, prenom, telephone, e_mail, cin, duree, curriculum_vitae, lettre_motivation, lettre_introduction, message, id_domaine, id_autorite_enfant, date_creation, action ) VALUES ( 14, 'RANDRIANARISON', 'Johns', '341752875', 'johns.irintsoa@gmail.com', '112112112112', 3, 'curriculum_vitae_1673098224540_mail.pdf', 'lettre_motivation_1673098224705_mail.pdf', 'lettre_introduction_1673098224706_mail.pdf', 'Je suis un élève de ITU. Je voudrais faire mon stage chez vous pour une durée de 3 Mois.', 1, 3, '2023-01-16', 0);
 INSERT INTO stage5.demande_stage( id, nom, prenom, telephone, e_mail, cin, duree, curriculum_vitae, lettre_motivation, lettre_introduction, message, id_domaine, id_autorite_enfant, date_creation, action ) VALUES ( 15, 'SAIFOUDINE', 'Nirina', '341752875', 'johns.irintsoa@gmail.com', '1212112121', 3, 'curriculum_vitae_1673190500288_mail.pdf', 'lettre_motivation_1673190500291_mail.pdf', 'lettre_introduction_1673190500294_mail.pdf', 'Hello world', 1, 3, '2023-01-16', 0);
 INSERT INTO stage5.demande_stage( id, nom, prenom, telephone, e_mail, cin, duree, curriculum_vitae, lettre_motivation, lettre_introduction, message, id_domaine, id_autorite_enfant, date_creation, action ) VALUES ( 16, 'RAKOTOVA', 'Solofo', '341752875', 'johns.irintsoa@gmail.com', '1212112121', 3, 'curriculum_vitae_1673205163466_mail.pdf', 'lettre_motivation_1673205163469_mail.pdf', 'lettre_introduction_1673205163473_mail.pdf', 'Hello world', 3, 3, '2023-01-16', 2);
+INSERT INTO stage5.demande_stage( id, nom, prenom, telephone, e_mail, cin, duree, curriculum_vitae, lettre_motivation, lettre_introduction, message, id_domaine, id_autorite_enfant, date_creation, action ) VALUES ( 17, 'RANDRIANARISON', 'Johns', '0341752875', 'johns.irintsoa@gmail.com', '112112112112', 3, 'curriculum_vitae_1675231040981_mail.pdf', 'lettre_motivation_1675231041126_mail.pdf', 'lettre_introduction_1675231041128_mail.pdf', 'Je suis a la recherche dun stage aupres de la Dgi', 3, 3, '2023-02-01', 0);
 INSERT INTO stage5.dm_aud_autorite_date_heure_dispo( id, id_date_heure_disponible_autorite, id_dm_aud_autorite, heure_debut, heure_fin, date_debut, date_fin ) VALUES ( 18, 130, 15, '08:00:00', '08:30:00', '2022-12-29', '2022-12-29');
 INSERT INTO stage5.dm_aud_autorite_date_heure_dispo( id, id_date_heure_disponible_autorite, id_dm_aud_autorite, heure_debut, heure_fin, date_debut, date_fin ) VALUES ( 21, 171, 18, '08:00:00', '08:30:00', '2022-12-29', '2022-12-29');
 INSERT INTO stage5.dm_aud_autorite_date_heure_dispo( id, id_date_heure_disponible_autorite, id_dm_aud_autorite, heure_debut, heure_fin, date_debut, date_fin ) VALUES ( 22, 174, 19, '09:30:00', '10:00:00', '2022-12-29', '2022-12-29');
@@ -3950,35 +4051,46 @@ INSERT INTO stage5.dm_aud_public_date_heure_dispo( id_aud_public, id_date_heure_
 INSERT INTO stage5.dm_aud_public_date_heure_dispo( id_aud_public, id_date_heure_disponible_autorite, id, heure_debut, heure_fin, date_debut, date_fin ) VALUES ( 28, 793, 505, '09:00:00', '12:30:00', '2023-01-19', '2023-01-19');
 INSERT INTO stage5.dm_aud_public_date_heure_dispo( id_aud_public, id_date_heure_disponible_autorite, id, heure_debut, heure_fin, date_debut, date_fin ) VALUES ( 34, 828, 513, '13:30:00', '14:00:00', '2023-01-26', '2023-01-26');
 INSERT INTO stage5.dm_aud_public_date_heure_dispo( id_aud_public, id_date_heure_disponible_autorite, id, heure_debut, heure_fin, date_debut, date_fin ) VALUES ( 35, 848, 514, '08:00:00', '08:30:00', '2023-01-27', '2023-01-27');
-INSERT INTO stage5.doleance( id, session_navigateur, e_mail, titre, cin, numero_telephone, message, nom, prenom, date_publication, id_autorite, heure_publication, message2 ) VALUES ( 1, 'session907.532594562493', null, 'sdfds', null, null, 'Hi dear, perhaps a little more rest and food will you be back at strength.', null, null, '2023-01-20', 2, '09:47:44', '');
-INSERT INTO stage5.doleance( id, session_navigateur, e_mail, titre, cin, numero_telephone, message, nom, prenom, date_publication, id_autorite, heure_publication, message2 ) VALUES ( 2, 'session258.62666900364275', null, 'sdfds', null, null, 'Hi it is me again. But this one i will address non anonymous, So remember me, here is my name my contacts, do not be late, but i can not stand to it anymore.', null, null, '2023-01-20', 2, '09:47:44', '');
-INSERT INTO stage5.doleance( id, session_navigateur, e_mail, titre, cin, numero_telephone, message, nom, prenom, date_publication, id_autorite, heure_publication, message2 ) VALUES ( 3, 'session428.0507486275105', null, 'Fafaa', null, null, 'fgfgsf', null, null, '2023-01-20', 2, '10:05:51', '');
-INSERT INTO stage5.doleance( id, session_navigateur, e_mail, titre, cin, numero_telephone, message, nom, prenom, date_publication, id_autorite, heure_publication, message2 ) VALUES ( 4, 'session428.0507486275105', null, 'Fafaa', null, null, 'fgfgsf', null, null, '2023-01-20', 2, '10:05:51', '');
-INSERT INTO stage5.doleance( id, session_navigateur, e_mail, titre, cin, numero_telephone, message, nom, prenom, date_publication, id_autorite, heure_publication, message2 ) VALUES ( 5, 'session781.9242674941864', null, 'Mauvaise comportement', null, null, 'Je suis un visiteur et jai constate que gkjfkgjkfgfg', null, null, '2023-01-20', 2, '10:10:43', '');
-INSERT INTO stage5.doleance( id, session_navigateur, e_mail, titre, cin, numero_telephone, message, nom, prenom, date_publication, id_autorite, heure_publication, message2 ) VALUES ( 6, 'session543.7488385071574', 'johns.irintsoa@gmail.com', 'Ratsy fandraisana be ry zareo ', '112111211211', '0341752875', '', 'RANDRIANARISON', 'Johns', '2023-01-20', 1, '11:38:53', '');
-INSERT INTO stage5.doleance( id, session_navigateur, e_mail, titre, cin, numero_telephone, message, nom, prenom, date_publication, id_autorite, heure_publication, message2 ) VALUES ( 7, 'session570.4293885686607', 'johns@gmail.com', 'CYCLONE', '112112121212', '0341752875', '', 'DYRAN', 'Johns', '2023-01-20', 1, '11:41:46', '');
-INSERT INTO stage5.doleance( id, session_navigateur, e_mail, titre, cin, numero_telephone, message, nom, prenom, date_publication, id_autorite, heure_publication, message2 ) VALUES ( 8, 'session307.8347883714374', 'johns@gmail.com', 'sdfdsfdf', '565442151515', '6546546546', 'Hello world ', 'sfdfd', 'sdfdf', '2023-01-20', 1, '11:43:29', '');
-INSERT INTO stage5.doleance( id, session_navigateur, e_mail, titre, cin, numero_telephone, message, nom, prenom, date_publication, id_autorite, heure_publication, message2 ) VALUES ( 9, 'session524.3624453793367', null, 'Hello sunday', null, null, 'It raining today.', null, null, '2023-01-22', 3, '16:33:57', '');
-INSERT INTO stage5.doleance( id, session_navigateur, e_mail, titre, cin, numero_telephone, message, nom, prenom, date_publication, id_autorite, heure_publication, message2 ) VALUES ( 10, 'session524.3624453793367', 'johns.irintsoa18@gmail.com', 'Sunday', '112121112122', '0341752875', 'Hi sunday. Creating more and consumming less by Ruri ohama. The more you say no to the things doesnt matter the more you say yes to things that do', 'Dyran', 'Johns', '2023-01-22', 3, '17:02:45', '');
-INSERT INTO stage5.doleance( id, session_navigateur, e_mail, titre, cin, numero_telephone, message, nom, prenom, date_publication, id_autorite, heure_publication, message2 ) VALUES ( 11, 'session373.19367097786846', 'johns.irintsoa@gmail.com', 'Hi Monday', '512698789633', '0341752875', 'Hi i have checked all of my duty for tody and half of them was done', 'RANDRIANARISON', 'Johns', '2023-01-23', 3, '16:18:41', '');
-INSERT INTO stage5.doleance( id, session_navigateur, e_mail, titre, cin, numero_telephone, message, nom, prenom, date_publication, id_autorite, heure_publication, message2 ) VALUES ( 12, 'session373.19367097786846', null, 'Hi DGI', null, null, 'Mmmh you do not know me. How was last night. Have you dreamnt about me? Did I do my best? Have a good day Sweetie ???? ', null, null, '2023-01-23', 3, '16:20:58', '');
-INSERT INTO stage5.doleance( id, session_navigateur, e_mail, titre, cin, numero_telephone, message, nom, prenom, date_publication, id_autorite, heure_publication, message2 ) VALUES ( 13, 'session576.6437598202781', null, 'Monday 2', null, null, 'I am just here concern of people, perhaps i can offend any one of you but the more you know who and how i am, the more you have to be carefull of yourself.', null, null, '2023-01-23', 3, '16:41:35', '');
-INSERT INTO stage5.doleance( id, session_navigateur, e_mail, titre, cin, numero_telephone, message, nom, prenom, date_publication, id_autorite, heure_publication, message2 ) VALUES ( 14, 'session414.00372984251834', null, 'Monday 3', null, null, 'I am reapting myself sorry. The point is to release our comrade toward an amount of BitCoins. Are you in?', null, null, '2023-01-23', 3, '16:43:33', '');
-INSERT INTO stage5.doleance( id, session_navigateur, e_mail, titre, cin, numero_telephone, message, nom, prenom, date_publication, id_autorite, heure_publication, message2 ) VALUES ( 15, 'session518.4698767437472', null, 'Tuesday', null, null, 'Hi dear, perhaps a little more rest and food will you back at strength.', null, null, '2023-01-24', 3, '08:56:52', '');
-INSERT INTO stage5.doleance( id, session_navigateur, e_mail, titre, cin, numero_telephone, message, nom, prenom, date_publication, id_autorite, heure_publication, message2 ) VALUES ( 16, 'session518.4698767437472', 'johns.irintsoa@gmail.com', 'Tuesday', '112112122122', '0341752875', 'Hi it is me again. But this one i will address non anonymous, So remember me, here is my name my contacts, do not late, but i can not stand to it anymore.', 'RANDRIANARIASON', 'Johns', '2023-01-24', 3, '08:59:10', '');
-INSERT INTO stage5.doleance( id, session_navigateur, e_mail, titre, cin, numero_telephone, message, nom, prenom, date_publication, id_autorite, heure_publication, message2 ) VALUES ( 17, 'session518.4698767437472', 'johns.irintsoa@gmail.com', 'Tuesday', '112112111221', '0341752875', 'Re-bonjour, today we will practice some of vary amin anana. it is a mixing languages, but not very helpful for ou education freedom, what i am saying, we are not in daily stoic, we are in boite à doléance. And yet, i am still wondering what is the purpose', 'RANDRIANARISON', 'Johns', '2023-01-24', 3, '10:44:43', '');
-INSERT INTO stage5.doleance( id, session_navigateur, e_mail, titre, cin, numero_telephone, message, nom, prenom, date_publication, id_autorite, heure_publication, message2 ) VALUES ( 18, 'session518.4698767437472', null, 'Tuesday', null, null, 'Mmmh, it was not completed. Half of message did not send, Good news,we have resolved the issues, but i have no clue what is going on, Afterwards i am just a person who want to disturb the organization hihihihihihihihi, Sorry you do not know who I am, I am just a girl with a wide thick, Love you Have good day, and one more thing, your wife can be good wife but never better on bed than me hahahahahahah just joking. Thank you to read', null, null, '2023-01-24', 3, '10:57:36', '');
-INSERT INTO stage5.doleance( id, session_navigateur, e_mail, titre, cin, numero_telephone, message, nom, prenom, date_publication, id_autorite, heure_publication, message2 ) VALUES ( 19, 'session948.1640243568852', null, 'Wednesday 2', null, null, 'Hi, i suppose it is news. So we should start a new test for today. Not today we are here to focus on the project.Good morning to you misy update kely', null, null, '2023-01-25', 3, '07:52:53', '');
-INSERT INTO stage5.doleance( id, session_navigateur, e_mail, titre, cin, numero_telephone, message, nom, prenom, date_publication, id_autorite, heure_publication, message2 ) VALUES ( 20, 'session948.1640243568852', null, 'Wednesday 1', null, null, 'Hello everyone we are not perfect at all. It is a test. Sit Beneath tree.', null, null, '2023-01-25', 3, '07:53:53', '');
-INSERT INTO stage5.doleance( id, session_navigateur, e_mail, titre, cin, numero_telephone, message, nom, prenom, date_publication, id_autorite, heure_publication, message2 ) VALUES ( 21, 'session948.1640243568852', 'johns.irintsoa@gmail.com', 'Wednesday 3', '112111211211', '0341752875', 'Among us is the traitor, Why do argue you each other? there is non-sense, You should pay attention of everything, I do not care what is happening the only i want is calm and tranquilitty.Okay? Bye.', 'RANDRIANARISON', 'Johns', '2023-01-25', 3, '08:15:08', '');
-INSERT INTO stage5.doleance( id, session_navigateur, e_mail, titre, cin, numero_telephone, message, nom, prenom, date_publication, id_autorite, heure_publication, message2 ) VALUES ( 22, 'session701.2027086467638', null, 'Thursday night', null, null, 'It is a last test for today. I want to make sure about the popup show if it works. Good night to you adminstrator. Do not forget to pray, I love you ', null, null, '2023-01-26', 3, '22:25:56', '');
-INSERT INTO stage5.doleance( id, session_navigateur, e_mail, titre, cin, numero_telephone, message, nom, prenom, date_publication, id_autorite, heure_publication, message2 ) VALUES ( 23, 'session733.2137905238567', null, 'Friday', null, null, 'Test i want to see if it works perfectly but do not worry, behave a trustworthy not untrustworthy person okay, I lalalallalalalalalal love you kisss yo you ', null, null, '2023-01-27', 3, '15:22:40', '');
+INSERT INTO stage5.dm_aud_public_date_heure_dispo( id_aud_public, id_date_heure_disponible_autorite, id, heure_debut, heure_fin, date_debut, date_fin ) VALUES ( 37, 885, 530, '10:30:00', '11:00:00', '2023-01-31', '2023-01-31');
+INSERT INTO stage5.doleance( id, session_navigateur, e_mail, titre, cin, numero_telephone, message, nom, prenom, date_publication, id_autorite, heure_publication ) VALUES ( 1, 'session907.532594562493', null, 'sdfds', null, null, 'Hi dear, perhaps a little more rest and food will you be back at strength.', null, null, '2023-01-20', 2, '09:47:44');
+INSERT INTO stage5.doleance( id, session_navigateur, e_mail, titre, cin, numero_telephone, message, nom, prenom, date_publication, id_autorite, heure_publication ) VALUES ( 2, 'session258.62666900364275', null, 'sdfds', null, null, 'Hi it is me again. But this one i will address non anonymous, So remember me, here is my name my contacts, do not be late, but i can not stand to it anymore.', null, null, '2023-01-20', 2, '09:47:44');
+INSERT INTO stage5.doleance( id, session_navigateur, e_mail, titre, cin, numero_telephone, message, nom, prenom, date_publication, id_autorite, heure_publication ) VALUES ( 3, 'session428.0507486275105', null, 'Fafaa', null, null, 'fgfgsf', null, null, '2023-01-20', 2, '10:05:51');
+INSERT INTO stage5.doleance( id, session_navigateur, e_mail, titre, cin, numero_telephone, message, nom, prenom, date_publication, id_autorite, heure_publication ) VALUES ( 4, 'session428.0507486275105', null, 'Fafaa', null, null, 'fgfgsf', null, null, '2023-01-20', 2, '10:05:51');
+INSERT INTO stage5.doleance( id, session_navigateur, e_mail, titre, cin, numero_telephone, message, nom, prenom, date_publication, id_autorite, heure_publication ) VALUES ( 5, 'session781.9242674941864', null, 'Mauvaise comportement', null, null, 'Je suis un visiteur et jai constate que gkjfkgjkfgfg', null, null, '2023-01-20', 2, '10:10:43');
+INSERT INTO stage5.doleance( id, session_navigateur, e_mail, titre, cin, numero_telephone, message, nom, prenom, date_publication, id_autorite, heure_publication ) VALUES ( 6, 'session543.7488385071574', 'johns.irintsoa@gmail.com', 'Ratsy fandraisana be ry zareo ', '112111211211', '0341752875', '', 'RANDRIANARISON', 'Johns', '2023-01-20', 1, '11:38:53');
+INSERT INTO stage5.doleance( id, session_navigateur, e_mail, titre, cin, numero_telephone, message, nom, prenom, date_publication, id_autorite, heure_publication ) VALUES ( 7, 'session570.4293885686607', 'johns@gmail.com', 'CYCLONE', '112112121212', '0341752875', '', 'DYRAN', 'Johns', '2023-01-20', 1, '11:41:46');
+INSERT INTO stage5.doleance( id, session_navigateur, e_mail, titre, cin, numero_telephone, message, nom, prenom, date_publication, id_autorite, heure_publication ) VALUES ( 8, 'session307.8347883714374', 'johns@gmail.com', 'sdfdsfdf', '565442151515', '6546546546', 'Hello world ', 'sfdfd', 'sdfdf', '2023-01-20', 1, '11:43:29');
+INSERT INTO stage5.doleance( id, session_navigateur, e_mail, titre, cin, numero_telephone, message, nom, prenom, date_publication, id_autorite, heure_publication ) VALUES ( 9, 'session524.3624453793367', null, 'Hello sunday', null, null, 'It raining today.', null, null, '2023-01-22', 3, '16:33:57');
+INSERT INTO stage5.doleance( id, session_navigateur, e_mail, titre, cin, numero_telephone, message, nom, prenom, date_publication, id_autorite, heure_publication ) VALUES ( 10, 'session524.3624453793367', 'johns.irintsoa18@gmail.com', 'Sunday', '112121112122', '0341752875', 'Hi sunday. Creating more and consumming less by Ruri ohama. The more you say no to the things doesnt matter the more you say yes to things that do', 'Dyran', 'Johns', '2023-01-22', 3, '17:02:45');
+INSERT INTO stage5.doleance( id, session_navigateur, e_mail, titre, cin, numero_telephone, message, nom, prenom, date_publication, id_autorite, heure_publication ) VALUES ( 11, 'session373.19367097786846', 'johns.irintsoa@gmail.com', 'Hi Monday', '512698789633', '0341752875', 'Hi i have checked all of my duty for tody and half of them was done', 'RANDRIANARISON', 'Johns', '2023-01-23', 3, '16:18:41');
+INSERT INTO stage5.doleance( id, session_navigateur, e_mail, titre, cin, numero_telephone, message, nom, prenom, date_publication, id_autorite, heure_publication ) VALUES ( 12, 'session373.19367097786846', null, 'Hi DGI', null, null, 'Mmmh you do not know me. How was last night. Have you dreamnt about me? Did I do my best? Have a good day Sweetie ???? ', null, null, '2023-01-23', 3, '16:20:58');
+INSERT INTO stage5.doleance( id, session_navigateur, e_mail, titre, cin, numero_telephone, message, nom, prenom, date_publication, id_autorite, heure_publication ) VALUES ( 13, 'session576.6437598202781', null, 'Monday 2', null, null, 'I am just here concern of people, perhaps i can offend any one of you but the more you know who and how i am, the more you have to be carefull of yourself.', null, null, '2023-01-23', 3, '16:41:35');
+INSERT INTO stage5.doleance( id, session_navigateur, e_mail, titre, cin, numero_telephone, message, nom, prenom, date_publication, id_autorite, heure_publication ) VALUES ( 14, 'session414.00372984251834', null, 'Monday 3', null, null, 'I am reapting myself sorry. The point is to release our comrade toward an amount of BitCoins. Are you in?', null, null, '2023-01-23', 3, '16:43:33');
+INSERT INTO stage5.doleance( id, session_navigateur, e_mail, titre, cin, numero_telephone, message, nom, prenom, date_publication, id_autorite, heure_publication ) VALUES ( 15, 'session518.4698767437472', null, 'Tuesday', null, null, 'Hi dear, perhaps a little more rest and food will you back at strength.', null, null, '2023-01-24', 3, '08:56:52');
+INSERT INTO stage5.doleance( id, session_navigateur, e_mail, titre, cin, numero_telephone, message, nom, prenom, date_publication, id_autorite, heure_publication ) VALUES ( 16, 'session518.4698767437472', 'johns.irintsoa@gmail.com', 'Tuesday', '112112122122', '0341752875', 'Hi it is me again. But this one i will address non anonymous, So remember me, here is my name my contacts, do not late, but i can not stand to it anymore.', 'RANDRIANARIASON', 'Johns', '2023-01-24', 3, '08:59:10');
+INSERT INTO stage5.doleance( id, session_navigateur, e_mail, titre, cin, numero_telephone, message, nom, prenom, date_publication, id_autorite, heure_publication ) VALUES ( 17, 'session518.4698767437472', 'johns.irintsoa@gmail.com', 'Tuesday', '112112111221', '0341752875', 'Re-bonjour, today we will practice some of vary amin anana. it is a mixing languages, but not very helpful for ou education freedom, what i am saying, we are not in daily stoic, we are in boite à doléance. And yet, i am still wondering what is the purpose', 'RANDRIANARISON', 'Johns', '2023-01-24', 3, '10:44:43');
+INSERT INTO stage5.doleance( id, session_navigateur, e_mail, titre, cin, numero_telephone, message, nom, prenom, date_publication, id_autorite, heure_publication ) VALUES ( 18, 'session518.4698767437472', null, 'Tuesday', null, null, 'Mmmh, it was not completed. Half of message did not send, Good news,we have resolved the issues, but i have no clue what is going on, Afterwards i am just a person who want to disturb the organization hihihihihihihihi, Sorry you do not know who I am, I am just a girl with a wide thick, Love you Have good day, and one more thing, your wife can be good wife but never better on bed than me hahahahahahah just joking. Thank you to read', null, null, '2023-01-24', 3, '10:57:36');
+INSERT INTO stage5.doleance( id, session_navigateur, e_mail, titre, cin, numero_telephone, message, nom, prenom, date_publication, id_autorite, heure_publication ) VALUES ( 19, 'session948.1640243568852', null, 'Wednesday 2', null, null, 'Hi, i suppose it is news. So we should start a new test for today. Not today we are here to focus on the project.Good morning to you misy update kely', null, null, '2023-01-25', 3, '07:52:53');
+INSERT INTO stage5.doleance( id, session_navigateur, e_mail, titre, cin, numero_telephone, message, nom, prenom, date_publication, id_autorite, heure_publication ) VALUES ( 20, 'session948.1640243568852', null, 'Wednesday 1', null, null, 'Hello everyone we are not perfect at all. It is a test. Sit Beneath tree.', null, null, '2023-01-25', 3, '07:53:53');
+INSERT INTO stage5.doleance( id, session_navigateur, e_mail, titre, cin, numero_telephone, message, nom, prenom, date_publication, id_autorite, heure_publication ) VALUES ( 21, 'session948.1640243568852', 'johns.irintsoa@gmail.com', 'Wednesday 3', '112111211211', '0341752875', 'Among us is the traitor, Why do argue you each other? there is non-sense, You should pay attention of everything, I do not care what is happening the only i want is calm and tranquilitty.Okay? Bye.', 'RANDRIANARISON', 'Johns', '2023-01-25', 3, '08:15:08');
+INSERT INTO stage5.doleance( id, session_navigateur, e_mail, titre, cin, numero_telephone, message, nom, prenom, date_publication, id_autorite, heure_publication ) VALUES ( 22, 'session701.2027086467638', null, 'Thursday night', null, null, 'It is a last test for today. I want to make sure about the popup show if it works. Good night to you adminstrator. Do not forget to pray, I love you ', null, null, '2023-01-26', 3, '22:25:56');
+INSERT INTO stage5.doleance( id, session_navigateur, e_mail, titre, cin, numero_telephone, message, nom, prenom, date_publication, id_autorite, heure_publication ) VALUES ( 23, 'session733.2137905238567', null, 'Friday', null, null, 'Test i want to see if it works perfectly but do not worry, behave a trustworthy not untrustworthy person okay, I lalalallalalalalalal love you kisss yo you ', null, null, '2023-01-27', 3, '15:22:40');
+INSERT INTO stage5.doleance( id, session_navigateur, e_mail, titre, cin, numero_telephone, message, nom, prenom, date_publication, id_autorite, heure_publication ) VALUES ( 24, 'session94.11554778211628', null, 'Monday 30', null, null, 'It is a test for us, I can not be your boyfriend', null, null, '2023-01-30', 3, '09:18:24');
+INSERT INTO stage5.doleance( id, session_navigateur, e_mail, titre, cin, numero_telephone, message, nom, prenom, date_publication, id_autorite, heure_publication ) VALUES ( 25, 'session545.7728144861633', null, 'Monday 30 part 2', null, null, 'Never skip work out time you will not regret it, otherwise be well', null, null, '2023-01-30', 3, '09:19:42');
+INSERT INTO stage5.doleance( id, session_navigateur, e_mail, titre, cin, numero_telephone, message, nom, prenom, date_publication, id_autorite, heure_publication ) VALUES ( 26, 'session887.9265175160962', null, 'Tuesday 5', null, null, 'Hello world. We are not here for you', null, null, '2023-01-31', 3, '14:39:02');
+INSERT INTO stage5.doleance( id, session_navigateur, e_mail, titre, cin, numero_telephone, message, nom, prenom, date_publication, id_autorite, heure_publication ) VALUES ( 28, 'session263.6617506296885', null, 'Tuesday 8', null, null, 'Hi you are not alon buddy I want you for everything in my life, So keep going you little brat, we need you, All of us need you.', null, null, '2023-01-31', 3, '15:14:21');
+INSERT INTO stage5.doleance( id, session_navigateur, e_mail, titre, cin, numero_telephone, message, nom, prenom, date_publication, id_autorite, heure_publication ) VALUES ( 29, 'session263.6617506296885', null, 'Tuesday 8', null, null, 'Hi you are not alone buddy I want you for everything in my life, So keep going you little brat, we need you, All of us need you.', null, null, '2023-01-31', 2, '15:16:43');
+INSERT INTO stage5.doleance( id, session_navigateur, e_mail, titre, cin, numero_telephone, message, nom, prenom, date_publication, id_autorite, heure_publication ) VALUES ( 30, 'session520.7831797049284', 'johns.irintsoa@gmail.com', 'Wednesday 1st Ferbuary', '354545345433', '0341752875', 'MMmmh We made it right? We are february, January ended yesterday, Thinking fast and slow, that is the new chapter of this month. GOGOGOGOGOGOGOGO!!!!!!!!!!!!!', 'RANDRIANARISON', 'Johns', '2023-02-01', 3, '08:28:22');
+INSERT INTO stage5.doleance( id, session_navigateur, e_mail, titre, cin, numero_telephone, message, nom, prenom, date_publication, id_autorite, heure_publication ) VALUES ( 31, 'session125.44095828487345', 'johns.irintsoa18@gmail.com', 'Wednesday 2 ', '445735354354', '0341752875', 'Never give up, whether you are not win today perhaps the next day you will.', 'RANDRIANARISON', 'Johns ', '2023-02-01', 3, '08:41:04');
+INSERT INTO stage5.doleance( id, session_navigateur, e_mail, titre, cin, numero_telephone, message, nom, prenom, date_publication, id_autorite, heure_publication ) VALUES ( 32, 'session177.36852525378555', null, 'Wednesday 3', null, null, 'You will  not survive, you are just suffocating us, There is no us, Since you ignore my presence for everything I have done many things changed', null, null, '2023-02-01', 3, '08:42:38');
+INSERT INTO stage5.doleance( id, session_navigateur, e_mail, titre, cin, numero_telephone, message, nom, prenom, date_publication, id_autorite, heure_publication ) VALUES ( 33, 'session765.2613752804665', 'johns.irintsoa@gmail.com', 'Wednesday 5', '765725545545', '0341752875', 'I am here for you so open up, Crank up the bath,', 'RANDRIANARISON', 'Johns', '2023-02-01', 3, '09:44:00');
 INSERT INTO stage5.entretien_demande_stage( heure_debut, heure_fin, id, id_demande_stage, id_date_heure_disponible_autorite, date_debut, date_fin ) VALUES ( '08:30:00', '09:00:00', 117, 14, 676, '2023-01-12', '2023-01-12');
 INSERT INTO stage5.entretien_demande_stage( heure_debut, heure_fin, id, id_demande_stage, id_date_heure_disponible_autorite, date_debut, date_fin ) VALUES ( '08:30:00', '09:00:00', 118, 14, 676, '2023-01-12', '2023-01-12');
 INSERT INTO stage5.entretien_demande_stage( heure_debut, heure_fin, id, id_demande_stage, id_date_heure_disponible_autorite, date_debut, date_fin ) VALUES ( '08:30:00', '09:00:00', 119, 14, 676, '2023-01-12', '2023-01-12');
 INSERT INTO stage5.entretien_demande_stage( heure_debut, heure_fin, id, id_demande_stage, id_date_heure_disponible_autorite, date_debut, date_fin ) VALUES ( '08:30:00', '09:00:00', 120, 14, 676, '2023-01-12', '2023-01-12');
 INSERT INTO stage5.entretien_demande_stage( heure_debut, heure_fin, id, id_demande_stage, id_date_heure_disponible_autorite, date_debut, date_fin ) VALUES ( '10:00:00', '10:30:00', 121, 16, 773, '2023-01-18', '2023-01-18');
 INSERT INTO stage5.entretien_demande_stage( heure_debut, heure_fin, id, id_demande_stage, id_date_heure_disponible_autorite, date_debut, date_fin ) VALUES ( '14:30:00', '15:00:00', 123, 16, 720, '2023-01-16', '2023-01-16');
+INSERT INTO stage5.entretien_demande_stage( heure_debut, heure_fin, id, id_demande_stage, id_date_heure_disponible_autorite, date_debut, date_fin ) VALUES ( '11:00:00', '11:30:00', 124, 17, 902, '2023-02-01', '2023-02-01');
 INSERT INTO stage5.pas_disponible( id, id_date_heure_disponible_autorite, id_date_heure_non_disponible_autorite ) VALUES ( 37, 685, 22);
 INSERT INTO stage5.pas_disponible( id, id_date_heure_disponible_autorite, id_date_heure_non_disponible_autorite ) VALUES ( 38, 686, 22);
 INSERT INTO stage5.pas_disponible( id, id_date_heure_disponible_autorite, id_date_heure_non_disponible_autorite ) VALUES ( 39, 687, 22);
@@ -4033,10 +4145,25 @@ INSERT INTO stage5.pas_disponible( id, id_date_heure_disponible_autorite, id_dat
 INSERT INTO stage5.pas_disponible( id, id_date_heure_disponible_autorite, id_date_heure_non_disponible_autorite ) VALUES ( 191, 883, 32);
 INSERT INTO stage5.pas_disponible( id, id_date_heure_disponible_autorite, id_date_heure_non_disponible_autorite ) VALUES ( 192, 884, 32);
 INSERT INTO stage5.pas_disponible( id, id_date_heure_disponible_autorite, id_date_heure_non_disponible_autorite ) VALUES ( 193, 885, 32);
+INSERT INTO stage5.pas_disponible( id, id_date_heure_disponible_autorite, id_date_heure_non_disponible_autorite ) VALUES ( 194, 896, 33);
+INSERT INTO stage5.pas_disponible( id, id_date_heure_disponible_autorite, id_date_heure_non_disponible_autorite ) VALUES ( 195, 897, 33);
+INSERT INTO stage5.pas_disponible( id, id_date_heure_disponible_autorite, id_date_heure_non_disponible_autorite ) VALUES ( 196, 898, 33);
+INSERT INTO stage5.pas_disponible( id, id_date_heure_disponible_autorite, id_date_heure_non_disponible_autorite ) VALUES ( 197, 899, 33);
+INSERT INTO stage5.pas_disponible( id, id_date_heure_disponible_autorite, id_date_heure_non_disponible_autorite ) VALUES ( 198, 900, 33);
+INSERT INTO stage5.pas_disponible( id, id_date_heure_disponible_autorite, id_date_heure_non_disponible_autorite ) VALUES ( 201, 929, 34);
+INSERT INTO stage5.pas_disponible( id, id_date_heure_disponible_autorite, id_date_heure_non_disponible_autorite ) VALUES ( 202, 930, 34);
+INSERT INTO stage5.pas_disponible( id, id_date_heure_disponible_autorite, id_date_heure_non_disponible_autorite ) VALUES ( 203, 931, 34);
+INSERT INTO stage5.pas_disponible( id, id_date_heure_disponible_autorite, id_date_heure_non_disponible_autorite ) VALUES ( 204, 932, 34);
+INSERT INTO stage5.pas_disponible( id, id_date_heure_disponible_autorite, id_date_heure_non_disponible_autorite ) VALUES ( 208, 963, 35);
+INSERT INTO stage5.pas_disponible( id, id_date_heure_disponible_autorite, id_date_heure_non_disponible_autorite ) VALUES ( 209, 964, 35);
+INSERT INTO stage5.pas_disponible( id, id_date_heure_disponible_autorite, id_date_heure_non_disponible_autorite ) VALUES ( 210, 965, 35);
+INSERT INTO stage5.pas_disponible( id, id_date_heure_disponible_autorite, id_date_heure_non_disponible_autorite ) VALUES ( 211, 992, 36);
+INSERT INTO stage5.pas_disponible( id, id_date_heure_disponible_autorite, id_date_heure_non_disponible_autorite ) VALUES ( 212, 993, 36);
+INSERT INTO stage5.pas_disponible( id, id_date_heure_disponible_autorite, id_date_heure_non_disponible_autorite ) VALUES ( 213, 994, 36);
+INSERT INTO stage5.pas_disponible( id, id_date_heure_disponible_autorite, id_date_heure_non_disponible_autorite ) VALUES ( 214, 995, 36);
 INSERT INTO stage5.profil( mot_de_passe, nom_utilisateur, id, est_administrateur, id_autorite_enfant ) VALUES ( 'porte356', 'porte356@gmail.com', 1, 1, 1);
 INSERT INTO stage5.profil( mot_de_passe, nom_utilisateur, id, est_administrateur, id_autorite_enfant ) VALUES ( 'tale356', 'tale356@gmail.com', 2, 0, 1);
 INSERT INTO stage5.profil( mot_de_passe, nom_utilisateur, id, est_administrateur, id_autorite_enfant ) VALUES ( 'porteDSI', 'porteDSI@gmail.com', 3, 1, 2);
 INSERT INTO stage5.profil( mot_de_passe, nom_utilisateur, id, est_administrateur, id_autorite_enfant ) VALUES ( 'tale414', 'tale414@gmail.com', 5, 0, 2);
 INSERT INTO stage5.profil( mot_de_passe, nom_utilisateur, id, est_administrateur, id_autorite_enfant ) VALUES ( 'jean', 'jean', 6, 1, 3);
 INSERT INTO stage5.profil( mot_de_passe, nom_utilisateur, id, est_administrateur, id_autorite_enfant ) VALUES ( 'taleDGI', 'taleDGI', 7, 0, 3);
- 

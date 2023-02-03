@@ -18,7 +18,7 @@
                 <th scope="row">{{doleance.id}}</th>
                 <td>{{doleance.titre}}</td>
                 <td>{{doleance.type_doleance}}</td>
-                <td>{{doleance.intitule_code}}</td>
+                <td>{{doleance.sigle}}</td>
                 <td>
                     <button type="button" class="btn btn-warning" @click="modifier(doleance)"><i class="ri-edit-2-line"></i></button>
                     <button type="button" class="btn btn-danger" @click="supprimer(doleance)"><i class="ri-delete-bin-6-fill"></i></button>
@@ -42,32 +42,21 @@
 </template>
 <script>
 import DoleanceAPI from '../../api/doleance';
-import Swal from 'sweetalert'
+import swal from 'sweetalert'
+import Swal from 'sweetalert2'
 export default {
-    props:{
-        autorite:Object
-    },
     data(){
         return {
             showPopup: false,
             doleances: [],
             directions: [],
-
-            nom: "",
-            prenom: "",
-            e_mail: "",
-            cin: "",
-            numero_telephone:"",
-            titre: "",
-            message: "",
-            direction: ""
         };
     },
     async created() {
         const session = JSON.parse(sessionStorage.getItem('session_navigateur')).value
         const arg = {
-            // session_navigateur : 'session701.2027086467638',
-            session_navigateur : session,
+            session_navigateur : 'session877.7483667099051',
+            // session_navigateur : session,
         }
         this.doleances = await DoleanceAPI.liste_public(arg)
     },
@@ -80,9 +69,7 @@ export default {
             this.showPopup = !this.showPopup
             // console.log(value)
         },
-        getDataPopup(value){
-            this.showPopup = value
-        },
+
         async supprimer(value){
             Swal.fire({
                 title: 'Supprimer doléance',

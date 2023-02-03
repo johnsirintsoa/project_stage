@@ -1,8 +1,47 @@
 const express = require('express')
 const router = express.Router();
+const rohi = require('../database').rohi
 const db = require('../database').conn
 const db_name = require('../database').db_name
 const mailing = require('../Controllers/MailingController')
+
+
+router.post('/structure', async(req,res) =>{
+    // const con = connection.connectionBDD('rohi')
+    const sql = `SELECT 
+    child_id ,
+    child_libelle,
+    sigle, 
+    path, 
+    autorite_id, 
+    premier_responsable_id, 
+    niveau
+    FROM
+        rohi.t_structure e
+        where
+        (e.niveau = 'MIM'
+        or e.niveau = 'DG'
+        or e.niveau = 'DIR'
+        or e.niveau = 'SCE')
+        and
+		(e.path LIKE UPPER('%${req.body.path}%')
+        or e.child_libelle LIKE UPPER('%${req.body.path}%')
+		or e.sigle LIKE UPPER('%${req.body.path}%')
+        or e.parent_libelle LIKE UPPER('%${req.body.path}%')
+		or e.sigle_parent LIKE UPPER('%${req.body.path}%')
+		or e.direction_libelle LIKE UPPER('%${req.body.path}%')
+		or e.structure_entete LIKE UPPER('%${req.body.path}%')
+		or e.service_libele LIKE UPPER('%${req.body.path}%'))`
+    // console.log(sql)
+    rohi.query(sql, function(err,result){
+        if(err){
+            return res.send({ err });
+        }
+        else{
+            return res.json(result)    
+        }       
+    })
+})
 
 router.post('/calendrier', async (req,res) =>{
     const sql = `CALL calendrier_autorite(${req.body.id_autorite},${req.body.est_admin})`
