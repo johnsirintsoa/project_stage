@@ -37,7 +37,7 @@
                 if (DUREE) {
                     const arg = {
                         duree_en_plus: DUREE,
-                        id_entretien_stage: this.details_profil.id_entretien_stage
+                        id_entretien_stage: this.detail.id_entretien_stage
                     }
                     const response = await DemandeStage.prolonger(arg)
                     if(response.message){
