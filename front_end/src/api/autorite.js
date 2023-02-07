@@ -9,6 +9,10 @@ export default class AutoriteAPI{
         return res.data
     }
 
+    static async login(arg){
+        const res = await axios.post(url.concat('/login'),arg)
+        return res.data
+    }
 
     static async calendrier(id_autorite){
         const res = await axios.post(url.concat('/calendrier'),id_autorite)

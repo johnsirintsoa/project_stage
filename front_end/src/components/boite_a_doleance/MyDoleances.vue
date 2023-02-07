@@ -55,8 +55,8 @@ export default {
     async created() {
         const session = JSON.parse(sessionStorage.getItem('session_navigateur')).value
         const arg = {
-            session_navigateur : 'session877.7483667099051',
-            // session_navigateur : session,
+            // session_navigateur : 'session877.7483667099051',
+            session_navigateur : session,
         }
         this.doleances = await DoleanceAPI.liste_public(arg)
     },

@@ -189,7 +189,14 @@ const router = createRouter({
       path: '/autorite/evenements-calendrier',
       name: 'middle-liste-evenements',
       component: () => import('../views/middleOffice/EvenementsCalendrier.vue')
-    }
+    },
+
+    // Administrateur / autorité
+    {
+      path: '/back-office/',
+      name: 'back-office',
+      component: () => import('../views/back&middle/Home.vue')
+    },
   ]
 })
 

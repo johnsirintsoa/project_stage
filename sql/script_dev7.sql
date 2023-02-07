@@ -4039,4 +4039,4 @@ INSERT INTO stage5.profil( mot_de_passe, nom_utilisateur, id, est_administrateur
 INSERT INTO stage5.profil( mot_de_passe, nom_utilisateur, id, est_administrateur, id_autorite_enfant ) VALUES ( 'tale414', 'tale414@gmail.com', 5, 0, 2);
 INSERT INTO stage5.profil( mot_de_passe, nom_utilisateur, id, est_administrateur, id_autorite_enfant ) VALUES ( 'jean', 'jean', 6, 1, 3);
 INSERT INTO stage5.profil( mot_de_passe, nom_utilisateur, id, est_administrateur, id_autorite_enfant ) VALUES ( 'taleDGI', 'taleDGI', 7, 0, 3);
- 
+

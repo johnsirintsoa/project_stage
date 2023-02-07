@@ -7,9 +7,10 @@
     <div  class='demo-app' >
         <div class='demo-app-main'>
             <InputAutorite
-                @events="getEvents($event)"
-                @autorite="getAutorite($event)"
+              @events="getEvents($event)"
+              @autorite="getAutorite($event)"
             />
+
             <FullCalendar
                 ref="fullCalendar"
                 class='demo-app-calendar'
@@ -30,7 +31,6 @@
             <p  @click="togglePopupAudience"><i class="ri-close-line" style="font-size: 35px;position: fixed; margin-left: 88%;"></i></p>
             <div class="card-body">
                 
-
                  <div v-if="audience.id === '' ">
                     <h2 class="card-title">Ajouter une audience</h2>
                     <form class="row g-3" @submit.prevent="ajouter" autocomplete="off">
@@ -170,6 +170,7 @@
                                     <option v-if="audience.actual_place" selected disabled>
                                         {{audience.actual_place["date_disponible"]}} {{audience.actual_place["heure_debut"]}} à {{audience.actual_place["heure_fin"]}}
                                     </option>
+
                                     <option v-for="(item, index) in audience.places_disponible" :key="item.id_date_heure_disponible_autorite" :value="item.id_date_heure_disponible_autorite">
                                         {{item.date_disponible}} {{item.heure_debut}} à {{item.heure_fin}}
                                     </option>
@@ -186,6 +187,7 @@
 
                     </form> 
                 </div>
+
             </div>
         </div>
     </teleport>

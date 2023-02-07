@@ -1,6 +1,12 @@
-<template>        
-    <div class="row mb-3">
-        <!-- <label class="col-sm-1 col-form-label">Autorité:</label> -->
+<script setup>
+    import structure from '../tStructureComponent/TstructurePublic.vue';
+</script>
+
+<template>       
+    <structure
+        @getAutoriteClicked="getAutorite"
+    /> 
+    <!-- <div class="row mb-3">
         <div class="col-sm-12  ">
           <select class="form-select" v-model="autorite" >
             <option selected="" value="" disabled>Choisir autorité</option>
@@ -9,7 +15,7 @@
             </option>
           </select>
         </div>
-      </div>
+      </div> -->
 </template>
 
 <script>
@@ -33,14 +39,16 @@
             async listAutorites(){
                 return await AutoriteApi.liste()
             },
-            // Liste des disponibiltes a afficher
-            // async actualEvents(autorite){
-            //     // console.log(autorite)
-            //     if(this.interfaceUtilisateur === 'Public'){
-            //         this.$emit('events', await actual_events_public(autorite.id))   
-            //     }
-            // }
+
+            async getAutorite(value){
+                // console.log(value)
+                this.autorite = value.child_id 
+            }
         },
+        emits:[
+            'events',
+            'autorite'
+        ],
 
         watch:{
             autorite: async function (aut) {

@@ -1,13 +1,8 @@
 <script setup>
     import { RouterLink, RouterView } from 'vue-router'
-    // import HelloWorld from './components/HelloWorld.vue'
-    // import dm_autorite_controller from './controllers/BackOffice/DemandeAudienceAutoriteController'
 </script>
-
 <template>
 
-    <!-- ======= Header ======= -->
-    
     <header id="header" class="header fixed-top d-flex align-items-center">
 
       <div class="d-flex align-items-center justify-content-between">
@@ -17,15 +12,6 @@
         </a>
         <i class="bi bi-list toggle-sidebar-btn"></i>
       </div>
-      <!-- End Logo -->
-
-      <!-- <div class="search-bar">
-        <form class="search-form d-flex align-items-center" method="POST" action="#">
-          <input type="text" name="query" placeholder="Search" title="Enter search keyword">
-          <button type="submit" title="Search"><i class="bi bi-search"></i></button>
-        </form>
-      </div> -->
-      <!-- End Search Bar -->
 
       <nav class="header-nav ms-auto">
         <ul class="d-flex align-items-center">
@@ -41,13 +27,13 @@
 
             <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
               <img src="../../assets/img/profile-img.jpg" alt="Profile" class="rounded-circle">
-              <span class="d-none d-md-block dropdown-toggle ps-2">{{autorite.intitule_code}}</span>
+              <span class="d-none d-md-block dropdown-toggle ps-2">{{autorite.sigle}}</span>
             </a><!-- End Profile Iamge Icon -->
 
             <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
               <li class="dropdown-header">
-                <h6>{{autorite.intitule_code}}</h6>
-                <span>{{autorite.intitule}}</span>
+                <h6>{{autorite.sigle}}</h6>
+                <span>{{autorite.child_libelle}}</span>
               </li>
               <li>
                 <hr class="dropdown-divider">
@@ -97,10 +83,7 @@
       </nav><!-- End Icons Navigation -->
 
     </header>
-    
-    <!-- End Header -->
 
-    <!-- ======= Sidebar ======= -->
     <aside id="sidebar" class="sidebar">
 
       <ul class="sidebar-nav" id="sidebar-nav">
@@ -120,7 +103,7 @@
           <RouterLink to="/administrateur/boite-a-doleance" >
           <a class="nav-link collapsed" >
             <i class="bi bi-question-circle"></i>
-            <span>Doléance</span>
+            <span>Boite à doléance</span>
           </a>
           </RouterLink>
         </li><!-- End F.A.Q Page Nav -->
@@ -129,7 +112,7 @@
           <RouterLink to="/administrateur/demande-stage" >
           <a class="nav-link collapsed" href="">
             <i class="bi bi-envelope"></i>
-            <span>Stage</span>
+            <span>Demande de stage</span>
           </a>
           </RouterLink>
         </li><!-- End Contact Page Nav -->
@@ -137,14 +120,14 @@
         <li class="nav-item">
           <RouterLink to='/administrateur/demande-audience/autorite' >
             <a class="nav-link collapsed" href="">
-            <i class="bi bi-calendar-plus"></i><span>Faire une audience</span>
+            <i class="bi bi-calendar-plus"></i><span>Demande d'audience</span>
             </a>
           </RouterLink>
         </li>
         <li class="nav-item">
           <RouterLink to='/administrateur/demande-audience/mes-audiences' >
             <a class="nav-link collapsed" href="">
-            <i class="bi bi-calendar3-range"></i><span>Mes audiences</span>
+                <i class="bi bi-calendar3-range"></i><span>Mes évènements</span>
             </a>
           </RouterLink>
         </li>
@@ -166,8 +149,7 @@
 
       </ul>
 
-    </aside><!-- End Sidebar-->
-    
+    </aside>
 
     <RouterView />
     
@@ -175,30 +157,26 @@
 
 <script>
 
-  export default {
-    data() {
-      return {
-        autorite:''
-      }
-      
-    },
-    created() {
-      const ses_admin = JSON.parse(sessionStorage.getItem('administrateur'))
-      // this.autorite = JSON.parse(sessionStorage.getItem('administrateur'))
-      if(ses_admin == null){
-        this.$router.push({path: '/login'});
-      }
-      else{
-        this.autorite = JSON.parse(sessionStorage.getItem('administrateur'))
-      }
-    }, 
-    
-    methods: {
-      deconnection(){
-        sessionStorage.removeItem('administrateur')
-        this.$router.push({path: '/login'});
-      }
-    }, 
-  }
+    export default {
 
+        emits:[
+            'structure'
+        ],
+
+        created() {
+            const ses_admin = JSON.parse(sessionStorage.getItem('structure'))
+            if(ses_admin != null){
+                this.autorite = JSON.parse(sessionStorage.getItem('structure'))
+                this.$emit('structure', this.autorite)
+            }
+        },
+
+        methods: {
+            deconnection(){
+                sessionStorage.removeItem('structure')
+                this.$router.push({path: '/login'});
+            }
+        },   
+    }
+  
 </script>

@@ -1,3 +1,7 @@
+<script setup>
+    import structure from '../tStructureComponent/TstructurePublic.vue'
+</script>
+
 <template>
     <div class="card">
         <div class="card-body">
@@ -87,17 +91,14 @@
             </div>
 
             <div class="row mb-3">
-            <label for="validationCustom02" class="form-label">Direction:</label>
-            <div class="col-sm-12">
-                <select class="form-select" id="autorite" name="autorite" v-model="stage.id_autorite_enfant" aria-label="Default select example" required="">
-                    <option selected disabled value="">Direction</option>
-                    <option v-for="(autorite,index)  in autorites"  :value="autorite.id" > {{autorite.intitule}}</option>
-                </select>
+                <label for="validationCustom02" class="form-label">Direction:</label>
+                <structure
+                    @getAutoriteClicked="getAutorite"
+                /> 
             </div>
-            <div class="invalid-feedback">
-                Choisissez une direction
-            </div>
-            </div>
+
+
+
 
             <div class="row mb-3">
             <label for="validationDefault01" class="form-label">CV:</label>
@@ -136,6 +137,7 @@
         </div>
     </div>
 </template>
+
 <script>
 // import DemandeStageAPI from '../../api/demande_stage';
 import axios from 'axios';
@@ -187,6 +189,12 @@ export default {
             this.stage.lettre_introduction = event.target.files[0]
 
         },
+
+        getAutorite(value){
+            this.stage.id_autorite_enfant = value.child_id
+            console.log(value)
+        },
+
         async addDemandeStage(){
             const demande_stage = new FormData()
             demande_stage.append('nom',this.stage.nom)

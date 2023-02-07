@@ -19,7 +19,7 @@ router.post('/structure', async(req,res) =>{
     FROM
         rohi.t_structure e
         where
-        (e.niveau = 'MIM'
+        (e.niveau = 'MIN'
         or e.niveau = 'DG'
         or e.niveau = 'DIR'
         or e.niveau = 'SCE')
@@ -31,7 +31,7 @@ router.post('/structure', async(req,res) =>{
 		or e.sigle_parent LIKE UPPER('%${req.body.path}%')
 		or e.direction_libelle LIKE UPPER('%${req.body.path}%')
 		or e.structure_entete LIKE UPPER('%${req.body.path}%')
-		or e.service_libele LIKE UPPER('%${req.body.path}%'))`
+		or e.service_libele LIKE UPPER('%${req.body.path}%')) limit 10`
     // console.log(sql)
     rohi.query(sql, function(err,result){
         if(err){
@@ -40,6 +40,39 @@ router.post('/structure', async(req,res) =>{
         else{
             return res.json(result)    
         }       
+    })
+})
+
+router.post('/login', async(req,res) =>{
+    const sql = `select 
+    ts.child_id,
+    ts.premier_responsable_id,
+    ts.autorite_id,
+    ts.child_libelle,
+    ts.sigle,
+    ts.niveau
+    from rohi.t_structure ts 
+    join rohi.user u on ts.premier_responsable_id = u.id
+    where
+    (ts.niveau = 'MIN'
+    or ts.niveau = 'DG'
+    or ts.niveau = 'DIR'
+    or ts.niveau = 'SCE')
+    and u.login = '${req.body.nom_utilisateur}'
+    and ts.premier_responsable_id = (select 
+    u.id
+    from rohi.user u 
+    where 
+    u.password = (SELECT AES_ENCRYPT('${req.body.mot_de_passe}','lHommeEstNaturellementBonCEestLaSocieteQuiLeCorrompt-Rousseau')));
+    `
+    // res.send(sql)
+    rohi.query(sql, function(err,result){
+        if(err){
+            return res.send({err})
+        }
+        else{
+            return res.json(result[0])
+        }
     })
 })
 
@@ -90,10 +123,6 @@ router.post('/place_disponible', async (req,res) =>{
         }
     })
 })
-
-
-
-
 
 router.get('/liste',async(req,res)=>{
     let sql = `SELECT
