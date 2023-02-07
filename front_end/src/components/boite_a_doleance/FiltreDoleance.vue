@@ -24,7 +24,7 @@
                     date2: this.date2,
                     type_doleance: this.type_doleance,
                     nbr_filtre: this.nbr_filtre,
-                    id_autorite: this.autorite.id_autorite_enfant
+                    id_autorite: this.autorite.child_id
                 }
                 this.$emit("rechercherDoleance",await DoleanceApi.filtre(filtre))
             },
@@ -35,7 +35,7 @@
                     date2: newDate2,
                     type_doleance: this.type_doleance,
                     nbr_filtre: this.nbr_filtre,
-                    id_autorite: this.autorite.id_autorite_enfant
+                    id_autorite: this.autorite.child_id
                 }
                 this.$emit("rechercherDoleance",await DoleanceApi.filtre(filtre))
             },
@@ -45,7 +45,7 @@
                     date2: this.date2,
                     type_doleance: newValue,
                     nbr_filtre: this.nbr_filtre,
-                    id_autorite: this.autorite.id_autorite_enfant
+                    id_autorite: this.autorite.child_id
                 }
                 this.$emit("rechercherDoleance",await DoleanceApi.filtre(filtre)) 
             },
@@ -55,8 +55,8 @@
                     date1: this.date1,
                     date2: this.date2,
                     type_doleance: this.type_doleance,
-                    nbr_filtre: newNbr,
-                    id_autorite: this.autorite.id_autorite_enfant
+                    nbr_filtre: newNbr  ,
+                    id_autorite: this.autorite.child_id
                 }
                 this.$emit("rechercherDoleance",await DoleanceApi.filtre(filtre)) 
             }
@@ -69,7 +69,7 @@
                     date2: this.date2,
                     type_doleance: this.type_doleance,
                     nbr_filtre: this.nbr_filtre,
-                    id_autorite: this.autorite.id_autorite_enfant
+                    id_autorite: this.autorite.child_id
                 }
                 console.log(filtre)
                 this.$emit("rechercherDoleance",await DoleanceApi.filtre(filtre))

@@ -29,6 +29,67 @@
         async created() {
             this.domaines = await DomaineApi.allDomaine()
         },
+
+        watch:{
+            async date1(newValue){
+                const newDate1 = newValue
+                const filtre = {
+                    date1: newDate1,
+                    date2: this.date2,
+                    nom: this.nom,
+                    prenom: this.prenom,
+                    id_autorite: this.autorite.child_id
+                }
+                this.$emit("rechercherStages",await StageController.filtre(filtre))
+            },
+            async date2(newValue){
+                const newDate2 = newValue
+                const filtre = {
+                    date1: this.date1,
+                    date2: newDate2,
+                    nom: this.nom,
+                    prenom: this.prenom,
+                    id_autorite: this.autorite.child_id
+                }
+                this.$emit("rechercherStages",await StageController.filtre(filtre))
+            },
+            async nom(newValue){
+                const newNom = newValue
+                const filtre = {
+                    date1: this.date1,
+                    date2: this.date2,
+                    nom: newNom,
+                    prenom:this.prenom,
+                    id_autorite: this.autorite.child_id
+                }
+                this.$emit("rechercherStages",await StageController.filtre(filtre))
+            },
+            async prenom(newValue){
+                const newPrenom = newValue
+                const filtre = {
+                    date1: this.date1,
+                    date2: this.date2,
+                    nom: this.nom,
+                    prenom: newPrenom,
+                    id_autorite: this.autorite.child_id
+                }
+                this.$emit("rechercherStages",await StageController.filtre(filtre))
+            },
+            async domaine(newValue){
+                const newDomaine = newValue
+                const filtre = {
+                    date1: this.date1,
+                    date2: this.date2,
+                    nom: this.nom,
+                    prenom: this.prenom,
+                    id_domaine: this.domaine.id,
+                    id_autorite: this.autorite.child_id
+                }
+                this.$emit("rechercherStages",await StageController.filtre(filtre))
+            }
+
+        },
+
         methods: {
             async rechercher(e){
                 const ses = JSON.parse(sessionStorage.getItem('administrateur'))
@@ -49,6 +110,7 @@
     }
     
 </script>
+
 <template>
 
     <div class="row mb-3">

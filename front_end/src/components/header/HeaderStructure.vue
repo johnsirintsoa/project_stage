@@ -100,16 +100,16 @@
         </li><!-- End Profile Page Nav -->
 
         <li class="nav-item" >
-          <RouterLink to="/administrateur/boite-a-doleance" >
-          <a class="nav-link collapsed" >
-            <i class="bi bi-question-circle"></i>
-            <span>Boite à doléance</span>
-          </a>
+          <RouterLink to="/back-office/boite-a-doleance" >
+            <a class="nav-link collapsed" >
+              <i class="bi bi-question-circle"></i>
+              <span>Boite à doléance</span>
+            </a>
           </RouterLink>
         </li><!-- End F.A.Q Page Nav -->
 
         <li class="nav-item">
-          <RouterLink to="/administrateur/demande-stage" >
+          <RouterLink to="/back-office/demande-stage" >
           <a class="nav-link collapsed" href="">
             <i class="bi bi-envelope"></i>
             <span>Demande de stage</span>
@@ -118,34 +118,19 @@
         </li><!-- End Contact Page Nav -->
 
         <li class="nav-item">
-          <RouterLink to='/administrateur/demande-audience/autorite' >
+          <RouterLink to='/back-office/demande-audience' >
             <a class="nav-link collapsed" href="">
             <i class="bi bi-calendar-plus"></i><span>Demande d'audience</span>
             </a>
           </RouterLink>
         </li>
         <li class="nav-item">
-          <RouterLink to='/administrateur/demande-audience/mes-audiences' >
+          <RouterLink to='/back-office/calendrier-evenementiel' >
             <a class="nav-link collapsed" href="">
                 <i class="bi bi-calendar3-range"></i><span>Mes évènements</span>
             </a>
           </RouterLink>
         </li>
-        <!-- <li class="nav-item">
-          <RouterLink to='/administrateur/demande-audience/audience-valider' >
-            <a class="nav-link collapsed" href="">
-            <i class="bi bi-calendar-check"></i><span>Audience validées</span>
-            </a>
-          </RouterLink>
-        </li>
-        <li class="nav-item">
-          <RouterLink to='/administrateur/demande-audience/audience-reporter' >
-            <a class="nav-link collapsed" href="">
-            <i class="bi bi-calendar-x"></i><span>Audience reportées</span>
-            </a>
-          </RouterLink>
-        </li> -->
-
 
       </ul>
 

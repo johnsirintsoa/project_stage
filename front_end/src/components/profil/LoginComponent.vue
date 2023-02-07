@@ -61,16 +61,16 @@
                 est_administrateur: false
             }
         },
-        // async created() {
-        //     this.autorites = await AutoriteApi.liste()
-        //     if(sessionStorage.getItem('structure')){
-        //         this.$router.push({path: '/back-office/'});
-        //     }
+        async created() {
+            // this.autorites = await AutoriteApi.liste()
+            if(sessionStorage.getItem('structure')){
+                this.$router.push({path: '/back-office/'});
+            }
 
-        //     else{
-        //         this.$router.push({path: '/login'});
-        //     }
-        // },
+            else{
+                this.$router.push({path: '/login'});
+            }
+        },
         methods: {
     
             afficher(event){
@@ -111,6 +111,7 @@
 
                     if(login != '') {
                         sessionStorage.setItem('structure',JSON.stringify(login))
+                        this.$router.push({path: '/back-office/'});
                     }
                     else{
                         this.errors = `Le compte n'existe pas`

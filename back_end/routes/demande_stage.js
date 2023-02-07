@@ -97,7 +97,7 @@ router.post('/filtre', async(req,res)=>{
         if(err){
             return res.json(err);
         }
-        console.log(sql)
+        // console.log(sql)
         res.json(result[0])
     })
 })

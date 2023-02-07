@@ -23,14 +23,7 @@ const router = createRouter({
       // which is lazy-loaded when the route is visited.
       component: () => import('../views/frontOffice/DemandeStage.vue')
     },
-    {
-      path: '/demande-emploi',
-      name: 'front-demande-emploi',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/frontOffice/DemandeEmploi.vue')
-    },
+
     {
       path: '/demande-audience/autorite',
       name: 'front-demande-audience',
@@ -76,14 +69,7 @@ const router = createRouter({
       // which is lazy-loaded when the route is visited.
       component: () => import('../views/backOffice/DetailDemandeStage.vue')
     },
-    {
-      path: '/administrateur/demande-emploi',
-      name: 'back-demande-emploi',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/backOffice/DemandeEmploi.vue')
-    },
+
     // {
     //   path: '/administrateur/demande-audience',
     //   name: 'back-demande-audience',
@@ -152,14 +138,7 @@ const router = createRouter({
       // which is lazy-loaded when the route is visited.
       component: () => import('../views/middleOffice/DemandeStage.vue')
     },
-    {
-      path: '/autorite/demande-emploi',
-      name: 'middle-demande-emploi',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/middleOffice/DemandeEmploi.vue')
-    },
+
     {
       path: '/autorite/demande-audience/autorite',
       name: 'middle-demande-audience-autorite',
@@ -196,6 +175,26 @@ const router = createRouter({
       path: '/back-office/',
       name: 'back-office',
       component: () => import('../views/back&middle/Home.vue')
+    },
+    {
+      path: '/back-office/boite-a-doleance',
+      name: 'back-office-doleance',
+      component: () => import('../views/back&middle/BoiteDoleance.vue')
+    },
+    {
+      path: '/back-office/demande-stage',
+      name: 'back-office-demande-stage',
+      component: () => import('../views/back&middle/DemandeStage.vue')
+    },
+    {
+      path: '/back-office/demande-audience',
+      name: 'back-office-demande-audience',
+      component: () => import('../views/back&middle/DemandeAudience.vue')
+    },
+    {
+      path: '/back-office/calendrier-evenementiel',
+      name: 'back-office-calendrier-evenementiel',
+      component: () => import('../views/back&middle/MesEvenements.vue')
     },
   ]
 })

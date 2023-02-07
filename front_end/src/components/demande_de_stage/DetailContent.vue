@@ -5,7 +5,8 @@
     import swal from 'sweetalert';
     export default{
         props:{
-            id_demande_stage:String
+            id_demande_stage:String,
+            stage:Object
         },
 
         data() {

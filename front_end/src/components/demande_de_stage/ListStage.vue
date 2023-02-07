@@ -1,25 +1,5 @@
-<script setup>
-
-import Swal from 'sweetalert2';
-import swal from 'sweetalert';
-import EntretienDemandeStage from '../../api/entretien_stage'
-import func from '../../func/function'
-import PopupEntretien from './FaireEntretien.vue'
-import BarresRecherche from './BarresRecherche.vue'
-import emailjs from 'emailjs-com';
-import DemandeStageAPI from '../../api/demande_stage';
-import StageController from '../../controllers/StageController'
-import EntretienStage from '../../api/entretien_stage';
-
-
-</script>
 <template>
-    <nav>
-        <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="">Demandes de stages</a></li>
-          <li class="breadcrumb-item active">Liste</li>
-        </ol>
-    </nav>
+
 
     <BarresRecherche
         v-model:date1="date1"
@@ -88,6 +68,17 @@ import EntretienStage from '../../api/entretien_stage';
 
 <script>
 
+import Swal from 'sweetalert2';
+import swal from 'sweetalert';
+import EntretienDemandeStage from '../../api/entretien_stage'
+import func from '../../func/function'
+import PopupEntretien from './FaireEntretien.vue'
+import BarresRecherche from './BarresRecherche.vue'
+import emailjs from 'emailjs-com';
+import DemandeStageAPI from '../../api/demande_stage';
+import StageController from '../../controllers/StageController'
+import EntretienStage from '../../api/entretien_stage';
+
 export default {
 
     data() {
@@ -98,12 +89,12 @@ export default {
             prenom:'',
             domaine: null,
             stage_email:{
-              nom:'',
-              email:'',
-              curriculum_vitae:'',
-              lettre_motivation:'',
-              lettre_introduction:'',
-              date_entretien:''
+                nom:'',
+                email:'',
+                curriculum_vitae:'',
+                lettre_motivation:'',
+                lettre_introduction:'',
+                date_entretien:''
             },
             stages: ''
         }

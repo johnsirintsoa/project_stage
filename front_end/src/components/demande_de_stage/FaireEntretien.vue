@@ -10,7 +10,7 @@ import Swal from 'sweetalert2';
 import swal from 'sweetalert';
 
 export default {
-    props:{
+    props: {
         stage:Object,
         autorite:Object
     },
