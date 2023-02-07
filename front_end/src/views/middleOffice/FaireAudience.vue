@@ -27,7 +27,7 @@
 
     export default {
         components: {
-        FullCalendar
+            FullCalendar
         },
 
         data() {
@@ -325,6 +325,7 @@
         <NavAudiences 
             :autorite="autorite"    
         />
+
         <div  class='demo-app' >
             <!-- <div  class='demo-app-sidebar'> -->
             
@@ -341,7 +342,9 @@
             </FullCalendar>
             </div>
         </div>
+    
     </main>
+
 </template>
 
 <style lang='css'>

@@ -213,6 +213,12 @@
         components: {
             FullCalendar
         },
+        
+        props:{
+          autorite_sender: Object,
+          autorite_receiver: Object
+        },
+
         data() {
             return {
                 calendarOptions: {
@@ -386,6 +392,7 @@
 
     }
 </script>
+
 <!-- <style lang='css'>
     @import url('./css/style.css');    
   </style> -->

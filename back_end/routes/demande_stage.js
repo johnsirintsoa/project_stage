@@ -91,7 +91,7 @@ router.post('/liste',async(req,res)=>{
 })
 
 router.post('/filtre', async(req,res)=>{
-    const sql = `CALL filtre_stage ('${req.body.date1}','${req.body.date2}','${req.body.nom}','${req.body.prenom}',${req.body.id_domaine},${req.body.id_autorite_enfant})`
+    const sql = `CALL filtre_stage ('${req.body.date1}','${req.body.date2}','${req.body.nom}','${req.body.prenom}',${req.body.id_domaine},${req.body.id_autorite})`
     console.log(req.body)
     var query = db.query(sql, function(err, result) {
         if(err){

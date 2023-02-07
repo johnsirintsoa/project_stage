@@ -9,6 +9,11 @@ export default class AutoriteAPI{
         return res.data
     }
 
+    static async structureBackOffice(path){
+        const res = await axios.post(url.concat('/backOffice/structure'),path)
+        return res.data
+    }
+
     static async login(arg){
         const res = await axios.post(url.concat('/login'),arg)
         return res.data

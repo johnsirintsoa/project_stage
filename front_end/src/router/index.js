@@ -196,6 +196,11 @@ const router = createRouter({
       name: 'back-office-calendrier-evenementiel',
       component: () => import('../views/back&middle/MesEvenements.vue')
     },
+    {
+      path: '/back-office/demande-stage/detail/:id_demande_stage',
+      name: 'back-office-detail-demande-stage',
+      component: () => import('../views/back&middle/DetailDemandeStage.vue')
+    },
   ]
 })
 

@@ -63,9 +63,13 @@
                                             :stage="stage" 
                                             :autorite="autorite" 
                                         /> -->
-                                        <button type="button" class="btn btn-info" @click="detailStage(stage)">
-                                            <i class="bi bi-info-circle"></i>
-                                        </button>
+                                        <div v-if="stage['id'] !== undefined">
+                                            <RouterLink :to="{name: 'back-office-detail-demande-stage',params:{id_demande_stage:stage['id']}}">
+                                                <button type="button" class="btn btn-info">
+                                                    <i class="bi bi-info-circle"></i>
+                                                </button>
+                                            </RouterLink> 
+                                        </div>
 
                                     </td>
                                 </tr>
@@ -110,7 +114,7 @@
                 nom: this.nom,
                 prenom: this.prenom,
                 id_domaine: this.domaine,
-                id_autorite_enfant: this.autorite.child_id
+                id_autorite: this.autorite.child_id
             }
             this.stages = await StageController.filtre(filtre)
         },

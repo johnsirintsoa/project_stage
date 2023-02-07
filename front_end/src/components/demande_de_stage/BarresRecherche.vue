@@ -38,6 +38,7 @@
                     date2: this.date2,
                     nom: this.nom,
                     prenom: this.prenom,
+                    id_domaine: this.domaine,
                     id_autorite: this.autorite.child_id
                 }
                 this.$emit("rechercherStages",await StageController.filtre(filtre))
@@ -49,6 +50,7 @@
                     date2: newDate2,
                     nom: this.nom,
                     prenom: this.prenom,
+                    id_domaine: this.domaine,
                     id_autorite: this.autorite.child_id
                 }
                 this.$emit("rechercherStages",await StageController.filtre(filtre))
@@ -59,7 +61,8 @@
                     date1: this.date1,
                     date2: this.date2,
                     nom: newNom,
-                    prenom:this.prenom,
+                    prenom: this.prenom,
+                    id_domaine: this.domaine,
                     id_autorite: this.autorite.child_id
                 }
                 this.$emit("rechercherStages",await StageController.filtre(filtre))
@@ -71,18 +74,20 @@
                     date2: this.date2,
                     nom: this.nom,
                     prenom: newPrenom,
+                    id_domaine: this.domaine,
                     id_autorite: this.autorite.child_id
                 }
                 this.$emit("rechercherStages",await StageController.filtre(filtre))
             },
             async domaine(newValue){
                 const newDomaine = newValue
+                // console.log(this.autorite)
                 const filtre = {
                     date1: this.date1,
                     date2: this.date2,
                     nom: this.nom,
                     prenom: this.prenom,
-                    id_domaine: this.domaine.id,
+                    id_domaine: newDomaine,
                     id_autorite: this.autorite.child_id
                 }
                 this.$emit("rechercherStages",await StageController.filtre(filtre))
@@ -174,5 +179,3 @@
       
 
 </template>
-
-

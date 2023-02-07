@@ -4040,3 +4040,14 @@ INSERT INTO stage5.profil( mot_de_passe, nom_utilisateur, id, est_administrateur
 INSERT INTO stage5.profil( mot_de_passe, nom_utilisateur, id, est_administrateur, id_autorite_enfant ) VALUES ( 'jean', 'jean', 6, 1, 3);
 INSERT INTO stage5.profil( mot_de_passe, nom_utilisateur, id, est_administrateur, id_autorite_enfant ) VALUES ( 'taleDGI', 'taleDGI', 7, 0, 3);
 
+
+CREATE TABLE stage5.date_heure_disponible_autorite ( 
+	id                   INT  NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
+	id_date_heure_disponible INT      ,
+	id_autorite          INT      ,
+	est_disponible       TINYINT  NOT NULL DEFAULT ('1')   
+ ) ENGINE=InnoDB AUTO_INCREMENT=1083 DEFAULT CHARSET=latin1;
+
+CREATE INDEX fk_date_disponible_autorite_id_date_disponible ON stage5.date_heure_disponible_autorite ( id_date_heure_disponible );
+
+CREATE INDEX fk_date_disponible_autorite_id_autorite ON stage5.date_heure_disponible_autorite ( id_autorite );

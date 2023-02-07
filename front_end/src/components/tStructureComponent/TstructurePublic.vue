@@ -1,4 +1,5 @@
 <template>
+
     <div class="col-md-12">
       <div class="form-floating mb-3">
         <input type="text" class="form-control" id="floatingName" placeholder="Titre" @input="setDoleanceAutorite(autorite)" v-model="autorite"  required>
@@ -25,7 +26,6 @@
               <small class="text-muted">{{item.sigle}}</small>
             </a>
 
-            
           </div>
         </div>
       </div>
@@ -38,6 +38,10 @@
   import AutoriteApi from '../../api/autorite'
 
   export default{
+
+    props:{
+      autoriteSession: Object
+    },
 
     data() {
       return {
@@ -79,7 +83,16 @@
 
       async getAutorites(input){
         try {
-          this.directions = await AutoriteApi.getStructure({path: input})
+          if(this.autoriteSession){
+            const arg = {
+              path:input ,
+              id_autorite: this.autoriteSession.child_id
+            }
+            this.directions = await AutoriteApi.structureBackOffice(arg)
+          }
+          else{
+            this.directions = await AutoriteApi.getStructure({path: input})
+          }
         } catch (error) {
           console.log(error)
         } 

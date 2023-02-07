@@ -43,6 +43,43 @@ router.post('/structure', async(req,res) =>{
     })
 })
 
+router.post('/backOffice/structure', async(req,res) =>{
+    // const con = connection.connectionBDD('rohi')
+    const sql = `SELECT 
+    child_id ,
+    child_libelle,
+    sigle, 
+    path, 
+    autorite_id, 
+    premier_responsable_id, 
+    niveau
+    FROM
+        rohi.t_structure e
+        where
+        (e.niveau = 'MIN'
+        or e.niveau = 'DG'
+        or e.niveau = 'DIR'
+        or e.niveau = 'SCE')
+        and e.child_id != ${req.body.id_autorite}
+        and (e.path LIKE UPPER('%${req.body.path}%')
+        or e.child_libelle LIKE UPPER('%${req.body.path}%')
+		or e.sigle LIKE UPPER('%${req.body.path}%')
+        or e.parent_libelle LIKE UPPER('%${req.body.path}%')
+		or e.sigle_parent LIKE UPPER('%${req.body.path}%')
+		or e.direction_libelle LIKE UPPER('%${req.body.path}%')
+		or e.structure_entete LIKE UPPER('%${req.body.path}%')
+		or e.service_libele LIKE UPPER('%${req.body.path}%')) limit 10`
+    // console.log(sql)
+    rohi.query(sql, function(err,result){
+        if(err){
+            return res.send({ err });
+        }
+        else{
+            return res.json(result)    
+        }       
+    })
+})
+
 router.post('/login', async(req,res) =>{
     const sql = `select 
     ts.child_id,
