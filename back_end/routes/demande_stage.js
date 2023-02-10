@@ -11,6 +11,9 @@ const nodemailer = require('nodemailer');
 const path = require('path')
 const fs = require('fs')
 
+const notification_mailing = require('../Controllers/NotificationController')
+
+
 require('./.env')
 const baseURL = HOSTING_URL
 // const env  = require('./.env')
@@ -26,7 +29,7 @@ const storage = multer.diskStorage({
 
     },
     filename: function(req,file,cb){
-        console.log(file.originalname)
+        // console.log(file.originalname)
         cb(null, file.fieldname+"_"+Date.now()+"_"+file.originalname)
     }
 });
@@ -44,11 +47,22 @@ router.post('/add',upload.fields([{name: 'curriculum_vitae'},{name: 'lettre_moti
     }else{
         // return res.status(200).send({ message: 'Nice we got it...' });
         // let sql = "INSERT INTO demande_stage(nom,prenom,e_mail,cin,telephone,duree,curriculum_vitae,lettre_motivation,lettre_introduction,message,id_domaine) VALUES ('"+req.body.nom+"','"+req.body.prenom+"','"+req.body.e_mail+"','"+req.body.cin+"','"+req.body.telephone+"','"+req.body.duree+"','"+req.files['curriculum_vitae'][0].filename+"','"+req.files['lettre_motivation'][0].filename+"','"+req.files['lettre_introduction'][0].filename+"','"+req.body.message+"','"+req.body.id_domaine+"')"
+        // console.log(req.body)
         let sql = `INSERT INTO demande_stage(nom,prenom,e_mail,cin,telephone,duree,curriculum_vitae,lettre_motivation,lettre_introduction,message,id_domaine,id_autorite_enfant,date_creation) VALUES ('${req.body.nom}','${req.body.prenom}','${req.body.e_mail}','${req.body.cin}','${req.body.telephone}','${req.body.duree}','${req.files['curriculum_vitae'][0].filename}','${req.files['lettre_motivation'][0].filename}','${req.files['lettre_introduction'][0].filename}','${req.body.message}',${req.body.id_domaine},${req.body.id_autorite_enfant},(SELECT CURDATE()))`
-        var query = db.query(sql, function(err, result) {
+        var query = db.query(sql, async (err, result) =>{
             if(err){
                 return res.json(err);
             }else{
+                const envoyeur = {
+                    nom: req.body.nom,
+                    prenom: req.body.prenom
+                }
+                const receiver = {
+                    email: req.body.autoriteEmail,
+                    intitule_code: req.body.autoriteSigle,
+                    intitule: req.body.autorite,
+                }
+                const mail = await notification_mailing.notification_demande_stage(envoyeur,receiver)
                 return res.json(result);
             }
         });
@@ -92,7 +106,7 @@ router.post('/liste',async(req,res)=>{
 
 router.post('/filtre', async(req,res)=>{
     const sql = `CALL filtre_stage ('${req.body.date1}','${req.body.date2}','${req.body.nom}','${req.body.prenom}',${req.body.id_domaine},${req.body.id_autorite})`
-    console.log(req.body)
+    // console.log(req.body)
     var query = db.query(sql, function(err, result) {
         if(err){
             return res.json(err);

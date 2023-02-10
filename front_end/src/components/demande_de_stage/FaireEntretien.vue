@@ -21,7 +21,7 @@ export default {
         async places(){
             const data = await AutoriteController.place_disponible({
                 id_date_heure_disponible_autorite: this.stage.id_date_heure_disponible_autorite,
-                id_autorite: this.autorite.id_autorite_enfant
+                id_autorite: this.autorite.child_id
             })
             return data
         },
@@ -59,8 +59,9 @@ export default {
                     autorite: this.autorite,
                     id_date_heure_disponible_autorite: place
                 }).then((result) => {
-                    // console.log(result)
+                    console.log(result)
                     if(result.data.message){
+                        this.$emit('stages',)
                         swal("Entretien enregistrée", `${result.data.message}`, "success");
                     }
                 }).catch((err) => {
@@ -130,21 +131,6 @@ export default {
             }).catch((err) => {
                 console.log(err)
             });
-            // if (place) {
-            //     // Swal.fire(`You selected: ${place}`)
-            //     const response = await EntretienController.modifier({
-            //         stage: this.stage,
-            //         autorite: this.autorite,
-            //         id_date_heure_disponible_autorite: place
-            //     }).then((result) => {
-            //         // console.log(result)
-            //         if(result.data.message){
-            //             swal("Entretien modifié", `${result.data.message}`, "success");
-            //         }
-            //     }).catch((err) => {
-            //         console.log(err)
-            //     });
-            // }
         },
 
     }
@@ -163,13 +149,9 @@ export default {
         <i class="bi bi-check-circle"></i>
     </button>
 
-    <!-- <div v-if="stage.id">
-    <RouterLink :to="{name: 'back-detail-demande-stage',params:{id_demande_stage:stage.id}}">         
-        <button type="button" class="btn btn-info">
-            <i class="bi bi-info-circle"></i>
-        </button>
-    </RouterLink>
-    </div> -->
+    <button type="button" v-if="stage.demande_status === 'Reporté'" @click="modifierEntretien(stage.id)" class="btn btn-warning"> 
+        <i class="ri-edit-2-line"></i>
+    </button>
 
     <RouterView />
 </template>

@@ -1,6 +1,12 @@
 const FUNC = require('../func/function')
 const nodemailer = require('nodemailer')
 
+// const userMail = 'mefstage2022@gmail.com'
+// const mdp = 'wswrgxbntbumffqs'
+
+const userMail = 'DRH.project.stage@gmail.com'
+const mdp = 'dpirzakygtjdqrnl'
+
 /**
  * Mailing entretien
  * Mailing audience public (valider,reporter_maintenant,reporter_plus_tard)
@@ -8,18 +14,15 @@ const nodemailer = require('nodemailer')
  *
  */
 const entretien_valide = async (autorite,stagiaire,entretien_date_time) =>{
-    const autorite_mail = {
-        user: autorite.addresse_electronique,
-        pass: autorite.mot_de_passe_mailing
-    }
+
     const date_entretien = FUNC.date_in_string(entretien_date_time)
     const transporter = nodemailer.createTransport({
         host: 'smtp.gmail.com',
         port: 587,
         secure:false,
         auth: {
-            user: autorite_mail.user,
-            pass: autorite_mail.pass
+            user: userMail,
+            pass: mdp
             // user: 'mefstage2022@gmail.com',
             // pass: 'wswrgxbntbumffqs'
         }
@@ -28,12 +31,11 @@ const entretien_valide = async (autorite,stagiaire,entretien_date_time) =>{
     let data = ''
     // send email
     await transporter.sendMail({
-        from: autorite_mail.user,
+        from: userMail,
         to: stagiaire.addresse_electronique,
         subject: 'Demande de stage approuvé et lu',
         html: `<p>Bonjour ${stagiaire.nom} ${stagiaire.prenom}.</p> 
-                <p>Vous avez un entretien avec la ${autorite.intitule}(${autorite.intitule_code}) le ${date_entretien} 
-                Porte <strong>${autorite.porte}</strong></p>`
+                <p>Vous avez un entretien avec la ${autorite.intitule}(${autorite.intitule_code}) le ${date_entretien}</p>`
     }).then((result) => {
         data = result
     }).catch((err) => {
@@ -43,18 +45,15 @@ const entretien_valide = async (autorite,stagiaire,entretien_date_time) =>{
 }
 
 const entretien_reporte = async (autorite,stagiaire,entretien_date_time) =>{
-    const autorite_mail = {
-        user: autorite.addresse_electronique,
-        pass: autorite.mot_de_passe_mailing
-    }
+
     const date_entretien = FUNC.date_in_string(entretien_date_time)
     const transporter = nodemailer.createTransport({
         host: 'smtp.gmail.com',
         port: 587,
         secure:false,
         auth: {
-            user: autorite_mail.user,
-            pass: autorite_mail.pass
+            user: userMail,
+            pass: mdp
             // user: 'mefstage2022@gmail.com',
             // pass: 'wswrgxbntbumffqs'
         }
@@ -63,7 +62,7 @@ const entretien_reporte = async (autorite,stagiaire,entretien_date_time) =>{
     let data = ''
     // send email
     await transporter.sendMail({
-        from: autorite_mail.user,
+        from: userMail,
         to: stagiaire.addresse_electronique,
         subject: 'Demande de stage reporté ',
         html: `<p>Bonjour ${stagiaire.nom} ${stagiaire.prenom}.</p> 
@@ -78,18 +77,15 @@ const entretien_reporte = async (autorite,stagiaire,entretien_date_time) =>{
 }
 
 const entretien_reporte_plus_tard = async (autorite,stagiaire) =>{
-    const autorite_mail = {
-        user: autorite.addresse_electronique,
-        pass: autorite.mot_de_passe_mailing
-    }
+
     // const date_entretien = FUNC.date_in_string(entretien_date_time)
     const transporter = nodemailer.createTransport({
         host: 'smtp.gmail.com',
         port: 587,
         secure:false,
         auth: {
-            user: autorite_mail.user,
-            pass: autorite_mail.pass
+            user: userMail,
+            pass: mdp
             // user: 'mefstage2022@gmail.com',
             // pass: 'wswrgxbntbumffqs'
         }
@@ -98,7 +94,7 @@ const entretien_reporte_plus_tard = async (autorite,stagiaire) =>{
     let data = ''
     // send email
     await transporter.sendMail({
-        from: autorite_mail.user,
+        from: userMail,
         to: stagiaire.addresse_electronique,
         subject: 'Demande de stage reporté ',
         html: `<p>Bonjour ${stagiaire.nom} ${stagiaire.prenom}.</p> 
@@ -114,17 +110,14 @@ const entretien_reporte_plus_tard = async (autorite,stagiaire) =>{
 }
 
 const entretien_supprimer = async (autorite,stagiaire) =>{
-    const autorite_mail = {
-        user: autorite.addresse_electronique,
-        pass: autorite.mot_de_passe_mailing
-    }
+
     const transporter = nodemailer.createTransport({
         host: 'smtp.gmail.com',
         port: 587,
         secure:false,
         auth: {
-            user: autorite_mail.user,
-            pass: autorite_mail.pass
+            user: userMail,
+            pass: mdp
             // user: 'mefstage2022@gmail.com',
             // pass: 'wswrgxbntbumffqs'
         }
@@ -133,7 +126,7 @@ const entretien_supprimer = async (autorite,stagiaire) =>{
     let data = ''
     // send email
     await transporter.sendMail({
-        from: autorite_mail.user,
+        from: userMail,
         to: stagiaire.addresse_electronique,
         subject: 'Demande de stage reporté ',
         html: `<p>Bonjour ${stagiaire.nom} ${stagiaire.prenom}.</p> 
@@ -148,33 +141,27 @@ const entretien_supprimer = async (autorite,stagiaire) =>{
     return data
 }
 
-const audience_public_valide = async (autorite,evenement,entretien_date_time) =>{
-    const autorite_mail = {
-        user: autorite.addresse_electronique,
-        pass: autorite.mot_de_passe_mailing
-    }
+const audience_public_valide = async (autorite,envoyeur,entretien_date_time) =>{
     const date_entretien = FUNC.date_in_string(entretien_date_time)
     const transporter = nodemailer.createTransport({
         host: 'smtp.gmail.com',
         port: 587,
-        secure:false,
+        secure: false,
         auth: {
-            user: autorite_mail.user,
-            pass: autorite_mail.pass
-            // user: 'mefstage2022@gmail.com',
-            // pass: 'wswrgxbntbumffqs'
+            user: userMail,
+            pass: mdp
         }
     });
     
     let data = ''
     // send email
     await transporter.sendMail({
-        from: autorite_mail.user,
-        to: evenement.addresse_electronique,
+        from: userMail,
+        to: envoyeur.addresse_electronique,
         subject: 'Audience validé',
-        html: `<p>Bonjour ${evenement.nom} ${evenement.prenom}.</p> 
-                <p>Votre audience auprès de la ${autorite.intitule}(${autorite.intitule_code}) a été validée, vous pouvez venir le ${date_entretien} 
-                Porte <strong>${autorite.porte}</strong></p>`
+        html: `<p>Bonjour ${envoyeur.nom} ${envoyeur.prenom}.</p> 
+                <p>Votre audience auprès de la ${autorite.intitule}(${autorite.intitule_code}) a été validée, vous pouvez venir le ${date_entretien}. 
+                Veuillez vous addresser à l'acceuil.`
     }).then((result) => {
         data = result
     }).catch((err) => {
@@ -183,19 +170,16 @@ const audience_public_valide = async (autorite,evenement,entretien_date_time) =>
     return data
 }
 
-const audience_public_revalide = async (autorite,evenement,entretien_date_time) =>{
-    const autorite_mail = {
-        user: autorite.addresse_electronique,
-        pass: autorite.mot_de_passe_mailing
-    }
+const audience_public_revalide = async (autorite,envoyeur,entretien_date_time) =>{
+
     const date_entretien = FUNC.date_in_string(entretien_date_time)
     const transporter = nodemailer.createTransport({
         host: 'smtp.gmail.com',
         port: 587,
         secure:false,
         auth: {
-            user: autorite_mail.user,
-            pass: autorite_mail.pass
+            user: userMail,
+            pass: mdp
             // user: 'mefstage2022@gmail.com',
             // pass: 'wswrgxbntbumffqs'
         }
@@ -204,12 +188,12 @@ const audience_public_revalide = async (autorite,evenement,entretien_date_time) 
     let data = ''
     // send email
     await transporter.sendMail({
-        from: autorite_mail.user,
-        to: evenement.addresse_electronique,
+        from: userMail,
+        to: envoyeur.addresse_electronique,
         subject: 'Audience validé',
-        html: `<p>Bonjour ${evenement.nom} ${evenement.prenom}.</p> 
+        html: `<p>Bonjour ${envoyeur.nom} ${envoyeur.prenom}.</p> 
                 <p>Votre audience auprès de la ${autorite.intitule}(${autorite.intitule_code}) a été revalidée, vous pouvez venir le ${date_entretien} 
-                Porte <strong>${autorite.porte}</strong></p>`
+                Veuillez vous addresser à l'acceuil.</p>`
     }).then((result) => {
         data = result
     }).catch((err) => {
@@ -218,19 +202,15 @@ const audience_public_revalide = async (autorite,evenement,entretien_date_time) 
     return data
 }
 
-const audience_public_reporte = async (autorite,evenement,entretien_date_time) =>{
-    const autorite_mail = {
-        user: autorite.addresse_electronique,
-        pass: autorite.mot_de_passe_mailing
-    }
+const audience_public_reporte = async (autorite,envoyeur,entretien_date_time) =>{
     const date_entretien = FUNC.date_in_string(entretien_date_time)
     const transporter = nodemailer.createTransport({
         host: 'smtp.gmail.com',
         port: 587,
         secure:false,
         auth: {
-            user: autorite_mail.user,
-            pass: autorite_mail.pass
+            user: userMail,
+            pass: mdp
             // user: 'mefstage2022@gmail.com',
             // pass: 'wswrgxbntbumffqs'
         }
@@ -239,10 +219,10 @@ const audience_public_reporte = async (autorite,evenement,entretien_date_time) =
     let data = ''
     // send email
     await transporter.sendMail({
-        from: autorite_mail.user,
-        to: evenement.addresse_electronique,
+        from: userMail,
+        to: envoyeur.addresse_electronique,
         subject: 'Audience reporté',
-        html: `<p>Bonjour ${evenement.nom} ${evenement.prenom}.</p> 
+        html: `<p>Bonjour ${envoyeur.nom} ${envoyeur.prenom}.</p> 
                 <p>En raison de certains évenements au sein de l'organisation, la ${autorite.intitule}(${autorite.intitule_code}) a du reporté votre audience le ${date_entretien}.</p>
                 <p>Merci pour votre compréhension</p>`
     }).then((result) => {
@@ -254,18 +234,14 @@ const audience_public_reporte = async (autorite,evenement,entretien_date_time) =
 }
 
 const audience_public_reporte_plus_tard = async (autorite,evenement) =>{
-    const autorite_mail = {
-        user: autorite.addresse_electronique,
-        pass: autorite.mot_de_passe_mailing
-    }
     // const date_entretien = FUNC.date_in_string(entretien_date_time)
     const transporter = nodemailer.createTransport({
         host: 'smtp.gmail.com',
         port: 587,
         secure:false,
         auth: {
-            user: autorite_mail.user,
-            pass: autorite_mail.pass
+            user: userMail,
+            pass: mdp
             // user: 'mefstage2022@gmail.com',
             // pass: 'wswrgxbntbumffqs'
         }
@@ -274,7 +250,7 @@ const audience_public_reporte_plus_tard = async (autorite,evenement) =>{
     let data = ''
     // send email
     await transporter.sendMail({
-        from: autorite_mail.user,
+        from: userMail,
         to: evenement.addresse_electronique,
         subject: 'Audience reporté',
         html: `<p>Bonjour ${evenement.nom} ${evenement.prenom}.</p> 
@@ -289,34 +265,27 @@ const audience_public_reporte_plus_tard = async (autorite,evenement) =>{
     return data
 }
 
-const audience_autorite_valide = async (autorite,evenement,entretien_date_time) =>{
-    const sender = evenement.autorite_sender
-    const autorite_mail = {
-        user: autorite.addresse_electronique,
-        pass: autorite.mot_de_passe_mailing
-    }
+const audience_autorite_valide = async (autorite,envoyeur,entretien_date_time) =>{
+    const sender = envoyeur
+
     const date_entretien = FUNC.date_in_string(entretien_date_time)
     const transporter = nodemailer.createTransport({
         host: 'smtp.gmail.com',
         port: 587,
         secure:false,
         auth: {
-            user: autorite_mail.user,
-            pass: autorite_mail.pass
-            // user: 'mefstage2022@gmail.com',
-            // pass: 'wswrgxbntbumffqs'
+            user: userMail,
+            pass: mdp
         }
     });
     
     let data = ''
-    // send email
     await transporter.sendMail({
-        from: autorite_mail.user,
+        from: userMail,
         to: sender.addresse_electronique,
         subject: 'Audience validé',
         html: `<p>Bonjour Monsieur ou Madame le ${sender.intitule_code}</p> 
-                <p>Votre audience auprès de la ${autorite.intitule}(${autorite.intitule_code}) a été validée, vous pouvez venir le ${date_entretien} 
-                Porte <strong>${autorite.porte}</strong></p>`
+                <p>Votre audience auprès de la ${autorite.intitule}(${autorite.intitule_code}) a été validée, vous pouvez venir le ${date_entretien}</p>`
     }).then((result) => {
         data = result
     }).catch((err) => {
@@ -325,31 +294,26 @@ const audience_autorite_valide = async (autorite,evenement,entretien_date_time) 
     return data
 }
 
-const audience_autorite_reporte = async (autorite,evenement,entretien_date_time) =>{
+const audience_autorite_reporte = async (autorite,envoyeur,entretien_date_time) =>{
 
-    const sender = evenement.autorite_sender
+    const sender = envoyeur
 
-    const autorite_mail = {
-        user: autorite.addresse_electronique,
-        pass: autorite.mot_de_passe_mailing
-    }
+
     const date_entretien = FUNC.date_in_string(entretien_date_time)
     const transporter = nodemailer.createTransport({
         host: 'smtp.gmail.com',
         port: 587,
         secure:false,
         auth: {
-            user: autorite_mail.user,
-            pass: autorite_mail.pass
-            // user: 'mefstage2022@gmail.com',
-            // pass: 'wswrgxbntbumffqs'
+            user: userMail,
+            pass: mdp
         }
     });
     
     let data = ''
     // send email
     await transporter.sendMail({
-        from: autorite_mail.user,
+        from: userMail,
         to: sender.addresse_electronique,
         subject: 'Audience reporté',
         html: `<p>Bonjour Monsieur ou Madame le ${sender.intitule_code}</p> 
@@ -365,20 +329,14 @@ const audience_autorite_reporte = async (autorite,evenement,entretien_date_time)
 
 const audience_autorite_reporte_plus_tard = async (autorite,evenement) =>{
 
-    const sender = evenement.autorite_sender
-
-    const autorite_mail = {
-        user: autorite.addresse_electronique,
-        pass: autorite.mot_de_passe_mailing
-    }
     // const date_entretien = FUNC.date_in_string(entretien_date_time)
     const transporter = nodemailer.createTransport({
         host: 'smtp.gmail.com',
         port: 587,
         secure:false,
         auth: {
-            user: autorite_mail.user,
-            pass: autorite_mail.pass
+            user: userMail,
+            pass: mdp
             // user: 'mefstage2022@gmail.com',
             // pass: 'wswrgxbntbumffqs'
         }
@@ -387,7 +345,7 @@ const audience_autorite_reporte_plus_tard = async (autorite,evenement) =>{
     let data = ''
     // send email
     await transporter.sendMail({
-        from: autorite_mail.user,
+        from: userMail,
         to: sender.addresse_electronique,
         subject: 'Audience reporté',
         html:   `<p>Bonjour Monsieur ou Madame le ${sender.intitule_code}</p> 
@@ -402,33 +360,27 @@ const audience_autorite_reporte_plus_tard = async (autorite,evenement) =>{
     return data
 }
 
-const audience_autorite_revalide = async (autorite,evenement,entretien_date_time) =>{
-    const autorite_mail = {
-        user: autorite.addresse_electronique,
-        pass: autorite.mot_de_passe_mailing
-    }
+const audience_autorite_revalide = async (autorite,envoyeur,entretien_date_time) =>{
+
     const date_entretien = FUNC.date_in_string(entretien_date_time)
     const transporter = nodemailer.createTransport({
         host: 'smtp.gmail.com',
         port: 587,
         secure:false,
         auth: {
-            user: autorite_mail.user,
-            pass: autorite_mail.pass
-            // user: 'mefstage2022@gmail.com',
-            // pass: 'wswrgxbntbumffqs'
+            user: userMail,
+            pass: mdp
         }
     });
     
     let data = ''
     // send email
     await transporter.sendMail({
-        from: autorite_mail.user,
-        to: evenement.addresse_electronique,
+        from: userMail,
+        to: envoyeur.addresse_electronique,
         subject: 'Audience validé',
-        html: `<p>Bonjour Monsieur ou Madame le ${evenement.intitule_code}</p> 
-                <p>Votre audience auprès de la ${autorite.intitule}(${autorite.intitule_code}) a été revalidée, vous pouvez venir le ${date_entretien} 
-                Porte <strong>${autorite.porte}</strong></p>`
+        html: `<p>Bonjour Monsieur ou Madame le ${envoyeur.intitule_code}</p> 
+                <p>Votre audience auprès de la ${autorite.intitule}(${autorite.intitule_code}) a été revalidée, vous pouvez venir le ${date_entretien} </p>`
     }).then((result) => {
         data = result
     }).catch((err) => {
@@ -437,20 +389,18 @@ const audience_autorite_revalide = async (autorite,evenement,entretien_date_time
     return data
 }
 
+
 const reporter_evenement = async (autorite,sender) =>{
 
     
-    const autorite_mail = {
-        user: autorite.addresse_electronique,
-        pass: autorite.mot_de_passe_mailing
-    }
+
     const transporter = nodemailer.createTransport({
         host: 'smtp.gmail.com',
         port: 587,
         secure:false,
         auth: {
-            user: autorite_mail.user,
-            pass: autorite_mail.pass
+            user: userMail,
+            pass: mdp
             // user: 'mefstage2022@gmail.com',
             // pass: 'wswrgxbntbumffqs'
         }
@@ -459,7 +409,7 @@ const reporter_evenement = async (autorite,sender) =>{
     let data = ''
     // send email
     await transporter.sendMail({
-        from: autorite_mail.user,
+        from: userMail,
         to: sender.addresse_electronique,
         subject: 'Audience reporté',
         html: `<p>Bonjour Monsieur ou Madame ${sender.nom} ${sender.prenom}</p> 

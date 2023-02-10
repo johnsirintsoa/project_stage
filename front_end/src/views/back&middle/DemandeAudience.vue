@@ -1,7 +1,8 @@
 <script setup>
     import HeaderNavbar from '../../components/header/HeaderStructure.vue'
     import InputAutoriteEvent from '../../components/demande_audience/ChoisirAutorite.vue'
-    import Calendrier from '../../components/demande_audience/CalendrierDisponibleAutorite.vue'
+    import Calendrier from '../../components/demande_audience/Calendrier.vue';
+    // import Calendrier from '../../components/demande_audience/CalendrierDisponibleAutorite.vue'
 
 </script>
 
@@ -16,21 +17,10 @@
         
         <div  class='demo-app' >
             <div class='demo-app-main'>
-                <InputAutoriteEvent
-                  @events="getEvents($event)"
-                  @autorite="getAutorite($event)"
+                <Calendrier
+                    typeCalendrier="audienceAutorite"
+                    :autoriteSender="autorite"
                 />
-    
-                <FullCalendar
-                    ref="fullCalendar"
-                    class='demo-app-calendar'
-                    :options='calendarOptions'
-                >
-                    <template v-slot:eventContent='arg'>
-                    <b>{{ arg.timeText }}</b>
-                    <i>{{ arg.event.title }}</i>
-                    </template>
-                </FullCalendar>
 
             </div>
         </div>

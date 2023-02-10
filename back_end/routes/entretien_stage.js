@@ -9,13 +9,18 @@ router.post('/add',async(req,res) => {
     const stage = req.body.stage
     const sql = `CALL ajouter_entretien_stage(${stage.id}, ${req.body.id_date_heure_disponible_autorite})`
     // res.json(req.body)
+    // console.log(req.body)   
     db.query(sql, async(error,result) => {
         if(error) {
             res.send(error)
         } 
         else{
+            const aut = {
+                intitule: autorite.child_libelle,
+                intitule_code: autorite.sigle
+            }
             const entretien_date_time = String(result[0][0].date_debut).concat('T',result[0][0].heure_debut)
-            const response = await mailing.entretien_valide(autorite,stage,entretien_date_time)
+            const response = await mailing.entretien_valide(aut,stage,entretien_date_time)
             
             if(response && result ){
                 res.json({mail:response,data:result[0][0]})
@@ -32,15 +37,20 @@ router.post('/add',async(req,res) => {
 router.post('/update',async(req,res)=>{
     const autorite = req.body.autorite
     const stage = req.body.stage
+    // console.log(req.body)
     const sql = `CALL modifier_entretien_stage(${req.body.id_date_heure_disponible_autorite},${stage.id}) `
-    // res.json(sql)
+    
     db.query(sql, async (error,result) => {
         if(error){
             res.send(error)
         } 
         else{
             const entretien_date_time = String(result[0][0].date_debut).concat('T',result[0][0].heure_debut)
-            const response = await mailing.entretien_reporte(autorite,stage,entretien_date_time)
+            const aut = {
+                intitule: autorite.child_libelle,
+                intitule_code: autorite.sigle
+            }
+            const response = await mailing.entretien_reporte(aut,stage,entretien_date_time)
             
             if(response && result ){
                 res.json({mail:response,data:result[0][0]})
@@ -56,23 +66,42 @@ router.post('/updateCalendar',async(req,res) => {
     const autorite = req.body.autorite
     const stage = req.body.evenement
     // IN id_entretien_stage int,IN id_demande_stage INT,IN date_debut date,IN date_fin date,IN heure_debut time,in heure_fin time, IN id_autorite INT
-    const sql = `CALL modifier_entretien_stage_calendrier(${stage.id_entretien_stage},${stage.id},'${req.body.date_debut}','${req.body.date_fin}','${req.body.heure_debut}','${req.body.heure_fin}',${autorite.id})`
+    // const sql = `CALL modifier_entretien_stage_calendrier(${stage.id_entretien_stage},${stage.id},'${req.body.date_debut}','${req.body.date_fin}','${req.body.heure_debut}','${req.body.heure_fin}',${autorite.id})`
+    const sql = `CALL modifier_entretien_stage_calendrier(${req.body.id_entretien_stage},${req.body.id_demande_stage},'${req.body.date_debut}','${req.body.date_fin}','${req.body.heure_debut}','${req.body.heure_fin}',${req.body.id_autorite})`
     db.query(sql, async (error,result) => {
         if(error){
             res.send(error)
         } 
         else{
-            const entretien_date_time = String(req.body.date_debut).concat('T',req.body.heure_debut)
-            const response = await mailing.entretien_reporte(autorite,stage,entretien_date_time)
-            
-            if(response && result ){
-                res.json({mail:response,data:result})
+            // const entretien_date_time = String(req.body.date_debut).concat('T',req.body.heure_debut)
+            // const response = await mailing.entretien_reporte(autorite,stage,entretien_date_time)
+            if(result ){
+                res.json({data:result})
             }
+            // if(response && result ){
+            //     res.json({data:result})
+            // }
             else {
                 res.json({message:'Entretien non validé et envoyé'})
             }
         }
     })
+    // db.query(sql, async (error,result) => {
+    //     if(error){
+    //         res.send(error)
+    //     } 
+    //     else{
+    //         const entretien_date_time = String(req.body.date_debut).concat('T',req.body.heure_debut)
+    //         const response = await mailing.entretien_reporte(autorite,stage,entretien_date_time)
+            
+    //         if(response && result ){
+    //             res.json({mail:response,data:result})
+    //         }
+    //         else {
+    //             res.json({message:'Entretien non validé et envoyé'})
+    //         }
+    //     }
+    // })
 })
 
 router.post('/delete',async(req,res)=>{
@@ -85,7 +114,11 @@ router.post('/delete',async(req,res)=>{
             res.send(error)
         }
         else{
-            const response = await mailing.entretien_supprimer(autorite,stage)
+            const aut = {
+                intitule: autorite.child_libelle,
+                intitule_code: autorite.sigle
+            }
+            const response = await mailing.entretien_supprimer(aut,stage)
             
             if(response && result ){
                 res.json({message:'Entretien supprimé',mail:response,data:result[0][0]})

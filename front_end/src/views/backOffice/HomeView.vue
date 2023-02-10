@@ -1,6 +1,6 @@
 <script setup>
 import TheWelcome from '@/components/TheWelcome.vue'
-import HeaderNavbar from '../../components/header/HeaderBack.vue'
+// import HeaderNavbar from '../../components/header/HeaderBack.vue'
 </script>
 
 <template>

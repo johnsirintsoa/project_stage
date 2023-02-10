@@ -1,15 +1,18 @@
 const notification = require('../models/Notification')
 
-const getNotifications = (subscription,payload,email_autorite) =>{
-    return notification.sendNotifications(subscription,payload,email_autorite)
+const notification_audience_public = async (envoyeur,receiver) =>{
+    return await notification.notification_audience_public(envoyeur,receiver)
 }
 
-const generateKeys = (subscription,email_autorite) =>{
-    return notification.generateKeys()
+const notification_demande_stage = async (envoyeur,receiver) =>{
+    return await notification.notification_demande_stage(envoyeur,receiver)
 }
 
-
+const notification_audience_autorite = async (subject,envoyeur,receiver) =>{
+    return await notification.notification_audience_autorite(subject,envoyeur,receiver)
+}
 module.exports = {
-    getNotifications,
-    generateKeys
+    notification_audience_public,
+    notification_demande_stage,
+    notification_audience_autorite
 }

@@ -9,15 +9,19 @@ const mailing = require('../Controllers/MailingController')
 router.post('/structure', async(req,res) =>{
     // const con = connection.connectionBDD('rohi')
     const sql = `SELECT 
-    child_id ,
-    child_libelle,
-    sigle, 
-    path, 
-    autorite_id, 
-    premier_responsable_id, 
-    niveau
+    e.child_id ,
+    e.child_libelle,
+    e.sigle, 
+    e.path, 
+    e.autorite_id, 
+    e.premier_responsable_id, 
+    e.niveau,
+    c.email,
+    c.phone
     FROM
         rohi.t_structure e
+        LEFT join rohi.user u on e.premier_responsable_id = u.id
+        LEFT join rohi.candidat c on u.id = c.user_id
         where
         (e.niveau = 'MIN'
         or e.niveau = 'DG'
@@ -46,15 +50,19 @@ router.post('/structure', async(req,res) =>{
 router.post('/backOffice/structure', async(req,res) =>{
     // const con = connection.connectionBDD('rohi')
     const sql = `SELECT 
-    child_id ,
-    child_libelle,
-    sigle, 
-    path, 
-    autorite_id, 
-    premier_responsable_id, 
-    niveau
+    e.child_id ,
+    e.child_libelle,
+    e.sigle, 
+    e.path, 
+    e.autorite_id, 
+    e.premier_responsable_id, 
+    e.niveau,
+    c.email,
+    c.phone
     FROM
         rohi.t_structure e
+        LEFT join rohi.user u on e.premier_responsable_id = u.id
+        LEFT join rohi.candidat c on u.id = c.user_id
         where
         (e.niveau = 'MIN'
         or e.niveau = 'DG'
@@ -87,9 +95,12 @@ router.post('/login', async(req,res) =>{
     ts.autorite_id,
     ts.child_libelle,
     ts.sigle,
-    ts.niveau
+    ts.niveau,
+    c.email,
+    c.phone
     from rohi.t_structure ts 
-    join rohi.user u on ts.premier_responsable_id = u.id
+    LEFT join rohi.user u on ts.premier_responsable_id = u.id
+    LEFT join rohi.candidat c on u.id = c.user_id
     where
     (ts.niveau = 'MIN'
     or ts.niveau = 'DG'
@@ -114,7 +125,8 @@ router.post('/login', async(req,res) =>{
 })
 
 router.post('/calendrier', async (req,res) =>{
-    const sql = `CALL calendrier_autorite(${req.body.id_autorite},${req.body.est_admin})`
+    // const sql = `CALL calendrier_autorite(${req.body.id_autorite},${req.body.est_admin})`
+    const sql = `CALL calendrier_autorite(${req.body.id_autorite})`
     db.query(sql,function(err,result){
         if(err){
             return res.send({ err });

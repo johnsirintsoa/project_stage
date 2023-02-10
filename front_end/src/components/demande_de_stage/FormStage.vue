@@ -1,5 +1,5 @@
 <script setup>
-    import structure from '../tStructureComponent/TstructurePublic.vue'
+    import structure from '../tStructureComponent/Tstructure.vue'
 </script>
 
 <template>
@@ -58,7 +58,6 @@
                     pattern="[0-9]{12}"
                     minlength="12"
                     maxlength="12"
-                    required  
                 >
             </div>
             </div>
@@ -192,7 +191,10 @@ export default {
 
         getAutorite(value){
             this.stage.id_autorite_enfant = value.child_id
-            console.log(value)
+            this.stage.autorite = value.child_libelle
+            this.stage.sigle = value.sigle
+            this.stage.autoriteEmail = value.email
+            // console.log(value)
         },
 
         async addDemandeStage(){
@@ -209,6 +211,12 @@ export default {
             demande_stage.append('message',this.stage.message)
             demande_stage.append('id_domaine',this.stage.id_domaine)
             demande_stage.append('id_autorite_enfant',this.stage.id_autorite_enfant)
+            demande_stage.append('autorite',this.stage.autorite)
+            demande_stage.append('autoriteSigle',this.stage.sigle)
+            demande_stage.append('autoriteEmail',this.stage.autoriteEmail)
+
+
+            // demande_stage.append('autoriteReceiver',this.)
 
 
             // console.log('FORMULAIRE EXECUTE...')

@@ -58,7 +58,7 @@ ul {
 }
 ul li {
     position: relative;
-    padding: 4rem;
+    padding: 1rem 1rem 1rem 7.5rem;
     align-items: center;
 }
 

@@ -7,17 +7,16 @@ const mailing = require('../Controllers/MailingController')
 router.post('/ajouter_non_disponible', async (req,res) => {
     const autorite = req.body.autorite
     // const sql = `CALL ajouter_non_disponible_autorite(${autorite.id},'${req.body.date_debut}','${req.body.date_fin}','${req.body.heure_debut}','${req.body.heure_fin}')`
-    const sql = ` CALL ajouter_non_disponible_autorite (${autorite.id},'${req.body.date_debut}','${req.body.date_fin}','${req.body.heure_debut}','${req.body.heure_fin}')`
+    const sql = ` CALL ajouter_non_disponible_autorite (${req.body.id_autorite},'${req.body.date_debut}','${req.body.date_fin}','${req.body.heure_debut}','${req.body.heure_fin}')`
     // res.json(sql)
     db.query(sql,function(err,result){
         if(err){
             return res.send({ err });
         }
         else{
-            // return res.json(result[0])
+            // return res.json(result[0
             result[0].forEach(element => {
-
-                // console.log(sender)
+                // console.log(element)
                 if(element.type_evenement === 'Public'){
                     const sql1 = `UPDATE demande_audience_public set action = 2 where id = ${element.id}`
                     db.query(sql1, async (err,result)=>{
@@ -63,7 +62,9 @@ router.post('/ajouter_non_disponible', async (req,res) => {
 router.post('/modifier_non_disponible', async (req,res) => {
     const autorite = req.body.autorite
     const evenement = req.body.evenement
-    const sql = ` CALL modifier_non_disponible_autorite (${autorite.id},${evenement.id_date_heure_non_dispo},'${req.body.date_debut}','${req.body.date_fin}','${req.body.heure_debut}','${req.body.heure_fin}')`
+    // const sql = ` CALL modifier_non_disponible_autorite (${autorite.id},${evenement.id_date_heure_non_dispo},'${req.body.date_debut}','${req.body.date_fin}','${req.body.heure_debut}','${req.body.heure_fin}')`
+    const sql = ` CALL modifier_non_disponible_autorite (${req.body.id_autorite},${req.body.id_date_heure_non_dispo},'${req.body.date_debut}','${req.body.date_fin}','${req.body.heure_debut}','${req.body.heure_fin}')`
+
     // res.json(sql)
     db.query(sql,function(err,result){
         if(err){
@@ -82,7 +83,7 @@ router.post('/modifier_non_disponible', async (req,res) => {
                         }
                         else{
                             const response = await mailing.reporter_evenement(autorite,element)
-                            // return res.json({mail:response, data:result})
+                            return res.json({mail:response, data:result})
                         }
                     })
                 }
@@ -94,7 +95,7 @@ router.post('/modifier_non_disponible', async (req,res) => {
                         }
                         else{
                             const response = await mailing.reporter_evenement(autorite,element)
-                            // return res.json({mail:response, data:result})
+                            return res.json({mail:response, data:result})
                         }
                     })
                 }
@@ -106,7 +107,7 @@ router.post('/modifier_non_disponible', async (req,res) => {
                         }
                         else{
                             const response = await mailing.reporter_evenement(autorite,element)
-                            // return res.json({mail:response, data:result})
+                            return res.json({mail:response, data:result})
                         }
                     })
                 }

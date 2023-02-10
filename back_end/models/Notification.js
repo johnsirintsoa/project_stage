@@ -1,39 +1,97 @@
-const webpush = require('web-push');
+const nodemailer = require('nodemailer')
 
-const publicKey = 'BKzekbNOwWpdkh0yo4yyponMzZ1hXlvjt0fY7cOzjn5VJ0mYBWjQ4JCp80ElRjgBkUGXFYWtaESCDnxjmVBi4c0'
-const privateKey = 'zTfAuXgbMohXuoksVpiAi5j70AwJw1qLrW-brRvDRpg'
+const userMail = 'DRH.project.stage@gmail.com'
+const mdp = 'dpirzakygtjdqrnl'
 
-const gmcKey = 'AIzaSyBMD1yAkoeJKarkdgxXPtNCY2x-V3d8sAQ'
+// user: 'mefstage2022@gmail.com',
+// pass: 'wswrgxbntbumffqs'
 
+const notification_audience_public = async (envoyeur,receiver) => {
 
-// VAPID keys should be generated only once.
-
-const generateKeys = () =>{
-    const vapidKeys = webpush.generateVAPIDKeys();
-
-    return vapidKeys
+    const transporter = nodemailer.createTransport({
+        host: 'smtp.gmail.com',
+        port: 587,
+        secure:false,
+        auth: {
+            user: userMail,
+            pass: mdp
+        }
+    });
+    
+    let data = ''
+    await transporter.sendMail({
+        from: userMail,
+        to: receiver.email,
+        subject: `Demande d'audience`,
+        html: `<p>Bonjour ${receiver.intitule_code}.</p> 
+                <p>Vous avez une nouvelle audience. Un(e) certain(e) nommé(e)
+                ${envoyeur.nom} ${envoyeur.prenom}. Veuillez voir dans le site.</p>`
+    }).then((result) => {
+        data = result
+    }).catch((err) => {
+        data = err
+    });
+    return data
 }
 
-const sendNotifications = (subscription,payload,email_autorite) => {
+const notification_demande_stage = async (envoyeur,receiver) => {
 
-    webpush.setGCMAPIKey(gmcKey);
-    webpush.setVapidDetails(`mailto:${email_autorite}`, publicKey,privateKey);
-
-    //pass the object into sendNotification
+    const transporter = nodemailer.createTransport({
+        host: 'smtp.gmail.com',
+        port: 587,
+        secure:false,
+        auth: {
+            user: userMail,
+            pass: mdp
+        }
+    });
+    
     let data = ''
-    webpush.sendNotification(subscription, payload)
-        .then(result =>{
-            data = result
-            console.log(result)
-        })
-        .catch(err=> {
-            data = err
-            console.log(err)
-        });
+    await transporter.sendMail({
+        from: userMail,
+        to: receiver.email,
+        subject: `Demande de stage`,
+        html: `<p>Bonjour ${receiver.intitule_code}.</p> 
+                <p>Un(e) certain(e) nommé(e)
+                ${envoyeur.nom} ${envoyeur.prenom} a récemment déposé une demande de stage auprès de la sécretariat. 
+                Si vous voulez plus de détails veuillez voir dans le site.</p>`
+    }).then((result) => {
+        data = result
+    }).catch((err) => {
+        data = err
+    });
+    return data
+}
+
+const notification_audience_autorite = async(subject,envoyeur,receiver) =>{
+    const transporter = nodemailer.createTransport({
+        host: 'smtp.gmail.com',
+        port: 587,
+        secure:false,
+        auth: {
+            user: userMail,
+            pass: mdp
+        }
+    });
+
+    let data = ''
+    await transporter.sendMail({
+        from: userMail,
+        to: receiver.email,
+        subject: `${subject}`,
+        html: `<p>Bonjour ${receiver.sigle}.</p> 
+                <p>La structure ${envoyeur.child_libelle} (${envoyeur.sigle}) a demandé à vous voir à propos d'un sujet: "<strong>${subject}</strong>". 
+                Si vous voulez plus de détails veuillez voir dans le site.</p>`
+    }).then((result) => {
+        data = result
+    }).catch((err) => {
+        data = err
+    });
     return data
 }
 
 module.exports = {
-    generateKeys,
-    sendNotifications
+    notification_audience_public,
+    notification_demande_stage,
+    notification_audience_autorite
 }

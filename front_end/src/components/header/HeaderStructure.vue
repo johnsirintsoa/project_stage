@@ -91,7 +91,7 @@
         <li class="nav-heading">Pages</li>
 
         <li class="nav-item">
-          <RouterLink to="/administrateur/" >
+          <RouterLink to="/back-office/" >
           <a class="nav-link collapsed">
             <i class="bi bi-person"></i>
             <span>Accueil</span>

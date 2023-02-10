@@ -1,5 +1,5 @@
 <script setup>
-  import structure from '../tStructureComponent/TstructurePublic.vue'
+  import structure from '../tStructureComponent/Tstructure.vue'
 </script>
 
 <template>

@@ -21,11 +21,9 @@ function date_in_string(date) {
         'Novembre',
         'Décembre'
     ]
-    // console.log(date_splited[0])
     const date_new_format = date_splited[0].split('-')
     const index_mois = parseInt(date_new_format[1])-1
     let date_string = `${date_new_format[2]} ${mois[index_mois]} ${date_new_format[0]} à ${date_splited[1]}`;
-    // console.log(date_string)
     return date_string
 }
 

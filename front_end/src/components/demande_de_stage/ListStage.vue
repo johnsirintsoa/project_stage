@@ -45,11 +45,11 @@
                         :stage="stage" 
                         :autorite="autorite" 
                     />
-                    <RouterLink :to="{name: 'back-detail-demande-stage',params:{id_demande_stage:stage['id']}}">
+                    <!-- <RouterLink :to="{name: 'back-detail-demande-stage',params:{id_demande_stage:stage['id']}}">
                         <button type="button" class="btn btn-info">
                             <i class="bi bi-info-circle"></i>
                         </button>
-                    </RouterLink> 
+                    </RouterLink>  -->
                     <!-- <button type="button" v-if="stage['demande_status'] === 'Validé'" @click="getDemandeStage(stage)" class="btn btn-warning"> 
                         <i class="ri-edit-2-line"></i>
                     </button>

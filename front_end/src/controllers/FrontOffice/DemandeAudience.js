@@ -20,10 +20,11 @@ export const actual_events_public_MOIS = async (id_autorite_enfant) => {
 
 export const actual_events_public = async (id_autorite_enfant) => {
   // const mois = parseInt(new Date().getMonth())+1
+  // console.log(JSON.parse(sessionStorage.getItem('session_navigateur')).value)
   const audience_public_mois = {
     id_autorite: id_autorite_enfant,
     session_navigateur: JSON.parse(sessionStorage.getItem('session_navigateur')).value
-    // session_navigateur: 'session450.4483452423846'
+    // session_navigateur: 'session341.307054605958'
   }
   const audience = DemandeAudiencePublic.liste(audience_public_mois)
   try {
