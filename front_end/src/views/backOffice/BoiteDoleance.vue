@@ -1,6 +1,6 @@
 <script setup>
-    import HeaderNavbar from '../../components/header/HeaderBack.vue'
-    import Filtre from '../../components/boite_a_doleance/FiltreDoleance.vue'
+    // import HeaderNavbar from '../../components/header/HeaderBack.vue'
+    // import Filtre from '../../components/boite_a_doleance/FiltreDoleance.vue'
 </script>
 
 <template>

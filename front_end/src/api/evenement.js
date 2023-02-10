@@ -1,5 +1,5 @@
 import axios from 'axios'
-const domaine = "http://localhost:3000"
+const domaine = "http://192.168.100.160:3000"
 const url = domaine.concat("/api/evenement")
 
 export default class EvenementApi{

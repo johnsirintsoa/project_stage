@@ -1,5 +1,5 @@
 <script setup>
-    import HeaderNavbar from '../../components/header/HeaderBack.vue'
+    // import HeaderNavbar from '../../components/header/HeaderBack.vue'
     import {useRoute} from "vue-router";
     import NavAudiences from '../../components/NavBar/NavAudiences.vue'
 </script>
@@ -320,7 +320,7 @@
 </script>
 
 <template>
-    <HeaderNavbar/>
+    <!-- <HeaderNavbar/> -->
 
     <main id="main" class="main">
         <h1>Demande audience</h1>

@@ -1,5 +1,5 @@
 <script setup>
-  import HeaderNavbar from '../../components/header/HeaderMiddle.vue'
+  // import HeaderNavbar from '../../components/header/HeaderMiddle.vue'
 </script>
 <template>
   <HeaderNavbar/>

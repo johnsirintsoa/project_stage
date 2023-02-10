@@ -1,6 +1,6 @@
-<script setup>
+<!-- <script setup>
   import HeaderNavbar from '../../components/header/HeaderBack.vue'
-</script>
+</script> -->
 
 <script>
     // import { createPopper } from '@popperjs/core';
@@ -652,7 +652,7 @@
 </script>
 
 <template>
-<HeaderNavbar/>
+<!-- <HeaderNavbar/> -->
 <main id="main-audience" class="main-audience">
     <div  class='demo-app' >
         <!-- <div  class='demo-app-sidebar'> -->

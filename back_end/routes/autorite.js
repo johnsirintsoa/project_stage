@@ -20,8 +20,8 @@ router.post('/structure', async(req,res) =>{
     c.phone
     FROM
         rohi.t_structure e
-        LEFT join rohi.user u on e.premier_responsable_id = u.id
-        LEFT join rohi.candidat c on u.id = c.user_id
+        join rohi.user u on e.premier_responsable_id = u.id
+        join rohi.candidat c on u.id = c.user_id
         where
         (e.niveau = 'MIN'
         or e.niveau = 'DG'
@@ -61,8 +61,8 @@ router.post('/backOffice/structure', async(req,res) =>{
     c.phone
     FROM
         rohi.t_structure e
-        LEFT join rohi.user u on e.premier_responsable_id = u.id
-        LEFT join rohi.candidat c on u.id = c.user_id
+        join rohi.user u on e.premier_responsable_id = u.id
+        join rohi.candidat c on u.id = c.user_id
         where
         (e.niveau = 'MIN'
         or e.niveau = 'DG'
@@ -99,8 +99,8 @@ router.post('/login', async(req,res) =>{
     c.email,
     c.phone
     from rohi.t_structure ts 
-    LEFT join rohi.user u on ts.premier_responsable_id = u.id
-    LEFT join rohi.candidat c on u.id = c.user_id
+    join rohi.user u on ts.premier_responsable_id = u.id
+    join rohi.candidat c on u.id = c.user_id
     where
     (ts.niveau = 'MIN'
     or ts.niveau = 'DG'
