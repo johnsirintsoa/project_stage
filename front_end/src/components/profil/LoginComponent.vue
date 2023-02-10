@@ -33,12 +33,6 @@
                     <input class="btn btn-primary w-100" value="Connecter" type="submit" @click="warnError"/>
                 </div>
 
-                <!-- <div class="col-12">
-                    <p class="small mb-0">N'avez vous pas de compte? 
-                        <RouterLink to="/inscription">Créer un compte</RouterLink>
-                    </p>
-                </div> -->
-
             </form>
         </div>
     </div>
@@ -111,7 +105,6 @@
 
                     if(login != '') {
                         sessionStorage.setItem('structure',JSON.stringify(login))
-                        this.$router.push({path: '/back-office/'});
                     }
                     else{
                         this.errors = `Le compte n'existe pas`
