@@ -1,6 +1,6 @@
 import axios from 'axios'
-const domaine = "http://localhost:3000"
-const url = domaine.concat("/api/profil")
+import dom  from './config'
+const route1 = 'profil'
 
 export default class ProfilAPI{
     // login

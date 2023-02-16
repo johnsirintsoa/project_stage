@@ -1,9 +1,12 @@
 <script setup>
     // import InputAutorite from './ChoisirAutorite.vue'
   import InputStructure from '../tStructureComponent/Tstructure.vue';
+  import SpinnerPopup from '../loading/SpinnerPopup.vue'
 </script>
 
 <template>
+
+  
 
   <div  class='demo-app'>
     <div class='demo-app-main'>
@@ -106,6 +109,10 @@
                     </div>
                   </div>
           
+                  <SpinnerPopup
+                    :sipnnerActivated="sipnnerActivated"
+                  />
+
                   <div class="text-center">
                     <button type="submit" class="btn btn-success"  >Ajouter</button>
                     <button type="reset" class="btn btn-secondary" @click="reset">Annuler</button>
@@ -138,7 +145,7 @@
                               class="form-control" 
                               id="floatingName" 
                               placeholder="Carte d'Itentité National" 
-                              required v-model="audience.cin"   
+                              v-model="audience.cin"   
                               minlength="12"
                               maxlength="12"
                             >
@@ -191,6 +198,10 @@
                         </div>
                     </div>
                     
+                    <SpinnerPopup
+                      :sipnnerActivated="sipnnerActivated"
+                    />
+
                     <div class="text-center">
                         <button type="submit" class="btn btn-warning" @click="modifier" >Modifier</button>
                         <button type="submit" class="btn btn-danger" @click="supprimer" >Supprimer</button>
@@ -199,6 +210,7 @@
 
                 </form> 
             </div>
+            
 
           </div>
       </div>
@@ -221,7 +233,11 @@
                     <label for="floatingTextarea">Motif</label>
                   </div>
                 </div>
-        
+                
+                <SpinnerPopup
+                  :sipnnerActivated="sipnnerActivated"
+                />
+
                 <div class="text-center">
                   <button type="submit" class="btn btn-success">Ajouter</button>
                   <button type="reset" class="btn btn-secondary" @click="reset">Annuler</button>
@@ -255,6 +271,10 @@
                     </div>
                 </div>
                 
+                <SpinnerPopup
+                  :sipnnerActivated="sipnnerActivated"
+                />
+
                 <div class="text-center">
                     <button type="submit" class="btn btn-warning" @click="modifier" >Modifier</button>
                     <button type="submit" class="btn btn-danger" @click="supprimer" >Supprimer</button>
@@ -329,20 +349,37 @@
                         <div class="col-lg-3 col-md-4 label">Status:</div>
                         <div class="col-lg-9 col-md-8">
                           <span class="badge bg-dark" v-if="audience.status === 'Reporté'">{{audience.status}}</span>
-                          <span class="badge bg-success" v-else-if="audience.status === 'Non validé'">{{audience.status}}</span>
-                          <span class="badge bg-danger" v-else-if="audience.status === 'Validé'">{{audience.status}}</span>
+                          <span class="badge bg-danger" v-else-if="audience.status === 'Non validé'">{{audience.status}}</span>
+                          <span class="badge bg-success" v-else-if="audience.status === 'Validé'">{{audience.status}}</span>
                           <span class="badge bg-light text-dark" v-else>{{audience.status}}</span>
                         </div>
                       </div>
+                      
     
                     </div>
+
+                    
         
     
                   </div>
     
                 </div>
+                
               </div>
     
+            </div>
+
+            <SpinnerPopup
+              :sipnnerActivated="sipnnerActivated"
+            />
+            
+            <div class="text-center" >
+              <button type="submit" class="btn btn-success" @click="valider" v-if="audience.status === 'Non validé'" >
+                Valider
+              </button>
+              <button type="submit" class="btn btn-dark" @click="reporter" v-if="audience.status === 'Validé' || audience.status === 'Non validé'" >
+                Reporter
+              </button>
             </div>
 
           </div>
@@ -391,17 +428,31 @@
                           <div class="col-lg-3 col-md-4 label">Status:</div>
                           <div class="col-lg-9 col-md-8">
                             <span class="badge bg-dark" v-if="audience.status === 'Reporté'">{{audience.status}}</span>
-                            <span class="badge bg-success" v-else-if="audience.status === 'Non validé'">{{audience.status}}</span>
-                            <span class="badge bg-danger" v-else-if="audience.status === 'Validé'">{{audience.status}}</span>
+                            <span class="badge bg-danger" v-else-if="audience.status === 'Non validé'">{{audience.status}}</span>
+                            <span class="badge bg-success" v-else-if="audience.status === 'Validé'">{{audience.status}}</span>
                             <span class="badge bg-light text-dark" v-else>{{audience.status}}</span>
                           </div>
                         </div>
+
+
       
                       </div>
-    
                     </div>
       
                   </div>
+                </div>
+
+                <SpinnerPopup
+                  :sipnnerActivated="sipnnerActivated"
+                />
+                
+                <div class="text-center" >
+                  <button type="submit" class="btn btn-success" @click="valider" v-if="audience.status === 'Non validé'" >
+                    Valider
+                  </button>
+                  <button type="submit" class="btn btn-dark" @click="reporter" v-if="audience.status === 'Validé' || audience.status === 'Non validé'" >
+                    Reporter
+                  </button>
                 </div>
       
               </div>
@@ -455,8 +506,8 @@
                           <div class="col-lg-3 col-md-4 label">Status:</div>
                           <div class="col-lg-9 col-md-8">
                             <span class="badge bg-dark" v-if="audience.status === 'Reporté'">{{audience.status}}</span>
-                            <span class="badge bg-success" v-else-if="audience.status === 'Non validé'">{{audience.status}}</span>
-                            <span class="badge bg-danger" v-else-if="audience.status === 'Validé'">{{audience.status}}</span>
+                            <span class="badge bg-danger" v-else-if="audience.status === 'Non validé'">{{audience.status}}</span>
+                            <span class="badge bg-success" v-else-if="audience.status === 'Validé'">{{audience.status}}</span>
                             <span class="badge bg-light text-dark" v-else>{{audience.status}}</span>
                           </div>
                         </div>
@@ -472,6 +523,16 @@
                       </div>
     
                     </div>
+
+                    <SpinnerPopup
+                      :sipnnerActivated="sipnnerActivated"
+                    />
+                    
+                    <div class="text-center" >
+                      <button type="submit" class="btn btn-dark" @click="reporter" v-if="audience.status === 'Validé' || audience.status === 'Non validé'" >
+                        Reporter
+                      </button>
+                    </div>
       
                   </div>
                 </div>
@@ -482,7 +543,7 @@
       </div>
     </teleport>
   </div>
-  <RouterView />
+  <!-- <RouterView /> -->
 
 </template>
 
@@ -521,6 +582,7 @@
 
       data() {
           return {
+            count: 0,
               calendarOptions: {
                   locale: frLocale,
                   plugins: [
@@ -553,6 +615,7 @@
                   slotMaxTime: '16:00:00'
               },
               showPopupAudience: false,
+              sipnnerActivated: false,
               audience: {
                   // direction: this.autorite,
                 autoriteReceiver:'',
@@ -581,7 +644,7 @@
           }
       },
       
-
+      emits:['sipnnerActivated'],
       watch:{
         'audience.autoriteReceiver': async function(value){
           // console.log(value)
@@ -637,9 +700,13 @@
                   id_date_heure_disponible_autorite: this.audience.id_date_heure_disponible_autorite,
                   autoriteReceiver: this.audience.autoriteReceiver
               }
+              this.sipnnerActivated = true
               const response = await DemandeAudiencePublicController.ajouter(audience)
               if(response.message){
+                  this.togglePopupAudience()
+                  this.sipnnerActivated = false
                   swal("Audience enregistrée", `${response.message}`, "success");
+                  
               }
               else{
                   swal("Audience non enregistrée", "Votre audience n'a pas été enregistrée", "error");
@@ -664,10 +731,12 @@
                 sigle: this.autoriteSender.sigle,
                 child_libelle: this.autoriteSender.child_libelle
               }
-              
+              this.sipnnerActivated = true
               const response = await DemandeAudienceAutoriteAPI.ajouter(audience)
               if(response.message){
-                  swal("Audience enregistrée", `${response.message}`, "success");
+                this.togglePopupAudience()
+                swal("Audience enregistrée", `${response.message}`, "success");
+                this.sipnnerActivated = false
               }
               else{
                   swal("Audience non enregistrée", "Votre audience n'a pas été enregistrée", "error");
@@ -697,8 +766,11 @@
                 id_date_heure_disponible_autorite: this.audience.id_date_heure_disponible_autorite
               }
               // console.log(audience)
+              this.sipnnerActivated = true
               const response = await DemandeAudiencePublicController.modifier(audience)
               if(response.message){
+                this.togglePopupAudience()
+                this.sipnnerActivated = false
                 swal("Audience modifiée", `${response.message}`, "success");
               }
               else{
@@ -715,8 +787,11 @@
                 numero_telephone: this.audience.numero_telephone,
                 id_audience: this.audience.id
               }
+              this.sipnnerActivated = false
               const response = await DemandeAudienceAutoriteAPI.modifier(audience)
               if(response.message){
+                this.togglePopupAudience()
+                this.sipnnerActivated = false
                 swal("Audience modifiée", `${response.message}`, "success");
               }
               else{
@@ -734,6 +809,7 @@
 
           async supprimer(){
             if(this.typeCalendrier === 'audiencePublic'){
+              this.togglePopupAudience()
               const response = await DemandeAudiencePublicController.supprimer(this.audience.id)
               swal(
                   'Audience supprimée',
@@ -743,7 +819,7 @@
               this.calendarOptions.events = await actual_events_public(this.audience.autoriteReceiver.child_id)
             }
             else if(this.typeCalendrier === 'audienceAutorite'){
-              // console.log(this.audience.id)
+              this.togglePopupAudience()
               const response = await DemandeAudienceAutoriteAPI.supprimer({id: this.audience.id})
               swal(
                   'Audience supprimée',
@@ -759,10 +835,135 @@
               )
           },
 
+          async valider(){
+            if(this.typeCalendrier ==='evenementiel' && this.audience.typeEvenement ==='Public'){
+              const arg = {
+                id_dm_aud_public_date_heure_dispo: this.audience.id,
+                id_audience: this.audience.id_evenement,
+                date_debut: this.audience.date_debut,
+                date_fin: this.audience.date_fin,
+                heure_debut: this.audience.time_debut,
+                heure_fin: this.audience.time_fin,
+                id_autorite: this.autoriteSender.child_id,
+                autorite: {
+                  id_autorite: this.autoriteSender.child_id,
+                  intitule: this.autoriteSender.child_libelle,
+                  intitule_code: this.autoriteSender.sigle
+                },
+                envoyeur: {
+                  nom: this.audience.nom,
+                  prenom: this.audience.prenom,
+                  addresse_electronique: this.audience.email
+                }
+              }
+              this.sipnnerActivated = true
+              const response = await DemandeAudiencePublicAPI.valider_public(arg)
+              if(response.message){
+                  this.togglePopupAudience()
+                  this.sipnnerActivated = false
+                  swal("Audience validée", `${response.message}`, "success");
+              }
+              else{
+                  swal("Audience non validée", "Votre audience n'a pas été validée", "error");
+              }
+              this.calendarOptions.events = await AutoriteApi.calendrier({id_autorite: this.autoriteSender.child_id})
+            }
+            else if (this.typeCalendrier ==='evenementiel' && this.audience.typeEvenement ==='Autorité'){
+              if(this.audience.status === 'Non validé'){
+                this.sipnnerActivated = true
+                const response = await DemandeAudienceAutoriteAPI.valider(this.evenement)
+                if(response.message){
+                  this.togglePopupAudience()
+                  this.sipnnerActivated = false
+                  swal("Audience validée", `${response.message}`, "success");
+                }
+              }
+              if(this.autoriteSender && this.typeCalendrier === 'evenementiel'){
+                const id = this.autoriteSender.child_id
+                this.calendarOptions.events = await AutoriteApi.calendrier({id_autorite: id})
+              }
+            }
+          },
+
+          async reporter(){
+            const autoriteS = {
+              id_autorite: this.autoriteSender.child_id,
+              intitule: this.autoriteSender.child_libelle,
+              intitule_code: this.autoriteSender.sigle
+            }
+            if(this.typeCalendrier ==='evenementiel' && this.audience.typeEvenement ==='Public'){
+              const arg = {
+                id_dm_aud_public_date_heure_dispo: this.audience.id,
+                id_audience: this.audience.id_evenement,
+                date_debut: this.audience.date_debut,
+                date_fin: this.audience.date_fin,
+                heure_debut: this.audience.time_debut,
+                heure_fin: this.audience.time_fin,
+                autorite: autoriteS,
+                envoyeur: {
+                  nom: this.audience.nom,
+                  prenom: this.audience.prenom,
+                  addresse_electronique: this.audience.email
+                }
+              }
+              this.sipnnerActivated = true
+              const response = await DemandeAudiencePublicAPI.reporter_public_plus_tard(arg)
+              if(response.message){
+                  this.togglePopupAudience()
+                  this.sipnnerActivated = false
+                  swal("Audience reportée", `${response.message}`, "success");
+              }
+              else{
+                  swal("Audience non enregistrée", "Votre audience n'a pas été enregistrée", "error");
+              }
+              this.calendarOptions.events = await AutoriteApi.calendrier({id_autorite: this.autoriteSender.child_id})
+            }
+            else if(this.typeCalendrier ==='evenementiel' && this.audience.typeEvenement ==='Entretien'){
+              const arg = {
+                autorite: autoriteS,
+                stage: {
+                  id: this.audience.id_evenement,
+                  addresse_electronique: this.audience.email,
+                  nom: this.audience.nom,
+                  prenom: this.audience.prenom
+                }
+              }
+              this.sipnnerActivated = true
+              const response = await EntretienApi.supprimer(arg)
+              if(response.message){
+                  this.togglePopupAudience()
+                  this.sipnnerActivated = false
+                  swal("Entretien reportée", `${response.message}`, "success");
+              }
+              else{
+                  swal("Entretien non enregistrée", "L'entretien n'a pas été reporté", "error");
+              }
+              this.calendarOptions.events = await AutoriteApi.calendrier({id_autorite: this.autoriteSender.child_id})
+            }
+            else if (this.typeCalendrier ==='evenementiel' && this.audience.typeEvenement ==='Autorité'){
+              if(this.audience.status === 'Validé'){
+                this.sipnnerActivated = true
+                const response = await DemandeAudienceAutoriteAPI.reporter_by_click(this.evenement)
+                if(response.message){
+                  this.togglePopupAudience()
+                  this.sipnnerActivated = false
+                  swal("Audience reportée", `${response.message}`, "success");
+                }
+                else {
+                  swal("Audience non reportée", `Votre audience n'a pas été reportée`, "error");
+                }
+              }
+              if(this.autoriteSender && this.typeCalendrier === 'evenementiel'){
+                // const id = this.autoriteSender.child_id
+                this.calendarOptions.events = await AutoriteApi.calendrier({id_autorite: this.autoriteSender.child_id})
+              }
+            }
+          },
+          
           togglePopupAudience(){
               this.showPopupAudience = !this.showPopupAudience
           },
-          
+
           async handleDateSelect(selectInfo){
             if(this.autoriteSender && this.typeCalendrier){
               let calendarApi = selectInfo.view.calendar
@@ -784,6 +985,8 @@
                 const id = this.autoriteSender.child_id
                 this.calendarOptions.events = await AutoriteApi.calendrier({id_autorite: id})
               }
+              const id = this.autoriteSender.child_id
+              this.calendarOptions.events = await AutoriteApi.calendrier({id_autorite: id})
             }
           },
 
@@ -995,6 +1198,10 @@
 
             console.log(event.event.extendedProps )
 
+            const start_date_time = Function.format_date_time(event.event.start)
+            const end_date_time = Function.format_date_time(event.event.end)  
+            
+            // evenement
             this.audience.nom = event.event.extendedProps.nom, 
             this.audience.prenom = event.event.extendedProps.prenom, 
             this.audience.cin = event.event.extendedProps.cin,
@@ -1024,9 +1231,27 @@
               this.audience.actual_place = this.audience.places_disponible[0]
             }
 
-            
             if(this.typeCalendrier === 'evenementiel' && this.audience.typeEvenement ==='Autorité'){
               this.audience.structure = `${event.event.extendedProps.child_libelle} (${event.event.extendedProps.sigle})`
+              this.evenement.envoyeur = {
+                intitule: event.event.extendedProps.child_libelle,
+                intitule_code: event.event.extendedProps.sigle,
+                addresse_electronique: event.event.extendedProps.email
+              }
+              this.evenement.autorite = {
+                id: this.autoriteSender.child_id,
+                intitule_code: this.autoriteSender.sigle,
+                intitule: this.autoriteSender.child_libelle,
+                addresse_electronique: this.autoriteSender.email
+              }
+              this.evenement.id_autorite = this.autoriteSender.child_id
+              this.evenement.date_debut = start_date_time[0]
+              this.evenement.date_fin = end_date_time[0]
+              this.evenement.heure_debut = start_date_time[1]
+              this.evenement.heure_fin = end_date_time[1] 
+
+              this.evenement.id_dm_aud_aut_date_heure_dispo = event.event.id
+              this.evenement.id_audience = event.event.extendedProps.id_evenement
             }
 
             if(this.audience.id !== ''){
@@ -1042,6 +1267,19 @@
             if(this.audience.typeEvenement !== 'Pas disponible'){
               this.togglePopupAudience()
             }
+
+            if(this.audience.typeEvenement == 'Pas disponible'){
+              this.count++
+              if(this.count == 2){
+                // this.sipnnerActivated = true
+                await nonDispoAPI.supprimer_non_disponible({
+                  id_date_heure_non_dispo: this.audience.id_evenement
+                })
+                const id = this.autoriteSender.child_id
+                this.calendarOptions.events = await AutoriteApi.calendrier({id_autorite: id})
+                this.count = 0
+              }
+            }
           },
 
           detailEvent(info) {
@@ -1056,6 +1294,16 @@
             }
           }
 
+      },
+
+      async created(){
+        // if(this.autoriteSender)
+        if(this.typeCalendrier === 'audiencePublic'){
+          this.calendarOptions.selectable = false
+        }
+        else if(this.typeCalendrier === 'audienceAutorite'){
+          this.calendarOptions.selectable = false
+        }
       },
 
       async mounted() {

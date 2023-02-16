@@ -1,11 +1,14 @@
 import axios from 'axios'
-const domaine = "http://localhost:3000"
-const url = domaine.concat("/api/domaine")
+import dom  from './config'
+
+// const domaine = "http://localhost:3000"
+// const url = domaine.concat("/api/domaine")
 
 export default class DomaineAPI{
     // all doleance
     static async allDomaine(){
-        const res = await axios.get(url.concat('/all'))
+        const url = dom.domaineBackEnd('domaine','/all')
+        const res = await axios.get(url)
         return res.data
     }
 

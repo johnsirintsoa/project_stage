@@ -1,5 +1,7 @@
 <script setup>
     import structure from '../tStructureComponent/Tstructure.vue'
+    import spinnerLoading from '../loading/SpinnerHeader.vue'
+
 </script>
 
 <template>
@@ -120,14 +122,19 @@
             </div>
             </div>
 
+            <spinnerLoading 
+                :sipnnerActivated="sipnnerActivated"
+            />
             
             <div class="row mb-3">
+
             <label class="form-label"></label>
             
+
                 <div>
-                
-                <button  type="submit" class="btn btn-primary" >Valider</button>
-            </div>
+                    
+                    <button  type="submit" class="btn btn-primary" >Valider</button>
+                </div>
             </div>
 
         </form>
@@ -148,7 +155,8 @@ import swal from 'sweetalert';
 export default {
     data(){
         return{
-            stage:{
+            sipnnerActivated: false,
+            stage: {
                 nom:'',
                 prenom:'',
                 telephone:'',
@@ -198,6 +206,7 @@ export default {
         },
 
         async addDemandeStage(){
+            this.sipnnerActivated = true
             const demande_stage = new FormData()
             demande_stage.append('nom',this.stage.nom)
             demande_stage.append('prenom',this.stage.prenom)
@@ -215,24 +224,10 @@ export default {
             demande_stage.append('autoriteSigle',this.stage.sigle)
             demande_stage.append('autoriteEmail',this.stage.autoriteEmail)
 
-
-            // demande_stage.append('autoriteReceiver',this.)
-
-
-            // console.log('FORMULAIRE EXECUTE...')
-            // console.log(demande_stage)
-            // console.log(demande_stage.get('nom'))
-            // console.log(demande_stage.get('prenom'))
-            // console.log(demande_stage.get('telephone'))
-            // console.log(demande_stage.get('e_mail'))
-            // console.log(demande_stage.get('cin'))
-            // console.log(demande_stage.get('duree'))
-            // console.log(demande_stage.get('curriculum_vitae'))
-            // console.log(demande_stage.get('lettre_motivation'))
-            // console.log(demande_stage.get('lettre_introduction'))
             
             const response =  await DemandeStageAPI.addDemandeStage(demande_stage)
             swal("Demande de stage enregistrée", `Votre demande de stage a bien été ajoutée`, "success");
+            this.sipnnerActivated = false
         }
     },
 }

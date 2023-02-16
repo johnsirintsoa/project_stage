@@ -52,7 +52,7 @@ b { /* used for event dates/times */
   /* max-width: 1100px; */
   margin: 0 auto;
 }
-footer{
+/* footer{
   background:#ccc;
   position:fixed;
   bottom:0;
@@ -60,7 +60,7 @@ footer{
   padding-top:50px;
   height:50px;
   z-index: 2;
-}
+} */
 #button-add-event {
   float: right;
   margin-top: -3%;

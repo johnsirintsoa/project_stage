@@ -1,3 +1,7 @@
+<script setup>
+    import Spinner from '../loading/SpinnerPopup.vue'
+</script>
+
 <template>
     <div class="card mb-3">
         <div class="card-body">
@@ -27,7 +31,12 @@
                     <input type="password" name="password" class="form-control" id="yourPassword" v-model="this.mot_de_passe" required>
                     <div class="invalid-feedback">Entrez votre mot de passe</div>
                 </div>
+
                 <p :class="{ shake: errors_disabled }" v-if="errors" >{{errors}}</p>
+
+                <Spinner
+                    :sipnnerActivated="sipnnerActivated"
+                />
 
                 <div class="col-12">
                     <input class="btn btn-primary w-100" value="Connecter" type="submit" @click="warnError"/>
@@ -45,6 +54,7 @@
     export default {
         data() {
             return {
+                sipnnerActivated: false,
                 errors:'',
                 affichage: 'seConnecter',
                 errors_disabled: false,
@@ -101,10 +111,12 @@
                         nom_utilisateur: this.nom_utilisateur,
                         mot_de_passe: this.mot_de_passe
                     }
+                    this.sipnnerActivated = true
                     const login = await AutoriteApi.login(log)
 
                     if(login != '') {
                         sessionStorage.setItem('structure',JSON.stringify(login))
+                        this.$router.push({path: '/back-office/'});
                     }
                     else{
                         this.errors = `Le compte n'existe pas`

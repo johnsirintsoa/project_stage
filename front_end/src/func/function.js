@@ -1,5 +1,5 @@
 // import DemandeAudiencePublic from '../api/demande_audience_public'
-import TokenApi from '../api/token'
+// import TokenApi from '../api/token'
 export default class Function{
 
     static initcap(arg){

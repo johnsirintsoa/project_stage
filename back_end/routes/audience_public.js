@@ -172,10 +172,10 @@ router.post('/public/valider',async(req,res)=>{
         }
         else{
             if(result ){
-                res.json({message:'Audience revalidé et envoyé',data:{db:result,mail:response}})
+                res.json({message:'Audience validé et envoyé',data:{db:result,mail:response}})
             }
             else {
-                res.json({message:'Audience non revalidé ',data:{db:result,mail:response}})
+                res.json({message:'Audience revalidé ',data:{db:result,mail:response}})
             }
         }
     })
@@ -282,15 +282,16 @@ router.post('/public/reporter/now',async(req,res)=>{
 router.post('/public/reporter/later',async(req,res)=>{
 
     const autorite = req.body.autorite
-    const evenement = req.body.evenement
-    
-    // console.log(audience)
+    const id_autorite = autorite.id_autorite
+    // const evenement = req.body.evenement
+    // console.log(req.body)
     // const sql = `CALL si_disponible_autorite('${req.body.date_event_debut}','${req.body.date_event_fin}','${req.body.time_event_debut}','${req.body.time_event_fin}',${req.body.id_autorite_enfant},'${req.body.motif}')`
     
     // const sql = `UPDATE ${db_name}.demande_audience_public SET action = 2 where id = ${req.body.id}`
     
-    const sql = `CALL reporter_audience_public_plus_tard (${evenement.id_dm_aud_public_date_heure_dispo},${evenement.id}, '${req.body.date_debut}','${req.body.date_fin}','${req.body.heure_debut}','${req.body.heure_fin}',${autorite.id})`
-    
+    const sql = `CALL reporter_audience_public_plus_tard(${req.body.id_dm_aud_public_date_heure_dispo},${req.body.id_audience},'${req.body.date_debut}','${req.body.date_fin}','${req.body.heure_debut}','${req.body.heure_fin}', ${id_autorite})`
+    // const sql = `CALL reporter_audience_public_plus_tard (${evenement.id_dm_aud_public_date_heure_dispo},${evenement.id}, '${req.body.date_debut}','${req.body.date_fin}','${req.body.heure_debut}','${req.body.heure_fin}',${autorite.id})`
+    // console.log(sql)
     // res.json(sql)
 
     db.query(sql, async (error,result) => {
@@ -299,7 +300,7 @@ router.post('/public/reporter/later',async(req,res)=>{
         }
         else{
             const entretien_date_time = String(req.body.date_debut).concat('T',req.body.heure_debut)
-            const response = await mailing.audience_public_reporte_plus_tard(autorite,evenement,entretien_date_time)
+            const response = await mailing.audience_public_reporte_plus_tard(autorite,req.body.envoyeur,entretien_date_time)
             if(response && result ){
                 res.json({message:'Audience reporté et envoyé',mail:response,data:result})
             }

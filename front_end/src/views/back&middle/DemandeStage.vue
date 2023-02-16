@@ -9,6 +9,7 @@
 <template>
     <HeaderBM
         @structure="getStructure"
+        :sipnnerActivated="spinnerActivated"
     />
 
     <main id="main" class="main">
@@ -56,9 +57,9 @@
                                     <td>{{stage['nom_domaine']}}</td>
                                     <td>{{stage['duree']}}</td>
                                     <td>
-                                        <span class="badge bg-danger" v-if="stage['demande_status'] == 'Validé'">{{stage['demande_status']}}</span>
+                                        <span class="badge bg-success" v-if="stage['demande_status'] == 'Validé'">{{stage['demande_status']}}</span>
                                         <span class="badge bg-dark" v-else-if="stage['demande_status'] == 'Reporté'" >{{stage['demande_status']}}</span>
-                                        <span class="badge bg-success" v-else-if="stage['demande_status'] == 'Non validé'" >{{stage['demande_status']}}</span>
+                                        <span class="badge bg-danger" v-else-if="stage['demande_status'] == 'Non validé'" >{{stage['demande_status']}}</span>
                                     </td>
                                     <td>
                                         <!-- <PopupEntretien 
@@ -105,6 +106,7 @@
     export default{
         data() {
             return {
+                spinnerActivated: false,
                 showPopup: false,
                 date1:this.date_actu(),
                 date2:this.date_actu(),
@@ -171,6 +173,7 @@
 
                 if (place) {
                     // Swal.fire(`You selected: ${place}`)
+                    this.spinnerActivated = true
                     const response = await EntretienController.ajouter({
                         stage: stage,
                         autorite: this.autorite,
@@ -187,6 +190,7 @@
                                 id_autorite: this.autorite.child_id
                             }
                             this.stages = await StageController.filtre(filtre)
+                            this.spinnerActivated = false
                             swal("Entretien enregistrée", `${result.data.message}`, "success");
                         }
                     }).catch((err) => {
@@ -215,6 +219,7 @@
             }).then(async (result) => {
                 const place = result.value
                 if(result.isConfirmed){
+                    this.spinnerActivated = true
                     const response = await EntretienController.modifier({
                         stage: arg,
                         autorite: this.autorite,
@@ -229,6 +234,7 @@
                                 id_domaine: this.domaine,
                                 id_autorite: this.autorite.child_id
                             }
+                            this.spinnerActivated = false
                             this.stages = await StageController.filtre(filtre)
                             swal("Entretien modifié", `${result.data.message}`, "success");
                         }
@@ -248,6 +254,7 @@
                     }).then(async (result) => {
 
                         if (result.isConfirmed) {
+                            this.spinnerActivated = true
                             const response = await EntretienController.supprimer({
                                 stage: arg,
                                 autorite: this.autorite,
@@ -261,6 +268,7 @@
                                         id_domaine: this.domaine,
                                         id_autorite: this.autorite.child_id
                                     }
+                                    this.spinnerActivated = false
                                     this.stages = await StageController.filtre(filtre)
                                     swal("Entretien Supprimé", `${result.data.message}`, "success");
                                 }

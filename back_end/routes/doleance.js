@@ -4,9 +4,6 @@ const db = require('../database').conn
 const db_name = require('../database').db_name
 // const Doleance = require('../models/Doleance')
 
-// router.get('/all',async (req,res)=>{
-//     res.send('Hello world')
-// })
 
 router.post('/ajouter/anonyme', async(req,res) =>{
     const sql = `INSERT INTO doleance

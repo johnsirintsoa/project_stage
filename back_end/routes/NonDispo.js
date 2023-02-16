@@ -118,9 +118,9 @@ router.post('/modifier_non_disponible', async (req,res) => {
 })
 
 router.post('/supprimer_non_disponible', async (req,res) => {
-    const autorite = req.body.autorite
-    const evenement = req.body.evenement
-    const sql = ` DELETE FROM date_heure_non_disponible_autorite where id = ${evenement.id_date_heure_non_dispo}`
+    // const autorite = req.body.autorite
+    // const evenement = req.body.evenement
+    const sql = ` DELETE FROM date_heure_non_disponible_autorite where id = ${req.body.id_date_heure_non_dispo}`
     db.query(sql,function(err,result){
         if(err){
             return res.send({ err });

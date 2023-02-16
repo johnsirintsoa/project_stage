@@ -1,5 +1,6 @@
 <script setup>
     import { RouterLink, RouterView } from 'vue-router'
+    import SpinnerHeader from '../loading/SpinnerHeader.vue'
 </script>
 <template>
 
@@ -7,10 +8,12 @@
 
       <div class="d-flex align-items-center justify-content-between">
         <a href="#" class="logo d-flex align-items-center">
-          <!-- <img src="./assets/img/logo.png" alt=""> -->
           <span class="d-none d-lg-block">MEF</span>
         </a>
-        <i class="bi bi-list toggle-sidebar-btn"></i>
+        <SpinnerHeader
+          :sipnnerActivated="sipnnerActivated"
+        />
+        <!-- <i class="bi bi-list toggle-sidebar-btn"></i> -->
       </div>
 
       <nav class="header-nav ms-auto">
@@ -141,9 +144,13 @@
 </template>
 
 <script>
-
     export default {
 
+        props:{
+          sipnnerActivated:{
+            type:Boolean
+          }
+        },
         emits:[
             'structure'
         ],

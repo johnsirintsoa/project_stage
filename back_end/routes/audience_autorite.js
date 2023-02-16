@@ -708,27 +708,33 @@ router.post('/autorite/reporter/now',async(req,res)=>{
     })
 })
 
+router.post('/autorite/reporter/click',async(req,res)=>{
+    const autorite = req.body.autorite
+    const envoyeur = req.body.envoyeur
+    
+    const sql = `CALL reporter_audience_autorite_plus_tard (${req.body.id_dm_aud_aut_date_heure_dispo},${req.body.id_audience}, '${req.body.date_debut}','${req.body.date_fin}','${req.body.heure_debut}','${req.body.heure_fin}',${autorite.id})`
+   db.query(sql, async(error,result) => {
+        if(error) {
+            res.send(error)
+        }
+        else{
+            const response = await mailing.audience_autorite_reporte_plus_tard(autorite,envoyeur)
+            if(response && result ){
+                res.json({message:'Audience reportée et envoyé',mail:response,data:result})
+            }
+            else {
+                res.json({message:'Audience non reportée '})
+            }
+        }
+    })
+})
+
 router.post('/autorite/reporter/later',async(req,res)=>{
     const autorite = req.body.autorite
     const evenement = req.body.evenement
     
     const sql = `CALL reporter_audience_autorite_plus_tard (${evenement.id_dm_aud_aut_date_heure_dispo},${evenement.id_audience}, '${req.body.date_debut}','${req.body.date_fin}','${req.body.heure_debut}','${req.body.heure_fin}',${autorite.id})`
-    
-    // const audience = {
-    //     date_debut: req.body.date_debut,
-    //     date_fin: req.body.date_fin, 
-    //     time_debut: req.body.time_debut,
-    //     time_fin: req.body.time_fin,
-    //     id_autorite_enfant_sender: req.body.id_autorite_enfant_sender,
-    //     id_autorite_enfant_receiver: req.body.id_autorite_enfant_receiver,
-    //     motif: req.body.motif,
-    //     action: 2,
-    //     id: req.body.id
-    // }
-    // console.log(audience)
-    // const sql = `CALL si_disponible_autorite('${req.body.date_event_debut}','${req.body.date_event_fin}','${req.body.time_event_debut}','${req.body.time_event_fin}',${req.body.id_autorite_enfant},'${req.body.motif}')`
-    // const sql = `UPDATE stage.demande_audience_autorite SET ? where id = ${req.body.id}`
-    db.query(sql, async(error,result) => {
+   db.query(sql, async(error,result) => {
         if(error) {
             res.send(error)
         }

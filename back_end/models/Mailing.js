@@ -327,7 +327,7 @@ const audience_autorite_reporte = async (autorite,envoyeur,entretien_date_time) 
     return data
 }
 
-const audience_autorite_reporte_plus_tard = async (autorite,evenement) =>{
+const audience_autorite_reporte_plus_tard = async (autorite,sender) =>{
 
     // const date_entretien = FUNC.date_in_string(entretien_date_time)
     const transporter = nodemailer.createTransport({
