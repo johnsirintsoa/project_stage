@@ -1,6 +1,6 @@
 <template>
     <footer id="footer" class="footer">
-        <p>Copyright &copy;{{year}}</p>
+        <p>Copyright &copy;DRH {{year}}</p>
     </footer>    
 </template>
 <script>
