@@ -8,19 +8,22 @@
 
         <div id="navbarSupportedContent">
             <ul>
-                <!-- selector -->
+                
                 <div class="hori-selector">
                     <div class="left"></div>
                     <div class="right"></div>   
                 </div>
                 
-                <li class="accueil">
-                    <RouterLink to="/">
-                        <i class="bi bi-house"></i>
-                        Accueil
+                <li 
+                    v-for="item in links" 
+                    :key="item.id" 
+                >
+                    <RouterLink :to="{path: item.routerLink}">
+                        <i :class="[item.icon]"></i>
+                        {{item.linkName}}
                     </RouterLink>
                 </li>
-                <li class="doleance">
+                <!-- <li class="doleance">
                     <RouterLink to="/boite-a-doleance">
                         <i class="bi bi-file-earmark-text"></i>
                         Boite à doléance
@@ -44,13 +47,60 @@
                         <i class="bi bi-box-arrow-in-right"></i>
                         Se connecter
                     </RouterLink>
-                </li>
+                </li> -->
             </ul>
         </div>
 
     </header>
 </template>
 
+<script>
+export default {
+    data() {
+        return {
+            links: [
+                {
+                    id: 1,
+                    className: 'accueil',
+                    linkName: 'Accueil',
+                    icon: 'bi bi-house',
+                    routerLink: '/'
+                },
+                {
+                    id: 2,
+                    className: 'doleance',
+                    linkName: 'Boite à doléance',
+                    icon: 'bi bi-file-earmark-text',
+                    routerLink: '/boite-a-doleance'
+                },
+                {
+                    id: 3,
+                    className: 'stage',
+                    linkName: 'Demande de stage',
+                    icon: 'bi bi-envelope',
+                    routerLink: '/demande-stage'
+                },
+                {
+                    id: 4,
+                    className: 'audience',
+                    linkName: 'Demande d\'audience',
+                    icon: 'bi bi-people',
+                    routerLink: '/demande-audience'
+                },
+                {
+                    id: 5,
+                    className: 'login',
+                    linkName: 'Se connecter',
+                    icon: 'bi bi-box-arrow-in-right',
+                    routerLink: '/login'
+                },
+            ],
+            colorInit:'red'
+        }
+        
+    },
+}
+</script>
 
 <style scoped>
 .header {
@@ -71,97 +121,6 @@ ul li {
     padding: 1rem 1rem 1rem 7.5rem;
     align-items: center;
 }
-
-
-#navbarSupportedContent{
-	overflow: hidden;
-	position: relative;
-}
-
-#navbarSupportedContent ul{
-	padding: 0px;
-	margin: 0px;
-}
-
-#navbarSupportedContent ul li a i{
-	margin-right: 10px;
-}
-
-#navbarSupportedContent li {
-	list-style-type: none;
-	float: left;
-}
-
-#navbarSupportedContent ul li a{
-	color: #4154f1;
-    /* text-decoration: none; */
-    /* font-size: 15px; */
-    /* padding: 20px 20px; */
-    display: block;
-    transition-duration:0.6s;
-	transition-timing-function: cubic-bezier(0.68, -0.55, 0.265, 1.55);
-    position: relative;
-}
-
-#navbarSupportedContent ul li a router-link-active router-link-exact-active{
-	color: #06070e;
-	background-color: transparent;
-	transition: all 0.7s;
-}
-
-/* ul li a.router-link-active router-link-exact-active{
-	color: #06070e;
-	background-color: transparent;
-	transition: all 0.7s;
-} */
-
-.hori-selector{
-    display:inline-block;
-    position:absolute;
-    height: 100%;
-    top: 0px;
-    left: 0px;
-    transition-duration: 0.6s;
-    transition-timing-function: cubic-bezier(0.68, -0.55, 0.265, 1.55);
-    background-color: #f6f9ff;
-    border-top-left-radius: 15px;
-    border-top-right-radius: 15px;
-    margin-top: 10px;
-}
-
-.hori-selector .right, .hori-selector .left{
-	position: absolute;
-	width: 25px;
-	height: 25px;
-	background-color: #5161ce;
-	bottom: 10px;
-}
-.hori-selector .right{
-	right: -25px;
-}
-.hori-selector .left{
-	left: -25px;
-}
-.hori-selector .right:before,
-.hori-selector .left:before{
-	content: '';
-    position: absolute;
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    background-color: #5161ce;
-    /* background-color: #f6f9ff; */
-
-}
-.hori-selector .right:before{
-	bottom: 0;
-    right: -25px;
-}
-.hori-selector .left:before{
-	bottom: 0;
-    left: -25px;
-}
-
 
 
 </style>

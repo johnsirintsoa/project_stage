@@ -127,7 +127,7 @@
     }
 </script>
     
-<style scoped>
+<!-- <style scoped>
     
     @media (min-width: 1200px){
         #main {
@@ -169,4 +169,4 @@
         }
     }
     
-</style>
+</style> -->
