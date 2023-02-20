@@ -6,6 +6,7 @@
 <template>
     <HeaderStructure
         @structure="getStructure"
+        :sipnnerActivated="spinner"
     />
     <main id="main" class="main">
         <h1>Mes évènements</h1>
@@ -15,6 +16,7 @@
                 <Calendrier
                     :autoriteSender="autorite"
                     typeCalendrier="evenementiel"
+                    @spinnerStatus="getSpinnerStatus"
                 />
 
             </div>
@@ -26,12 +28,17 @@
     export default{
         data() {
             return {
-                autorite:{}
+                autorite:{},
+                spinner: false
             }
         },
         methods: {
             getStructure(value){
                 this.autorite = value
+            },
+            getSpinnerStatus(value){
+                this.spinner = value
+                // console.log(value)
             }
         },
     }

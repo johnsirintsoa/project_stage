@@ -152,7 +152,7 @@
           }
         },
         emits:[
-            'structure'
+          'structure'
         ],
 
         created() {

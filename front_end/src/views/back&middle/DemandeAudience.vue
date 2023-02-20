@@ -27,7 +27,6 @@
 
         <div class="popupToShow"></div>
 
-    
     </main>
 </template>
 
@@ -50,14 +49,14 @@
         data() {
             return {
                 autorite: {},
-                autorite_receiver: {}               
+                autorite_receiver: {}, 
+                spinner: false              
             }
         },
         methods: {
             getStructure(value){
                 this.autorite = value
             },
-            
         },
     }
 </script>
