@@ -1,10 +1,16 @@
 <template>
-    <footer id="footer" class="footer">
-        <p>Copyright &copy;DRH {{year}}</p>
+    <footer 
+        class="footer" 
+        :style="{
+            'margin-left': numberMarginLeft + 'em'
+        }"    
+    >
+        <p> Copyright &copy;DRH {{year}}</p>
     </footer>    
 </template>
 <script>
     export default{
+        props:['numberMarginLeft'],
         computed:{
             year(){
                 return new Date().getFullYear()
@@ -14,10 +20,10 @@
 
 </script>
 <style>
-    #footer {
+    /* #footer {
         margin-left: 6px !important;
     }
     footer p{
         text-align: center;
-    }
+    } */
 </style>

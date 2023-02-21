@@ -89,6 +89,26 @@ router.post('/backOffice/structure', async(req,res) =>{
 })
 
 router.post('/login', async(req,res) =>{
+
+    const email = `select 
+    ts.child_id,
+    ts.premier_responsable_id,
+    ts.autorite_id,
+    ts.child_libelle,
+    ts.sigle,
+    ts.niveau,
+    c.email,
+    c.phone
+    from rohi.t_structure ts 
+    LEFT join rohi.user u on ts.premier_responsable_id = u.id
+    LEFT join rohi.candidat c on u.id = c.user_id
+    where
+    (ts.niveau = 'MIN'
+    or ts.niveau = 'DG'
+    or ts.niveau = 'DIR'
+    or ts.niveau = 'SCE')
+    and u.login = '${req.body.nom_utilisateur}'`
+
     const sql = `select 
     ts.child_id,
     ts.premier_responsable_id,
@@ -113,15 +133,36 @@ router.post('/login', async(req,res) =>{
     where 
     u.password = (SELECT AES_ENCRYPT('${req.body.mot_de_passe}','lHommeEstNaturellementBonCEestLaSocieteQuiLeCorrompt-Rousseau')));
     `
-    // res.send(sql)
-    rohi.query(sql, function(err,result){
+    
+    rohi.query(email, function(err,result){
         if(err){
             return res.send({err})
         }
-        else{
-            return res.json(result[0])
+        else if(result.length == 0){
+            // console.log(result.length)
+            return res.json({message:`Votre nom d'utilisateur est incorrect`})
+        }
+        else {
+            // return res.json(result)
+            rohi.query(sql, function(err,result){
+                if(err){
+                    return res.send({err})
+                }
+                else if(result.length == 0){
+                    // console.log(result.length)
+                    return res.json({message:`Votre mot de passe est incorrect`})
+                }
+                else{
+                    return res.json(result[0])
+                }
+            })
         }
     })
+
+
+    // console.log(sql)
+    // // res.send(sql)
+
 })
 
 router.post('/calendrier', async (req,res) =>{

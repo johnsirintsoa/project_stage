@@ -12,7 +12,9 @@
         <h1>Bienvenue Back and middle</h1>
     </main>
 
-    <FooterComponent />
+    <FooterComponent 
+        numberMarginLeft="15"
+    />
 </template>
 
 <script>
@@ -22,6 +24,9 @@
             getStructure(value){
                 console.log(value)
             }
+            
+        },
+        beforeCreate() {
             
         },
     }

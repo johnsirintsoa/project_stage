@@ -1,6 +1,7 @@
 <script setup>
     import HeaderBM from '../../components/header/HeaderStructure.vue'
     import Filtre from '../../components/boite_a_doleance/FiltreDoleance.vue'
+    import FooterBack from '../../components/footer/FooterFront.vue' 
 </script>
 
 <template>
@@ -51,6 +52,9 @@
         </div>
     </main>
 
+    <FooterBack 
+        numberMarginLeft="15"
+    />
 </template>
 
 <script>

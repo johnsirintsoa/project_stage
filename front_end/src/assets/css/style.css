@@ -1249,9 +1249,9 @@ h6 {
   border-top: 1px solid #cddfff;
 }
 
-.footer .copyright {
+.footer p {
   text-align: center;
-  color: #012970;
+  /* color: #012970; */
 }
 
 .footer .credits {

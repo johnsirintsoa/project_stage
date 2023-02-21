@@ -64,10 +64,10 @@
     
 </template>
 
-    <style scoped>
-        @import url('./css/style.css');
+<style scoped>
+    @import url('./css/style.css');
 
     input [type=radio]{
         padding-left: 2px ;
     }
-    </style>
+</style>

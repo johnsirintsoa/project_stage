@@ -38,7 +38,7 @@
                 <h6>{{autorite.sigle}}</h6>
                 <span>{{autorite.child_libelle}}</span>
               </li>
-              <li>
+              <!-- <li>
                 <hr class="dropdown-divider">
               </li>
 
@@ -70,12 +70,12 @@
               </li>
               <li>
                 <hr class="dropdown-divider">
-              </li>
+              </li> -->
 
               <li>
                 <a class="dropdown-item d-flex align-items-center" @click="deconnection()">
                   <i class="bi bi-box-arrow-right"></i>
-                  <span>Sign Out</span>
+                  <span>Se déconnecter</span>
                 </a>
               </li>
 
@@ -105,7 +105,7 @@
         <li class="nav-item" >
           <RouterLink to="/back-office/boite-a-doleance" >
             <a class="nav-link collapsed" >
-              <i class="bi bi-question-circle"></i>
+              <i class="bi bi-file-earmark-text"></i>
               <span>Boite à doléance</span>
             </a>
           </RouterLink>
@@ -123,7 +123,7 @@
         <li class="nav-item">
           <RouterLink to='/back-office/demande-audience' >
             <a class="nav-link collapsed" href="">
-            <i class="bi bi-calendar-plus"></i><span>Demande d'audience</span>
+            <i class="bi bi-people"></i><span>Demande d'audience</span>
             </a>
           </RouterLink>
         </li>

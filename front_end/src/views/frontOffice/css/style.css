@@ -115,6 +115,10 @@ li {
   /* max-width: 1100px; */
   margin: 0 auto;
 }
+.footer p {
+  text-align: center;
+  /* color: #012970; */
+}
 /* footer{
   background:#ccc;
   position:fixed;
@@ -131,7 +135,7 @@ li {
 }
 
 /* Popup */
-.button {
+/* .button {
 border: none;
 color: #FFF;
 background: #42b983;
@@ -141,29 +145,29 @@ font-size: 1.8rem;
 padding: .5em 1em;
 border-radius: .3em;
 cursor: pointer;
-}
+} */
 
 .modal {
-position: absolute;
-position: fixed;
-top: 0;
-right: 0;
-bottom: 0;
-left: 0;
-margin: auto;
-text-align: center;
-width: fit-content;
-height: fit-content;
-max-width: 22em;
-padding: 2rem;
-border-radius: 1rem;
-box-shadow: 0 5px 5px rgba(0, 0, 0, 0.2);
-background: #FFF;
-z-index: 9999;
-transform: none;
+  position: absolute;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto;
+  text-align: center;
+  width: fit-content;
+  height: fit-content;
+  max-width: 22em;
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 5px 5px rgba(0, 0, 0, 0.2);
+  background: #FFF;
+  z-index: 9999;
+  transform: none;
 }
 .modal h1 {
-margin: 0 0 1rem;
+  margin: 0 0 1rem;
 }
 
 

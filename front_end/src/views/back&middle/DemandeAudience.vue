@@ -2,6 +2,7 @@
     import HeaderNavbar from '../../components/header/HeaderStructure.vue'
     import InputAutoriteEvent from '../../components/demande_audience/ChoisirAutorite.vue'
     import Calendrier from '../../components/demande_audience/Calendrier.vue';
+    import FooterBack from '../../components/footer/FooterFront.vue' 
     // import Calendrier from '../../components/demande_audience/CalendrierDisponibleAutorite.vue'
 
 </script>
@@ -28,6 +29,9 @@
         <div class="popupToShow"></div>
 
     </main>
+    <FooterBack 
+        numberMarginLeft="15"
+    />
 </template>
 
 <script>

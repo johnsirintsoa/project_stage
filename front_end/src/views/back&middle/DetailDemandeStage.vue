@@ -2,6 +2,7 @@
     // MesAudiences V2
     import HeaderBM from '../../components/header/HeaderStructure.vue'
     import DetailContent from '../../components/demande_de_stage/DetailContent.vue'
+    import FooterBack from '../../components/footer/FooterFront.vue' 
 </script>
 
 <script>
@@ -57,4 +58,7 @@ import swal from 'sweetalert';
             </div>
         </div>
     </main>
+    <FooterBack 
+        numberMarginLeft="15"
+    />
 </template>

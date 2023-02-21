@@ -1,6 +1,7 @@
 <script setup>
     import HeaderStructure from '../../components/header/HeaderStructure.vue'
     import Calendrier from '../../components/demande_audience/Calendrier.vue';
+    import FooterBack from '../../components/footer/FooterFront.vue' 
 </script>
 
 <template>
@@ -22,6 +23,9 @@
             </div>
         </div>
     </main>
+    <FooterBack 
+        numberMarginLeft="15"
+    />
 </template>
 
 <script>

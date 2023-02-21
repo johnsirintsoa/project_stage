@@ -1,62 +1,59 @@
 <script setup>
-    import { RouterLink, RouterView } from 'vue-router'
-    // import HelloWorld from './components/HelloWorld.vue'
-    // import LoginComponent from '../components/profil/LoginComponent.vue';
-    // import LoginComponent from '../components/profil/LoginComponent2.vue';
-
+    import Spinner from '../loading/SpinnerPopup.vue'
 </script>
 
 <template>
-    <main>
-        <div class="container">
-            <div class="screen">
-                <div class="screen__content">
-                    
-                    <form class="login"
-                        @submit.prevent="login"
-                        autocomplete="off"
-                    >
-                        <!-- <h6>Accéder à mon compte</h6> -->
-                        <div class="login__field">
-                            <i class="login__icon bi bi-person-fill"></i>
-                            <input type="text" class="login__input" placeholder="Nom d'utilisateur" v-model="nom_utilisateur" required> 
-                        </div>			
-                        <div class="login__field">
-                            <i class="login__icon bi bi-lock-fill"></i>
-                            <input type="password" class="login__input" placeholder="Mot de passe" v-model="mot_de_passe" required>
-                        </div>
-                        <p :class="{ shake: errors_disabled }" v-if="errors" >{{errors}}</p>
-                        <button class="button login__submit" @click="warnError">
-                            <span class="button__text">Se connecter</span>
-                            <i class="button__icon bi bi-chevron-right"></i>
-                        </button>			
-                    </form>
-                    <div class="social-login">
-                        <!-- <h3>log </h3> -->
-                        <div class="social-icons">
-                            
-                            <RouterLink to="/"><a href="#" class="social-login__icon fab ri-logout-box-line"></a></RouterLink>
-                            
-                            <!-- <a href="#" class="social-login__icon fab fa-facebook"></a>
-                            <a href="#" class="social-login__icon fab fa-twitter"></a> -->
-                        </div>
+
+    <div class="container">
+        <div class="screen">
+            <div class="screen__content">
+                
+                <form class="login"
+					@submit.prevent="login"
+					autocomplete="off"
+					novalidate=""
+				>
+                    <!-- <h6>Accéder à mon compte</h6> -->
+                    <div class="login__field">
+                        <i class="login__icon bi bi-person-fill"></i>
+                        <input type="text" class="login__input" placeholder="Nom d'utilisateur" v-model="nom_utilisateur" required> 
+                    </div>			
+                    <div class="login__field">
+                        <i class="login__icon bi bi-lock-fill"></i>
+                        <input type="password" class="login__input" placeholder="Mot de passe" v-model="mot_de_passe" required>
+                    </div>
+					<p :class="{ shake: errors_disabled }" v-if="errors" >{{errors}}</p>
+                    <button class="button login__submit" @click="warnError">
+                        <span class="button__text">Se connecter</span>
+                        <i class="button__icon bi bi-chevron-right"></i>
+                    </button>			
+                </form>
+                <div class="social-login">
+                    <!-- <h3>log </h3> -->
+                    <div class="social-icons">
+                        
+                        <RouterLink to="/"><a href="#" class="social-login__icon fab ri-logout-box-line"></a></RouterLink>
+                        
+                        <!-- <a href="#" class="social-login__icon fab fa-facebook"></a>
+                        <a href="#" class="social-login__icon fab fa-twitter"></a> -->
                     </div>
                 </div>
-                <div class="screen__background">
-                    <span class="screen__background__shape screen__background__shape4"></span>
-                    <span class="screen__background__shape screen__background__shape3"></span>		
-                    <span class="screen__background__shape screen__background__shape2"></span>
-                    <span class="screen__background__shape screen__background__shape1"></span>
-                </div>		
             </div>
+            <div class="screen__background">
+                <span class="screen__background__shape screen__background__shape4"></span>
+                <span class="screen__background__shape screen__background__shape3"></span>		
+                <span class="screen__background__shape screen__background__shape2"></span>
+                <span class="screen__background__shape screen__background__shape1"></span>
+            </div>		
         </div>
-    </main>
+    </div>
+
 </template>
 
 <script>
 
-    import AutoriteApi from '../api/autorite'
-    import Profil from '../api/profil'
+    import AutoriteApi from '../../api/autorite'
+    import Profil from '../../api/profil'
     export default {
         data() {
             return {
@@ -138,9 +135,6 @@
 </script>
 
 <style scoped>
-body {
-	background: linear-gradient(90deg, #f6f9ff, #4154f1) !important;		
-}
 
 .shake {
 	color: firebrick;
@@ -349,5 +343,4 @@ body {
 	.social-login__icon:hover {
 		transform: scale(1.5);	
 	}
-
 </style>
