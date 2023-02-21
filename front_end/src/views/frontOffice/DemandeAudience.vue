@@ -1,7 +1,7 @@
 
 <script setup>
   import NavBarFront from '../../components/header/NavBarFront.vue'
-  import FooterFront from '../../components/footer/FooterFront.vue'
+  import FooterFront from '../../components/footer/FooterComponent.vue'
   import Calendrier from '../../components/demande_audience/Calendrier.vue'
 </script>
 

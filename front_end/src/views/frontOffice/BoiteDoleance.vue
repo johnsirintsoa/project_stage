@@ -1,6 +1,6 @@
 <script setup>
     import NavBarFront from '../../components/header/NavBarFront.vue'
-    import FooterFront from '../../components/footer/FooterFront.vue'
+    import FooterFront from '../../components/footer/FooterComponent.vue'
     import Formulaire from '../../components/boite_a_doleance/FormDoleance.vue'
     import DoleancePublic from '../../components/boite_a_doleance/MyDoleances.vue'
 </script>

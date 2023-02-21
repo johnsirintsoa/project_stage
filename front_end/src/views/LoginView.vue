@@ -1,9 +1,5 @@
 <script setup>
     import { RouterLink, RouterView } from 'vue-router'
-    // import HelloWorld from './components/HelloWorld.vue'
-    // import LoginComponent from '../components/profil/LoginComponent.vue';
-    // import LoginComponent from '../components/profil/LoginComponent2.vue';
-
 </script>
 
 <template>
@@ -97,7 +93,7 @@
             },
             
             async login(){
-                
+
                 const validForm = this.nom_utilisateur && this.mot_de_passe
                 const invalidForm = !this.nom_utilisateur && !this.mot_de_passe
                 if (invalidForm){
@@ -129,9 +125,15 @@
 					}
                     else{
 						sessionStorage.setItem('structure',JSON.stringify(login))
-                        this.$router.push({path: '/back-office/'});
+						this.$router.replace(this.$route.query.redirect || '/back-office/');
+										// setInterval( () => {
+				// 	window.location.reload()
+				// }, 1)
+                        // this.$router.push({path: '/back-office/'});
+
                     }
                 }
+				
             }
         },
     }

@@ -1,6 +1,6 @@
 <script setup>
     import HeaderNavbar from '../../components/header/HeaderStructure.vue'
-    import FooterComponent from '../../components/footer/FooterFront.vue'
+    import FooterComponent from '../../components/footer/FooterComponent.vue'
 </script>
     
 <template>
@@ -26,9 +26,21 @@
             }
             
         },
-        beforeCreate() {
-            
-        },
+        // created() {
+        //     this.count++
+        //     if(this.count == 1){
+                // setInterval( () => {
+                //     window.location.reload()
+                // }, 100)
+        //         this.count = 0
+        //     }
+
+        // },
+        // beforeCreate() {
+        //     // setInterval( () => {
+        //     //     window.location.reload()
+        //     // }, 100)
+        // },
     }
 </script>
     

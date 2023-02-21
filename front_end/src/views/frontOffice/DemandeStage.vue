@@ -1,7 +1,7 @@
 <script setup>
 import FormStage from '../../components/demande_de_stage/FormStage.vue';
 import NavBarFront from '../../components/header/NavBarFront.vue'
-import FooterFront from '../../components/footer/FooterFront.vue'
+import FooterFront from '../../components/footer/FooterComponent.vue'
 </script>
 
 <template>

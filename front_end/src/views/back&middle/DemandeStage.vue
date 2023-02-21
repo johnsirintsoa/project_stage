@@ -2,7 +2,7 @@
     import ListStage from '../../components/demande_de_stage/ListStage.vue';
     import HeaderBM from '../../components/header/HeaderStructure.vue'
     import BarresRecherche from '../../components/demande_de_stage/BarresRecherche.vue'
-    import FooterBack from '../../components/footer/FooterFront.vue' 
+    import FooterBack from '../../components/footer/FooterComponent.vue' 
     // import PopupEntretien from '../../components/demande_de_stage/FaireEntretien.vue'
     // import HeaderNavbar from '../../components/header/HeaderBack.vue'
 </script>

@@ -1,7 +1,7 @@
 <script setup>
     import HeaderStructure from '../../components/header/HeaderStructure.vue'
     import Calendrier from '../../components/demande_audience/Calendrier.vue';
-    import FooterBack from '../../components/footer/FooterFront.vue' 
+    import FooterBack from '../../components/footer/FooterComponent.vue' 
 </script>
 
 <template>
