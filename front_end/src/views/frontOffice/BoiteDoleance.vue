@@ -5,29 +5,6 @@
     import DoleancePublic from '../../components/boite_a_doleance/MyDoleances.vue'
 </script>
 
-<script>
-    export default {
-        components:{
-            Formulaire,
-            DoleancePublic
-        },
-        data() {
-            return {
-                currentForm: 'Formulaire'
-            }
-        },
-        methods: {
-            doFormulaire(){
-                this.currentForm = 'Formulaire'
-            },
-
-            doListe(){
-                this.currentForm = 'DoleancePublic'
-            }
-        },
-    }
-</script>
-
 <template>
     <NavBarFront/>
     <main id="main" class="main">
@@ -49,7 +26,7 @@
                                 </ul>
                                 <div class="tab-content pt-2" id="myTabContent">
                                     <KeepAlive>
-                                        <component :is="currentForm"></component>
+                                        <component :is="currentView"></component>
                                     </KeepAlive>
                                 </div>
                             </div>
@@ -63,6 +40,29 @@
     <FooterFront/>
     
 </template>
+
+<script>
+    export default {
+        components:{
+            Formulaire,
+            DoleancePublic
+        },
+        data() {
+            return {
+                currentView: 'Formulaire'
+            }
+        },
+        methods: {
+            doFormulaire(){
+                this.currentView = 'Formulaire'
+            },
+
+            doListe(){
+                this.currentView = 'DoleancePublic'
+            }
+        },
+    }
+</script>
 
 <style scoped>
     @import url('./css/style.css');
