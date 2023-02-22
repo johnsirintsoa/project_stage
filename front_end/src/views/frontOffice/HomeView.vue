@@ -8,13 +8,12 @@
     <main id="main">
         <section class="section">
             <div class="row">
-                <div class="col-lg-12">
+                <!-- <div class="col-lg-12">
 
                     <div class="card">
                       <div class="card-body">
                         <h5 class="card-title">Default Accordion</h5>
           
-                        <!-- Default Accordion -->
                         <div class="accordion" id="accordionExample">
                           <div class="accordion-item">
                             <h2 class="accordion-header" id="headingOne">
@@ -52,13 +51,27 @@
                               </div>
                             </div>
                           </div>
-                        </div><!-- End Default Accordion Example -->
-          
+                        </div>
                       </div>
                     </div>
-          
-                </div>
+          class="no-shadow" arrows-outside bullets-outside
+                </div> -->
                 <div class="col-lg-12">
+                  <vueper-slides  
+                    class="no-shadow"
+                    :autoplay="true" 
+                    :infinite="true"
+                  >
+                    <vueper-slide 
+                      v-for="(slide, i) in menu"
+                      :key="slide.id"
+                      :title="slide.titre"
+                      :content="slide.contenu"
+                      :style="'background-color: ' + ['#f6f9ff', '#f6f9ff'][i % 2]"
+                      :duration="4000"
+                      >
+                    </vueper-slide>
+                  </vueper-slides>
                 </div>
             </div>
         </section>
@@ -68,11 +81,23 @@
 </template>
 
 <script>
+  import { VueperSlides, VueperSlide } from 'vueperslides'
+  import 'vueperslides/dist/vueperslides.css'
   export default {
-
+    components: { VueperSlides, VueperSlide },
     data() {
       return {
         // styleCard:{},
+        slides: [
+          {
+            title: 'Slide #1',
+            content: 'Slide 1 content.'
+          },
+          {
+            title: 'Slide #2',
+            content: 'Slide 2 content.'
+          }
+        ],
         menu:[
           { 
             id:1,
@@ -102,10 +127,16 @@
 </script>
 
 <style scoped>
-    #main{
-        
-        /* margin-top: 0px !important; */
-        margin-left: 0em !important;
-        margin-right: 0em !important;
-    }
+  #main{
+      
+      /* margin-top: 0px !important; */
+      margin-left: 0em !important;
+      margin-right: 0em !important;
+  }
+  .ex--center-mode {
+    width: 600px;
+    max-width: 100%;
+    margin: auto;
+  }
+
 </style>
