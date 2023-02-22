@@ -1,56 +1,51 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/frontOffice/HomeView.vue'
-
+// import HomeView from '../views/frontOffice/HomeView.vue'
+const HomeView = () => import('../views/frontOffice/HomeView.vue')
+const FrontBoiteDoleance = () => import('../views/frontOffice/BoiteDoleance.vue')
+const FrontDemandeStage = () =>import('../views/frontOffice/DemandeStage.vue')
+const FrontDemandeAudience = () =>import('../views/frontOffice/DemandeAudience.vue')
+const Login = () => import('../views/LoginView.vue')
 
 console.log(import.meta.env.BASE_URL)
 const router = createRouter({
   // mode:'hash',
-  // mode: 'history'
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
-      name: 'home-front',
+      name: 'HomeView',
       component: HomeView
     },
     {
       path: '/boite-a-doleance',
-      name: 'front-boite-a-doleance',
-      component: () => import('../views/frontOffice/BoiteDoleance.vue')
+      name: 'FrontBoiteDoleance',
+      component: FrontBoiteDoleance
 
     },
     {
       path: '/demande-stage',
-      name: 'front-demande-stage',
+      name: 'FrontDemandeStage',
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('../views/frontOffice/DemandeStage.vue')
+      component: FrontDemandeStage
     },
 
     {
-      path: '/demande-audience/autorite',
-      name: 'front-demande-audience',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/frontOffice/Autorite.vue')
-    },
-    {
       path: '/demande-audience',
-      name: 'front-demande-audience-autorite-enfant',
+      name: 'FrontDemandeAudience',
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('../views/frontOffice/DemandeAudience.vue'),
+      component: FrontDemandeAudience,
       props:true
     },
 
         // /** Autorite routes */
     {
       path: '/login',
-      name: 'middle-login',
-      component: () => import('../views/LoginView.vue')
+      name: 'Login',
+      component: Login
     },
 
     
@@ -86,7 +81,8 @@ const router = createRouter({
       name: 'back-office-detail-demande-stage',
       component: () => import('../views/back&middle/DetailDemandeStage.vue')
     },
-  ]
+  ],
+  mode: 'history'
 })
 
 export default router

@@ -161,6 +161,9 @@
                 this.autorite = JSON.parse(sessionStorage.getItem('structure'))
                 this.$emit('structure', this.autorite)
             }
+            // else {
+            //   this.$router.push({path: '/login'});
+            // }
         },
 
         methods: {

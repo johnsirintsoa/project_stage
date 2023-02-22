@@ -1,14 +1,15 @@
 <script setup>
   import structure from '../tStructureComponent/Tstructure.vue'
 </script>
-
+  
 <template>
+
     <div class="type-doleance" style="padding-top: 10px">
-        <label><input type="radio" v-model="currentForm" value="AnonymusForm" /> Anonyme</label>
-        <label><input type="radio" v-model="currentForm" value="NonAnonymusForm" style="margin-left: 20px;"/> Non anonyme</label>
+      <input type="checkbox" v-model="isAnonyme">
+      <label>Anonymement</label>
     </div>
     
-    <div v-if="currentForm === 'AnonymusForm'">
+    <div v-if="isAnonyme">
         <form class="row g-3" @submit.prevent="ajouter" autocomplete="off">
             <div class="col-md-12">
               <div class="form-floating">
@@ -37,7 +38,7 @@
         </form>
     </div>
     
-    <div v-else-if="currentForm === 'NonAnonymusForm'">
+    <div v-else>
         <form class="row g-3" @submit.prevent="ajouter" autocomplete="off">
             <div class="col-md-12">
                 <div class="form-floating">
@@ -119,7 +120,7 @@
     </div>
 
 </template>
-
+  
 <script>
     import AutoriteApi from '../../api/autorite'
     import swal from 'sweetalert'
@@ -128,8 +129,8 @@
         data() {
             return {
                 marginTop: -16,
-                currentForm: 'AnonymusForm',
-                isSearching: false,
+                isAnonyme: false,
+                // isSearching: false,
                 directions: 'Aucun résultats',
                 doleance:{
                     autorite:'',
@@ -152,13 +153,13 @@
           },
 
           async ajouter() {
-            if(this.currentForm === 'AnonymusForm'){
+            if(this.isAnonyme === true){
                 const data = await DoleanceApi.ajouter_anonyme(this.doleance)
                 if(data.message){
                     swal('Doléance ajoutée',`${data.message}`,'success')
                 }
             }
-            else if(this.currentForm === 'NonAnonymusForm'){
+            else if(this.isAnonyme === false){
                 const data = await DoleanceApi.ajouter_non_anonyme(this.doleance)
                 if(data.message){
                     swal('Doléance ajoutée',`${data.message}`,'success')
