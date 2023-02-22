@@ -29,18 +29,13 @@ app.use(cors({
     credentials: true
 }))
 
-// app.use((req,res,next)=>{
-//     res.setHeader('Access-Control-Allow-Origin','*');
-//     res.setHeader('Access-Control-Allow-Methods','GET,POST,PUT,PATCH,DELETE');
-//     res.setHeader('Access-Control-Allow-Methods','Content-Type','Authorization');
-//     next(); 
-// })
-
-app.use((req, res, next) => {
+app.use((req,res,next)=>{
+    res.setHeader('Access-Control-Allow-Origin','*');
+    res.setHeader('Access-Control-Allow-Methods','GET,POST,PUT,PATCH,DELETE');
+    res.setHeader('Access-Control-Allow-Methods','Content-Type','Authorization');
     res.setHeader('Content-Type', 'application/json');
-    // res.setHeader('X-Powered-By', 'My Awesome App');
-    next();
-  });
+    next(); 
+})
 
 app.use(bodyParser.json())
 app.use(

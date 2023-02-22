@@ -1,51 +1,56 @@
 import { createRouter, createWebHistory } from 'vue-router'
-// import HomeView from '../views/frontOffice/HomeView.vue'
-const HomeView = () => import('../views/frontOffice/HomeView.vue')
-const FrontBoiteDoleance = () => import('../views/frontOffice/BoiteDoleance.vue')
-const FrontDemandeStage = () =>import('../views/frontOffice/DemandeStage.vue')
-const FrontDemandeAudience = () =>import('../views/frontOffice/DemandeAudience.vue')
-const Login = () => import('../views/LoginView.vue')
+import HomeView from '../views/frontOffice/HomeView.vue'
+
 
 console.log(import.meta.env.BASE_URL)
 const router = createRouter({
   // mode:'hash',
+  // mode: 'history'
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
-      name: 'HomeView',
+      name: 'home-front',
       component: HomeView
     },
     {
       path: '/boite-a-doleance',
-      name: 'FrontBoiteDoleance',
-      component: FrontBoiteDoleance
+      name: 'front-boite-a-doleance',
+      component: () => import('../views/frontOffice/BoiteDoleance.vue')
 
     },
     {
       path: '/demande-stage',
-      name: 'FrontDemandeStage',
+      name: 'front-demande-stage',
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: FrontDemandeStage
+      component: () => import('../views/frontOffice/DemandeStage.vue')
     },
 
     {
-      path: '/demande-audience',
-      name: 'FrontDemandeAudience',
+      path: '/demande-audience/autorite',
+      name: 'front-demande-audience',
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: FrontDemandeAudience,
+      component: () => import('../views/frontOffice/Autorite.vue')
+    },
+    {
+      path: '/demande-audience',
+      name: 'front-demande-audience-autorite-enfant',
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import('../views/frontOffice/DemandeAudience.vue'),
       props:true
     },
 
         // /** Autorite routes */
     {
       path: '/login',
-      name: 'Login',
-      component: Login
+      name: 'middle-login',
+      component: () => import('../views/LoginView.vue')
     },
 
     
@@ -81,8 +86,7 @@ const router = createRouter({
       name: 'back-office-detail-demande-stage',
       component: () => import('../views/back&middle/DetailDemandeStage.vue')
     },
-  ],
-  mode: 'history'
+  ]
 })
 
 export default router

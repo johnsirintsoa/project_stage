@@ -49,25 +49,25 @@ export default class AutoriteAPI{
         return res.data       
     }
 
-    static async liste(){
-        const url = dom.domaineBackEnd(route1,'/liste')
-        const res = await axios.get(url)
-        // const res = await axios.get(url.concat('/liste'))
-        return res.data
-    }
+    // static async liste(){
+    //     const url = dom.domaineBackEnd(route1,'/liste')
+    //     const res = await axios.get(url)
+    //     // const res = await axios.get(url.concat('/liste'))
+    //     return res.data
+    // }
 
     // all doleance
-    static async autorite_enfant(){
-        const url = dom.domaineBackEnd(route1,'/enfant/all')
-        const res = await axios.get(url)
-        // const res = await axios.get(url.concat('/enfant/all'))
-        return res.data
-    }
+    // static async autorite_enfant(){
+    //     const url = dom.domaineBackEnd(route1,'/enfant/all')
+    //     const res = await axios.get(url)
+    //     // const res = await axios.get(url.concat('/enfant/all'))
+    //     return res.data
+    // }
 
-    static async autorite_enfant_autorite(id_autorite_enfant){
-        const url = dom.domaineBackEnd(route1,'/enfant/all')
-        const res = await axios.get(url.concat('/',id_autorite_enfant))
-        // const res = await axios.get(url.concat('/enfant/all/',id_autorite_enfant))
-        return res.data
-    }
+    // static async autorite_enfant_autorite(id_autorite_enfant){
+    //     const url = dom.domaineBackEnd(route1,'/enfant/all')
+    //     const res = await axios.get(url.concat('/',id_autorite_enfant))
+    //     // const res = await axios.get(url.concat('/enfant/all/',id_autorite_enfant))
+    //     return res.data
+    // }
 }

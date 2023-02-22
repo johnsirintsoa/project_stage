@@ -138,8 +138,7 @@
             </div>
 
         </form>
-        <!-- End General Form Elements -->
-
+        
         </div>
     </div>
 </template>
@@ -177,7 +176,7 @@ export default {
     async created() {
         // console.log(this.stage)
         this.domaines = await DomaineAPI.allDomaine();
-        this.autorites = await AutoriteApi.liste()
+        // this.autorites = await AutoriteApi.liste()
         // console.log(this.domaines.)
     },
     methods: {

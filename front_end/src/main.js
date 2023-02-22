@@ -6,7 +6,8 @@ import AppFront from './AppFrontOffice.vue'
 import AppMiddle from './AppMiddleOffice.vue'
 import App from './App.vue'
 
-import router from './router'
+// import router from './router'
+import VueRouter from './router'
 
 
 // import './assets/main.css'
@@ -16,22 +17,8 @@ import './assets/vendor/quill/quill.snow.css'
 import './assets/vendor/quill/quill.bubble.css'
 import './assets/vendor/remixicon/remixicon.css'
 import './assets/vendor/simple-datatables/style.css'
-
-
-
 import './assets/css/style.css'
 import FUNC from './func/function'
-/* import the fontawesome core */
-import { library } from '@fortawesome/fontawesome-svg-core'
-
-/* import font awesome icon component */
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-
-/* import specific icons */
-import { faUserSecret } from '@fortawesome/free-solid-svg-icons'
-
-/* add icons to the library */
-library.add(faUserSecret)
 
 let app = null
 
@@ -48,9 +35,7 @@ if(session == null){
 
 
 app = createApp(App)
-// console.log(app)
-app.use(router)
-app.component('font-awesome-icon', FontAwesomeIcon)
+app.use(VueRouter)
 app.mount('#app')
 
 

@@ -4,12 +4,13 @@
 </script>
 <template>
     <NavBar/> 
+
     <main id="main">
         <section class="section">
             <div class="row">
                 <div class="col-lg-12">
 
-                    <div class="card" :style="card">
+                    <div class="card">
                       <div class="card-body">
                         <h5 class="card-title">Default Accordion</h5>
           
@@ -57,28 +58,47 @@
                     </div>
           
                 </div>
+                <div class="col-lg-12">
+                </div>
             </div>
         </section>
     </main>
+
     <FooterBack/>
 </template>
 
 <script>
-    export default {
-        data() {
-            return {
-                styleCard:{}
-            }
-        },
-        computed:{
-            card(){
-                return {
-                    width: '100%',
-                    heigth: '100%'
-                }
-            }
-        }
-    }
+  export default {
+
+    data() {
+      return {
+        // styleCard:{},
+        menu:[
+          { 
+            id:1,
+            icons:'',
+            titre:'Boite à doléance',
+            enTete:'Higfkgjflgnfgfglkfflbf;glfgfgfgfgkljfgjfhgkfhgflghfgkfgxfdjkfjglkfjgfgjflgfjghfgfgflggdfoproejdgkjfgjdgjdgfog',
+            contenu:'fgkfjgkfjgfkgjfglkjfgfg'
+          },
+          { 
+            id:2,
+            icons:'',
+            titre:'Demande de stage',
+            enTete:'Higfkgjflgnfgfglkfflbf;glfgfgfgfgkljfgjfhgkfhgflghfgkfgxfdjkfjglkfjgfgjflgfjghfgfgflggdfoproejdgkjfgjdgjdgfog',
+            contenu:'fgkfjgkfjgfkgjfglkjfgfg'
+          },
+          { 
+            id:3,
+            icons:'',
+            titre:'Demande audience',
+            enTete:'Higfkgjflgnfgfglkfflbf;glfgfgfgfgkljfgjfhgkfhgflghfgkfgxfdjkfjglkfjgfgjflgfjghfgfgflggdfoproejdgkjfgjdgjdgfog',
+            contenu:'fgkfjgkfjgfkgjfglkjfgfg'
+          }
+        ]
+      }
+    },
+  }
 </script>
 
 <style scoped>
