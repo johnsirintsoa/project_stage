@@ -34,6 +34,7 @@
                 <h2 class="card-title">Modifier votre doléance</h2>
                 <ModifierDoleance
                     v-model:doleance="doleanceObj"
+                    @mesDoleances="getDoleances"
                 />
             </div>
         </div>
@@ -70,6 +71,10 @@ export default {
             // console.log(value)
         },
 
+        getDoleances(value){
+          this.doleances = value
+        },
+
         async supprimer(value){
             Swal.fire({
                 title: 'Supprimer doléance',
@@ -84,6 +89,12 @@ export default {
                 const response = await DoleanceAPI.supprimer(value.id)
                 if(response.message){
                     Swal.fire('Doléance supprimée',`${response.message}`,'success')
+                    const session = JSON.parse(sessionStorage.getItem('session_navigateur')).value
+                    const arg = {
+                        // session_navigateur : 'session877.7483667099051',
+                        session_navigateur : session,
+                    }
+                    this.doleances = await DoleanceAPI.liste_public(arg)
                 }
                 // 
             }).catch((err) => {

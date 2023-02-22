@@ -5,6 +5,8 @@
         props:{
             doleance:Object
         },
+
+        emits: ['mesDoleances'],
         data() {
           return {
             marginTop: -16,
@@ -101,6 +103,12 @@
             const response = await DoleanceAPI.modifier(arg)
             if(response.message){
               swal('Doléance modifiée',`${response.message}`,'success')
+              const session = JSON.parse(sessionStorage.getItem('session_navigateur')).value
+              const arg = {
+                  // session_navigateur : 'session877.7483667099051',
+                  session_navigateur : session,
+              }
+              this.$emit('mesDoleances', await DoleanceAPI.liste_public(arg))
               // setInterval( () => {
               //     window.location.reload()
               // }, 2000)
@@ -213,7 +221,6 @@
                     v-model="doleanceForm.cin"   
                     minlength="12"
                     maxlength="12"
-                    required
                   >
                   <label for="floatingName">CIN</label>
               </div>

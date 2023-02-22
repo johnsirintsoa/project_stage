@@ -68,7 +68,6 @@
                       id="floatingName" 
                       placeholder="Carte d'Itentité National" 
                       v-model="doleance.cin" 
-                      required  
                       minlength="12"
                       maxlength="12"
                     >
