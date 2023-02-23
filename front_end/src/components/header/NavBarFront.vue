@@ -103,9 +103,9 @@ export default {
 </script>
 
 <style scoped>
-.header {
+/* .header {
   box-shadow: none !important;
-}
+} */
 
 ul {
     margin: 0;

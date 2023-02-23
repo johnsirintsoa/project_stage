@@ -35,6 +35,12 @@ if(session == null){
 
 
 app = createApp(App)
+// app = createApp({
+//     App,
+//     VueRouter,
+//     VueTyper
+// })
+
 app.use(VueRouter)
 app.mount('#app')
 
