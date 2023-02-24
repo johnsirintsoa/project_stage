@@ -54,7 +54,7 @@
     import AutoriteApi from '../api/autorite'
     import Profil from '../api/profil'
     export default {
-		component:{
+		components:{
 			RouterLink,
 			RouterView
 		},
@@ -130,9 +130,9 @@
                     else{
 						sessionStorage.setItem('structure',JSON.stringify(login))
 						this.$router.replace(this.$route.query.redirect || '/back-office/');
-										// setInterval( () => {
-				// 	window.location.reload()
-				// }, 1)
+						setInterval( () => {
+							window.location.reload()
+						}, 200)
                         // this.$router.push({path: '/back-office/'});
 
                     }

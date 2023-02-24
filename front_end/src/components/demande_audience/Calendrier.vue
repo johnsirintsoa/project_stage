@@ -1,8 +1,8 @@
-<script setup>
+<!-- <script setup>
     // import InputAutorite from './ChoisirAutorite.vue'
   import InputStructure from '../tStructureComponent/Tstructure.vue';
   import SpinnerPopup from '../loading/SpinnerPopup.vue'
-</script>
+</script> -->
 
 <template>
 
@@ -569,9 +569,13 @@
     import 'tippy.js/dist/tippy.css'; // optional for styling
     import 'tippy.js/themes/light.css';
 
+    import InputStructure from '../tStructureComponent/Tstructure.vue';
+    import SpinnerPopup from '../loading/SpinnerPopup.vue'
     export default{
       components: {
-          FullCalendar
+          FullCalendar,
+          InputStructure,
+          SpinnerPopup
       },
         
       props:{

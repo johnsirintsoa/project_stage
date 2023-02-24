@@ -81,6 +81,9 @@ import EntretienStage from '../../api/entretien_stage';
 
 export default {
 
+    components:{
+        BarresRecherche 
+    },
     data() {
         return {
             date1:this.date_actu(),

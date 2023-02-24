@@ -1,8 +1,8 @@
-<script setup>
+<!-- <script setup>
     import HeaderBM from '../../components/header/HeaderStructure.vue'
     import Filtre from '../../components/boite_a_doleance/FiltreDoleance.vue'
     import FooterBack from '../../components/footer/FooterComponent.vue' 
-</script>
+</script> -->
 
 <template>
     <HeaderBM
@@ -59,8 +59,17 @@
 
 <script>
 import DoleanceAPI from '../../api/doleance';
+// Components
+import HeaderBM from '../../components/header/HeaderStructure.vue'
+import Filtre from '../../components/boite_a_doleance/FiltreDoleance.vue'
+import FooterBack from '../../components/footer/FooterComponent.vue' 
 
 export default {
+    components:{
+        HeaderBM,
+        Filtre,
+        FooterBack 
+    },
     data(){
         return {
             doleances:[],

@@ -1,6 +1,6 @@
-<script setup>
+<!-- <script setup>
     import Spinner from '../loading/SpinnerPopup.vue'
-</script>
+</script> -->
 
 <template>
 

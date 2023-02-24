@@ -56,7 +56,7 @@
 <script>
     import { RouterLink, RouterView } from 'vue-router'
 export default {
-    component:{
+    components:{
         RouterLink,
         RouterView
     },

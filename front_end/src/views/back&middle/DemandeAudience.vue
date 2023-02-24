@@ -1,11 +1,11 @@
-<script setup>
+<!-- <script setup>
     import HeaderNavbar from '../../components/header/HeaderStructure.vue'
     import InputAutoriteEvent from '../../components/demande_audience/ChoisirAutorite.vue'
     import Calendrier from '../../components/demande_audience/Calendrier.vue';
     import FooterBack from '../../components/footer/FooterComponent.vue' 
     // import Calendrier from '../../components/demande_audience/CalendrierDisponibleAutorite.vue'
 
-</script>
+</script> -->
 
 <template>
     <HeaderNavbar
@@ -45,9 +45,18 @@
     import frLocale from '@fullcalendar/core/locales/fr';
     import {useRoute} from "vue-router";
 
+    import HeaderNavbar from '../../components/header/HeaderStructure.vue'
+    import InputAutoriteEvent from '../../components/demande_audience/ChoisirAutorite.vue'
+    import Calendrier from '../../components/demande_audience/Calendrier.vue';
+    import FooterBack from '../../components/footer/FooterComponent.vue' 
+
     export default{
         components: {
-            FullCalendar
+            FullCalendar,
+            HeaderNavbar,
+            InputAutoriteEvent,
+            Calendrier,
+            FooterBack
         },
 
         data() {

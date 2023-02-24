@@ -41,6 +41,7 @@
     </teleport>
     
 </template>
+
 <script>
 import ModifierDoleance from './ModifierDoleance.vue'
 import DoleanceAPI from '../../api/doleance';

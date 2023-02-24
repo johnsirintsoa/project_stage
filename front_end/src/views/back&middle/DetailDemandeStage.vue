@@ -1,16 +1,26 @@
-<script setup>
+<!-- <script setup>
     // MesAudiences V2
     import HeaderBM from '../../components/header/HeaderStructure.vue'
     import DetailContent from '../../components/demande_de_stage/DetailContent.vue'
     import FooterBack from '../../components/footer/FooterComponent.vue' 
-</script>
+</script> -->
 
 <script>
 import DemandeStage from '../../api/demande_stage'
 import DemandeStageController from '../../controllers/StageController'
 import Swal from 'sweetalert2';
 import swal from 'sweetalert';
+
+// components
+import HeaderBM from '../../components/header/HeaderStructure.vue'
+import DetailContent from '../../components/demande_de_stage/DetailContent.vue'
+import FooterBack from '../../components/footer/FooterComponent.vue' 
     export default {
+        components:{
+            HeaderBM,
+            DetailContent,
+            FooterBack
+        },
         data() {
             return {
                 // id_demande_stage:'',

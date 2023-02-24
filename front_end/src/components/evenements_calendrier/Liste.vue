@@ -1,11 +1,15 @@
-<script setup>
+<!-- <script setup>
     import ChampsRecherche from '../../components/evenements_calendrier/ChampsRecherche.vue'
     import PopupAction from '../../components/evenements_calendrier/PopupAction.vue'
-</script>
+</script> -->
 
 <script>
     import AutoriteController from '../../controllers/AutoriteController'
-    export default{
+    export default {
+        components:{
+            ChampsRecherche,
+            PopupAction
+        },
         data() {
             return {
                 champs:{

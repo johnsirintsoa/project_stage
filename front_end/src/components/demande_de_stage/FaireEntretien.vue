@@ -1,6 +1,6 @@
-<script setup>
+<!-- <script setup>
     import { RouterLink, RouterView } from 'vue-router'
-</script>
+</script> -->
 
 <script>
 
@@ -8,8 +8,12 @@ import AutoriteController from '../../controllers/AutoriteController'
 import EntretienController from '../../controllers/EntretienController'
 import Swal from 'sweetalert2';
 import swal from 'sweetalert';
+import { RouterLink, RouterView } from 'vue-router'
 
 export default {
+    components:{
+        RouterLink, RouterView
+    },
     props: {
         stage:Object,
         autorite:Object

@@ -1,7 +1,7 @@
-<script setup>
+<!-- <script setup>
     import { RouterLink, RouterView } from 'vue-router'
     import SpinnerHeader from '../loading/SpinnerHeader.vue'
-</script>
+</script> -->
 <template>
 
     <header id="header" class="header fixed-top d-flex align-items-center">
@@ -111,8 +111,14 @@
 </template>
 
 <script>
+    import { RouterLink, RouterView } from 'vue-router'
+    import SpinnerHeader from '../loading/SpinnerHeader.vue'
     export default {
-
+        components:{
+          RouterLink,
+          RouterView,
+          SpinnerHeader
+        },
         props:{
           sipnnerActivated:{
             type:Boolean

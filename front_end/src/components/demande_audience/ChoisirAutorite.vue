@@ -1,6 +1,6 @@
-<script setup>
+<!-- <script setup>
     import structure from '../tStructureComponent/Tstructure.vue';
-</script>
+</script> -->
 
 <template>       
     <structure
@@ -9,10 +9,14 @@
 </template>
 
 <script>
+    import structure from '../tStructureComponent/Tstructure.vue';
     import AutoriteApi from '../../api/autorite'
     import { actual_events_public } from '../../controllers/FrontOffice/DemandeAudience'
     
     export default {
+        components:{
+            structure 
+        },
         data() {
             return {
                 autorite: '',

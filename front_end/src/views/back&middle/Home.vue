@@ -1,7 +1,7 @@
-<script setup>
+<!-- <script setup>
     import HeaderNavbar from '../../components/header/HeaderStructure.vue'
     import FooterComponent from '../../components/footer/FooterComponent.vue'
-</script>
+</script> -->
     
 <template>
     <HeaderNavbar
@@ -18,7 +18,14 @@
 </template>
 
 <script>
+    import HeaderNavbar from '../../components/header/HeaderStructure.vue'
+    import FooterComponent from '../../components/footer/FooterComponent.vue'
+
     export default{
+        components:{
+            HeaderNavbar,
+            FooterComponent
+        },
         methods: {
 
             getStructure(value){

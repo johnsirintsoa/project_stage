@@ -8,6 +8,7 @@
         <p> Copyright &copy;DRH {{year}}</p>
     </footer>    
 </template>
+
 <script>
     export default{
         props:['numberMarginLeft'],
@@ -19,6 +20,7 @@
     }
 
 </script>
+
 <style>
     /* #footer {
         margin-left: 6px !important;

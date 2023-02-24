@@ -1,8 +1,8 @@
-<script setup>
+<!-- <script setup>
     import structure from '../tStructureComponent/Tstructure.vue'
     import spinnerLoading from '../loading/SpinnerHeader.vue'
 
-</script>
+</script> -->
 
 <template>
     <div class="card">
@@ -145,6 +145,8 @@
 
 <script>
 // import DemandeStageAPI from '../../api/demande_stage';
+import structure from '../tStructureComponent/Tstructure.vue'
+import spinnerLoading from '../loading/SpinnerHeader.vue'
 import axios from 'axios';
 import DemandeStageAPI from '../../api/demande_stage';
 import DomaineAPI from '../../api/domaine';
@@ -152,6 +154,10 @@ import AutoriteApi from '../../api/autorite';
 import swal from 'sweetalert';
 
 export default {
+    components:{
+        structure,
+        spinnerLoading
+    },
     data(){
         return{
             sipnnerActivated: false,

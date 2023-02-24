@@ -1,11 +1,11 @@
-<script setup>
+<!-- <script setup>
     import ListStage from '../../components/demande_de_stage/ListStage.vue';
     import HeaderBM from '../../components/header/HeaderStructure.vue'
     import BarresRecherche from '../../components/demande_de_stage/BarresRecherche.vue'
     import FooterBack from '../../components/footer/FooterComponent.vue' 
     // import PopupEntretien from '../../components/demande_de_stage/FaireEntretien.vue'
     // import HeaderNavbar from '../../components/header/HeaderBack.vue'
-</script>
+</script> -->
     
 <template>
     <HeaderBM
@@ -107,7 +107,20 @@
     import EntretienController from '../../controllers/EntretienController'
     import Swal from 'sweetalert2';
     import swal from 'sweetalert';
-    export default{
+
+    // components
+    import ListStage from '../../components/demande_de_stage/ListStage.vue';
+    import HeaderBM from '../../components/header/HeaderStructure.vue'
+    import BarresRecherche from '../../components/demande_de_stage/BarresRecherche.vue'
+    import FooterBack from '../../components/footer/FooterComponent.vue' 
+
+    export default {
+        components:{
+            ListStage,
+            HeaderBM,
+            BarresRecherche,
+            FooterBack
+        },
         data() {
             return {
                 spinnerActivated: false,
