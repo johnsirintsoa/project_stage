@@ -6,7 +6,8 @@
             doleance:Object
         },
 
-        emits: ['mesDoleances'],
+        emits: ['mesDoleances','closePopup'],
+
         data() {
           return {
             marginTop: -16,

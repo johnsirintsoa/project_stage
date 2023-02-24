@@ -231,8 +231,17 @@ export default {
 
             
             const response =  await DemandeStageAPI.addDemandeStage(demande_stage)
-            swal("Demande de stage enregistrée", `Votre demande de stage a bien été ajoutée`, "success");
-            this.sipnnerActivated = false
+            response.then((result) => {
+                swal("Demande de stage enregistrée", `Votre demande de stage a bien été ajoutée`, "success");
+                this.sipnnerActivated = false
+            }).catch((err) => {
+                console.log(err)
+                swal("Demande de stage non envoyée", `Votre demande de stage n'a pas été envoyée`, "error");
+                this.sipnnerActivated = false
+            });
+            // console.log(response)
+            // swal("Demande de stage enregistrée", `Votre demande de stage a bien été ajoutée`, "success");
+            // this.sipnnerActivated = false
         }
     },
 }

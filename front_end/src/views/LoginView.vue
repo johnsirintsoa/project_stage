@@ -328,7 +328,7 @@ body {
 	color: #7875B5;
 }
 
-.social-login {	
+.social-login a{	
 		position: absolute;
 		height: 140px;
 		width: 160px;
@@ -338,14 +338,14 @@ body {
 		color: #fff;
 	}
 
-	.social-icons {
+	.social-icons a{
 		display: flex;
 		align-items: center;
 		justify-content: center;
         font-size: 40px;
 	}
 
-	.social-login__icon {
+	.social-login__icon a{
 		padding: 20px 10px;
 		color: #fff;
 		text-decoration: none;	

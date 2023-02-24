@@ -314,8 +314,6 @@ router.post('/sendSms', async(req,res)=>{
     })
 })
 
-// get file 
-
 
 router.get('/file/:file_name',async(req,res)=>{
 
