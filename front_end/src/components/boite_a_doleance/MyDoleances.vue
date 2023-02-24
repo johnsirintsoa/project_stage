@@ -35,6 +35,7 @@
                 <ModifierDoleance
                     v-model:doleance="doleanceObj"
                     @mesDoleances="getDoleances"
+                    @closePopup="getPopupStatus"
                 />
             </div>
         </div>
@@ -78,6 +79,9 @@ export default {
 
         getDoleances(value){
           this.doleances = value
+        },
+        getPopupStatus(value){
+            this.showPopup = value
         },
 
         async supprimer(value){

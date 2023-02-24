@@ -110,6 +110,7 @@
                   session_navigateur : session,
               }
               this.$emit('mesDoleances', await DoleanceAPI.liste_public(arg))
+              this.$emit('closePopup', false)
               // setInterval( () => {
               //     window.location.reload()
               // }, 2000)
