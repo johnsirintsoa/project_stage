@@ -53,4 +53,3 @@ import "./assets/vendor/quill/quill.min.js"
 import "./assets/vendor/simple-datatables/simple-datatables.js"
 import "./assets/vendor/tinymce/tinymce.min.js"
 import "./assets/js/main"
-
