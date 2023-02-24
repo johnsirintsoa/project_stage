@@ -17,12 +17,27 @@ import FooterFront from '../../components/footer/FooterComponent.vue'
                     <FormStage/>
                 </div>
             </div>
-        </div><!-- End #main -->
+        </div>
     </main>
 
     <FooterFront/>
 
 </template> 
+
+<!-- <script>
+import FormStage from '../../components/demande_de_stage/FormStage.vue';
+import NavBarFront from '../../components/header/NavBarFront.vue'
+import FooterFront from '../../components/footer/FooterComponent.vue'
+
+export default {
+    
+    component:{
+        FormStage,
+        NavBarFront,
+        FooterFront
+    }
+}
+</script> -->
 
 <style scoped>
 @import url('./css/style.css');

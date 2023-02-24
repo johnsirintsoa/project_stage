@@ -1,6 +1,6 @@
-<script setup>
+<!-- <script setup>
   import structure from '../tStructureComponent/Tstructure.vue'
-</script>
+</script> -->
 
 <template>
     <div class="type-doleance" style="padding-top: 10px">
@@ -121,22 +121,26 @@
 </template>
 
 <script>
+    import structure from '../tStructureComponent/Tstructure.vue'
     import AutoriteApi from '../../api/autorite'
     import swal from 'sweetalert'
     import DoleanceApi from '../../api/doleance'
     export default {
+        components:{
+          structure
+        },
         data() {
-            return {
-                marginTop: -16,
-                currentForm: 'AnonymusForm',
-                isSearching: false,
-                directions: 'Aucun résultats',
-                doleance:{
-                    autorite:'',
-                    titre:'',
-                    message:''
-                }
-            }
+          return {
+              marginTop: -16,
+              currentForm: 'AnonymusForm',
+              isSearching: false,
+              directions: 'Aucun résultats',
+              doleance:{
+                  autorite:'',
+                  titre:'',
+                  message:''
+              }
+          }
         },
 
         

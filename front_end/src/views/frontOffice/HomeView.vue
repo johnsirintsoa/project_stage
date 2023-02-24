@@ -1,7 +1,7 @@
-<script setup>
+<!-- <script setup>
     import NavBar from '../../components/header/NavBarFront.vue';
     import FooterBack from '../../components/footer/FooterComponent.vue';
-</script>
+</script> -->
 <template>
     <NavBar/> 
 
@@ -128,11 +128,19 @@
 </template>
 
 <script>
+  import NavBar from '../../components/header/NavBarFront.vue';
+  import FooterBack from '../../components/footer/FooterComponent.vue';
   import { VueperSlides, VueperSlide } from 'vueperslides'
   import VueWriter from "vue-writer";
   import 'vueperslides/dist/vueperslides.css'
   export default {
-    components: { VueperSlides, VueperSlide },
+    components: { 
+      VueperSlides,
+      VueperSlide,
+      VueWriter,
+      NavBar,
+      FooterBack
+    },
     data() {
       return {
         menu:[

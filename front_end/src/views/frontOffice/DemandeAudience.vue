@@ -1,9 +1,9 @@
 
-<script setup>
+<!-- <script setup>
   import NavBarFront from '../../components/header/NavBarFront.vue'
   import FooterFront from '../../components/footer/FooterComponent.vue'
   import Calendrier from '../../components/demande_audience/Calendrier.vue'
-</script>
+</script> -->
 
 <template>
   <!-- header -->
@@ -48,11 +48,16 @@
   import frLocale from '@fullcalendar/core/locales/fr';
   import DemandeAudiencePublicController from '../../controllers/FrontOffice/DemandeAudience'
 
-  
+  import NavBarFront from '../../components/header/NavBarFront.vue'
+  import FooterFront from '../../components/footer/FooterComponent.vue'
+  import Calendrier from '../../components/demande_audience/Calendrier.vue'
   
   export default {
-  
+
     components: {
+      NavBarFront,
+      FooterFront,
+      Calendrier,
       FullCalendar
     },
   

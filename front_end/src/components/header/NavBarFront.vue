@@ -1,7 +1,6 @@
-<script setup>
+<!-- <script setup>
     import { RouterLink, RouterView } from 'vue-router'
-    // import HelloWorld from './components/HelloWorld.vue'
-</script>
+</script> -->
 
 <template>
     <header id="header" class="header fixed-top d-flex align-items-center header-scrolled">
@@ -55,7 +54,12 @@
 </template>
 
 <script>
+    import { RouterLink, RouterView } from 'vue-router'
 export default {
+    component:{
+        RouterLink,
+        RouterView
+    },
     data() {
         return {
             links: [
@@ -103,9 +107,9 @@ export default {
 </script>
 
 <style scoped>
-/* .header {
+.header {
   box-shadow: none !important;
-} */
+}
 
 ul {
     margin: 0;

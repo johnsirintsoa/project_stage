@@ -1,6 +1,6 @@
-<script setup>
+<!-- <script setup>
     import ModifierDoleance from './ModifierDoleance.vue'
-</script>
+</script> -->
 
 <template>
     <table class="table table-hover">
@@ -42,10 +42,14 @@
     
 </template>
 <script>
+import ModifierDoleance from './ModifierDoleance.vue'
 import DoleanceAPI from '../../api/doleance';
 import swal from 'sweetalert'
 import Swal from 'sweetalert2'
 export default {
+    components:{
+        ModifierDoleance
+    },
     data(){
         return {
             showPopup: false,

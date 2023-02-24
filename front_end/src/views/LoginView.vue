@@ -1,6 +1,6 @@
-<script setup>
-    import { RouterLink, RouterView } from 'vue-router'
-</script>
+<!-- <script setup>
+    
+</script> -->
 
 <template>
     <main>
@@ -50,10 +50,14 @@
 </template>
 
 <script>
-
+	import { RouterLink, RouterView } from 'vue-router'
     import AutoriteApi from '../api/autorite'
     import Profil from '../api/profil'
     export default {
+		component:{
+			RouterLink,
+			RouterView
+		},
         data() {
             return {
                 sipnnerActivated: false,

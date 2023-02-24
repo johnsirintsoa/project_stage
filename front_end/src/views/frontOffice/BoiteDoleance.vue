@@ -1,10 +1,3 @@
-<script setup>
-    import NavBarFront from '../../components/header/NavBarFront.vue'
-    import FooterFront from '../../components/footer/FooterComponent.vue'
-    import Formulaire from '../../components/boite_a_doleance/FormDoleance.vue'
-    import DoleancePublic from '../../components/boite_a_doleance/MyDoleances.vue'
-</script>
-
 <template>
     <NavBarFront/>
     <main id="main" class="main">
@@ -42,8 +35,14 @@
 </template>
 
 <script>
+    import NavBarFront from '../../components/header/NavBarFront.vue'
+    import FooterFront from '../../components/footer/FooterComponent.vue'
+    import Formulaire from '../../components/boite_a_doleance/FormDoleance.vue'
+    import DoleancePublic from '../../components/boite_a_doleance/MyDoleances.vue'
     export default {
         components:{
+            NavBarFront,
+            FooterFront,
             Formulaire,
             DoleancePublic
         },
