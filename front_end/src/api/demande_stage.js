@@ -14,10 +14,12 @@ export default class DemandeStageAPI{
     static async addDemandeStage(demande_stage){
       const url = dom.domaineBackEnd(route1,'/add')
       // const res = await axios.post(url,audience_mois)
+      let data = ''
         await axios.post(url, demande_stage, {
           }).then((response) => {
-            console.log(response)
+            data = response
           })
+        return data
     }
 
     static async sendSms(sms_option){

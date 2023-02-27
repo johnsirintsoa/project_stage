@@ -48,11 +48,17 @@ router.post('/add',upload.fields([{name: 'curriculum_vitae'},{name: 'lettre_moti
         // return res.status(200).send({ message: 'Nice we got it...' });
         // let sql = "INSERT INTO demande_stage(nom,prenom,e_mail,cin,telephone,duree,curriculum_vitae,lettre_motivation,lettre_introduction,message,id_domaine) VALUES ('"+req.body.nom+"','"+req.body.prenom+"','"+req.body.e_mail+"','"+req.body.cin+"','"+req.body.telephone+"','"+req.body.duree+"','"+req.files['curriculum_vitae'][0].filename+"','"+req.files['lettre_motivation'][0].filename+"','"+req.files['lettre_introduction'][0].filename+"','"+req.body.message+"','"+req.body.id_domaine+"')"
         // console.log(req.body)
+        // console.log('Hahahaha')
         let sql = `INSERT INTO demande_stage(nom,prenom,e_mail,cin,telephone,duree,curriculum_vitae,lettre_motivation,lettre_introduction,message,id_domaine,id_autorite_enfant,date_creation) VALUES ('${req.body.nom}','${req.body.prenom}','${req.body.e_mail}','${req.body.cin}','${req.body.telephone}','${req.body.duree}','${req.files['curriculum_vitae'][0].filename}','${req.files['lettre_motivation'][0].filename}','${req.files['lettre_introduction'][0].filename}','${req.body.message}',${req.body.id_domaine},${req.body.id_autorite_enfant},(SELECT CURDATE()))`
         var query = db.query(sql, async (err, result) =>{
             if(err){
-                return res.json(err);
-            }else{
+                // console.log('Hahahaha')
+                return res.json({
+                    message:[`Votre CV ou lettre de motivation ou lettre d'introductions est supérieur à 2Mo`],
+                    data:err
+                });
+            }
+            else{
                 const envoyeur = {
                     nom: req.body.nom,
                     prenom: req.body.prenom

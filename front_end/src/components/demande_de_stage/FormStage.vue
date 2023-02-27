@@ -98,9 +98,6 @@
                 /> 
             </div>
 
-
-
-
             <div class="row mb-3">
             <label for="validationDefault01" class="form-label">CV:</label>
             <div class="col-sm-12">
@@ -231,14 +228,16 @@ export default {
 
             
             const response =  await DemandeStageAPI.addDemandeStage(demande_stage)
-            response.then((result) => {
-                swal("Demande de stage enregistrée", `Votre demande de stage a bien été ajoutée`, "success");
-                this.sipnnerActivated = false
-            }).catch((err) => {
-                console.log(err)
-                swal("Demande de stage non envoyée", `Votre demande de stage n'a pas été envoyée`, "error");
-                this.sipnnerActivated = false
-            });
+            // this.sipnnerActivated = false
+            console.log(response)
+            // response.then((result) => {
+            //     swal("Demande de stage enregistrée", `Votre demande de stage a bien été ajoutée`, "success");
+            //     this.sipnnerActivated = false
+            // }).catch((err) => {
+            //     console.log(err)
+            //     swal("Demande de stage non envoyée", `Votre demande de stage n'a pas été envoyée`, "error");
+            //     this.sipnnerActivated = false
+            // });
             // console.log(response)
             // swal("Demande de stage enregistrée", `Votre demande de stage a bien été ajoutée`, "success");
             // this.sipnnerActivated = false

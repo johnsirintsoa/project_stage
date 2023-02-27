@@ -21,6 +21,9 @@
                             <i class="login__icon bi bi-lock-fill"></i>
                             <input type="password" class="login__input" placeholder="Mot de passe" v-model="mot_de_passe" required>
                         </div>
+						<Spinner 
+							:sipnnerActivated="sipnnerActivated"
+						/>
                         <p :class="{ shake: errors_disabled }" v-if="errors" >{{errors}}</p>
                         <button class="button login__submit" @click="warnError">
                             <span class="button__text">Se connecter</span>
@@ -51,12 +54,14 @@
 
 <script>
 	import { RouterLink, RouterView } from 'vue-router'
+	import Spinner from '../components/loading/SpinnerPopup.vue'
     import AutoriteApi from '../api/autorite'
     import Profil from '../api/profil'
     export default {
 		components:{
 			RouterLink,
-			RouterView
+			RouterView,
+			Spinner
 		},
         data() {
             return {
@@ -126,6 +131,7 @@
                     // }
 					if(login.message){
 						this.errors = login.message
+						this.sipnnerActivated = false
 					}
                     else{
 						sessionStorage.setItem('structure',JSON.stringify(login))

@@ -1,21 +1,26 @@
 <template>
     <footer 
         class="footer" 
-        :style="{
-            'margin-left': numberMarginLeft + 'em'
-        }"    
+        :style="styleFooter"    
     >
-        <p> Copyright &copy;DRH {{year}}</p>
+        <p :style="styleFooterP"> Copyright &copy;DRH {{year}}</p>
     </footer>    
 </template>
 
 <script>
     export default{
-        props:['numberMarginLeft'],
+        props:{
+            styleFooter:{
+                default:()=>{}
+            },
+            styleFooterP:{
+                default:()=>{}
+            }
+        },
         computed:{
             year(){
                 return new Date().getFullYear()
-            }
+            },
         }
     }
 
