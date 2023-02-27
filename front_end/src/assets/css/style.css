@@ -24,10 +24,12 @@ a {
   text-decoration: none;
 }
 
-a:hover {
-  color: #717ff5;
+/* a:hover {
+  color: #18191f;
   text-decoration: none;
 }
+ */
+
 
 h1,
 h2,
@@ -728,6 +730,12 @@ h6 {
   color: #4154f1;
   background: #f6f9ff;
 }
+
+.sidebar-nav .nav-link:active {
+  color: #4154f1;
+  background: #f6f9ff;
+}
+
 
 .sidebar-nav .nav-link:hover i {
   color: #4154f1;

@@ -126,5 +126,10 @@ ul li {
     align-items: center;
 }
 
+ul li .router-view-active-link {
+    color: #4154fc;
+    text-decoration: underline;
+    
+}
 
 </style>

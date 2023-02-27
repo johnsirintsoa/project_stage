@@ -1,10 +1,4 @@
 
-<!-- <script setup>
-  import NavBarFront from '../../components/header/NavBarFront.vue'
-  import FooterFront from '../../components/footer/FooterComponent.vue'
-  import Calendrier from '../../components/demande_audience/Calendrier.vue'
-</script> -->
-
 <template>
   <!-- header -->
   <NavBarFront/>
@@ -39,7 +33,7 @@
   import { actual_events_public } from '../../controllers/FrontOffice/DemandeAudience'
   import DemandeAudience from '../../api/demande_audience_public'
   import tippy from 'tippy.js';
-  import 'tippy.js/dist/tippy.css'; // optional for styling
+  import 'tippy.js/dist/tippy.css'; 
   import 'tippy.js/themes/light.css';
   import Function from '../../func/function';
   import swal from 'sweetalert';

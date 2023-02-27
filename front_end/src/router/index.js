@@ -94,7 +94,8 @@ const router = createRouter({
       name: 'back-office-detail-demande-stage',
       component: () => import('../views/back&middle/DetailDemandeStage.vue')
     },
-  ]
+  ],
+  linkActiveClass: 'router-view-active-link'
 })
 
 export default router
