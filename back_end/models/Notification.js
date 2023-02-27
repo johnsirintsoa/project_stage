@@ -25,7 +25,7 @@ const notification_audience_public = async (envoyeur,receiver) => {
         subject: `Demande d'audience`,
         html: `<p>Bonjour ${receiver.intitule_code}.</p> 
                 <p>Vous avez une nouvelle audience. Un(e) certain(e) nommé(e)
-                ${envoyeur.nom} ${envoyeur.prenom}. Veuillez voir dans le site.</p>`
+                ${envoyeur.nom} ${envoyeur.prenom} au sujet de <strong>"${envoyeur.motif}"</strong>. Veuillez voir dans le site.</p>`
     }).then((result) => {
         data = result
     }).catch((err) => {

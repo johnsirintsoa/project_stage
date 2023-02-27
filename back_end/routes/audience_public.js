@@ -70,7 +70,8 @@ router.post('/public/ajouter',async(req,res)=>{
             // console.log(req.body)
             const envoyeur = {
                 nom: req.body.nom,
-                prenom: req.body.prenom
+                prenom: req.body.prenom,
+                motif: req.body.motif
             }
             const receiver = {
                 email: req.body.autoriteReceiver.email,
@@ -164,13 +165,13 @@ router.post('/public/valider',async(req,res)=>{
     const sql = ` CALL valider_audience_public (${req.body.id_dm_aud_public_date_heure_dispo},${req.body.id_audience}, '${req.body.date_debut}','${req.body.date_fin}','${req.body.heure_debut}','${req.body.heure_fin}',${req.body.id_autorite})`
 
     const entretien_date_time = String(req.body.date_debut).concat('T',req.body.heure_debut)
-    const response = await mailing.audience_public_valide(req.body.autorite,req.body.envoyeur,entretien_date_time)
         
     db.query(sql,req.body,async (error,result) => {
         if(error) {
             res.send(error)
         }
         else{
+            const response = await mailing.audience_public_valide(req.body.autorite,req.body.envoyeur,entretien_date_time)
             if(result ){
                 res.json({message:'Audience validé et envoyé',data:{db:result,mail:response}})
             }

@@ -862,7 +862,8 @@
               envoyeur: {
                 nom: this.audience.nom,
                 prenom: this.audience.prenom,
-                addresse_electronique: this.audience.email
+                addresse_electronique: this.audience.email,
+                motif: this.audience.motif
               }
             }
             this.sipnnerActivated = true
@@ -1002,6 +1003,7 @@
         },
 
         async eventDropped(event){
+          console.log(event.event.extendedProps)
           this.$emit('spinnerStatus', true)
           const start_date_time = Function.format_date_time(event.event.start)
           const end_date_time = Function.format_date_time(event.event.end)  
@@ -1015,7 +1017,7 @@
 
           this.evenement.autorite = {
             intitule: this.autoriteSender.child_libelle,
-            intitule_code: this.autoriteSender.sigle
+            intitule_code: this.autoriteSender.sigle,
           }
 
           const type = event.event.extendedProps.type_audience
@@ -1025,8 +1027,9 @@
             this.evenement.envoyeur = {
               nom: event.event.extendedProps.nom,
               prenom: event.event.extendedProps.prenom,
-              addresse_electronique: event.event.extendedProps.addresse_electronique_sender_externe,
-              numero_telephone: event.event.extendedProps.numero_telephone
+              addresse_electronique: event.event.extendedProps.email,
+              numero_telephone: event.event.extendedProps.numero_telephone,
+              motif: event.event.extendedProps.motif
             }
           }
           else if(type === 'Autorité'){
@@ -1034,7 +1037,8 @@
               intitule: event.event.extendedProps.child_libelle,
               intitule_code: event.event.extendedProps.sigle,
               addresse_electronique: event.event.extendedProps.addresse_electronique_sender_externe,
-              numero_telephone: event.event.extendedProps.numero_telephone
+              numero_telephone: event.event.extendedProps.numero_telephone,
+              motif: event.event.extendedProps.motif
             }
           }
 
@@ -1134,8 +1138,9 @@
             this.evenement.envoyeur = {
               nom: event.event.extendedProps.nom,
               prenom: event.event.extendedProps.prenom,
-              addresse_electronique: event.event.extendedProps.addresse_electronique_sender_externe,
-              numero_telephone: event.event.extendedProps.numero_telephone
+              addresse_electronique: event.event.extendedProps.email,
+              numero_telephone: event.event.extendedProps.numero_telephone,
+              motif: event.event.extendedProps.motif
             }
           }
           else if(type === 'Autorité') {
@@ -1143,7 +1148,8 @@
               intitule: event.event.extendedProps.child_libelle,
               intitule_code: event.event.extendedProps.sigle,
               addresse_electronique: event.event.extendedProps.addresse_electronique_sender_externe,
-              numero_telephone: event.event.extendedProps.numero_telephone
+              numero_telephone: event.event.extendedProps.numero_telephone,
+              motif: event.event.extendedProps.motif
             }
           }
 
@@ -1217,7 +1223,7 @@
         
         async handleEventClick(event){
 
-          // console.log(event.event.extendedProps )
+          console.log(event.event.extendedProps)
 
           // this.spinnerStatus = 'enabled'
 
@@ -1275,6 +1281,7 @@
 
             this.evenement.id_dm_aud_aut_date_heure_dispo = event.event.id
             this.evenement.id_audience = event.event.extendedProps.id_evenement
+            this.evenement.motif = event.event.extendedProps.motif
           }
 
           if(this.audience.id !== ''){

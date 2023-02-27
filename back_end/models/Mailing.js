@@ -160,7 +160,7 @@ const audience_public_valide = async (autorite,envoyeur,entretien_date_time) =>{
         to: envoyeur.addresse_electronique,
         subject: 'Audience validé',
         html: `<p>Bonjour ${envoyeur.nom} ${envoyeur.prenom}.</p> 
-                <p>Votre audience auprès de la ${autorite.intitule}(${autorite.intitule_code}) a été validée, vous pouvez venir le ${date_entretien}. 
+                <p>Votre audience auprès de la ${autorite.intitule}(${autorite.intitule_code}) au sujet de:<strong>"${envoyeur.motif}"</strong>  a été validée, vous pouvez venir le ${date_entretien}. 
                 Veuillez vous addresser à l'acceuil.`
     }).then((result) => {
         data = result
@@ -223,7 +223,7 @@ const audience_public_reporte = async (autorite,envoyeur,entretien_date_time) =>
         to: envoyeur.addresse_electronique,
         subject: 'Audience reporté',
         html: `<p>Bonjour ${envoyeur.nom} ${envoyeur.prenom}.</p> 
-                <p>En raison de certains évenements au sein de l'organisation, la ${autorite.intitule}(${autorite.intitule_code}) a du reporté votre audience le ${date_entretien}.</p>
+                <p>En raison de certains évenements au sein de l'organisation, la ${autorite.intitule}(${autorite.intitule_code}) a du reporté votre audience au sujet de :<strong>"${envoyeur.motif}"</strong>le ${date_entretien}.</p>
                 <p>Merci pour votre compréhension</p>`
     }).then((result) => {
         data = result
@@ -254,7 +254,8 @@ const audience_public_reporte_plus_tard = async (autorite,evenement) =>{
         to: evenement.addresse_electronique,
         subject: 'Audience reporté',
         html: `<p>Bonjour ${evenement.nom} ${evenement.prenom}.</p> 
-                <p>En raison de certains évenements au sein de l'organisation, la ${autorite.intitule}(${autorite.intitule_code}) a du reporté votre audience.
+                <p>En raison de certains évenements au sein de l'organisation, la ${autorite.intitule}(${autorite.intitule_code}) a du reporté votre audience au
+                sujet de <strong>"${evenement.motif}"</strong>.
                 Nous vous informerons une suite à votre audience</p>
                 <p>Merci pour votre compréhension</p>`
     }).then((result) => {
