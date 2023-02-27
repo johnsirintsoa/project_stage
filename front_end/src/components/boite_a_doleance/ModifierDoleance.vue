@@ -1,6 +1,7 @@
 <script>
     import AutoriteApi from '../../api/autorite'
     import DoleanceAPI from '../../api/doleance';
+    import Function from '../../func/function'
     export default{
         props:{
             doleance:Object
@@ -88,8 +89,8 @@
               // console.log(this.doleance)
             const arg = {
               id: this.doleanceForm.id,
-              titre: this.doleanceForm.titre,
-              message: this.doleanceForm.message,
+              titre: Function.specialChar(this.doleanceForm.titre),
+              message: Function.specialChar(this.doleanceForm.message),
               id_autorite: this.doleanceForm.id_autorite,
               nom: this.doleanceForm.nom,
               prenom: this.doleanceForm.prenom,

@@ -2,6 +2,10 @@
 // import TokenApi from '../api/token'
 export default class Function{
 
+    static specialChar(arg){
+        return arg.split("'").join("\''");
+    }
+
     static initcap(arg){
         const arg_split = arg.split(' ')
         let name_formatted = ''

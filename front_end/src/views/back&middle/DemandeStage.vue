@@ -1,12 +1,3 @@
-<!-- <script setup>
-    import ListStage from '../../components/demande_de_stage/ListStage.vue';
-    import HeaderBM from '../../components/header/HeaderStructure.vue'
-    import BarresRecherche from '../../components/demande_de_stage/BarresRecherche.vue'
-    import FooterBack from '../../components/footer/FooterComponent.vue' 
-    // import PopupEntretien from '../../components/demande_de_stage/FaireEntretien.vue'
-    // import HeaderNavbar from '../../components/header/HeaderBack.vue'
-</script> -->
-    
 <template>
     <HeaderBM
         @structure="getStructure"
@@ -38,6 +29,7 @@
                     <div class="card-body">
             
                         <table class="table table-hover">
+
                             <thead>
                                 <tr>
                                 <th scope="col"></th>
@@ -88,6 +80,7 @@
                                     </td>
                                 </tr>
                             </tbody>
+
                         </table>
                     </div>
                     <RouterView />
@@ -95,8 +88,9 @@
             </div>
         </div>
     </main>
-    <FooterBack  
-        numberMarginLeft="15"
+    
+    <FooterBack 
+        :styleFooterP="styleFooterP"
     />
 
 </template> 
@@ -142,7 +136,13 @@
                 stages: ''                
             }
         },
-        
+        computed:{
+            styleFooterP(){
+                return {
+                    marginLeft: '21em'
+                }
+            }
+        },
         async mounted(){
             const filtre = {
                 date1: this.date1,

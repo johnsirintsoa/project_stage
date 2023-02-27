@@ -698,7 +698,7 @@
                 cin: this.audience.cin,
                 numero_telephone: this.audience.numero_telephone,
                 email: this.audience.email,
-                motif: this.audience.motif,
+                motif: Function.specialChar(this.audience.motif),
                 session_navigateur: this.audience.session_navigateur,
                 date_debut: this.audience.date_debut,
                 date_fin: this.audience.date_fin,
@@ -708,6 +708,7 @@
                 id_date_heure_disponible_autorite: this.audience.id_date_heure_disponible_autorite,
                 autoriteReceiver: this.audience.autoriteReceiver
             }
+            // console.log(audience)
             this.sipnnerActivated = true
             const response = await DemandeAudiencePublicController.ajouter(audience)
             if(response.message){
@@ -724,7 +725,7 @@
           else if(this.autoriteSender && this.typeCalendrier === 'audienceAutorite'){
             
             const audience = {
-              motif: this.audience.motif,
+              motif: Function.specialChar(this.audience.motif),
               date_debut: this.audience.date_debut,
               date_fin: this.audience.date_fin,
               heure_debut: this.audience.time_debut,
@@ -767,7 +768,7 @@
               cin: this.audience.cin,
               numero_telephone: this.audience.numero_telephone,
               email: this.audience.email,
-              motif: this.audience.motif,
+              motif: Function.specialChar(this.audience.motif),
               id_date_heure_disponible : this.audience.id_date_heure_disponible,
               id_date_heure_disponible_autorite : this.audience.id_date_heure_disponible_autorite,
               id_dm_aud_public_heure_dispo : this.audience.id_dm_aud_public_heure_dispo,
@@ -788,7 +789,7 @@
           }
           else if(this.autoriteSender && this.typeCalendrier === 'audienceAutorite'){
             const audience = {
-              motif: this.audience.motif,
+              motif: Function.specialChar(this.audience.motif),
               id_date_heure_disponible_autorite : this.audience.id_date_heure_disponible_autorite,
               id_dm_aud_autorite_date_heure_dispo : this.audience.id_dm_aud_autorite_date_heure_dispo,
               email: this.audience.email,

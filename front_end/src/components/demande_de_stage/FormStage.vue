@@ -125,12 +125,9 @@
             
             <div class="row mb-3">
 
-            <label class="form-label"></label>
-            
-
-                <div>
+                <div class="text-center">
                     
-                    <button  type="submit" class="btn btn-primary" >Valider</button>
+                    <button  type="submit" class="btn btn-primary" style="width: 50%;">Valider</button>
                 </div>
             </div>
 
@@ -149,6 +146,7 @@ import DemandeStageAPI from '../../api/demande_stage';
 import DomaineAPI from '../../api/domaine';
 import AutoriteApi from '../../api/autorite';
 import swal from 'sweetalert';
+import Function from '../../func/function'
 
 export default {
     components:{
@@ -210,8 +208,8 @@ export default {
         async addDemandeStage(){
             this.sipnnerActivated = true
             const demande_stage = new FormData()
-            demande_stage.append('nom',this.stage.nom)
-            demande_stage.append('prenom',this.stage.prenom)
+            demande_stage.append('nom',Function.specialChar(this.stage.nom))
+            demande_stage.append('prenom',Function.specialChar(this.stage.prenom))
             demande_stage.append('telephone',this.stage.telephone)
             demande_stage.append('e_mail',this.stage.e_mail)
             demande_stage.append('cin',this.stage.cin)
@@ -219,7 +217,7 @@ export default {
             demande_stage.append('curriculum_vitae', this.stage.curriculum_vitae )
             demande_stage.append('lettre_motivation', this.stage.lettre_motivation )
             demande_stage.append('lettre_introduction', this.stage.lettre_introduction)
-            demande_stage.append('message',this.stage.message)
+            demande_stage.append('message',Function.specialChar(this.stage.message))
             demande_stage.append('id_domaine',this.stage.id_domaine)
             demande_stage.append('id_autorite_enfant',this.stage.id_autorite_enfant)
             demande_stage.append('autorite',this.stage.autorite)
@@ -228,8 +226,8 @@ export default {
 
             
             const response =  await DemandeStageAPI.addDemandeStage(demande_stage)
-            // this.sipnnerActivated = false
-            console.log(response)
+            this.sipnnerActivated = false
+            // console.log(response)
             // response.then((result) => {
             //     swal("Demande de stage enregistrée", `Votre demande de stage a bien été ajoutée`, "success");
             //     this.sipnnerActivated = false
@@ -239,8 +237,8 @@ export default {
             //     this.sipnnerActivated = false
             // });
             // console.log(response)
-            // swal("Demande de stage enregistrée", `Votre demande de stage a bien été ajoutée`, "success");
-            // this.sipnnerActivated = false
+            swal("Demande de stage enregistrée", `Votre demande de stage a bien été ajoutée`, "success");
+            this.sipnnerActivated = false
         }
     },
 }

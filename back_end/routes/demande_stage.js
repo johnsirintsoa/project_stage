@@ -21,7 +21,7 @@ const baseURL = HOSTING_URL
 
 // add form demande stage
 
-const maxSize = 2 * 1024 * 1024;
+// const maxSize = 2 * 1024 * 1024;
 const storage = multer.diskStorage({
     destination: function(req,file,cb){
         // cb(null, baseURL+"/uploads/demande_stage");
@@ -34,10 +34,15 @@ const storage = multer.diskStorage({
     }
 });
 
+// var upload = multer({
+//     storage: storage,
+//     limits: { fileSize: maxSize },
+// });
+
 var upload = multer({
-    storage: storage,
-    limits: { fileSize: maxSize },
+    storage: storage
 });
+
 
 // Add demande de stage
 router.post('/add',upload.fields([{name: 'curriculum_vitae'},{name: 'lettre_motivation'},{name: 'lettre_introduction'}]),async(req,res)=>{

@@ -97,7 +97,7 @@
 
         methods: {
             async rechercher(e){
-                const ses = JSON.parse(sessionStorage.getItem('administrateur'))
+                const ses = JSON.parse(sessionStorage.getItem('structure'))
                 // this.autorite = ses
                 const filtre = {
                     date1: this.date1,
@@ -105,7 +105,7 @@
                     nom: this.nom,
                     prenom: this.prenom,
                     id_domaine: this.domaine,
-                    id_autorite_enfant: this.autorite.id_autorite_enfant
+                    id_autorite: ses.child_id
                 }
                 // this.stages = await StageController.filtre(filtre) 
                 this.$emit("rechercherStages",await StageController.filtre(filtre))
@@ -123,6 +123,7 @@
         <div class="col-md-2">
             <input
                 type="date"
+                class="form-control"
                 :value="date1"
                 @input="$emit('update:date1', $event.target.value)"
             />   
@@ -131,14 +132,16 @@
         <div class="col-md-2">
             <input
                 type="date"
+                class="form-control"
                 :value="date2"
                 @input="$emit('update:date2', $event.target.value)"
             />  
         </div>
 
         
-        <div class="col-md-3">
+        <div class="col-md-2">
             <input
+                class="form-control"
                 placeholder="Votre nom"
                 type="text"
                 :value="nom"
@@ -147,8 +150,9 @@
         </div>
 
 
-        <div class="col-md-3">
+        <div class="col-md-2">
             <input
+                class="form-control"
                 placeholder="Votre prénom"
                 type="text"
                 :value="prenom"

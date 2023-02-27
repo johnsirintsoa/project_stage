@@ -36,8 +36,16 @@ import FooterBack from '../../components/footer/FooterComponent.vue'
         methods: {
             getStructure(value){
                 this.autorite = value
-            }
+            },
+            
         },
+        computed:{
+            styleFooterP(){
+                return {
+                    marginLeft: '21em'
+                }
+            }
+        }
 
     }
 </script>
@@ -68,7 +76,8 @@ import FooterBack from '../../components/footer/FooterComponent.vue'
             </div>
         </div>
     </main>
+
     <FooterBack 
-        numberMarginLeft="15"
+        :styleFooterP="styleFooterP"
     />
 </template>

@@ -125,6 +125,7 @@
     import AutoriteApi from '../../api/autorite'
     import swal from 'sweetalert'
     import DoleanceApi from '../../api/doleance'
+    import Function from '../../func/function'
     export default {
         components:{
           structure
@@ -146,7 +147,6 @@
         
         methods: {
 
-
           async getAutorite(value){
             // console.log(value)
             this.doleance.autorite = value.child_libelle
@@ -156,14 +156,23 @@
           },
 
           async ajouter() {
+            const doleance = {
+              autorite : this.doleance.autorite,
+              id_autorite : this.doleance.id_autorite,
+              sigle : this.doleance.sigle,
+              titre: Function.specialChar(this.doleance.titre),
+              message: Function.specialChar(this.doleance.message),
+              session_navigateur:this.doleance.session_navigateur
+            }
+            // console.log(doleance)
             if(this.currentForm === 'AnonymusForm'){
-                const data = await DoleanceApi.ajouter_anonyme(this.doleance)
+                const data = await DoleanceApi.ajouter_anonyme(doleance)
                 if(data.message){
                     swal('Doléance ajoutée',`${data.message}`,'success')
                 }
             }
             else if(this.currentForm === 'NonAnonymusForm'){
-                const data = await DoleanceApi.ajouter_non_anonyme(this.doleance)
+                const data = await DoleanceApi.ajouter_non_anonyme(doleance)
                 if(data.message){
                     swal('Doléance ajoutée',`${data.message}`,'success')
                 }
@@ -194,5 +203,8 @@
 <style>
     input [type=radio]{
         padding-left: 2px ;
+    }
+    .text-center button{
+      margin-left: 5px
     }
 </style>

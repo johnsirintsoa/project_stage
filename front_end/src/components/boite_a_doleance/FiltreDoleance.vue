@@ -83,6 +83,7 @@
 
         <div class="col-md-2">
             <input
+                class="form-control"
                 type="date"
                 :value="date1"
                 @input="$emit('update:date1', $event.target.value)"
@@ -91,6 +92,7 @@
 
         <div class="col-md-2">
             <input
+                class="form-control"
                 type="date"
                 :value="date2"
                 @input="$emit('update:date2', $event.target.value)"

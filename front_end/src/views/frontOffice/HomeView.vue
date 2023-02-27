@@ -64,7 +64,7 @@
             image: audienceImg,
             // image:require("@/assets/img/audience.png"),
             titre:'Demande audience',
-            contenu:`Souhaitez vous entretenir avec nos autorités? Vous pouvez posez votre demande selon leurs dates et heures disponibles.`
+            contenu:`Souhaitez-vous vous entretenir avec nos autorités? Vous pouvez posez votre demande selon leurs dates et heures de disponibilités.`
           }
         ]
       }

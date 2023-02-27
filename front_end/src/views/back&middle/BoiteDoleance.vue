@@ -53,7 +53,7 @@
     </main>
 
     <FooterBack 
-        numberMarginLeft="15"
+        :styleFooterP="styleFooterP"
     />
 </template>
 
@@ -115,6 +115,13 @@ export default {
             // console.log(value)
             this.autorite = value
         }
-    }
+    },
+    computed:{
+        styleFooterP(){
+            return {
+                marginLeft: '21em'
+            }
+        }
+    },
 }
 </script>
