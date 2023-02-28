@@ -913,7 +913,8 @@
               envoyeur: {
                 nom: this.audience.nom,
                 prenom: this.audience.prenom,
-                addresse_electronique: this.audience.email
+                addresse_electronique: this.audience.email,
+                motif: this.audience.motif
               }
             }
             this.sipnnerActivated = true
@@ -1014,6 +1015,7 @@
           this.evenement.date_fin = end_date_time[0]
           this.evenement.heure_debut = start_date_time[1]
           this.evenement.heure_fin = end_date_time[1]
+          this.evenement.motif = event.event.extendedProps.motif  
 
           this.evenement.autorite = {
             intitule: this.autoriteSender.child_libelle,

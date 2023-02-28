@@ -192,7 +192,7 @@ const audience_public_revalide = async (autorite,envoyeur,entretien_date_time) =
         to: envoyeur.addresse_electronique,
         subject: 'Audience validé',
         html: `<p>Bonjour ${envoyeur.nom} ${envoyeur.prenom}.</p> 
-                <p>Votre audience auprès de la ${autorite.intitule}(${autorite.intitule_code}) a été revalidée, vous pouvez venir le ${date_entretien} 
+                <p>Votre audience auprès de la ${autorite.intitule}(${autorite.intitule_code}) au sujet de <strong>"${envoyeur.motif}"</strong> a été revalidée, vous pouvez venir le ${date_entretien} 
                 Veuillez vous addresser à l'acceuil.</p>`
     }).then((result) => {
         data = result
