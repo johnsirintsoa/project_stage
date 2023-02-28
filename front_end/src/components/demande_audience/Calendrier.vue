@@ -6,8 +6,6 @@
 
 <template>
 
-  
-
   <div  class='demo-app'>
     <div class='demo-app-main'>
       <div v-if="sessionNavigateur && typeCalendrier ==='audiencePublic'" >
@@ -183,9 +181,9 @@
                       </div>
                     </div>
 
-                    <div class="col-md-12">
+                    <div class="col-md-12" v-if="audience.status === 'Validé' || audience.status === 'Reporté'">
                         <div class="form-floating mb-3">
-                            <select class="form-select" id="floatingSelect" aria-label="Autorité" required="" v-model="audience.id_date_heure_disponible_autorite">
+                            <select class="form-select" id="floatingSelect" aria-label="Autorité" required="" v-model="audience.id_date_heure_disponible_autorite" disabled>
                                 <option v-if="audience.actual_place" selected disabled>
                                     {{audience.actual_place["date_disponible"]}} {{audience.actual_place["heure_debut"]}} à {{audience.actual_place["heure_fin"]}}
                                 </option>
@@ -197,15 +195,36 @@
                             <label for="floatingSelect">Place</label>
                         </div>
                     </div>
+
+                    <div class="col-md-12" v-else>
+                      <div class="form-floating mb-3">
+                        
+                          <select class="form-select" id="floatingSelect" aria-label="Autorité" required="" v-model="audience.id_date_heure_disponible_autorite">
+                              <option v-if="audience.actual_place" selected disabled>
+                                  {{audience.actual_place["date_disponible"]}} {{audience.actual_place["heure_debut"]}} à {{audience.actual_place["heure_fin"]}}
+                              </option>
+
+                              <option v-for="(item, index) in audience.places_disponible" :key="item.id_date_heure_disponible_autorite" :value="item.id_date_heure_disponible_autorite">
+                                  {{item.date_disponible}} {{item.heure_debut}} à {{item.heure_fin}}
+                              </option>
+                          </select>
+                          <label for="floatingSelect">Place</label>
+                      </div>
+                    </div>
                     
                     <SpinnerPopup
                       :sipnnerActivated="sipnnerActivated"
                     />
 
-                    <div class="text-center">
-                        <button type="submit" class="btn btn-warning" @click="modifier" >Modifier</button>
-                        <button type="submit" class="btn btn-danger" @click="supprimer" >Supprimer</button>
-                        <button type="reset" class="btn btn-secondary" @click="reset">Annuler</button>
+                    <div class="text-center" v-if="audience.status === 'Validé' || audience.status === 'Reporté'">
+                      <button type="submit" class="btn btn-danger" @click="supprimer" >Supprimer</button>
+                      <button type="reset" class="btn btn-secondary" @click="reset">Annuler</button>
+                    </div>
+    
+                    <div class="text-center" v-else>
+                      <button type="submit" class="btn btn-warning" @click="modifier" >Modifier</button>
+                      <button type="submit" class="btn btn-danger" @click="supprimer" >Supprimer</button>
+                      <button type="reset" class="btn btn-secondary" @click="reset">Annuler</button>
                     </div>
 
                 </form> 
@@ -256,9 +275,9 @@
                   </div>
                 </div>
 
-                <div class="col-md-12">
+                <div class="col-md-12" v-if="audience.status === 'Validé' || audience.status === 'Reporté'">
                     <div class="form-floating mb-3">
-                        <select class="form-select" id="floatingSelect" aria-label="Autorité" required="" v-model="audience.id_date_heure_disponible_autorite">
+                        <select class="form-select" id="floatingSelect" aria-label="Autorité" required="" v-model="audience.id_date_heure_disponible_autorite" disabled>
                             <option v-if="audience.actual_place" selected disabled>
                                 {{audience.actual_place["date_disponible"]}} {{audience.actual_place["heure_debut"]}} à {{audience.actual_place["heure_fin"]}}
                             </option>
@@ -270,15 +289,36 @@
                         <label for="floatingSelect">Place</label>
                     </div>
                 </div>
+
+                <div class="col-md-12" v-else>
+                  <div class="form-floating mb-3">
+                      <select class="form-select" id="floatingSelect" aria-label="Autorité" required="" v-model="audience.id_date_heure_disponible_autorite">
+                          <option v-if="audience.actual_place" selected disabled>
+                              {{audience.actual_place["date_disponible"]}} {{audience.actual_place["heure_debut"]}} à {{audience.actual_place["heure_fin"]}}
+                          </option>
+
+                          <option v-for="(item, index) in audience.places_disponible" :key="item.id_date_heure_disponible_autorite" :value="item.id_date_heure_disponible_autorite">
+                              {{item.date_disponible}} {{item.heure_debut}} à {{item.heure_fin}}
+                          </option>
+                      </select>
+                      <label for="floatingSelect">Place</label>
+                  </div>
+                </div>
                 
                 <SpinnerPopup
                   :sipnnerActivated="sipnnerActivated"
                 />
 
-                <div class="text-center">
-                    <button type="submit" class="btn btn-warning" @click="modifier" >Modifier</button>
+
+                <div class="text-center" v-if="audience.status === 'Validé' || audience.status === 'Reporté'">
                     <button type="submit" class="btn btn-danger" @click="supprimer" >Supprimer</button>
                     <button type="reset" class="btn btn-secondary" @click="reset">Annuler</button>
+                </div>
+
+                <div class="text-center" v-else>
+                  <button type="submit" class="btn btn-warning" @click="modifier" >Modifier</button>
+                  <button type="submit" class="btn btn-danger" @click="supprimer" >Supprimer</button>
+                  <button type="reset" class="btn btn-secondary" @click="reset">Annuler</button>
                 </div>
 
               </form> 
@@ -1237,7 +1277,7 @@
         
         async handleEventClick(event){
 
-          console.log(event.event.extendedProps)
+          // console.log(event.event.extendedProps)
 
           // this.spinnerStatus = 'enabled'
 
@@ -1265,7 +1305,6 @@
           this.audience.id_dm_aud_public_heure_dispo =  event.event.extendedProps.id_dm_aud_public_heure_dispo
           this.audience.id_dm_aud_autorite_date_heure_dispo = event.event.extendedProps.id_dm_aud_autorite_date_heure_dispo
 
-
           if(this.typeCalendrier !=='evenementiel'){
             this.audience.places_disponible =  await this.places({
               id_date_heure_disponible_autorite: this.audience.id_date_heure_disponible_autorite,
@@ -1275,6 +1314,7 @@
           }
 
           if(this.typeCalendrier === 'evenementiel' && this.audience.typeEvenement ==='Autorité'){
+          
             this.audience.structure = `${event.event.extendedProps.child_libelle} (${event.event.extendedProps.sigle})`
             this.evenement.envoyeur = {
               intitule: event.event.extendedProps.child_libelle,
@@ -1296,6 +1336,7 @@
             this.evenement.id_dm_aud_aut_date_heure_dispo = event.event.id
             this.evenement.id_audience = event.event.extendedProps.id_evenement
             this.evenement.motif = event.event.extendedProps.motif
+
           }
 
           if(this.audience.id !== ''){
@@ -1360,3 +1401,12 @@
 
     }
 </script>
+
+<style>
+  .text-center button{
+    margin-left: 5px
+  }
+  .form-select:disabled {
+    background-color: #fafafa !important;
+  }
+</style>

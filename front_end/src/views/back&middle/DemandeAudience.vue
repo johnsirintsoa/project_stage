@@ -30,7 +30,7 @@
 
     </main>
     <FooterBack 
-        numberMarginLeft="15"
+        :styleFooterP="styleFooterP"
     />
 </template>
 
@@ -65,6 +65,13 @@
                 autorite_receiver: {}, 
                 spinner: false              
             }
+        },
+        computed:{
+            styleFooterP(){
+                return {
+                    marginLeft: '21em'
+                }
+            },
         },
         methods: {
             getStructure(value){

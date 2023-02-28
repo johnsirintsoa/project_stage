@@ -24,7 +24,7 @@
         </div>
     </main>
     <FooterBack 
-        numberMarginLeft="15"
+        :styleFooterP="styleFooterP"
     />
 </template>
 
@@ -52,6 +52,13 @@
             getSpinnerStatus(value){
                 this.spinner = value
                 // console.log(value)
+            }
+        },
+        computed:{
+            styleFooterP(){
+                return {
+                    marginLeft: '21em'
+                }
             }
         },
     }
