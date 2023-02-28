@@ -303,6 +303,7 @@
         },
 
             getStructure(value){
+                console.log(value)
                 this.autorite = value
             },
             date_actu(){

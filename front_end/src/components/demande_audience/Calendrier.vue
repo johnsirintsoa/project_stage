@@ -1004,7 +1004,7 @@
         },
 
         async eventDropped(event){
-          console.log(event.event.extendedProps)
+          // console.log(event.event.extendedProps)
           this.$emit('spinnerStatus', true)
           const start_date_time = Function.format_date_time(event.event.start)
           const end_date_time = Function.format_date_time(event.event.end)  
@@ -1105,6 +1105,12 @@
             // console.log(event.event.id)
             this.evenement.id_entretien_stage = event.event.id
             this.evenement.id_demande_stage = event.event.extendedProps.id_evenement
+            this.evenement.stagiaire = {
+              nom: event.event.extendedProps.nom,
+              prenom: event.event.extendedProps.prenom,
+              addresse_electronique: event.event.extendedProps.email,
+              numero_telephone: event.event.extendedProps.numero_telephone
+            }
 
             const response = await EntretienApi.modifier_calendrier(this.evenement)
             if(this.autoriteSender && this.typeCalendrier === 'evenementiel'){
@@ -1213,6 +1219,12 @@
             // console.log(event.event.id)
             this.evenement.id_entretien_stage = event.event.id
             this.evenement.id_demande_stage = event.event.extendedProps.id_evenement
+            this.evenement.stagiaire = {
+              nom: event.event.extendedProps.nom,
+              prenom: event.event.extendedProps.prenom,
+              addresse_electronique: event.event.extendedProps.email,
+              numero_telephone: event.event.extendedProps.numero_telephone
+            }
 
             const response = await EntretienApi.modifier_calendrier(this.evenement)
             if(this.autoriteSender && this.typeCalendrier === 'evenementiel'){

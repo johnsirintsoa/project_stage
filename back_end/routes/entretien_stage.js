@@ -64,7 +64,7 @@ router.post('/update',async(req,res)=>{
 
 router.post('/updateCalendar',async(req,res) => {
     const autorite = req.body.autorite
-    const stage = req.body.evenement
+    const stagiaire = req.body.stagiaire
     // IN id_entretien_stage int,IN id_demande_stage INT,IN date_debut date,IN date_fin date,IN heure_debut time,in heure_fin time, IN id_autorite INT
     // const sql = `CALL modifier_entretien_stage_calendrier(${stage.id_entretien_stage},${stage.id},'${req.body.date_debut}','${req.body.date_fin}','${req.body.heure_debut}','${req.body.heure_fin}',${autorite.id})`
     const sql = `CALL modifier_entretien_stage_calendrier(${req.body.id_entretien_stage},${req.body.id_demande_stage},'${req.body.date_debut}','${req.body.date_fin}','${req.body.heure_debut}','${req.body.heure_fin}',${req.body.id_autorite})`
@@ -73,8 +73,8 @@ router.post('/updateCalendar',async(req,res) => {
             res.send(error)
         } 
         else{
-            // const entretien_date_time = String(req.body.date_debut).concat('T',req.body.heure_debut)
-            // const response = await mailing.entretien_reporte(autorite,stage,entretien_date_time)
+            const entretien_date_time = String(req.body.date_debut).concat('T',req.body.heure_debut)
+            const response = await mailing.entretien_reporte(autorite,stagiaire,entretien_date_time)
             if(result ){
                 res.json({data:result})
             }
@@ -114,14 +114,14 @@ router.post('/delete',async(req,res)=>{
             res.send(error)
         }
         else{
-            const aut = {
-                intitule: autorite.child_libelle,
-                intitule_code: autorite.sigle
-            }
-            const response = await mailing.entretien_supprimer(aut,stage)
+            // const aut = {
+            //     intitule: autorite.child_libelle,
+            //     intitule_code: autorite.sigle
+            // }
+            const response = await mailing.entretien_supprimer(autorite,stage)
             
             if(response && result ){
-                res.json({message:'Entretien supprimé',mail:response,data:result[0][0]})
+                res.json({message:'Cette demande de stage est maintenant considérée comme une demande non validé',mail:response,data:result[0][0]})
             }
             else {
                 res.json({message:'Entretien non supprimé',mail:response,data:result[0][0]})
