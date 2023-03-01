@@ -2,6 +2,47 @@
 // import TokenApi from '../api/token'
 export default class Function{
 
+    static dateIso(d) {
+
+        var cad = "";
+    
+        try{
+            let annee = d.getUTCFullYear()
+            let mois = d.getMonth() + 1
+            let jour = d.getUTCDate()
+            let heure = d.getHours()
+            let minute = d.getUTCMinutes()
+            let second = d.getSeconds()
+
+            if(mois < 9 ){
+                mois ='0'+mois
+            }
+            if(jour < 9 ){
+                jour ='0'+jour
+            }
+            if(heure < 9 ){
+                heure ='0'+heure
+            }
+            if(minute < 9 ){
+                minute ='0'+minute
+            }
+            if(second < 9 ){
+                second ='0'+second
+            }
+
+            // if(mois < 9 || jour < 9 || heure < 9 || minute < 9 || second < 9){
+            //     jour +='0'
+            // }
+            
+            cad =   annee+ "-" +mois+ "-" + jour + "T" + heure + ":" + minute + ":" + second;  
+            
+            return cad;
+        }catch(e){
+          return null;
+        }  
+    
+      }
+
     static specialChar(arg){
         return arg.split("'").join("\''");
     }

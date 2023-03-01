@@ -654,7 +654,6 @@
                   eventClick: this.handleEventClick,
                   eventResize: this.eventDragged,
                   eventDrop: this.eventDropped,
-                  eventOverlap: this.eventOverLapped,
                   // eventDidMount: this.detailEvent,
                   slotMinTime: '08:00:00',
                   slotMaxTime: '16:00:00',
@@ -1392,10 +1391,6 @@
           }
         },
 
-        async eventOverLapped(stillEvent,movingEvent){
-          console.log(stillEvent)
-          console.log(movingEvent)
-        },
         detailEvent(info) {
           if(info.event.extendedProps.status_audience){
             tippy(info.el, {
@@ -1482,6 +1477,13 @@
         if(this.autoriteSender && this.typeCalendrier === 'evenementiel'){
           const id = this.autoriteSender.child_id
           this.calendarOptions.events = await AutoriteApi.calendrier({id_autorite: id})
+          // this.calendarOptions.events.push({
+          //   start: '1970-01-01T00:00:00',
+          //   end: dateTime,
+          //   overlap: false,
+          //   display: 'background',
+          //   color: '#ff9f89a6'
+          // })
         } 
       },
 

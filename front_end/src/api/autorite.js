@@ -1,6 +1,8 @@
 // import axios from 'axios'
 import axios from 'axios'
 import dom  from './config'
+import Function from '../func/function';
+
 // const domaine = "http://localhost:3000"
 // const url = domaine.concat("/api/autorite")
 const route1 = 'autorite'
@@ -31,7 +33,17 @@ export default class AutoriteAPI{
     static async calendrier(id_autorite){
         const url = dom.domaineBackEnd(route1,'/calendrier')
         const res = await axios.post(url,id_autorite)
-        // const res = await axios.post(url.concat('/calendrier'),id_autorite)
+        console.log(res.data)
+        const dateTime = Function.dateIso(new Date())
+        // console.log(dateTime)
+        res.data.push({
+            start: '1970-01-01T00:00:00',
+            end: dateTime,
+            overlap: false,
+            display: 'background',
+            color: '#c8cacb9c'
+        })
+
         return res.data       
     }
 
