@@ -539,13 +539,14 @@ router.post('/autorite/ajouter',async(req,res)=>{
     })
 })
 
-
 router.post('/autorite/modifier',async(req,res)=>{
-    db.query(`CALL modifier_audience_autorite (${req.body.id_date_heure_disponible_autorite} ,${req.body.id_dm_aud_autorite_date_heure_dispo},'${req.body.motif}','${req.body.email}','${req.body.numero_telephone}',${req.body.id_audience}) `, (error,result) => {
+    console.log(req.body)
+    db.query(`CALL modifier_audience_autorite (${req.body.id_date_heure_disponible_autorite} ,${req.body.id_dm_aud_autorite_date_heure_dispo},'${req.body.motif}','${req.body.email}','${req.body.numero_telephone}',${req.body.id_audience}) `, async (error,result) => {
         if(error){
             res.send(error)
         } 
         else if(result.length > 0 ){
+            const mail = await notification_mailing.notification_audience_autorite(req.body.motif,req.body.autoriteSender,req.body.autoriteReceiver)
             res.json(result[0][0])
         }else{
             res.json(result)

@@ -1,9 +1,3 @@
-<!-- <script setup>
-    // import InputAutorite from './ChoisirAutorite.vue'
-  import InputStructure from '../tStructureComponent/Tstructure.vue';
-  import SpinnerPopup from '../loading/SpinnerPopup.vue'
-</script> -->
-
 <template>
 
   <div  class='demo-app'>
@@ -292,12 +286,12 @@
 
                 <div class="col-md-12" v-else>
                   <div class="form-floating mb-3">
-                      <select class="form-select" id="floatingSelect" aria-label="Autorité" required="" v-model="audience.id_date_heure_disponible_autorite">
+                      <select class="form-select" id="floatingSelect" aria-label="Autorité" required="" v-model="audience.actual_place">
                           <option v-if="audience.actual_place" selected disabled>
                               {{audience.actual_place["date_disponible"]}} {{audience.actual_place["heure_debut"]}} à {{audience.actual_place["heure_fin"]}}
                           </option>
 
-                          <option v-for="(item, index) in audience.places_disponible" :key="item.id_date_heure_disponible_autorite" :value="item.id_date_heure_disponible_autorite">
+                          <option v-for="(item, index) in audience.places_disponible" :key="item" :value="item">
                               {{item.date_disponible}} {{item.heure_debut}} à {{item.heure_fin}}
                           </option>
                       </select>
@@ -828,14 +822,34 @@
             this.calendarOptions.events = await actual_events_public(this.audience.autoriteReceiver.child_id)
           }
           else if(this.autoriteSender && this.typeCalendrier === 'audienceAutorite'){
+
             const audience = {
               motif: Function.specialChar(this.audience.motif),
-              id_date_heure_disponible_autorite : this.audience.id_date_heure_disponible_autorite,
+              date_debut: this.audience.actual_place.date_disponible,
+              date_fin: this.audience.actual_place.date_disponible,
+              heure_debut: this.audience.actual_place.heure_debut,
+              heure_fin: this.audience.actual_place.heure_fin,
+              id_autorite_sender: this.autoriteSender.child_id,
+              id_autorite_receiver: this.audience.autoriteReceiver.child_id,
+              id_date_heure_disponible_autorite: this.audience.actual_place.id_date_heure_disponible_autorite,
               id_dm_aud_autorite_date_heure_dispo : this.audience.id_dm_aud_autorite_date_heure_dispo,
-              email: this.audience.email,
-              numero_telephone: this.audience.numero_telephone,
+              autoriteSender: this.autoriteSender,
+              autoriteReceiver: this.audience.autoriteReceiver,
+              email: this.autoriteSender.email,
+              numero_telephone: this.autoriteSender.phone,
+              sigle: this.autoriteSender.sigle,
+              child_libelle: this.autoriteSender.child_libelle,
               id_audience: this.audience.id
             }
+
+            // const audience = {
+            //   motif: Function.specialChar(this.audience.motif),
+            //   id_date_heure_disponible_autorite : this.audience.id_date_heure_disponible_autorite,
+            //   id_dm_aud_autorite_date_heure_dispo : this.audience.id_dm_aud_autorite_date_heure_dispo,
+            //   email: this.audience.email,
+            //   numero_telephone: this.audience.numero_telephone,
+            //   id_audience: this.audience.id
+            // }
             this.sipnnerActivated = false
             const response = await DemandeAudienceAutoriteAPI.modifier(audience)
             if(response.message){
@@ -853,7 +867,6 @@
               }
             )
           }
-
         },
 
         async supprimer(){
@@ -1314,12 +1327,13 @@
           }
 
           if(this.typeCalendrier === 'evenementiel' && this.audience.typeEvenement ==='Autorité'){
-          
+            // console.log('A modifier et ajouter...')
             this.audience.structure = `${event.event.extendedProps.child_libelle} (${event.event.extendedProps.sigle})`
             this.evenement.envoyeur = {
               intitule: event.event.extendedProps.child_libelle,
               intitule_code: event.event.extendedProps.sigle,
-              addresse_electronique: event.event.extendedProps.email
+              addresse_electronique: event.event.extendedProps.email,
+              numero_telephone: event.event.extendedProps.numero_telephone
             }
             this.evenement.autorite = {
               id: this.autoriteSender.child_id,

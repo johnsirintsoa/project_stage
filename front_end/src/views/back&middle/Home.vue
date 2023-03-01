@@ -31,8 +31,10 @@
     import AccueilComponent from '../../components/accueil/AccueilComponent.vue'
 
     import doleanceImg from '@/assets/img/doleance.png'
-    import stageImg from '@/assets/img/stage.png'
-    import audienceImg from '@/assets/img/audience.png'
+    import stageImg from '@/assets/img/entretien_back.png'
+    import audienceImg from '@/assets/img/audience_back.png'
+    import calendrierImg from '@/assets/img/calendrier_back.png'
+
 
     export default{
         components:{
@@ -46,7 +48,7 @@
                 menu:[
                     { 
                         id:1,
-                        linkPath:'/boite-a-doleance',
+                        linkPath:'/back-office/boite-a-doleance',
                         imageWidth: '500px',
                         image: doleanceImg,
                         // image:require("@/assets/img/doleance.png"),
@@ -55,21 +57,30 @@
                     },
                     { 
                         id:2,
-                        linkPath:'/demande-stage',
+                        linkPath:'/back-office/demande-stage',
                         imageWidth: '500px',
                         image: stageImg,
                         // image:require("@/assets/img/stage.png"),
                         titre:'Demande de stage',
-                        contenu:`Vous êtes étudiant, jeune ou adulte, cherchant un stage, le Ministère de l'Economie et des Finances vous ouvre ses portes selon la durée dont vous aurez besoin.`
+                        contenu:`Vous verrez ici tous les demandes de stages. Vous pouvez filtrer, valider, reporter une demande de stage et s'entretenir avec le stagiaire souhaité.`
                     },
                     { 
                         id:3,
-                        linkPath:'/demande-audience',
+                        linkPath:'/back-office/demande-audience',
                         imageWidth: '500px',
                         image: audienceImg,
                         // image:require("@/assets/img/audience.png"),
-                        titre:'Demande audience',
-                        contenu:`Souhaitez vous entretenir avec nos autorités? Vous pouvez posez votre demande selon leurs dates et heures disponibles.`
+                        titre:`Demande d'audience`,
+                        contenu:`Souhaitez-vous vous entretenir avec nos autorités? Vous pouvez posez votre demande selon leurs dates et heures de disponibilités.`
+                    },
+                    { 
+                        id:4,
+                        linkPath:'/back-office/calendrier-evenementiel',
+                        imageWidth: '500px',
+                        image: calendrierImg,
+                        // image:require("@/assets/img/audience.png"),
+                        titre:'Mes évènements',
+                        contenu:`Un interface requis pour chaque autorité. Ici, vous pouvez gérer vos évenements en cours et vos disponibilités selon vos occupations au sein de l'organisation.`
                     }
                 ]
             }
