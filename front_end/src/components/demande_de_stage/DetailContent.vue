@@ -51,6 +51,9 @@
                     }
                     else{
                         Swal.fire('Prolongement avec succès',`Durée de stage prolongé de ${DUREE} mois`,'success')
+                        this.detail = await DemandeStageController.detail({
+                            id_demande_stage: this.id_demande_stage
+                        })
                     }
                 }
             }
@@ -65,8 +68,6 @@
 
         <div class="card">
             <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
-
-            <!-- <img src="assets/img/profile-img.jpg" alt="Profile" class="rounded-circle"> -->
             <h2>{{this.detail.nom}} {{this.detail.prenom}}</h2>
             </div>
         </div>
@@ -94,12 +95,17 @@
                     <div class="col-lg-9 col-md-8">{{this.detail.prenom}}</div>
                 </div>
 
+                <div class="row" v-if="detail.etablissement">
+                    <div class="col-lg-3 col-md-4 label">Etablissement</div>
+                    <div class="col-lg-9 col-md-8">{{this.detail.etablissement}}</div>
+                </div>
+
                 <div class="row">
                     <div class="col-lg-3 col-md-4 label">Domaine</div>
                     <div class="col-lg-9 col-md-8">{{this.detail.nom_domaine}}</div>
                 </div>
 
-                <div class="row">
+                <div class="row" v-if="detail.cin">
                     <div class="col-lg-3 col-md-4 label">CIN</div>
                     <div class="col-lg-9 col-md-8">{{this.detail.cin}}</div>
                 </div>
@@ -184,3 +190,8 @@
     </div>
     
 </template>
+<style>
+    .icon{
+        cursor: pointer;
+    }
+</style>

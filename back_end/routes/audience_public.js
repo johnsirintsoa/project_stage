@@ -62,7 +62,7 @@ router.post('/public/add',async(req,res)=>{
 
 router.post('/public/ajouter',async(req,res)=>{
     const sql = `CALL ajouter_audience_public('${req.body.session_navigateur}','${req.body.nom}','${req.body.prenom}','${req.body.cin}','${req.body.numero_telephone}','${req.body.email}',${req.body.id_date_heure_disponible_autorite},'${req.body.motif}','${req.body.date_debut}','${req.body.date_fin}','${req.body.heure_debut}','${req.body.heure_fin}')`
-        db.query(sql, async (error,result) => {
+    db.query(sql, async (error,result) => {
         if(error){
             res.send(error)
         } 
@@ -71,7 +71,11 @@ router.post('/public/ajouter',async(req,res)=>{
             const envoyeur = {
                 nom: req.body.nom,
                 prenom: req.body.prenom,
-                motif: req.body.motif
+                motif: req.body.motif,
+                date_debut: req.body.date_debut,
+                date_fin: req.body.heure_fin,
+                heure_debut: req.body.heure_debut,
+                heure_fin: req.body.heure_fin
             }
             const receiver = {
                 email: req.body.autoriteReceiver.email,
@@ -107,11 +111,27 @@ router.post('/public/supprimer/:id',async(req,res)=>{
 router.post('/public/modifier',async(req,res)=>{
     const sql = `call modifier_audience_public ('${req.body.nom }','${req.body.prenom }','${req.body.cin }','${req.body.numero_telephone }','${req.body.email }','${req.body.motif}',${req.body.id_audience},${req.body.id_date_heure_disponible_autorite},${req.body.id_dm_aud_public_heure_dispo})`
     // console.log(sql)
-    db.query(sql, (error,result) => {
+    console.log(req.body)    
+    db.query(sql,async (error,result) => {
         if(error){
             res.send(error)
         } 
         else if(result.length > 0 ){
+            const envoyeur = {
+                nom: req.body.nom,
+                prenom: req.body.prenom,
+                motif: req.body.motif,
+                date_debut: req.body.date_debut,
+                date_fin: req.body.heure_fin,
+                heure_debut: req.body.heure_debut,
+                heure_fin: req.body.heure_fin
+            }
+            const receiver = {
+                email: req.body.autoriteReceiver.email,
+                intitule_code: req.body.autoriteReceiver.sigle,
+                intitule: req.body.autoriteReceiver.child_libelle,
+            }
+            const mail = await notification_mailing.notification_audience_public(envoyeur,receiver)
             res.json(result[0][0])
         }else{
             res.json(result)

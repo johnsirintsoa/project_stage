@@ -1,17 +1,7 @@
-<!-- <script setup>
-    import HeaderNavbar from '../../components/header/HeaderStructure.vue'
-    import InputAutoriteEvent from '../../components/demande_audience/ChoisirAutorite.vue'
-    import Calendrier from '../../components/demande_audience/Calendrier.vue';
-    import FooterBack from '../../components/footer/FooterComponent.vue' 
-    // import Calendrier from '../../components/demande_audience/CalendrierDisponibleAutorite.vue'
-
-</script> -->
-
 <template>
     <HeaderNavbar
         @structure="getStructure"
     />
-
 
     <main id="main" class="main">
         <h1>Demande Audience</h1>
@@ -27,8 +17,8 @@
         </div>
 
         <div class="popupToShow"></div>
-
     </main>
+
     <FooterBack 
         :styleFooterP="styleFooterP"
     />
@@ -62,6 +52,7 @@
         data() {
             return {
                 autorite: {},
+                colorData:[],
                 autorite_receiver: {}, 
                 spinner: false              
             }
@@ -76,7 +67,7 @@
         methods: {
             getStructure(value){
                 this.autorite = value
-            },
+            }
         },
     }
 </script>

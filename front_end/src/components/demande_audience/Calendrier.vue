@@ -15,7 +15,10 @@
         />
       </div>
 
-
+      <ColorInfos
+        :colorInfosPublic="dataColorInfos"
+        :colorInfosAutorité="dataColorInfos"
+      />
       <FullCalendar
           ref="fullCalendar"
           class='demo-app-calendar'
@@ -177,32 +180,32 @@
 
                     <div class="col-md-12" v-if="audience.status === 'Validé' || audience.status === 'Reporté'">
                         <div class="form-floating mb-3">
-                            <select class="form-select" id="floatingSelect" aria-label="Autorité" required="" v-model="audience.id_date_heure_disponible_autorite" disabled>
-                                <option v-if="audience.actual_place" selected disabled>
-                                    {{audience.actual_place["date_disponible"]}} {{audience.actual_place["heure_debut"]}} à {{audience.actual_place["heure_fin"]}}
-                                </option>
-
-                                <option v-for="(item, index) in audience.places_disponible" :key="item.id_date_heure_disponible_autorite" :value="item.id_date_heure_disponible_autorite">
-                                    {{item.date_disponible}} {{item.heure_debut}} à {{item.heure_fin}}
-                                </option>
-                            </select>
-                            <label for="floatingSelect">Place</label>
+                          <select class="form-select" id="floatingSelect" aria-label="Autorité" required="" v-model="audience.actual_place">
+                            <option v-if="audience.actual_place" selected disabled>
+                                {{audience.actual_place["date_disponible"]}} {{audience.actual_place["heure_debut"]}} à {{audience.actual_place["heure_fin"]}}
+                            </option>
+  
+                            <option v-for="(item, index) in audience.places_disponible" :key="item" :value="item">
+                                {{item.date_disponible}} {{item.heure_debut}} à {{item.heure_fin}}
+                            </option>
+                        </select>
+                        <label for="floatingSelect">Place</label>
                         </div>
                     </div>
 
                     <div class="col-md-12" v-else>
                       <div class="form-floating mb-3">
                         
-                          <select class="form-select" id="floatingSelect" aria-label="Autorité" required="" v-model="audience.id_date_heure_disponible_autorite">
-                              <option v-if="audience.actual_place" selected disabled>
-                                  {{audience.actual_place["date_disponible"]}} {{audience.actual_place["heure_debut"]}} à {{audience.actual_place["heure_fin"]}}
-                              </option>
+                        <select class="form-select" id="floatingSelect" aria-label="Autorité" required="" v-model="audience.actual_place">
+                          <option v-if="audience.actual_place" selected disabled>
+                              {{audience.actual_place["date_disponible"]}} {{audience.actual_place["heure_debut"]}} à {{audience.actual_place["heure_fin"]}}
+                          </option>
 
-                              <option v-for="(item, index) in audience.places_disponible" :key="item.id_date_heure_disponible_autorite" :value="item.id_date_heure_disponible_autorite">
-                                  {{item.date_disponible}} {{item.heure_debut}} à {{item.heure_fin}}
-                              </option>
-                          </select>
-                          <label for="floatingSelect">Place</label>
+                          <option v-for="(item, index) in audience.places_disponible" :key="item" :value="item">
+                              {{item.date_disponible}} {{item.heure_debut}} à {{item.heure_fin}}
+                          </option>
+                        </select>
+                      <label for="floatingSelect">Place</label>
                       </div>
                     </div>
                     
@@ -599,17 +602,18 @@
     import DemandeAudiencePublicAPI from '../../api/demande_audience_public'
     import swal from 'sweetalert';
     import Function from '../../func/function';
-    import tippy from 'tippy.js';
-    import 'tippy.js/dist/tippy.css'; // optional for styling
-    import 'tippy.js/themes/light.css';
-
+    // import tippy from 'tippy.js';
+    // import 'tippy.js/dist/tippy.css';
+    // import 'tippy.js/themes/light.css';
+    import ColorInfos from '../instruction/ColorInformation.vue'
     import InputStructure from '../tStructureComponent/Tstructure.vue';
     import SpinnerPopup from '../loading/SpinnerPopup.vue'
     export default{
       components: {
           FullCalendar,
           InputStructure,
-          SpinnerPopup
+          SpinnerPopup,
+          ColorInfos
       },
         
       props:{
@@ -650,9 +654,10 @@
                   eventClick: this.handleEventClick,
                   eventResize: this.eventDragged,
                   eventDrop: this.eventDropped,
+                  eventOverlap: this.eventOverLapped,
                   // eventDidMount: this.detailEvent,
                   slotMinTime: '08:00:00',
-                  slotMaxTime: '16:00:00'
+                  slotMaxTime: '16:00:00',
               },
               showPopupAudience: false,
               sipnnerActivated: false,
@@ -680,7 +685,7 @@
                 date_fin:'',
                 heure_debut:'',
                 heure_fin:''
-              },
+              }
               // spinnerStatus:''                 
           }
       },
@@ -802,11 +807,17 @@
               cin: this.audience.cin,
               numero_telephone: this.audience.numero_telephone,
               email: this.audience.email,
+              date_debut: this.audience.actual_place.date_disponible,
+              date_fin: this.audience.actual_place.date_disponible,
+              heure_debut: this.audience.actual_place.heure_debut,
+              heure_fin: this.audience.actual_place.heure_fin,
               motif: Function.specialChar(this.audience.motif),
               id_date_heure_disponible : this.audience.id_date_heure_disponible,
               id_date_heure_disponible_autorite : this.audience.id_date_heure_disponible_autorite,
               id_dm_aud_public_heure_dispo : this.audience.id_dm_aud_public_heure_dispo,
-              id_date_heure_disponible_autorite: this.audience.id_date_heure_disponible_autorite
+              id_date_heure_disponible_autorite: this.audience.id_date_heure_disponible_autorite,
+              autoriteReceiver: this.audience.autoriteReceiver
+
             }
             // console.log(audience)
             this.sipnnerActivated = true
@@ -1381,6 +1392,10 @@
           }
         },
 
+        async eventOverLapped(stillEvent,movingEvent){
+          console.log(stillEvent)
+          console.log(movingEvent)
+        },
         detailEvent(info) {
           if(info.event.extendedProps.status_audience){
             tippy(info.el, {
@@ -1400,9 +1415,66 @@
 
         if(this.typeCalendrier === 'audiencePublic'){
           this.calendarOptions.selectable = false
+          this.dataColorInfos = [
+            {
+              color: '#FF0018',
+              infos: 'Audience validé'
+            },
+            {
+              color: '#407DFF',
+              infos: 'Audience non validé'
+            },
+            {
+              color: '#0AA913',
+              infos: 'Autorité disponible'
+            },
+            {
+              color: '#000000',
+              infos: 'Audience reporté '
+            }
+          ]
         }
         else if(this.typeCalendrier === 'audienceAutorite'){
           this.calendarOptions.selectable = false
+          this.dataColorInfos = [
+            {
+              color: '#FF0018',
+              infos: 'Audience validé'
+            },
+            {
+              color: '#407DFF',
+              infos: 'Audience non validé'
+            },
+            {
+              color: '#0AA913',
+              infos: 'Autorité disponible'
+            },
+            {
+              color: '#000000',
+              infos: 'Audience reporté '
+            }
+          ]
+        }
+        else if(this.typeCalendrier === 'evenementiel'){
+          this.dataColorInfos = [
+            {
+              color: '#FF0018',
+              infos: 'Audience autorité'
+            },
+            {
+              color: '#0AA913',
+              infos: 'Audience public'
+            },
+            {
+              color: '#000000',
+              infos: 'Autorité pas disponible '
+            },
+            {
+              color: '#FFA500',
+              infos: 'Entretien stagiaire'
+            }
+            
+          ]
         }
       },
 
@@ -1422,5 +1494,8 @@
   }
   .form-select:disabled {
     background-color: #fafafa !important;
+  }
+  .fc-event{
+    cursor: pointer;
   }
 </style>

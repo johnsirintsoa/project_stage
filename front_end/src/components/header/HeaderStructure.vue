@@ -88,6 +88,7 @@
           </RouterLink>
         </li>
 
+
       </ul>
 
     </aside>
@@ -99,11 +100,13 @@
 <script>
     import { RouterLink, RouterView } from 'vue-router'
     import SpinnerHeader from '../loading/SpinnerHeader.vue'
+    import ColorInfos from '../instruction/ColorInformation.vue'
     export default {
         components:{
           RouterLink,
           RouterView,
-          SpinnerHeader
+          SpinnerHeader,
+          ColorInfos
         },
         props:{
           sipnnerActivated:{

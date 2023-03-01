@@ -19,7 +19,7 @@
                     v-model:date1="date1"
                     v-model:date2="date2"
                     v-model:nom="nom"
-                    v-model:prenom="prenom"
+                    v-model:etablissement="etablissement"
                     v-model:domaine="domaine" 
                     v-model:autorite="autorite" 
                     @rechercherStages="getDataStages($event)"
@@ -36,6 +36,7 @@
                                 <th scope="col">Nom</th>
                                 <th scope="col">Prénom</th>
                                 <th scope="col">Domaine</th>
+                                <th scope="col">Etablissement</th>
                                 <th scope="col">Durée(mois)</th>
                                 <th scope="col">Status</th>
                                 <th scope="col">Action</th>
@@ -48,6 +49,7 @@
                                     <td>{{stage['nom']}}</td>
                                     <td>{{stage['prenom']}}</td>
                                     <td>{{stage['nom_domaine']}}</td>
+                                    <td>{{stage['etablissement']}}</td>
                                     <td>{{stage['duree']}}</td>
                                     <td>
                                         <span class="badge bg-success" v-if="stage['demande_status'] == 'Validé'">{{stage['demande_status']}}</span>
@@ -122,7 +124,7 @@
                 date1:this.date_actu(),
                 date2:this.date_actu(),
                 nom:'',
-                prenom:'',
+                etablissement:'',
                 domaine: null,
                 autorite:{},
                 stage_email:{

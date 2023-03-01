@@ -25,7 +25,7 @@ const notification_audience_public = async (envoyeur,receiver) => {
         subject: `Demande d'audience`,
         html: `<p>Bonjour ${receiver.intitule_code}.</p> 
                 <p>Vous avez une nouvelle audience. Un(e) certain(e) nommé(e)
-                ${envoyeur.nom} ${envoyeur.prenom} au sujet de <strong>"${envoyeur.motif}"</strong>. Veuillez voir dans le site.</p>`
+                ${envoyeur.nom} ${envoyeur.prenom} au sujet de <strong>"${envoyeur.motif}"</strong> vers <strong>${envoyeur.date_debut}</strong> entre <strong>${envoyeur.heure_debut}</strong> à <strong>${envoyeur.heure_fin}</strong>. Veuillez voir dans le site.</p>`
     }).then((result) => {
         data = result
     }).catch((err) => {
@@ -78,9 +78,9 @@ const notification_audience_autorite = async(subject,envoyeur,receiver) =>{
     await transporter.sendMail({
         from: userMail,
         to: receiver.email,
-        subject: `${subject}`,
+        subject: `Demande d'audience`,
         html: `<p>Bonjour ${receiver.sigle}.</p> 
-                <p>La structure ${envoyeur.child_libelle} (${envoyeur.sigle}) a demandé à vous voir à propos d'un sujet: "<strong>${subject}</strong>". 
+                <p>La structure ${envoyeur.child_libelle} (${envoyeur.sigle}) a demandé à vous voir à propos d'un sujet: "<strong>${subject.motif}</strong>" vers <strong>${subject.date_debut}</strong> entre <strong>${subject.heure_debut}</strong> à <strong>${subject.heure_fin}</strong>. 
                 Si vous voulez plus de détails veuillez voir dans le site.</p>`
     }).then((result) => {
         data = result

@@ -523,7 +523,14 @@ router.post('/autorite/ajouter',async(req,res)=>{
     const sql = `CALL ajouter_audience_autorite (${req.body.id_autorite_sender},${req.body.id_autorite_receiver},${req.body.id_date_heure_disponible_autorite},'${req.body.motif}','${req.body.date_debut}','${req.body.date_fin}','${req.body.heure_debut}','${req.body.heure_fin}','${req.body.email}','${req.body.numero_telephone}','${req.body.sigle}','${req.body.child_libelle}')`
 
     // res.json(sql)
-    // console.log(req.body)
+    console.log(req.body)
+    const subject = {
+        motif: req.body.motif,
+        date_debut: req.body.date_debut,
+        date_fin: req.body.date_fin,
+        heure_debut: req.body.heure_debut,
+        heure_fin: req.body.heure_fin
+    }
     // console.log(sql)
     db.query(sql, async (error,result) => {
         
@@ -531,7 +538,7 @@ router.post('/autorite/ajouter',async(req,res)=>{
             res.send(error)
         } 
         else if(result.length > 0 ){
-            const mail = await notification_mailing.notification_audience_autorite(req.body.motif,req.body.autoriteSender,req.body.autoriteReceiver)
+            const mail = await notification_mailing.notification_audience_autorite(subject,req.body.autoriteSender,req.body.autoriteReceiver)
             res.json(result[0][0])
         }else{
             res.json(result)
@@ -546,7 +553,14 @@ router.post('/autorite/modifier',async(req,res)=>{
             res.send(error)
         } 
         else if(result.length > 0 ){
-            const mail = await notification_mailing.notification_audience_autorite(req.body.motif,req.body.autoriteSender,req.body.autoriteReceiver)
+            const subject = {
+                motif: req.body.motif,
+                date_debut: req.body.date_debut,
+                date_fin: req.body.date_fin,
+                heure_debut: req.body.heure_debut,
+                heure_fin: req.body.heure_fin
+            }
+            const mail = await notification_mailing.notification_audience_autorite(subject,req.body.autoriteSender,req.body.autoriteReceiver)
             res.json(result[0][0])
         }else{
             res.json(result)

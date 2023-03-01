@@ -54,14 +54,11 @@ router.post('/add',upload.fields([{name: 'curriculum_vitae'},{name: 'lettre_moti
         // let sql = "INSERT INTO demande_stage(nom,prenom,e_mail,cin,telephone,duree,curriculum_vitae,lettre_motivation,lettre_introduction,message,id_domaine) VALUES ('"+req.body.nom+"','"+req.body.prenom+"','"+req.body.e_mail+"','"+req.body.cin+"','"+req.body.telephone+"','"+req.body.duree+"','"+req.files['curriculum_vitae'][0].filename+"','"+req.files['lettre_motivation'][0].filename+"','"+req.files['lettre_introduction'][0].filename+"','"+req.body.message+"','"+req.body.id_domaine+"')"
         // console.log(req.body)
         // console.log('Hahahaha')
-        let sql = `INSERT INTO demande_stage(nom,prenom,e_mail,cin,telephone,duree,curriculum_vitae,lettre_motivation,lettre_introduction,message,id_domaine,id_autorite_enfant,date_creation) VALUES ('${req.body.nom}','${req.body.prenom}','${req.body.e_mail}','${req.body.cin}','${req.body.telephone}','${req.body.duree}','${req.files['curriculum_vitae'][0].filename}','${req.files['lettre_motivation'][0].filename}','${req.files['lettre_introduction'][0].filename}','${req.body.message}',${req.body.id_domaine},${req.body.id_autorite_enfant},(SELECT CURDATE()))`
+        let sql = `INSERT INTO demande_stage(nom,prenom,etablissement,e_mail,cin,telephone,duree,curriculum_vitae,lettre_motivation,lettre_introduction,message,id_domaine,id_autorite_enfant,date_creation) VALUES ('${req.body.nom}','${req.body.prenom}','${req.body.etablissement}','${req.body.e_mail}','${req.body.cin}','${req.body.telephone}','${req.body.duree}','${req.files['curriculum_vitae'][0].filename}','${req.files['lettre_motivation'][0].filename}','${req.files['lettre_introduction'][0].filename}','${req.body.message}',${req.body.id_domaine},${req.body.id_autorite_enfant},(SELECT CURDATE()))`
         var query = db.query(sql, async (err, result) =>{
             if(err){
                 // console.log('Hahahaha')
-                return res.json({
-                    message:[`Votre CV ou lettre de motivation ou lettre d'introductions est supérieur à 2Mo`],
-                    data:err
-                });
+                return res.json(err);
             }
             else{
                 const envoyeur = {
@@ -116,7 +113,7 @@ router.post('/liste',async(req,res)=>{
 })
 
 router.post('/filtre', async(req,res)=>{
-    const sql = `CALL filtre_stage ('${req.body.date1}','${req.body.date2}','${req.body.nom}','${req.body.prenom}',${req.body.id_domaine},${req.body.id_autorite})`
+    const sql = `CALL filtre_stage ('${req.body.date1}','${req.body.date2}','${req.body.nom}','${req.body.etablissement}',${req.body.id_domaine},${req.body.id_autorite})`
     // console.log(req.body)
     var query = db.query(sql, function(err, result) {
         if(err){
@@ -239,7 +236,8 @@ router.post('/detail',async(req,res)=>{
     SELECT 
         e.id,
         e.nom,
-        e.prenom, 
+        e.prenom,
+        e.etablissement,
         e.telephone, 
         e.e_mail, 
         e.cin, 

@@ -13,7 +13,7 @@
             date1: String,
             date2: String,
             nom: String,
-            prenom: String,
+            etablissement: String,
             domaine: String,
             autorite: Object
         },
@@ -21,7 +21,7 @@
             'update:date1',
             'update:date2',
             'update:nom',
-            'update:prenom',
+            'update:etablissement',
             'update:domaine',
             'update:autorite',
             'rechercherStages'
@@ -37,7 +37,7 @@
                     date1: newDate1,
                     date2: this.date2,
                     nom: this.nom,
-                    prenom: this.prenom,
+                    etablissement: this.etablissement,
                     id_domaine: this.domaine,
                     id_autorite: this.autorite.child_id
                 }
@@ -49,7 +49,7 @@
                     date1: this.date1,
                     date2: newDate2,
                     nom: this.nom,
-                    prenom: this.prenom,
+                    etablissement: this.etablissement,
                     id_domaine: this.domaine,
                     id_autorite: this.autorite.child_id
                 }
@@ -61,19 +61,19 @@
                     date1: this.date1,
                     date2: this.date2,
                     nom: newNom,
-                    prenom: this.prenom,
+                    etablissement: this.etablissement,
                     id_domaine: this.domaine,
                     id_autorite: this.autorite.child_id
                 }
                 this.$emit("rechercherStages",await StageController.filtre(filtre))
             },
-            async prenom(newValue){
-                const newPrenom = newValue
+            async etablissement(newValue){
+                const newEtablissement = newValue
                 const filtre = {
                     date1: this.date1,
                     date2: this.date2,
                     nom: this.nom,
-                    prenom: newPrenom,
+                    etablissement: newEtablissement,
                     id_domaine: this.domaine,
                     id_autorite: this.autorite.child_id
                 }
@@ -86,7 +86,7 @@
                     date1: this.date1,
                     date2: this.date2,
                     nom: this.nom,
-                    prenom: this.prenom,
+                    etablissement: this.etablissement,
                     id_domaine: newDomaine,
                     id_autorite: this.autorite.child_id
                 }
@@ -103,7 +103,7 @@
                     date1: this.date1,
                     date2: this.date2,
                     nom: this.nom,
-                    prenom: this.prenom,
+                    etablissement: this.etablissement,
                     id_domaine: this.domaine,
                     id_autorite: ses.child_id
                 }
@@ -153,10 +153,10 @@
         <div class="col-md-2">
             <input
                 class="form-control"
-                placeholder="Votre prénom"
+                placeholder="Etablissement"
                 type="text"
-                :value="prenom"
-                @input="$emit('update:prenom', $event.target.value)"
+                :value="etablissement"
+                @input="$emit('update:etablissement', $event.target.value)"
             /> 
         </div>
         

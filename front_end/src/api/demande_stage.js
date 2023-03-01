@@ -37,12 +37,21 @@ export default class DemandeStageAPI{
         headers: {
           Accept: 'application/pdf',
           'Content-Type': 'application/pdf',
-          mode: 'no-cors'
+          mode: 'no-cors',
+          responseType: 'blob',
         },
         responseType: 'blob'
       })
       .then(response => {
-        console.log(response)
+        var fileURL = window.URL.createObjectURL(new Blob([response.data]));
+        var fURL = document.createElement('a');
+
+        fURL.href = fileURL;
+        fURL.setAttribute('download', ' .pdf');
+        document.body.appendChild(fURL);
+
+        fURL.click();
+        // console.log(response)
       })
       .catch(error => console.log(error))
     }
