@@ -25,7 +25,7 @@ router.post('/ajouter/non_anonyme', async(req,res) =>{
     const sql = `INSERT INTO doleance
         ( session_navigateur,titre,message,date_publication, id_autorite, sigle,child_libelle,heure_publication,e_mail, cin, numero_telephone, nom, prenom) 
         VALUES 
-        ('${req.body.session_navigateur}','${req.body.titre}','${req.body.message}',(select curdate()) ,${req.body.id_autorite},'${req.body.sigle}','${req.body.child_libelle}',(SELECT CURTIME()),'${req.body.e_mail}', '${req.body.cin}', '${req.body.numero_telephone}', '${req.body.nom}', '${req.body.prenom}')`
+        ('${req.body.session_navigateur}','${req.body.titre}','${req.body.message}',(select curdate()) ,${req.body.id_autorite},'${req.body.sigle}','${req.body.autorite}',(SELECT CURTIME()),'${req.body.e_mail}', '${req.body.cin}', '${req.body.numero_telephone}', '${req.body.nom}', '${req.body.prenom}')`
     db.query(sql,async (error,result) => {
         if(error) {
             res.send(error)
@@ -100,8 +100,7 @@ router.post('/liste/public',async (req,res)=>{
 	d.e_mail as addresse_electronique,
 	CASE 
 		WHEN d.nom IS NULL or d.prenom IS NULL or d.cin IS NULL or d.e_mail IS NULL or d.numero_telephone IS NULL THEN 'Anonyme'
-		WHEN d.nom = '' or d.prenom = '' or d.cin = '' or d.e_mail = '' or d.numero_telephone = '' THEN 'Anonyme'
-        ELSE 'Non anonyme' 
+		ELSE 'Non anonyme' 
 	END as type_doleance,
 	d.id_autorite as t_structure_id,
 	d.child_libelle,

@@ -139,7 +139,14 @@
               doleance:{
                   autorite:'',
                   titre:'',
-                  message:''
+                  message:'',
+                  nom: '',
+                  prenom: '',
+                  e_mail:'',
+                  cin:'',
+                  numero_telephone: '' ,
+                  id_autorite:'',
+                  sigle: ''
               }
           }
         },
@@ -162,7 +169,12 @@
               sigle : this.doleance.sigle,
               titre: Function.specialChar(this.doleance.titre),
               message: Function.specialChar(this.doleance.message),
-              session_navigateur:this.doleance.session_navigateur
+              session_navigateur:this.doleance.session_navigateur,
+              nom: this.doleance.nom,
+              prenom: this.doleance.prenom,
+              e_mail:this.doleance.e_mail,
+              cin: this.doleance.cin,
+              numero_telephone: this.doleance.numero_telephone  
             }
             // console.log(doleance)
             if(this.currentForm === 'AnonymusForm'){
