@@ -142,7 +142,7 @@
         <div class="col-md-2">
             <input
                 class="form-control"
-                placeholder="Votre nom"
+                placeholder="Nom ou prénom" 
                 type="text"
                 :value="nom"
                 @input="$emit('update:nom', $event.target.value)"

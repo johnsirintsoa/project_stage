@@ -194,7 +194,7 @@
             </div>
 
             <div class="col-md-1">            
-                <label for="validationDefault01" class="form-label">Durée:</label>
+                <label for="validationDefault01" class="form-label">Durée(mois):</label>
                 <div class="col-sm-12">
                     <input type="number" class="form-control" id="duree" min="0" name="duree" v-model="stage.duree" required>
                 </div>
@@ -340,6 +340,21 @@ export default {
             });
         },
 
+        viderChamp(){
+            this.stage.nom = '',
+            this.stage.prenom = '',
+            this.stage.telephone = '',
+            this.stage.e_mail = '',
+            this.stage.cin = '',
+            this.stage.duree = '1',
+            this.stage.curriculum_vitae = '',
+            this.stage.lettre_motivation = '',
+            this.stage.lettre_introduction = '',
+            this.stage.message = '',
+            this.stage.id_autorite_enfant = '',
+            this.stage.id_domaine = '',
+            this.stage.etablissement = ''
+        },
         async addDemandeStage(){
             this.sipnnerActivated = true
             const demande_stage = new FormData()
@@ -375,6 +390,7 @@ export default {
             // console.log(response)
             swal("Demande de stage enregistrée", `Votre demande de stage a bien été ajoutée`, "success");
             this.sipnnerActivated = false
+            this.viderChamp()
         }
     },
 }

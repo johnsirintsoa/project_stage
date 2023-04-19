@@ -1067,7 +1067,6 @@
         },
 
         async eventDropped(event){
-          // console.log(event.event.extendedProps)
           this.$emit('spinnerStatus', true)
           const start_date_time = Function.format_date_time(event.event.start)
           const end_date_time = Function.format_date_time(event.event.end)  
@@ -1185,6 +1184,8 @@
         },
 
         async eventDragged(event){
+          console.log('etirer')
+ 
           this.$emit('spinnerStatus', true)
           const start_date_time = Function.format_date_time(event.event.start)
           const end_date_time = Function.format_date_time(event.event.end)  
