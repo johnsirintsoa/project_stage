@@ -1274,7 +1274,7 @@ h6 {
  
   background: lavender;
   padding: 10px 20px;
-  position: absolute;
+  position: fixed;
   left: 50%;
   top: 50%;
   transform: translateX(-50%) translateY(-50%);
@@ -1285,4 +1285,7 @@ h6 {
 }
 .popupToShow{
   position: initial;
+}    
+.ri-close-line:hover {
+  transform: scale(1.5);	
 }

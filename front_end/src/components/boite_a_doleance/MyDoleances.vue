@@ -95,15 +95,17 @@ export default {
                 cancelButtonText: 'Annuler',
                 confirmButtonText: 'Supprimer!'
             }).then(async (result) => {
-                const response = await DoleanceAPI.supprimer(value.id)
-                if(response.message){
-                    Swal.fire('Doléance supprimée',`${response.message}`,'success')
-                    const session = JSON.parse(sessionStorage.getItem('session_navigateur')).value
-                    const arg = {
-                        // session_navigateur : 'session877.7483667099051',
-                        session_navigateur : session,
+                if(result.isConfirmed){
+                    const response = await DoleanceAPI.supprimer(value.id)
+                    if(response.message){
+                        Swal.fire('Doléance supprimée',`${response.message}`,'success')
+                        const session = JSON.parse(sessionStorage.getItem('session_navigateur')).value
+                        const arg = {
+                            // session_navigateur : 'session877.7483667099051',
+                            session_navigateur : session,
+                        }
+                        this.doleances = await DoleanceAPI.liste_public(arg)
                     }
-                    this.doleances = await DoleanceAPI.liste_public(arg)
                 }
                 // 
             }).catch((err) => {

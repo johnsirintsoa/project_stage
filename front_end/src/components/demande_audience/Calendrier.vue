@@ -433,13 +433,13 @@
         <div class="card-body">
           <h2 class="card-title">Détail audience autorité</h2>
             <div class="row">
-              <div class="col-12">
+              <div class="col-lg-12">
 
                 <div class="card">
                   <div class="card-body">
                     <div class="tab-content pt-2">
       
-                      <div class="col-12">
+                      <div class="col-lg-12">
                         <h5 class="card-title">Message</h5>
                         <p class="small fst-italic">{{audience.motif}}</p>
                         <p class="small fst-italic">{{audience.dateAudience}}</p>
@@ -619,7 +619,7 @@
       props:{
         sessionNavigateur: String,
         autoriteSender: Object,
-        typeCalendrier:String
+        typeCalendrier: String
       },
 
       // emits:['spinnerStatus'],
@@ -732,7 +732,8 @@
           if(this.typeCalendrier === 'audiencePublic'){
             const audience = {
                 nom: this.audience.nom, 
-                prenom: Function.initcap(this.audience.prenom), 
+                prenom: this.audience.prenom, 
+                // prenom: Function.initcap(this.audience.prenom), 
                 cin: this.audience.cin,
                 numero_telephone: this.audience.numero_telephone,
                 email: this.audience.email,
@@ -756,6 +757,7 @@
                 
             }
             else{
+                this.sipnnerActivated = false
                 swal("Audience non enregistrée", "Votre audience n'a pas été enregistrée", "error");
             }
             this.calendarOptions.events = await actual_events_public(this.audience.autoriteReceiver.child_id)
@@ -786,6 +788,7 @@
               this.sipnnerActivated = false
             }
             else{
+                this.sipnnerActivated = false
                 swal("Audience non enregistrée", "Votre audience n'a pas été enregistrée", "error");
             }
             this.calendarOptions.events = await DemandeAudienceAutoriteAPI.faire_audience(

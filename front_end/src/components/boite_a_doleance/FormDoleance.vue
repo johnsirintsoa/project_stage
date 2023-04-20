@@ -3,6 +3,7 @@
 </script> -->
 
 <template>
+  
     <div class="type-doleance" style="padding-top: 10px">
         <label><input type="radio" v-model="currentForm" value="AnonymusForm" /> Anonyme</label>
         <label><input type="radio" v-model="currentForm" value="NonAnonymusForm" style="margin-left: 20px;"/> Non anonyme</label>

@@ -11,17 +11,22 @@
     />
     <main id="main" class="main">
         <h1>Mes évènements</h1>
-        
-        <div  class='demo-app' >
-            <div class='demo-app-main'>
+        <section class="section">
+            <div class="row">
                 <Calendrier
                     :autoriteSender="autorite"
                     typeCalendrier="evenementiel"
                     @spinnerStatus="getSpinnerStatus"
                 />
+                <!-- <div  class='demo-app' >
+                    <div class='demo-app-main'>
 
+        
+                    </div>
+                </div> -->
             </div>
-        </div>
+        </section>
+
     </main>
     <FooterBack 
         :styleFooterP="styleFooterP"

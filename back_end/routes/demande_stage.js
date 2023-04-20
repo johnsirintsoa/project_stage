@@ -46,6 +46,8 @@ var upload = multer({
 
 // Add demande de stage
 router.post('/add',upload.fields([{name: 'curriculum_vitae'},{name: 'lettre_motivation'},{name: 'lettre_introduction'}]),async(req,res)=>{
+    const prenomFormated = Function.upSetFirstLetter(req.body.prenom)
+    const nomFormated = req.body.nom.toUpperCase()
     const all_file = req.files;
     if (!all_file) {
         return res.status(400).send({ message: 'Please upload a data.' });
@@ -54,7 +56,7 @@ router.post('/add',upload.fields([{name: 'curriculum_vitae'},{name: 'lettre_moti
         // let sql = "INSERT INTO demande_stage(nom,prenom,e_mail,cin,telephone,duree,curriculum_vitae,lettre_motivation,lettre_introduction,message,id_domaine) VALUES ('"+req.body.nom+"','"+req.body.prenom+"','"+req.body.e_mail+"','"+req.body.cin+"','"+req.body.telephone+"','"+req.body.duree+"','"+req.files['curriculum_vitae'][0].filename+"','"+req.files['lettre_motivation'][0].filename+"','"+req.files['lettre_introduction'][0].filename+"','"+req.body.message+"','"+req.body.id_domaine+"')"
         // console.log(req.body)
         // console.log('Hahahaha')
-        let sql = `INSERT INTO demande_stage(nom,prenom,etablissement,e_mail,cin,telephone,duree,curriculum_vitae,lettre_motivation,lettre_introduction,message,id_domaine,id_autorite_enfant,date_creation) VALUES ('${req.body.nom}','${req.body.prenom}','${req.body.etablissement}','${req.body.e_mail}','${req.body.cin}','${req.body.telephone}','${req.body.duree}','${req.files['curriculum_vitae'][0].filename}','${req.files['lettre_motivation'][0].filename}','${req.files['lettre_introduction'][0].filename}','${req.body.message}',${req.body.id_domaine},${req.body.id_autorite_enfant},(SELECT CURDATE()))`
+        let sql = `INSERT INTO demande_stage(nom,prenom,etablissement,e_mail,cin,telephone,duree,curriculum_vitae,lettre_motivation,lettre_introduction,message,id_domaine,id_autorite_enfant,date_creation) VALUES ('${req.body.nom}','${prenomFormated}','${req.body.etablissement}','${req.body.e_mail}','${req.body.cin}','${req.body.telephone}','${req.body.duree}','${req.files['curriculum_vitae'][0].filename}','${req.files['lettre_motivation'][0].filename}','${req.files['lettre_introduction'][0].filename}','${req.body.message}',${req.body.id_domaine},${req.body.id_autorite_enfant},(SELECT CURDATE()))`
         var query = db.query(sql, async (err, result) =>{
             if(err){
                 // console.log('Hahahaha')
@@ -62,8 +64,8 @@ router.post('/add',upload.fields([{name: 'curriculum_vitae'},{name: 'lettre_moti
             }
             else{
                 const envoyeur = {
-                    nom: req.body.nom,
-                    prenom: req.body.prenom
+                    nom: nomFormated,
+                    prenom: prenomFormated
                 }
                 const receiver = {
                     email: req.body.autoriteEmail,

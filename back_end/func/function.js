@@ -27,4 +27,17 @@ function date_in_string(date) {
     return date_string
 }
 
-module.exports = {date_in_string,genererNbr }
+function upSetFirstLetter(arg){
+    let argTolower = arg.toLowerCase()
+    let argLowerSplited = argTolower.split(' ')
+    let newArg = ''
+    argLowerSplited.forEach(word => {
+        let firstLetter = word.charAt(0).toUpperCase()
+		let Allletter = word.substring(1)
+		let newWord = firstLetter+Allletter+' '
+		newArg+=newWord
+    });
+    return newArg.trim()
+}
+
+module.exports = {date_in_string,genererNbr,upSetFirstLetter }
