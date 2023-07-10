@@ -1,4 +1,5 @@
-
+`
+ 
 <template>
     <HeaderNavbar
         @structure="getStructure"

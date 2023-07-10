@@ -1,8 +1,8 @@
 -- Data login que j'ai crée
 INSERT INTO rohi.`user`
-	(login, password) VALUES ('srcJean1',(SELECT AES_ENCRYPT('srcJean1','lHommeEstNaturellementBonCEestLaSocieteQuiLeCorrompt-Rousseau')));
+	(id,login, password) VALUES (15412,'srcJean1',(SELECT AES_ENCRYPT('srcJean1','lHommeEstNaturellementBonCEestLaSocieteQuiLeCorrompt-Rousseau')));
 INSERT INTO rohi.`user`
-	(login, password) VALUES ('dirJean1',(SELECT AES_ENCRYPT('dirJean1','lHommeEstNaturellementBonCEestLaSocieteQuiLeCorrompt-Rousseau')));
+	(id,login, password) VALUES (15413,'dirJean1',(SELECT AES_ENCRYPT('dirJean1','lHommeEstNaturellementBonCEestLaSocieteQuiLeCorrompt-Rousseau')));
 
 -- Get ID the user login
 select 

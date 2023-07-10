@@ -144,6 +144,7 @@ const entretien_supprimer = async (autorite,stagiaire) =>{
 const audience_public_valide = async (autorite,envoyeur,entretien_date_time) =>{
     const date_entretien = FUNC.date_in_string(entretien_date_time)
     const transporter = nodemailer.createTransport({
+        // service: 'gmail',
         host: 'smtp.gmail.com',
         port: 587,
         secure: false,

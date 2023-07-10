@@ -46,7 +46,7 @@ var upload = multer({
 
 // Add demande de stage
 router.post('/add',upload.fields([{name: 'curriculum_vitae'},{name: 'lettre_motivation'},{name: 'lettre_introduction'}]),async(req,res)=>{
-    const prenomFormated = Function.upSetFirstLetter(req.body.prenom)
+    const prenomFormated = FUNC.upSetFirstLetter(req.body.prenom)
     const nomFormated = req.body.nom.toUpperCase()
     const all_file = req.files;
     if (!all_file) {

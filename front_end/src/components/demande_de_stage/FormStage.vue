@@ -146,7 +146,7 @@
 
             <div class="col-md-4">
                 <label for="inputEmail5" class="form-label">Etablissement:</label>
-                <input type="text" class="form-control"  placeholder="Etablissement" id="etablissement" name="prenom" v-model="stage.etablissement" required="" 
+                <input type="text" class="form-control"  placeholder="Etablissement" id="etablissement" name="prenom" v-model="stage.etablissement" 
                     @mouseover="showInfos('etablissement','Si vous êtes étudiants, veuillez remplir le champ ci-dessous')"
 
                 >
