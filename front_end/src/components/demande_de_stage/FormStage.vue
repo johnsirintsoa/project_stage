@@ -136,7 +136,8 @@
         <form class="row g-3" @submit.prevent="addDemandeStage" ref="formStage" enctype="multipart/form-data">
             <div class="col-md-4">
               <label for="inputName5" class="form-label">Nom:</label>
-              <input type="text" class="form-control" placeholder="Nom" id="nom" name="nom" v-model="stage.nom" required="" >
+              <input type="text" class="form-control" placeholder="Nom" v-model="stage.nom" required="" >
+              <!-- <input type="text" class="form-control" placeholder="Nom" id="nom" name="nom" v-model="stage.nom" required="" > -->
             </div>
 
             <div class="col-md-4">
@@ -173,7 +174,8 @@
                 <label for="validationCustomUsername" class="form-label">Email:
                 </label>
                 <div class="col-sm-12">
-                    <input type="email" placeholder="example@gmail.com" class="form-control" id="email" name="email" v-model="stage.e_mail" required="">
+                    <input type="email" placeholder="example@gmail.com" class="form-control" v-model="stage.e_mail" required="">
+                    <!-- <input type="email" placeholder="example@gmail.com" class="form-control" id="email" name="email" v-model="stage.e_mail" required=""> -->
                 </div>
             </div>
             <div class="col-md-4">
