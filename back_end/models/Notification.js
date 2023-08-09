@@ -34,6 +34,34 @@ const notification_audience_public = async (envoyeur,receiver) => {
     return data
 }
 
+const notification_audience_agent = async (envoyeur,receiver) => {
+
+    const transporter = nodemailer.createTransport({
+        host: 'smtp.gmail.com',
+        port: 587,
+        secure:false,
+        auth: {
+            user: userMail,
+            pass: mdp
+        }
+    });
+    
+    let data = ''
+    await transporter.sendMail({
+        from: userMail,
+        to: receiver.email,
+        subject: `Demande d'audience`,
+        html: `<p>Bonjour ${receiver.intitule_code}.</p> 
+                <p>Vous avez une nouvelle audience. L'Agent 
+                ${envoyeur.nom} ${envoyeur.prenom} dans la structure <strong>${envoyeur.path}</strong> au sujet de <strong>"${envoyeur.motif}"</strong> vers <strong>${envoyeur.date_debut}</strong> entre <strong>${envoyeur.heure_debut}</strong> à <strong>${envoyeur.heure_fin}</strong>. Veuillez voir dans le site.</p>`
+    }).then((result) => {
+        data = result
+    }).catch((err) => {
+        data = err
+    });
+    return data
+}
+
 const notification_demande_stage = async (envoyeur,receiver) => {
 
     const transporter = nodemailer.createTransport({
@@ -93,5 +121,6 @@ const notification_audience_autorite = async(subject,envoyeur,receiver) =>{
 module.exports = {
     notification_audience_public,
     notification_demande_stage,
-    notification_audience_autorite
+    notification_audience_autorite,
+    notification_audience_agent
 }

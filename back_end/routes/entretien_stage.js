@@ -122,7 +122,7 @@ router.post('/delete',async(req,res)=>{
             const response = await mailing.entretien_supprimer(autorite,stage)
             
             if(response && result ){
-                res.json({message:'Cette demande de stage est maintenant considérée comme une demande non validé',mail:response,data:result[0][0]})
+                res.json({message:'Cette demande de stage est maintenant\nconsidérée comme une demande non validé',mail:response,data:result[0][0]})
             }
             else {
                 res.json({message:'Entretien non supprimé',mail:response,data:result[0][0]})

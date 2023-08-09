@@ -161,8 +161,8 @@ const audience_public_valide = async (autorite,envoyeur,entretien_date_time) =>{
         to: envoyeur.addresse_electronique,
         subject: 'Audience validé',
         html: `<p>Bonjour ${envoyeur.nom} ${envoyeur.prenom}.</p> 
-                <p>Votre audience auprès de la ${autorite.intitule}(${autorite.intitule_code}) au sujet de:<strong>"${envoyeur.motif}"</strong>  a été validée, vous pouvez venir le ${date_entretien}. 
-                Veuillez vous addresser à l'acceuil.`
+                <p>Votre audience auprès de la ${autorite.intitule}(${autorite.intitule_code}) au sujet de:<strong>"${envoyeur.motif}"</strong>  a été validée.<br/>vous pouvez venir le ${date_entretien}.<br/> 
+                Veuillez vous addresser à la porte correspondante.`
     }).then((result) => {
         data = result
     }).catch((err) => {
@@ -194,7 +194,7 @@ const audience_public_revalide = async (autorite,envoyeur,entretien_date_time) =
         subject: 'Audience validé',
         html: `<p>Bonjour ${envoyeur.nom} ${envoyeur.prenom}.</p> 
                 <p>Votre audience auprès de la ${autorite.intitule}(${autorite.intitule_code}) au sujet de <strong>"${envoyeur.motif}"</strong> a été revalidée, vous pouvez venir le ${date_entretien} 
-                Veuillez vous addresser à l'acceuil.</p>`
+                Veuillez vous addresser à la porte correspondante.</p>`
     }).then((result) => {
         data = result
     }).catch((err) => {
@@ -224,7 +224,7 @@ const audience_public_reporte = async (autorite,envoyeur,entretien_date_time) =>
         to: envoyeur.addresse_electronique,
         subject: 'Audience reporté',
         html: `<p>Bonjour ${envoyeur.nom} ${envoyeur.prenom}.</p> 
-                <p>En raison de certains évenements au sein de l'organisation, la ${autorite.intitule}(${autorite.intitule_code}) a du reporté votre audience au sujet de :<strong>"${envoyeur.motif}"</strong>le ${date_entretien}.</p>
+                <p>En raison de certains évenements au sein de l'organisation, la ${autorite.intitule}(${autorite.intitule_code}) a du reporté <br/>votre audience au sujet de :<strong>"${envoyeur.motif}"</strong>le ${date_entretien}.</p>
                 <p>Merci pour votre compréhension</p>`
     }).then((result) => {
         data = result
@@ -255,9 +255,9 @@ const audience_public_reporte_plus_tard = async (autorite,evenement) =>{
         to: evenement.addresse_electronique,
         subject: 'Audience reporté',
         html: `<p>Bonjour ${evenement.nom} ${evenement.prenom}.</p> 
-                <p>En raison de certains évenements au sein de l'organisation, la ${autorite.intitule}(${autorite.intitule_code}) a du reporté votre audience au
+                <p>En raison de certains évenements au sein de l'organisation, la ${autorite.intitule}(${autorite.intitule_code}) a du reporté,br/> votre audience au
                 sujet de <strong>"${evenement.motif}"</strong>.
-                Nous vous informerons une suite à votre audience</p>
+                <br/>Nous vous informerons une suite à votre audience</p>
                 <p>Merci pour votre compréhension</p>`
     }).then((result) => {
         data = result
@@ -287,7 +287,7 @@ const audience_autorite_valide = async (autorite,envoyeur,entretien_date_time) =
         to: sender.addresse_electronique,
         subject: 'Audience validé',
         html: `<p>Bonjour Monsieur ou Madame le ${sender.intitule_code}</p> 
-                <p>Votre audience auprès de la ${autorite.intitule}(${autorite.intitule_code}) a été validée, vous pouvez venir le ${date_entretien}</p>`
+                <p>Votre audience auprès de la ${autorite.intitule}(${autorite.intitule_code}) a été validée,<br/>vous pouvez venir le ${date_entretien}</p>`
     }).then((result) => {
         data = result
     }).catch((err) => {
@@ -319,7 +319,7 @@ const audience_autorite_reporte = async (autorite,envoyeur,entretien_date_time) 
         to: sender.addresse_electronique,
         subject: 'Audience reporté',
         html: `<p>Bonjour Monsieur ou Madame le ${sender.intitule_code}</p> 
-                <p>En raison de certains évenements au sein de l'organisation, la ${autorite.intitule}(${autorite.intitule_code}) a du reporté votre audience le ${date_entretien}.</p>
+                <p>En raison de certains évenements au sein de l'organisation, la ${autorite.intitule}(${autorite.intitule_code}) a du reporté <br/>votre audience le ${date_entretien}.</p>
                 <p>Merci pour votre compréhension</p>`
     }).then((result) => {
         data = result
@@ -352,7 +352,7 @@ const audience_autorite_reporte_plus_tard = async (autorite,sender) =>{
         subject: 'Audience reporté',
         html:   `<p>Bonjour Monsieur ou Madame le ${sender.intitule_code}</p> 
                 <p>En raison de certains évenements au sein de l'organisation, la ${autorite.intitule}(${autorite.intitule_code}) a du reporté votre audience.
-                Nous vous informerons une suite à votre audience</p>
+                <br/>Nous vous informerons une suite à votre audience</p>
                 <p>Merci pour votre compréhension</p>`
     }).then((result) => {
         data = result
@@ -382,7 +382,7 @@ const audience_autorite_revalide = async (autorite,envoyeur,entretien_date_time)
         to: envoyeur.addresse_electronique,
         subject: 'Audience validé',
         html: `<p>Bonjour Monsieur ou Madame le ${envoyeur.intitule_code}</p> 
-                <p>Votre audience auprès de la ${autorite.intitule}(${autorite.intitule_code}) a été revalidée, vous pouvez venir le ${date_entretien} </p>`
+                <p>Votre audience auprès de la ${autorite.intitule}(${autorite.intitule_code}) a été revalidée, <br/>vous pouvez venir le ${date_entretien} </p>`
     }).then((result) => {
         data = result
     }).catch((err) => {

@@ -2,6 +2,10 @@
 // import TokenApi from '../api/token'
 export default class Function{
 
+    static errorRemplirFormulaire(obj){
+        return 'error'
+    }
+
     static dateIso(d) {
 
         var cad = "";

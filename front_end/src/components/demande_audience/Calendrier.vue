@@ -36,89 +36,101 @@
   
   
   <div v-if="typeCalendrier === 'audiencePublic'">
-    <teleport to=".popupToShow">
-      <div v-if="showPopupAudience" class="popupShow">
-          <p  @click="togglePopupAudience"><i class="ri-close-line" style="font-size: 35px;position: fixed; margin-left: 88%;"></i></p>
-          <div class="card-body">
-              
-            <div v-if="audience.id === '' ">
-              <h2 class="card-title">Ajouter une audience</h2>
-              <form class="row g-3" @submit.prevent="ajouter" autocomplete="off">
+    <!-- si un agent souhaite demander une audience -->
+    
+    <div v-if="audience.isAgent">
+      <teleport to=".popupToShow">
+        <div v-if="showPopupAudience" class="popupShow">
+            <p  @click="togglePopupAudience"><i class="ri-close-line" style="font-size: 35px;position: fixed; margin-left: 88%;"></i></p>
+            <div class="card-body">
+                
+              <div v-if="audience.id === '' ">
+                <h2 class="card-title">Ajouter une audience</h2>
 
-                  <div class="col-md-4">
-                    <div class="form-floating">
-                      <input type="text" class="form-control" id="floatingName" placeholder="Votre nom" required v-model="audience.nom">
-                      <label for="floatingName">Votre nom</label>
-                    </div>
-                  </div>
-          
-                  <div class="col-md-4">
+                <form class="row g-3" @submit.prevent="ajouter" autocomplete="off">
+  
+                    <div class="col-md-12">
                       <div class="form-floating">
-                        <input type="text" class="form-control" id="floatingName" placeholder="Votre prénom" required v-model="audience.prenom" >
-                        <label for="floatingName">Votre prénom</label>
+                        <input type="text" class="form-control" id="floatingInput" placeholder="Votre login" required v-model="audience.login_agent">
+                        <label for="floatingEmail">Votre login</label>
                       </div>
-                  </div>
-          
-                  <div class="col-md-4">
-                      <div class="form-floating">
-                          <input 
-                            type="text" 
-                            class="form-control" 
-                            id="floatingName" 
-                            placeholder="Carte d'Itentité National" 
-                            v-model="audience.cin"   
-                            minlength="12"
-                            maxlength="12"
-                          >
-                          <label for="floatingName">CIN</label>
-                      </div>
-                  </div>
-          
-                  <div class="col-md-6">
-                    <div class="form-floating">
-                      <input type="email" class="form-control" id="floatingEmail" placeholder="Votre mail" required v-model="audience.email">
-                      <label for="floatingEmail">Votre mail</label>
                     </div>
-                  </div>
-          
-                  <div class="col-md-6">
-                    <div class="form-floating">
-                      <input 
-                        type="tel" 
-                        class="form-control" 
-                        id="floatingPassword" 
-                        placeholder="Numéro téléphone" 
-                        required v-model="audience.numero_telephone" 
-                        pattern="[0-9]{3}[0-9]{2}[0-9]{3}[0-9]{2}"   
-                        minlength="10"
-                        maxlength="10"
-                      >
-                      <label for="floatingPassword">Numéro téléphone</label>
-                    </div>
-                  </div>
-          
-                  <div class="col-12">
-                    <div class="form-floating">
-                      <textarea class="form-control" placeholder="Motif" id="floatingTextarea" style="height: 100px;" required v-model="audience.motif" ></textarea>
-                      <label for="floatingTextarea">Motif</label>
-                    </div>
-                  </div>
-          
-                  <SpinnerPopup
-                    :sipnnerActivated="sipnnerActivated"
-                  />
 
-                  <div class="text-center">
-                    <button type="submit" class="btn btn-success"  >Ajouter</button>
-                    <button type="reset" class="btn btn-secondary" @click="reset">Annuler</button>
-                  </div>
-              </form> 
-            </div>  
+                    <div class="col-md-12">
+                      <div class="form-floating">
+                        <input type="password" class="form-control" id="floatingInput" placeholder="Votre mot de passe" required v-model="audience.password_agent">
+                        <label for="floatingEmail">Votre mot de passe</label>
+                      </div>
+                    </div>
             
-            <div v-else>
-                <h2 class="card-title">Modifier ou suprpimer une audience</h2>
-                <form class="row g-3" @submit.prevent="" autocomplete="off">
+                    <div class="col-md-6">
+                      <div class="form-floating">
+                        <input type="email" class="form-control" id="floatingEmail" placeholder="Votre mail" v-model="audience.email">
+                        <label for="floatingEmail">Votre mail</label>
+                      </div>
+                    </div>
+            
+                    <div class="col-md-6">
+                      <div class="form-floating">
+                        <input 
+                          type="tel" 
+                          class="form-control" 
+                          id="floatingPassword" 
+                          placeholder="Numéro téléphone" 
+                          v-model="audience.numero_telephone" 
+                          pattern="[0-9]{3}[0-9]{2}[0-9]{3}[0-9]{2}"   
+                          minlength="10"
+                          maxlength="10"
+                        >
+                        <label for="floatingPassword">Numéro téléphone</label>
+                      </div>
+                    </div>
+            
+                    <div class="col-12">
+                      <div class="form-floating">
+                        <textarea class="form-control" placeholder="Motif" id="floatingTextarea" style="height: 100px;" required v-model="audience.motif" ></textarea>
+                        <label for="floatingTextarea">Motif</label>
+                      </div>
+                    </div>
+  
+                    <div class="col-12">
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="gridCheck1" v-model="audience.isAgent">
+                        <label class="form-check-label" for="gridCheck1">
+                          Agent
+                        </label>
+                      </div>
+                    </div>
+  
+  
+            
+                    <SpinnerPopup
+                      :sipnnerActivated="sipnnerActivated"
+                    />
+  
+                    <div class="text-center">
+                      <button type="submit" class="btn btn-success"  >Ajouter</button>
+                      <button type="reset" class="btn btn-secondary" @click="reset">Annuler</button>
+                    </div>
+                </form> 
 
+              </div>  
+   
+            </div>
+        </div>
+      </teleport>
+    </div>
+
+    <div v-else>
+      <teleport to=".popupToShow">
+        <div v-if="showPopupAudience" class="popupShow">
+            <p  @click="togglePopupAudience"><i class="ri-close-line" style="font-size: 35px;position: fixed; margin-left: 88%;"></i></p>
+            <div class="card-body">
+                
+              <div v-if="audience.id === '' ">
+                <h2 class="card-title">Ajouter une audience</h2>
+                <form class="row g-3" @submit.prevent="ajouter" autocomplete="off">
+  
                     <div class="col-md-4">
                       <div class="form-floating">
                         <input type="text" class="form-control" id="floatingName" placeholder="Votre nom" required v-model="audience.nom">
@@ -177,9 +189,96 @@
                         <label for="floatingTextarea">Motif</label>
                       </div>
                     </div>
-
-                    <div class="col-md-12" v-if="audience.status === 'Validé' || audience.status === 'Reporté'">
+  
+                    <div class="col-12">
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="gridCheck1" v-model="audience.isAgent">
+                        <label class="form-check-label" for="gridCheck1">
+                          Agent
+                        </label>
+                      </div>
+                    </div>
+  
+  
+            
+                    <SpinnerPopup
+                      :sipnnerActivated="sipnnerActivated"
+                    />
+  
+                    <div class="text-center">
+                      <button type="submit" class="btn btn-success"  >Ajouter</button>
+                      <button type="reset" class="btn btn-secondary" @click="reset">Annuler</button>
+                    </div>
+                </form> 
+              </div>  
+   
+              <div v-else>
+                  <h2 class="card-title">Modifier ou supprimer une audience</h2>
+                  <div v-if="audience.id_agent > 0">
+                    <form class="row g-3" @submit.prevent="" autocomplete="off">
+  
+                      <div class="col-md-12">
+                        <div class="form-floating">
+                          <input type="text" class="form-control" id="floatingInput" placeholder="Votre login"  v-model="audience.login_agent" required>
+                          <label for="floatingEmail">Votre login</label>
+                        </div>
+                      </div>
+  
+                      <div class="col-md-12">
+                        <div class="form-floating">
+                          <input type="password" class="form-control" id="floatingInput" placeholder="Votre mot de passe"  v-model="audience.password_agent" required>
+                          <label for="floatingEmail">Votre mot de passe</label>
+                        </div>
+                      </div>
+              
+                      <div class="col-md-6">
+                        <div class="form-floating">
+                          <input type="email" class="form-control" id="floatingEmail" placeholder="Votre mail" required v-model="audience.email">
+                          <label for="floatingEmail">Votre mail</label>
+                        </div>
+                      </div>
+              
+                      <div class="col-md-6">
+                        <div class="form-floating">
+                          <input 
+                            type="tel" 
+                            class="form-control" 
+                            id="floatingPassword" 
+                            placeholder="Numéro téléphone" 
+                            required v-model="audience.numero_telephone" 
+                            pattern="[0-9]{3}[0-9]{2}[0-9]{3}[0-9]{2}"   
+                            minlength="10"
+                            maxlength="10"
+                          >
+                          <label for="floatingPassword">Numéro téléphone</label>
+                        </div>
+                      </div>
+              
+                      <div class="col-12">
+                        <div class="form-floating">
+                          <textarea class="form-control" placeholder="Motif" id="floatingTextarea" style="height: 100px;" required v-model="audience.motif" ></textarea>
+                          <label for="floatingTextarea">Motif</label>
+                        </div>
+                      </div>
+  
+                      <div class="col-md-12" v-if="audience.status === 'Validé' || audience.status === 'Reporté'">
+                          <div class="form-floating mb-3">
+                            <select class="form-select" id="floatingSelect" aria-label="Autorité" required="" v-model="audience.actual_place">
+                              <option v-if="audience.actual_place" selected disabled>
+                                  {{audience.actual_place["date_disponible"]}} {{audience.actual_place["heure_debut"]}} à {{audience.actual_place["heure_fin"]}}
+                              </option>
+    
+                              <option v-for="(item, index) in audience.places_disponible" :key="item" :value="item">
+                                  {{item.date_disponible}} {{item.heure_debut}} à {{item.heure_fin}}
+                              </option>
+                          </select>
+                          <label for="floatingSelect">Place</label>
+                          </div>
+                      </div>
+  
+                      <div class="col-md-12" v-else>
                         <div class="form-floating mb-3">
+                          
                           <select class="form-select" id="floatingSelect" aria-label="Autorité" required="" v-model="audience.actual_place">
                             <option v-if="audience.actual_place" selected disabled>
                                 {{audience.actual_place["date_disponible"]}} {{audience.actual_place["heure_debut"]}} à {{audience.actual_place["heure_fin"]}}
@@ -188,49 +287,148 @@
                             <option v-for="(item, index) in audience.places_disponible" :key="item" :value="item">
                                 {{item.date_disponible}} {{item.heure_debut}} à {{item.heure_fin}}
                             </option>
-                        </select>
+                          </select>
                         <label for="floatingSelect">Place</label>
                         </div>
-                    </div>
-
-                    <div class="col-md-12" v-else>
-                      <div class="form-floating mb-3">
-                        
-                        <select class="form-select" id="floatingSelect" aria-label="Autorité" required="" v-model="audience.actual_place">
-                          <option v-if="audience.actual_place" selected disabled>
-                              {{audience.actual_place["date_disponible"]}} {{audience.actual_place["heure_debut"]}} à {{audience.actual_place["heure_fin"]}}
-                          </option>
-
-                          <option v-for="(item, index) in audience.places_disponible" :key="item" :value="item">
-                              {{item.date_disponible}} {{item.heure_debut}} à {{item.heure_fin}}
-                          </option>
-                        </select>
-                      <label for="floatingSelect">Place</label>
                       </div>
-                    </div>
-                    
-                    <SpinnerPopup
-                      :sipnnerActivated="sipnnerActivated"
-                    />
-
-                    <div class="text-center" v-if="audience.status === 'Validé' || audience.status === 'Reporté'">
-                      <button type="submit" class="btn btn-danger" @click="supprimer" >Supprimer</button>
-                      <button type="reset" class="btn btn-secondary" @click="reset">Annuler</button>
-                    </div>
+                      
+                      <SpinnerPopup
+                        :sipnnerActivated="sipnnerActivated"
+                      />
+  
+                      <div class="text-center" v-if="audience.status === 'Validé' || audience.status === 'Reporté'">
+                        <button type="submit" class="btn btn-danger" @click="supprimer" >Supprimer</button>
+                        <button type="reset" class="btn btn-secondary" @click="reset">Annuler</button>
+                      </div>
+      
+                      <div class="text-center" v-else>
+                        <button type="submit" class="btn btn-warning" @click="modifier" >Modifier</button>
+                        <button type="submit" class="btn btn-danger" @click="supprimer" >Supprimer</button>
+                        <button type="reset" class="btn btn-secondary" @click="reset">Annuler</button>
+                      </div>
+  
+                    </form>   
+                  </div>
+  
+                  <div v-else>
+                    <form class="row g-3" @submit.prevent="" autocomplete="off">
+  
+                      <div class="col-md-4">
+                        <div class="form-floating">
+                          <input type="text" class="form-control" id="floatingName" placeholder="Votre nom" required v-model="audience.nom">
+                          <label for="floatingName">Votre nom</label>
+                        </div>
+                      </div>
+              
+                      <div class="col-md-4">
+                          <div class="form-floating">
+                            <input type="text" class="form-control" id="floatingName" placeholder="Votre prénom" required v-model="audience.prenom" >
+                            <label for="floatingName">Votre prénom</label>
+                          </div>
+                      </div>
+              
+                      <div class="col-md-4">
+                          <div class="form-floating">
+                              <input 
+                                type="text" 
+                                class="form-control" 
+                                id="floatingName" 
+                                placeholder="Carte d'Itentité National" 
+                                v-model="audience.cin"   
+                                minlength="12"
+                                maxlength="12"
+                              >
+                              <label for="floatingName">CIN</label>
+                          </div>
+                      </div>
+              
+                      <div class="col-md-6">
+                        <div class="form-floating">
+                          <input type="email" class="form-control" id="floatingEmail" placeholder="Votre mail" required v-model="audience.email">
+                          <label for="floatingEmail">Votre mail</label>
+                        </div>
+                      </div>
+              
+                      <div class="col-md-6">
+                        <div class="form-floating">
+                          <input 
+                            type="tel" 
+                            class="form-control" 
+                            id="floatingPassword" 
+                            placeholder="Numéro téléphone" 
+                            required v-model="audience.numero_telephone" 
+                            pattern="[0-9]{3}[0-9]{2}[0-9]{3}[0-9]{2}"   
+                            minlength="10"
+                            maxlength="10"
+                          >
+                          <label for="floatingPassword">Numéro téléphone</label>
+                        </div>
+                      </div>
+              
+                      <div class="col-12">
+                        <div class="form-floating">
+                          <textarea class="form-control" placeholder="Motif" id="floatingTextarea" style="height: 100px;" required v-model="audience.motif" ></textarea>
+                          <label for="floatingTextarea">Motif</label>
+                        </div>
+                      </div>
+  
+                      <div class="col-md-12" v-if="audience.status === 'Validé' || audience.status === 'Reporté'">
+                          <div class="form-floating mb-3">
+                            <select class="form-select" id="floatingSelect" aria-label="Autorité" required="" v-model="audience.actual_place">
+                              <option v-if="audience.actual_place" selected disabled>
+                                  {{audience.actual_place["date_disponible"]}} {{audience.actual_place["heure_debut"]}} à {{audience.actual_place["heure_fin"]}}
+                              </option>
     
-                    <div class="text-center" v-else>
-                      <button type="submit" class="btn btn-warning" @click="modifier" >Modifier</button>
-                      <button type="submit" class="btn btn-danger" @click="supprimer" >Supprimer</button>
-                      <button type="reset" class="btn btn-secondary" @click="reset">Annuler</button>
-                    </div>
-
-                </form> 
+                              <option v-for="(item, index) in audience.places_disponible" :key="item" :value="item">
+                                  {{item.date_disponible}} {{item.heure_debut}} à {{item.heure_fin}}
+                              </option>
+                          </select>
+                          <label for="floatingSelect">Place</label>
+                          </div>
+                      </div>
+  
+                      <div class="col-md-12" v-else>
+                        <div class="form-floating mb-3">
+                          
+                          <select class="form-select" id="floatingSelect" aria-label="Autorité" required="" v-model="audience.actual_place">
+                            <option v-if="audience.actual_place" selected disabled>
+                                {{audience.actual_place["date_disponible"]}} {{audience.actual_place["heure_debut"]}} à {{audience.actual_place["heure_fin"]}}
+                            </option>
+  
+                            <option v-for="(item, index) in audience.places_disponible" :key="item" :value="item">
+                                {{item.date_disponible}} {{item.heure_debut}} à {{item.heure_fin}}
+                            </option>
+                          </select>
+                        <label for="floatingSelect">Place</label>
+                        </div>
+                      </div>
+                      
+                      <SpinnerPopup
+                        :sipnnerActivated="sipnnerActivated"
+                      />
+  
+                      <div class="text-center" v-if="audience.status === 'Validé' || audience.status === 'Reporté'">
+                        <button type="submit" class="btn btn-danger" @click="supprimer" >Supprimer</button>
+                        <button type="reset" class="btn btn-secondary" @click="reset">Annuler</button>
+                      </div>
+      
+                      <div class="text-center" v-else>
+                        <button type="submit" class="btn btn-warning" @click="modifier" >Modifier</button>
+                        <button type="submit" class="btn btn-danger" @click="supprimer" >Supprimer</button>
+                        <button type="reset" class="btn btn-secondary" @click="reset">Annuler</button>
+                      </div>
+  
+                    </form>                     
+                  </div>
+              </div>
+              
             </div>
-            
+        </div>
+      </teleport>
+    </div>
 
-          </div>
-      </div>
-    </teleport>
+    <!-- si un visiteur externe souhaite demander une audience -->
+
   </div>
 
   <div v-else-if="typeCalendrier ==='audienceAutorite' ">
@@ -426,6 +624,108 @@
     </teleport>
   </div>
 
+  <div v-else-if="typeCalendrier ==='evenementiel' && audience.typeEvenement ==='Agent' ">
+    <teleport to=".popupToShow">
+      <div v-if="showPopupAudience" class="popupShow">
+        <p  @click="togglePopupAudience"><i class="ri-close-line" style="font-size: 35px;position: fixed; margin-left: 88%;"></i></p>
+        <div class="card-body">
+          <h2 class="card-title">Détail audience agent</h2>
+          
+          <div class="row">
+
+            <div class="col-xl-4">
+    
+              <div class="card">
+                <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
+    
+                  <img src="../../assets/img/profile-img.jpg" alt="Profile" class="rounded-circle">
+                </div>
+              </div>
+    
+            </div>
+    
+            <div class="col-xl-8">
+    
+              <div class="card">
+                <div class="card-body pt-3">
+                  <!-- Bordered Tabs -->
+
+                  <div class="tab-content pt-2">
+    
+                    <div class="tab-pane fade show active profile-overview" id="profile-overview" role="tabpanel">
+                      <h5 class="card-title">Message</h5>
+                      <p class="small fst-italic">
+                        {{audience.motif}}. {{audience.dateAudience}}
+                      </p>
+    
+                      <h5 class="card-title">Détails </h5>
+    
+                      <div class="row">
+                        <div class="col-lg-3 col-md-4 label ">Nom:</div>
+                        <div class="col-lg-9 col-md-8">{{audience.nom}}</div>
+                      </div>
+    
+                      <div class="row">
+                        <div class="col-lg-3 col-md-4 label">Prénom:</div>
+                        <div class="col-lg-9 col-md-8">{{audience.prenom}}</div>
+                      </div>
+    
+    
+                      <div class="row">
+                        <div class="col-lg-3 col-md-4 label">Tél:</div>
+                        <div class="col-lg-9 col-md-8">{{audience.numero_telephone}}</div>
+                      </div>
+    
+                      <div class="row">
+                        <div class="col-lg-3 col-md-4 label">Mail:</div>
+                        <div class="col-lg-9 col-md-8">{{audience.email}}</div>
+                      </div>
+                      <div class="row">
+                        <div class="col-lg-3 col-md-4 label">Fonction:</div>
+                        <div class="col-lg-9 col-md-8">{{audience.poste_agent}}</div>
+                      </div>
+                      <div class="row">
+                        <div class="col-lg-3 col-md-4 label">Path:</div>
+                        <div class="col-lg-9 col-md-8">{{audience.path_agent}}</div>
+                      </div>
+                      <div class="row">
+                        <div class="col-lg-3 col-md-4 label">Status:</div>
+                        <div class="col-lg-9 col-md-8">
+                          <span class="badge bg-dark" v-if="audience.status === 'Reporté'">{{audience.status}}</span>
+                          <span class="badge bg-danger" v-else-if="audience.status === 'Non validé'">{{audience.status}}</span>
+                          <span class="badge bg-success" v-else-if="audience.status === 'Validé'">{{audience.status}}</span>
+                          <span class="badge bg-light text-dark" v-else>{{audience.status}}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+    
+                </div>
+                
+              </div>
+    
+            </div>
+
+            <SpinnerPopup
+              :sipnnerActivated="sipnnerActivated"
+            />
+            
+            <div class="text-center" >
+              <button type="submit" class="btn btn-success" @click="valider" v-if="audience.status === 'Non validé'" >
+                Valider
+              </button>
+              <button type="submit" class="btn btn-dark" @click="reporter" v-if="audience.status === 'Validé' || audience.status === 'Non validé'" >
+                Reporter
+              </button>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+    </teleport>
+  </div>
+
   <div v-else-if="typeCalendrier ==='evenementiel' && audience.typeEvenement ==='Autorité' ">
     <teleport to=".popupToShow">
       <div v-if="showPopupAudience" class="popupShow">
@@ -433,16 +733,26 @@
         <div class="card-body">
           <h2 class="card-title">Détail audience autorité</h2>
             <div class="row">
-              <div class="col-lg-12">
+              <div class="col-xl-4">
+    
+                <div class="card">
+                  <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
+      
+                    <img src="../../assets/img/profile-img.jpg" alt="Profile" class="rounded-circle">
+                  </div>
+                </div>
+    
+              </div>
+
+              <div class="col-xl-8">
 
                 <div class="card">
                   <div class="card-body">
                     <div class="tab-content pt-2">
       
-                      <div class="col-lg-12">
+                      <div class="tab-pane fade show active profile-overview" id="profile-overview" role="tabpanel">
                         <h5 class="card-title">Message</h5>
-                        <p class="small fst-italic">{{audience.motif}}</p>
-                        <p class="small fst-italic">{{audience.dateAudience}}</p>
+                        <p class="small fst-italic">{{audience.motif}}. {{audience.dateAudience}}</p>
       
                         <h5 class="card-title">Détails</h5>
       
@@ -506,16 +816,27 @@
         <div class="card-body">
           <h2 class="card-title">Détail entretien</h2>
             <div class="row">
-              <div class="col-12">
+
+              <div class="col-xl-4">
+      
+                <div class="card">
+                  <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
+      
+                    <img src="../../assets/img/profile-img.jpg" alt="Profile" class="rounded-circle">
+                  </div>
+                </div>
+      
+              </div>
+
+              <div class="col-xl-8">
 
                 <div class="card">
                   <div class="card-body">
                     <div class="tab-content pt-2">
       
-                      <div class="col-12">
+                      <div class="tab-pane fade show active profile-overview" id="profile-overview" role="tabpanel">
                         <h5 class="card-title">Message</h5>
-                        <p class="small fst-italic">{{audience.motif}}</p>
-                        <p class="small fst-italic">{{audience.dateAudience}}</p>
+                        <p class="small fst-italic">{{audience.motif}}. {{audience.dateAudience}}</p>
       
                         <h5 class="card-title">Détails</h5>
       
@@ -596,8 +917,10 @@
     import { actual_events_public } from '../../controllers/FrontOffice/DemandeAudience'
     import DemandeAudiencePublicController from '../../controllers/FrontOffice/DemandeAudience'
     import DemandeAudienceAutoriteAPI from '../../api/demande_audience_autorite'
+    import DemandeAudienceAgentAPI from '../../api/demande_audience_agent'
     import nonDispoAPI from '../../api/NonDispo'
     import AutoriteApi from '../../api/autorite'
+    import AgentApi from '../../api/agent'
     import EntretienApi from '../../api/entretien_stage'
     import DemandeAudiencePublicAPI from '../../api/demande_audience_public'
     import swal from 'sweetalert';
@@ -641,7 +964,9 @@
                       center: 'title',
                       right: 'dayGridMonth,timeGridWeek,timeGridDay,listDay',
                   },
-                  initialView: 'timeGridDay',
+                  // initialView: 'timeGridDay',
+                  initialView: 'timeGridWeek',
+
                   // initialEvents: this.all_actual_events,
                   weekNumbers: true,
                   dayMaxEvents: true,
@@ -662,6 +987,9 @@
               sipnnerActivated: false,
               audience: {
                   // direction: this.autorite,
+                isAgent:false,
+                login_agent: '',
+                password_agent:'',
                 autoriteReceiver:'',
                 nom:'',
                 prenom:'',  
@@ -694,6 +1022,7 @@
           // console.log(value)
           this.setEvents(value)
         },
+        
       },
 
       emits:['spinnerStatus'],
@@ -729,8 +1058,54 @@
         },
 
         async ajouter(){
+
           if(this.typeCalendrier === 'audiencePublic'){
-            const audience = {
+            if(this.audience.isAgent){
+              const data = await AgentApi.login({nom_utilisateur: this.audience.login_agent,mot_de_passe: this.audience.password_agent})
+              if(data.message){
+                swal("Echec d'authentification", `${data.message}`, "error");
+              }
+              else 
+              {
+                const audience = {
+                  id_agent: data.id_candidat,
+                  nom: data.nom,
+                  prenom: data.prenom,
+                  // poste_agent: data.poste,
+                  path_agent: data.path,
+                  // login_agent: data.login,
+                  // password_agent: data.password,
+                  // prenom: Function.initcap(this.audience.prenom), 
+                  numero_telephone: this.audience.numero_telephone,
+                  email: this.audience.email,
+                  motif: Function.specialChar(this.audience.motif),
+                  session_navigateur: this.audience.session_navigateur,
+                  date_debut: this.audience.date_debut,
+                  date_fin: this.audience.date_fin,
+                  heure_debut: this.audience.time_debut,
+                  heure_fin: this.audience.time_fin,
+                  session_navigateur: this.sessionNavigateur,
+                  id_date_heure_disponible_autorite: this.audience.id_date_heure_disponible_autorite,
+                  autoriteReceiver: this.audience.autoriteReceiver
+                }
+                this.sipnnerActivated = true
+                const response = await DemandeAudienceAgentAPI.ajouter(audience)
+                // console.log(data)
+                if(response.message){
+                  this.togglePopupAudience()
+                  this.sipnnerActivated = false
+                  swal("Audience enregistrée", `${response.message}`, "success");
+                  
+                }
+                else{
+                    this.sipnnerActivated = false
+                    swal("Audience non enregistrée", "Votre audience n'a pas été enregistrée", "error");
+                }
+                this.calendarOptions.events = await actual_events_public(this.audience.autoriteReceiver.child_id)
+              }
+            }
+            else {
+              const audience = {
                 nom: this.audience.nom, 
                 prenom: this.audience.prenom, 
                 // prenom: Function.initcap(this.audience.prenom), 
@@ -746,21 +1121,22 @@
                 session_navigateur: this.sessionNavigateur,
                 id_date_heure_disponible_autorite: this.audience.id_date_heure_disponible_autorite,
                 autoriteReceiver: this.audience.autoriteReceiver
+              }
+              // console.log(audience)
+              this.sipnnerActivated = true
+              const response = await DemandeAudiencePublicController.ajouter(audience)
+              if(response.message){
+                  this.togglePopupAudience()
+                  this.sipnnerActivated = false
+                  swal("Audience enregistrée", `${response.message}`, "success");
+                  
+              }
+              else{
+                  this.sipnnerActivated = false
+                  swal("Audience non enregistrée", "Votre audience n'a pas été enregistrée", "error");
+              }
+              this.calendarOptions.events = await actual_events_public(this.audience.autoriteReceiver.child_id)
             }
-            // console.log(audience)
-            this.sipnnerActivated = true
-            const response = await DemandeAudiencePublicController.ajouter(audience)
-            if(response.message){
-                this.togglePopupAudience()
-                this.sipnnerActivated = false
-                swal("Audience enregistrée", `${response.message}`, "success");
-                
-            }
-            else{
-                this.sipnnerActivated = false
-                swal("Audience non enregistrée", "Votre audience n'a pas été enregistrée", "error");
-            }
-            this.calendarOptions.events = await actual_events_public(this.audience.autoriteReceiver.child_id)
           }
           else if(this.autoriteSender && this.typeCalendrier === 'audienceAutorite'){
             
@@ -802,35 +1178,77 @@
 
         async modifier(){
           if(this.typeCalendrier === 'audiencePublic'){
-            const audience = {
-              id_audience : this.audience.id,
-              nom: this.audience.nom, 
-              prenom: Function.initcap(this.audience.prenom), 
-              cin: this.audience.cin,
-              numero_telephone: this.audience.numero_telephone,
-              email: this.audience.email,
-              date_debut: this.audience.actual_place.date_disponible,
-              date_fin: this.audience.actual_place.date_disponible,
-              heure_debut: this.audience.actual_place.heure_debut,
-              heure_fin: this.audience.actual_place.heure_fin,
-              motif: Function.specialChar(this.audience.motif),
-              id_date_heure_disponible : this.audience.id_date_heure_disponible,
-              id_date_heure_disponible_autorite : this.audience.id_date_heure_disponible_autorite,
-              id_dm_aud_public_heure_dispo : this.audience.id_dm_aud_public_heure_dispo,
-              id_date_heure_disponible_autorite: this.audience.id_date_heure_disponible_autorite,
-              autoriteReceiver: this.audience.autoriteReceiver
+            if(this.audience.id_agent > 0){
+              let data = await AgentApi.login({nom_utilisateur: this.audience.login_agent,mot_de_passe: this.audience.password_agent})
+              if(data.message){
+                swal("Echec d'authentification", `${data.message}`, "error");
+              }
+              else if(data.id_candidat != this.audience.id_agent) {
+                swal("Echec d'authentification", `Vous n'etes pas l'agent exact`, "error");
+              }
+              else {
+                const audience = {
+                  id_audience : this.audience.id,
+                  nom: data.nom, 
+                  path_agent: data.path,
+                  prenom: data.prenom, 
 
-            }
-            // console.log(audience)
-            this.sipnnerActivated = true
-            const response = await DemandeAudiencePublicController.modifier(audience)
-            if(response.message){
-              this.togglePopupAudience()
-              this.sipnnerActivated = false
-              swal("Audience modifiée", `${response.message}`, "success");
+                  numero_telephone: this.audience.numero_telephone,
+                  email: this.audience.email,
+                  date_debut: this.audience.actual_place.date_disponible,
+                  date_fin: this.audience.actual_place.date_disponible,
+                  heure_debut: this.audience.actual_place.heure_debut,
+                  heure_fin: this.audience.actual_place.heure_fin,
+                  motif: Function.specialChar(this.audience.motif),
+                  id_date_heure_disponible : this.audience.id_date_heure_disponible,
+                  id_date_heure_disponible_autorite : this.audience.actual_place.id_date_heure_disponible_autorite,
+                  id_dm_aud_public_heure_dispo : this.audience.id_dm_aud_public_heure_dispo,
+                  autoriteReceiver: this.audience.autoriteReceiver
+
+                }
+                  // console.log(audience)
+                this.sipnnerActivated = true
+                const response = await DemandeAudienceAgentAPI.modifier(audience)
+                if(response.message){
+                  this.togglePopupAudience()
+                  this.sipnnerActivated = false
+                  swal("Audience modifiée", `${response.message}`, "success");
+                }
+                else{
+                  swal("Audience n'a pas modifiée", "Votre audience n'a pas été modifiée", "error");
+                }
+              }
             }
             else{
-              swal("Audience n'a pas modifiée", "Votre audience n'a pas été modifiée", "error");
+              const audience = {
+                id_audience : this.audience.id,
+                nom: this.audience.nom, 
+                prenom: Function.initcap(this.audience.prenom), 
+                cin: this.audience.cin,
+                numero_telephone: this.audience.numero_telephone,
+                email: this.audience.email,
+                date_debut: this.audience.actual_place.date_disponible,
+                date_fin: this.audience.actual_place.date_disponible,
+                heure_debut: this.audience.actual_place.heure_debut,
+                heure_fin: this.audience.actual_place.heure_fin,
+                motif: Function.specialChar(this.audience.motif),
+                id_date_heure_disponible : this.audience.id_date_heure_disponible,
+                id_date_heure_disponible_autorite : this.audience.actual_place.id_date_heure_disponible_autorite,
+                id_dm_aud_public_heure_dispo : this.audience.id_dm_aud_public_heure_dispo,
+                autoriteReceiver: this.audience.autoriteReceiver
+
+              }
+              // console.log(audience)
+              this.sipnnerActivated = true
+              const response = await DemandeAudiencePublicController.modifier(audience)
+              if(response.message){
+                this.togglePopupAudience()
+                this.sipnnerActivated = false
+                swal("Audience modifiée", `${response.message}`, "success");
+              }
+              else{
+                swal("Audience n'a pas modifiée", "Votre audience n'a pas été modifiée", "error");
+              }
             }
             this.calendarOptions.events = await actual_events_public(this.audience.autoriteReceiver.child_id)
           }
@@ -884,14 +1302,38 @@
 
         async supprimer(){
           if(this.typeCalendrier === 'audiencePublic'){
-            this.togglePopupAudience()
-            const response = await DemandeAudiencePublicController.supprimer(this.audience.id)
-            swal(
-                'Audience supprimée',
-                `Votre audience a bien été supprimée`,
-                'success'
-            )
-            this.calendarOptions.events = await actual_events_public(this.audience.autoriteReceiver.child_id)
+            if(this.audience.id_agent > 0){
+              let data = await AgentApi.login({nom_utilisateur: this.audience.login_agent,mot_de_passe: this.audience.password_agent})
+              if(data.id_candidat == this.audience.id_agent){
+                this.togglePopupAudience()
+                const response = await DemandeAudiencePublicController.supprimer(this.audience.id)
+                swal(
+                    'Audience supprimée',
+                    `Votre audience a bien été supprimée`,
+                    'success'
+                )
+                this.calendarOptions.events = await actual_events_public(this.audience.autoriteReceiver.child_id)         
+              }
+              else if (data.message){
+                swal(
+                    'Audience supprimée',
+                    `${data.message}`,
+                    'error'
+                )
+              }
+              else {
+                swal("Echec d'authentification", `Vous n'etes pas l'agent exact`, "error");
+              }
+            }
+            else {
+              const response = await DemandeAudiencePublicController.supprimer(this.audience.id)
+              swal(
+                  'Audience supprimée',
+                  `Votre audience a bien été supprimée`,
+                  'success'
+              )
+              this.calendarOptions.events = await actual_events_public(this.audience.autoriteReceiver.child_id)
+            }           
           }
           else if(this.typeCalendrier === 'audienceAutorite'){
             this.togglePopupAudience()
@@ -920,6 +1362,41 @@
               heure_debut: this.audience.time_debut,
               heure_fin: this.audience.time_fin,
               id_autorite: this.autoriteSender.child_id,
+              type_audience: this.audience.typeEvenement,
+              autorite: {
+                id_autorite: this.autoriteSender.child_id,
+                intitule: this.autoriteSender.child_libelle,
+                intitule_code: this.autoriteSender.sigle
+              },
+              envoyeur: {
+                nom: this.audience.nom,
+                prenom: this.audience.prenom,
+                addresse_electronique: this.audience.email,
+                motif: this.audience.motif
+              }
+            }
+            this.sipnnerActivated = true
+            const response = await DemandeAudiencePublicAPI.valider_public(arg)
+            if(response.message){
+                this.togglePopupAudience()
+                this.sipnnerActivated = false
+                swal("Audience validée", `${response.message}`, "success");
+            }
+            else{
+                swal("Audience non validée", "Votre audience n'a pas été validée", "error");
+            }
+            this.calendarOptions.events = await AutoriteApi.calendrier({id_autorite: this.autoriteSender.child_id})
+          }
+          else if(this.typeCalendrier ==='evenementiel' && this.audience.typeEvenement ==='Agent'){
+            const arg = {
+              id_dm_aud_public_date_heure_dispo: this.audience.id,
+              id_audience: this.audience.id_evenement,
+              date_debut: this.audience.date_debut,
+              date_fin: this.audience.date_fin,
+              heure_debut: this.audience.time_debut,
+              heure_fin: this.audience.time_fin,
+              id_autorite: this.autoriteSender.child_id,
+              type_audience: this.audience.typeEvenement,
               autorite: {
                 id_autorite: this.autoriteSender.child_id,
                 intitule: this.autoriteSender.child_libelle,
@@ -968,6 +1445,34 @@
             intitule_code: this.autoriteSender.sigle
           }
           if(this.typeCalendrier ==='evenementiel' && this.audience.typeEvenement ==='Public'){
+            const arg = {
+              id_dm_aud_public_date_heure_dispo: this.audience.id,
+              id_audience: this.audience.id_evenement,
+              date_debut: this.audience.date_debut,
+              date_fin: this.audience.date_fin,
+              heure_debut: this.audience.time_debut,
+              heure_fin: this.audience.time_fin,
+              autorite: autoriteS,
+              envoyeur: {
+                nom: this.audience.nom,
+                prenom: this.audience.prenom,
+                addresse_electronique: this.audience.email,
+                motif: this.audience.motif
+              }
+            }
+            this.sipnnerActivated = true
+            const response = await DemandeAudiencePublicAPI.reporter_public_plus_tard(arg)
+            if(response.message){
+                this.togglePopupAudience()
+                this.sipnnerActivated = false
+                swal("Audience reportée", `${response.message}`, "success");
+            }
+            else{
+                swal("Audience non enregistrée", "Votre audience n'a pas été enregistrée", "error");
+            }
+            this.calendarOptions.events = await AutoriteApi.calendrier({id_autorite: this.autoriteSender.child_id})
+          }
+          else if(this.typeCalendrier ==='evenementiel' && this.audience.typeEvenement ==='Agent'){
             const arg = {
               id_dm_aud_public_date_heure_dispo: this.audience.id,
               id_audience: this.audience.id_evenement,
@@ -1099,6 +1604,15 @@
               motif: event.event.extendedProps.motif
             }
           }
+          else if(type === 'Agent'){
+            this.evenement.envoyeur = {
+              nom: event.event.extendedProps.nom,
+              prenom: event.event.extendedProps.prenom,
+              addresse_electronique: event.event.extendedProps.email,
+              numero_telephone: event.event.extendedProps.numero_telephone,
+              motif: event.event.extendedProps.motif
+            }
+          }
           else if(type === 'Autorité'){
             this.evenement.envoyeur = {
               intitule: event.event.extendedProps.child_libelle,
@@ -1126,6 +1640,27 @@
           }
 
           else if(type === 'Public'){
+            this.evenement.id_dm_aud_public_date_heure_dispo = event.event.id
+            this.evenement.id_audience = event.event.extendedProps.id_evenement
+            if(status === 'Non validé'){
+              // this.$emit('spinnerStatus', true)
+              const response = await DemandeAudiencePublicAPI.valider_public(this.evenement)
+            }
+            else if (status === 'Validé'){
+              // this.$emit('spinnerStatus', true)
+              const response = await DemandeAudiencePublicAPI.reporter_public_maintenant(this.evenement)
+            }
+            else if (status === 'Reporté'){
+              // this.$emit('spinnerStatus', true)
+              const response = await DemandeAudiencePublicAPI.revalider_public(this.evenement)
+            }
+            if(this.autoriteSender && this.typeCalendrier === 'evenementiel'){
+              const id = this.autoriteSender.child_id
+              this.calendarOptions.events = await AutoriteApi.calendrier({id_autorite: id})
+            }
+
+          }
+          else if(type === 'Agent'){
             this.evenement.id_dm_aud_public_date_heure_dispo = event.event.id
             this.evenement.id_audience = event.event.extendedProps.id_evenement
             if(status === 'Non validé'){
@@ -1218,6 +1753,15 @@
               motif: event.event.extendedProps.motif
             }
           }
+          else if(type === 'Agent'){
+            this.evenement.envoyeur = {
+              nom: event.event.extendedProps.nom,
+              prenom: event.event.extendedProps.prenom,
+              addresse_electronique: event.event.extendedProps.email,
+              numero_telephone: event.event.extendedProps.numero_telephone,
+              motif: event.event.extendedProps.motif
+            }
+          }
           else if(type === 'Autorité') {
             this.evenement.envoyeur = {
               intitule: event.event.extendedProps.child_libelle,
@@ -1242,6 +1786,27 @@
           }
 
           else if(type === 'Public'){
+            this.evenement.id_dm_aud_public_date_heure_dispo = event.event.id
+            this.evenement.id_audience = event.event.extendedProps.id_evenement
+            if(status === 'Non validé'){
+              // console.log(event.event.extendedProps)
+              // this.$emit('spinnerStatus', true)
+              const response = await DemandeAudiencePublicAPI.valider_public(this.evenement)
+            }
+            else if (status === 'Validé'){
+              // this.$emit('spinnerStatus', true)
+              const response = await DemandeAudiencePublicAPI.reporter_public_maintenant(this.evenement)
+            }
+            else if (status === 'Reporté'){
+              // this.$emit('spinnerStatus', true)
+              const response = await DemandeAudiencePublicAPI.revalider_public(this.evenement)
+            }
+            if(this.autoriteSender && this.typeCalendrier === 'evenementiel'){
+              const id = this.autoriteSender.child_id
+              this.calendarOptions.events = await AutoriteApi.calendrier({id_autorite: id})
+            }
+          }
+          else if(type === 'Agent'){
             this.evenement.id_dm_aud_public_date_heure_dispo = event.event.id
             this.evenement.id_audience = event.event.extendedProps.id_evenement
             if(status === 'Non validé'){
@@ -1310,8 +1875,10 @@
 
           const start_date_time = Function.format_date_time(event.event.start)
           const end_date_time = Function.format_date_time(event.event.end)  
-          
+
           // evenement
+          this.audience.isAgent = false
+          this.audience.id_agent = event.event.extendedProps.id_agent
           this.audience.nom = event.event.extendedProps.nom, 
           this.audience.prenom = event.event.extendedProps.prenom, 
           this.audience.cin = event.event.extendedProps.cin,
@@ -1365,6 +1932,12 @@
             this.evenement.id_audience = event.event.extendedProps.id_evenement
             this.evenement.motif = event.event.extendedProps.motif
 
+          }
+
+          if(this.typeCalendrier === 'evenementiel' && this.audience.typeEvenement ==='Agent'){
+            this.audience.poste_agent = event.event.extendedProps.poste
+            this.audience.path_agent = event.event.extendedProps.path
+            console.log('Agent')
           }
 
           if(this.audience.id !== ''){
@@ -1461,6 +2034,10 @@
               infos: 'Audience autorité'
             },
             {
+              color: '#993300',
+              infos: 'Audience agent'
+            },
+            {
               color: '#0AA913',
               infos: 'Audience public'
             },
@@ -1471,7 +2048,8 @@
             {
               color: '#FFA500',
               infos: 'Entretien stagiaire'
-            }
+            },
+            
             
           ]
         }
