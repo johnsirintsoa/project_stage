@@ -18,6 +18,7 @@ const audience_agent_route = require('./routes/audience_agent')
 const autorite_route = require('./routes/autorite')
 const entretien_route = require('./routes/entretien_stage')
 const agent_route = require('./routes/agent')
+const chart_route = require('./routes/chart')
 // const audience_pas_dispo = require('./routes/audience_pas_dispo')
 // const notification_route = require('./routes/notification')
 const nonDispo = require('./routes/NonDispo')
@@ -65,6 +66,8 @@ app.use('/api/nonDispo',nonDispo)
 app.use('/api/evenement',evenement_route)
 app.use('/api/token', token_route)
 app.use('/api/agent',agent_route)
+app.use('/api/chart',chart_route)
+
 
 // app.use('/api/notification',notification_route)
 

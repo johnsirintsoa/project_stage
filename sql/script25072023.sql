@@ -94,3 +94,95 @@ AND
 u.login = '${req.body.nom_utilisateur}'
 and 
 u.password = (SELECT AES_ENCRYPT('${req.body.mot_de_passe}','lHommeEstNaturellementBonCEestLaSocieteQuiLeCorrompt-Rousseau'));
+
+
+
+-- Tableau de bord 
+-- Boite à doléance
+select 
+'Janvier' as x,  count(IF(MONTH(d.date_publication) = 1,1,NULL)) 'y'
+from 
+stage5.doleance d 
+where d.id_autorite = 2961 and year(d.date_publication) = '2023' 
+
+UNION
+select 
+'Février' as x,  count(IF(MONTH(d.date_publication) = 2,1,NULL)) 'y'
+from 
+stage5.doleance d 
+where d.id_autorite = 2961 and year(d.date_publication) = '2023' 
+
+UNION
+select
+'Mars' as x,  count(IF(MONTH(d.date_publication) = 3,1,NULL)) 'y'
+from 
+stage5.doleance d 
+where d.id_autorite = 2961 and year(d.date_publication) = '2023' 
+
+UNION 
+select 
+'Avril' as x,  count(IF(MONTH(d.date_publication) = 4,1,NULL)) 'y'
+from 
+stage5.doleance d 
+where d.id_autorite = 2961 and year(d.date_publication) = '2023' 
+
+UNION
+select 
+'Mai' as x,  count(IF(MONTH(d.date_publication) = 5,1,NULL)) 'y'
+from 
+stage5.doleance d 
+where d.id_autorite = 2961 and year(d.date_publication) = '2023' 
+
+UNION
+select 
+'Juin' as x,  count(IF(MONTH(d.date_publication) = 6,1,NULL)) 'y'
+from 
+stage5.doleance d 
+where d.id_autorite = 2961 and year(d.date_publication) = '2023'
+
+UNION 
+select 
+'Juillet' as x,  count(IF(MONTH(d.date_publication) = 7,1,NULL)) 'y'
+from 
+stage5.doleance d 
+where d.id_autorite = 2961 and year(d.date_publication) = '2023' 
+
+UNION
+select 
+'Aout' as x,  count(IF(MONTH(d.date_publication) = 8,1,NULL)) 'y'
+from 
+stage5.doleance d 
+where d.id_autorite = 2961 and year(d.date_publication) = '2023' 
+
+UNION
+select 
+'Septembre' as x,  count(IF(MONTH(d.date_publication) = 9,1,NULL)) 'y'
+from 
+stage5.doleance d 
+where d.id_autorite = 2961 and year(d.date_publication) = '2023' 
+
+UNION 
+select
+'Octobre' as x,  count(IF(MONTH(d.date_publication) = 10,1,NULL)) 'y'
+from 
+stage5.doleance d 
+where d.id_autorite = 2961 and year(d.date_publication) = '2023' 
+
+UNION
+select
+'Novembre' as x,  count(IF(MONTH(d.date_publication) = 11,1,NULL)) 'y'
+from 
+stage5.doleance d 
+where d.id_autorite = 2961 and year(d.date_publication) = '2023' 
+
+UNION 
+select
+'Décembre' as x,  count(IF(MONTH(d.date_publication) = 12,1,NULL)) 'y'
+from 
+stage5.doleance d 
+where d.id_autorite = 2961 and year(d.date_publication) = '2023' 
+
+select year(current_time);
+
+
+select id_autorite,MONTH(date_publication) from stage5.doleance
