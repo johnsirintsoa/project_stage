@@ -182,6 +182,18 @@ from
 stage5.doleance d 
 where d.id_autorite = 2961 and year(d.date_publication) = '2023' 
 
+
+-- Tableau de bord
+-- Demande de stage
+
+select 
+d.nom_domaine as y,
+IF(ds.id = NULL ,0,count(ds.id)) as x
+from stage5.domaine d 
+LEFT JOIN stage5.demande_stage ds on d.id = ds.id_domaine
+WHERE (ds.id_autorite_enfant =  2961 and year(ds.date_creation) = (SELECT YEAR(CURRENT_DATE()))) or ds.id is null
+group by d.id order by x;
+
 select year(current_time);
 
 

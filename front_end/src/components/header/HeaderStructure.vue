@@ -61,6 +61,13 @@
           </RouterLink>
         </li>
 
+        <li class="nav-item">
+          <RouterLink to="/back-office/tableau-bord" class="nav-link collapsed">
+            <i class="bi bi-grid"></i>
+            <span>Tableau de bord</span>
+          </RouterLink>
+        </li>
+
         <li class="nav-item" >
           <RouterLink to="/back-office/boite-a-doleance" class="nav-link collapsed" >
             <i class="bi bi-file-earmark-text"></i>
@@ -113,6 +120,11 @@
             type:Boolean
           }
         },
+        data() {
+          return {
+            autorite:''
+          }
+        },
         emits:[
           'structure'
         ],
@@ -126,9 +138,9 @@
                 //   window.location.reload()
                 // }, 200)
             }
-            // else {
-            //   this.$router.push({path: '/login'});
-            // }
+            else {
+              this.$router.push({path: '/login'});
+            }
         },
         mounted() {
           

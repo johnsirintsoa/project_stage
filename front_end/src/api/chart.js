@@ -17,5 +17,12 @@ export default class chartAPI{
         return res.data
     }
 
+    static async dashboard_stage(arg){
+        const url = dom.domaineBackEnd(route1,'/barre/stage')
+        const res = await axios.post(url,arg)
+        // const res = await axios.post(url.concat('/login'),arg)
+        return res.data
+    }
+
 
 }

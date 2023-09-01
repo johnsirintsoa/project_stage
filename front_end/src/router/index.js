@@ -94,6 +94,11 @@ const router = createRouter({
       name: 'back-office-detail-demande-stage',
       component: () => import('../views/back&middle/DetailDemandeStage.vue')
     },
+    {
+      path: '/back-office/tableau-bord',
+      name: 'dashboard',
+      component: () => import('../views/back&middle/Dashboard.vue')
+    }
   ],
   linkActiveClass: 'router-view-active-link'
 })
