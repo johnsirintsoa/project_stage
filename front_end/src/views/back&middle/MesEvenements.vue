@@ -8,15 +8,17 @@
     <HeaderStructure
         @structure="getStructure"
         :sipnnerActivated="spinner"
+        @setCheckbox="getCheckBox"
     />
     <main id="main" class="main">
-        <h1>Mes évènements</h1>
+        <h1>Mon calendrier</h1>
         <section class="section">
             <div class="row">
                 <Calendrier
                     :autoriteSender="autorite"
                     typeCalendrier="evenementiel"
                     @spinnerStatus="getSpinnerStatus"
+                    :masqueEvenementFini="checkboxStatus"
                 />
                 <!-- <div  class='demo-app' >
                     <div class='demo-app-main'>
@@ -28,9 +30,9 @@
         </section>
 
     </main>
-    <FooterBack 
+    <!-- <FooterBack 
         :styleFooterP="styleFooterP"
-    />
+    /> -->
 </template>
 
 <script>
@@ -47,6 +49,7 @@
         data() {
             return {
                 autorite:{},
+                checkboxStatus: true,
                 spinner: false
             }
         },
@@ -57,7 +60,14 @@
             getSpinnerStatus(value){
                 this.spinner = value
                 // console.log(value)
-            }
+            },
+            getCheckBox(value){
+                this.checkboxStatus = value
+                // console.log(value)
+            },
+            // getMonCalendrierData(value){
+            //     console.log(value)
+            // }
         },
         computed:{
             styleFooterP(){

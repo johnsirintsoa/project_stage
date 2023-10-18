@@ -73,7 +73,7 @@ export default {
                 {
                     id: 2,
                     className: 'doleance',
-                    linkName: 'Boite à doléance',
+                    linkName: 'Boîte à doléance',
                     icon: 'bi bi-file-earmark-text',
                     routerLink: '/boite-a-doleance'
                 },

@@ -198,3 +198,564 @@ select year(current_time);
 
 
 select id_autorite,MONTH(date_publication) from stage5.doleance
+
+
+
+
+
+
+
+
+
+-- Calendrier autorite 17 octobre 2023
+CREATE  PROCEDURE `calendrier_autorite`(IN id_autorite INT)
+BEGIN
+	set @id_autorite = id_autorite;
+
+	SELECT 
+	daadhd.id as id,
+	dhda.id as id_date_heure_disponible_autorite,
+	dhd.id as id_date_heure_disponible,
+
+	CONCAT(daadhd.date_debut,'T',daadhd.heure_debut) as start,
+	CONCAT(daadhd.date_fin,'T',daadhd.heure_fin) as end,
+	daa.id as id_evenement,
+	'Audience autorité' as title,
+	daa.motif as motif,
+	daa.child_libelle as child_libelle,
+	daa.sigle as sigle,
+	daadhd.date_debut as date_debut,
+	daadhd.date_fin as date_fin,
+	daadhd.heure_debut as heure_debut,
+	daadhd.heure_fin as heure_fin,
+	CASE
+		WHEN daa.action = 0 THEN 'Non validé'
+		WHEN daa.action = 1 THEN 'Validé'
+		ELSE 'Reporté'
+	END AS status_audience,
+	c.nom,
+	c.prenom,
+	daa.numero_telephone as numero_telephone,
+	'' cin,
+	daa.email as email,
+	'#FF0000' color,
+	CASE
+		WHEN daa.action = 0 THEN '#35AF11'
+		WHEN daa.action = 1 THEN '#E61212'
+		ELSE '#000000'
+	END AS color_status,
+	'Autorité' type_audience,
+	c.poste as poste,
+	ts.path as path,
+	true as editable
+	FROM dm_aud_autorite_date_heure_dispo daadhd
+	LEFT join date_heure_disponible_autorite dhda on daadhd.id_date_heure_disponible_autorite = dhda.id
+	LEFT JOIN date_heure_disponible dhd on dhda.id_date_heure_disponible = dhd.id
+	LEFT JOIN demande_audience_autorite daa on daadhd.id_dm_aud_autorite = daa.id
+	LEFT JOIN rohi.t_structure ts on daa.id_autorite_enfant_sender = ts.child_id
+	LEFT JOIN rohi.candidat c on ts.premier_responsable_id = c.id
+	where dhd.date_disponible >= (SELECT FIRST_DATE_OF_MONTH(CURDATE())) and dhda.id_autorite = @id_autorite
+	GROUP by daadhd.id_dm_aud_autorite
+
+	UNION
+	
+	-- Demande audience public and agent
+	SELECT 
+	dapdhd.id,
+	dhda.id as id_date_heure_disponible_autorite,
+	dhd.id as id_date_heure_disponible,
+
+	CONCAT(dapdhd.date_debut,'T',dapdhd.heure_debut) as start,
+	CONCAT(dapdhd.date_fin,'T',dapdhd.heure_fin) as end,
+	dap.id as id_evenement,
+	IF(dap.id_agent>0,"Audience agent","Audience public") as title,
+	dap.motif as motif,
+	IF(dap.id_agent>0, ts.child_libelle, '' ) as child_libelle,
+	IF(dap.id_agent>0, ts.sigle, '' ) as sigle,
+	dapdhd.date_debut as date_debut,
+	dapdhd.date_fin as date_fin,
+	dapdhd.heure_debut as heure_debut,
+	dapdhd.heure_fin as heure_fin,
+	CASE
+		WHEN dap.action = 0 THEN 'Non validé'
+		WHEN dap.action = 1 THEN 'Validé'
+		ELSE 'Reporté'
+	END AS status_audience,
+	IF(dap.id_agent>0,c.nom,dap.nom) as nom,
+	IF(dap.id_agent>0,c.prenom,dap.prenom)  as prenom,
+	dap.numero_telephone as numero_telephone,
+	dap.cin as cin,
+	dap.email as email,
+	IF(dap.id_agent>0,"#532006","#008000") color,
+	CASE
+		WHEN dap.action = 0 THEN '#35AF11'
+		WHEN dap.action = 1 THEN '#E61212'
+		ELSE '#000000'
+	END AS color_status,
+	IF(dap.id_agent>0,"Agent","Public") as type_audience,
+	
+	IF(dap.id_agent>0, IFNULL(c.poste,'Agent'),'') as poste,
+	IF(dap.id_agent>0,ts.path,'')as path,
+	true AS editable
+	FROM stage5.dm_aud_public_date_heure_dispo dapdhd
+	LEFT JOIN date_heure_disponible_autorite dhda on dapdhd.id_date_heure_disponible_autorite = dhda.id
+	LEFT JOIN date_heure_disponible dhd on dhda.id_date_heure_disponible = dhd.id
+	LEFT JOIN demande_audience_public dap on dapdhd.id_aud_public = dap.id
+	LEFT JOIN rohi.candidat c on dap.id_agent = c.id
+	LEFT JOIN rohi.t_structure ts on c.structureId = ts.child_id
+	WHERE dhd.date_disponible >= (SELECT FIRST_DATE_OF_MONTH(CURDATE())) and dhda.id_autorite = @id_autorite
+	GROUP by dapdhd.id_aud_public
+	
+	UNION
+	
+	-- Demande entretien stage
+
+	select
+	eds.id,
+	dhda.id as id_date_heure_disponible_autorite,
+	dhd.id as id_date_heure_disponible,
+
+	CONCAT(eds.date_debut,'T',eds.heure_debut) as start,
+	CONCAT(eds.date_fin,'T',eds.heure_fin) as end,
+	ds.id as id_evenement,
+	'Entretien' as title,
+	CONCAT('Entretien de ',ds.nom,' ',ds.prenom) as motif,
+	'' child_libelle,
+	'' sigle,
+	eds.date_debut as date_debut,
+	eds.date_fin as date_fin,
+	eds.heure_debut as heure_debut,
+	eds.heure_fin as heure_fin,
+	CASE 
+        when eds.id IS NULL THEN 'Non validé'
+		when ds.action = 1 and eds.id IS NOT NULL THEN 'Validé'
+		when ds.action = 2 and eds.id IS NOT NULL THEN 'Reporté'
+        ELSE 'Aucune'
+    END as status_audience,
+	ds.nom as nom,
+	ds.prenom as prenom,
+	ds.telephone as numero_telephone,
+	ds.cin as cin,
+	ds.e_mail as email,
+	'#FFA500' color,
+	'#FFA500' color_status,
+	'Entretien' type_audience,
+	
+	'' poste,
+	'' path,
+
+	true AS editable
+	from entretien_demande_stage eds
+	JOIN date_heure_disponible_autorite dhda on eds.id_date_heure_disponible_autorite = dhda.id
+	JOIN date_heure_disponible dhd on dhda.id_date_heure_disponible = dhd.id
+	JOIN demande_stage ds on eds.id_demande_stage = ds.id
+	where dhd.date_disponible >= (SELECT FIRST_DATE_OF_MONTH(CURDATE())) and dhda.id_autorite = @id_autorite
+	group by ds.id
+
+	UNION
+	
+	select
+	pd.id as id,
+	'' id_date_heure_disponible_autorite,
+	'' id_date_heure_disponible,
+
+	CONCAT(dhnda.date_debut,'T',dhnda.heure_debut) as start,
+	CONCAT(dhnda.date_fin,'T',dhnda.heure_fin) as end,
+	dhnda.id id_evenement,
+	'Pas disponible' as title,
+	'' motif,
+	'' child_libelle,
+	'' sigle,
+	dhnda.date_debut as date_debut,
+	dhnda.date_fin as date_fin,
+	dhnda.heure_debut as heure_debut,
+	dhnda.heure_fin as heure_fin,
+	'Pas disponible' status_audience,
+	'' nom,
+	'' prenom,
+	'' numero_telephone,
+	'' cin,
+	'' email,
+	'#000000' color,
+	'' color_status,
+	'Pas disponible' type_audience,
+	'' poste,
+	'' path,
+	 true editable
+	from date_heure_non_disponible_autorite dhnda
+	JOIN pas_disponible pd on dhnda.id = pd.id_date_heure_non_disponible_autorite
+	JOIN date_heure_disponible_autorite dhda on pd.id_date_heure_disponible_autorite = dhda.id
+	JOIN date_heure_disponible dhd on dhda.id_date_heure_disponible = dhd.id
+	where dhd.date_disponible >= (SELECT FIRST_DATE_OF_MONTH(CURDATE())) and dhda.id_autorite = @id_autorite
+	GROUP by dhnda.id;
+END
+
+-- Calendrier autorité 18 octobre 2023
+CREATE  PROCEDURE `calendrier_autorite`(IN id_autorite INT, IN masque_event_ended TINYINT)
+BEGIN
+	set @id_autorite = id_autorite;
+	
+	IF masque_event_ended IS TRUE THEN
+		SELECT 
+		daadhd.id as id,
+		dhda.id as id_date_heure_disponible_autorite,
+		dhd.id as id_date_heure_disponible,
+	
+		CONCAT(daadhd.date_debut,'T',daadhd.heure_debut) as start,
+		CONCAT(daadhd.date_fin,'T',daadhd.heure_fin) as end,
+		daa.id as id_evenement,
+		'Audience autorité' as title,
+		daa.motif as motif,
+		daa.child_libelle as child_libelle,
+		daa.sigle as sigle,
+		daadhd.date_debut as date_debut,
+		daadhd.date_fin as date_fin,
+		daadhd.heure_debut as heure_debut,
+		daadhd.heure_fin as heure_fin,
+		CASE
+			WHEN daa.action = 0 THEN 'Non validé'
+			WHEN daa.action = 1 THEN 'Validé'
+			ELSE 'Reporté'
+		END AS status_audience,
+		c.nom,
+		c.prenom,
+		daa.numero_telephone as numero_telephone,
+		'' cin,
+		daa.email as email,
+		'#FF0000' color,
+		CASE
+			WHEN daa.action = 0 THEN '#35AF11'
+			WHEN daa.action = 1 THEN '#E61212'
+			ELSE '#000000'
+		END AS color_status,
+		'Autorité' type_audience,
+		c.poste as poste,
+		ts.path as path,
+		daa.est_termine,
+		true as editable
+		FROM dm_aud_autorite_date_heure_dispo daadhd
+		LEFT join date_heure_disponible_autorite dhda on daadhd.id_date_heure_disponible_autorite = dhda.id
+		LEFT JOIN date_heure_disponible dhd on dhda.id_date_heure_disponible = dhd.id
+		LEFT JOIN demande_audience_autorite daa on daadhd.id_dm_aud_autorite = daa.id
+		LEFT JOIN rohi.t_structure ts on daa.id_autorite_enfant_sender = ts.child_id
+		LEFT JOIN rohi.candidat c on ts.premier_responsable_id = c.id
+		where dhd.date_disponible >= (SELECT FIRST_DATE_OF_MONTH(CURDATE())) and dhda.id_autorite = @id_autorite and daa.est_termine is false
+		GROUP by daadhd.id_dm_aud_autorite
+	
+		UNION
+		
+		-- Demande audience public and agent
+		SELECT 
+		dapdhd.id,
+		dhda.id as id_date_heure_disponible_autorite,
+		dhd.id as id_date_heure_disponible,
+	
+		CONCAT(dapdhd.date_debut,'T',dapdhd.heure_debut) as start,
+		CONCAT(dapdhd.date_fin,'T',dapdhd.heure_fin) as end,
+		dap.id as id_evenement,
+		IF(dap.id_agent>0,"Audience agent","Audience public") as title,
+		dap.motif as motif,
+		IF(dap.id_agent>0, ts.child_libelle, '' ) as child_libelle,
+		IF(dap.id_agent>0, ts.sigle, '' ) as sigle,
+		dapdhd.date_debut as date_debut,
+		dapdhd.date_fin as date_fin,
+		dapdhd.heure_debut as heure_debut,
+		dapdhd.heure_fin as heure_fin,
+		CASE
+			WHEN dap.action = 0 THEN 'Non validé'
+			WHEN dap.action = 1 THEN 'Validé'
+			ELSE 'Reporté'
+		END AS status_audience,
+		IF(dap.id_agent>0,c.nom,dap.nom) as nom,
+		IF(dap.id_agent>0,c.prenom,dap.prenom)  as prenom,
+		dap.numero_telephone as numero_telephone,
+		dap.cin as cin,
+		dap.email as email,
+		IF(dap.id_agent>0,"#532006","#008000") color,
+		CASE
+			WHEN dap.action = 0 THEN '#35AF11'
+			WHEN dap.action = 1 THEN '#E61212'
+			ELSE '#000000'
+		END AS color_status,
+		IF(dap.id_agent>0,"Agent","Public") as type_audience,
+		
+		IF(dap.id_agent>0, IFNULL(c.poste,'Agent'),'') as poste,
+		IF(dap.id_agent>0,ts.path,'')as path,
+		dap.est_termine,
+		true AS editable
+		FROM stage5.dm_aud_public_date_heure_dispo dapdhd
+		LEFT JOIN date_heure_disponible_autorite dhda on dapdhd.id_date_heure_disponible_autorite = dhda.id
+		LEFT JOIN date_heure_disponible dhd on dhda.id_date_heure_disponible = dhd.id
+		LEFT JOIN demande_audience_public dap on dapdhd.id_aud_public = dap.id
+		LEFT JOIN rohi.candidat c on dap.id_agent = c.id
+		LEFT JOIN rohi.t_structure ts on c.structureId = ts.child_id
+		WHERE dhd.date_disponible >= (SELECT FIRST_DATE_OF_MONTH(CURDATE())) and dhda.id_autorite = @id_autorite and dap.est_termine is false
+		GROUP by dapdhd.id_aud_public
+		
+		UNION
+		
+		-- Demande entretien stage
+	
+		select
+		eds.id,
+		dhda.id as id_date_heure_disponible_autorite,
+		dhd.id as id_date_heure_disponible,
+	
+		CONCAT(eds.date_debut,'T',eds.heure_debut) as start,
+		CONCAT(eds.date_fin,'T',eds.heure_fin) as end,
+		ds.id as id_evenement,
+		'Entretien' as title,
+		CONCAT('Entretien de ',ds.nom,' ',ds.prenom) as motif,
+		'' child_libelle,
+		'' sigle,
+		eds.date_debut as date_debut,
+		eds.date_fin as date_fin,
+		eds.heure_debut as heure_debut,
+		eds.heure_fin as heure_fin,
+		CASE 
+	        when eds.id IS NULL THEN 'Non validé'
+			when ds.action = 1 and eds.id IS NOT NULL THEN 'Validé'
+			when ds.action = 2 and eds.id IS NOT NULL THEN 'Reporté'
+	        ELSE 'Aucune'
+	    END as status_audience,
+		ds.nom as nom,
+		ds.prenom as prenom,
+		ds.telephone as numero_telephone,
+		ds.cin as cin,
+		ds.e_mail as email,
+		'#FFA500' color,
+		'#FFA500' color_status,
+		'Entretien' type_audience,
+		
+		'' poste,
+		'' path,
+		ds.est_termine,
+		true AS editable
+		from entretien_demande_stage eds
+		JOIN date_heure_disponible_autorite dhda on eds.id_date_heure_disponible_autorite = dhda.id
+		JOIN date_heure_disponible dhd on dhda.id_date_heure_disponible = dhd.id
+		JOIN demande_stage ds on eds.id_demande_stage = ds.id
+		where dhd.date_disponible >= (SELECT FIRST_DATE_OF_MONTH(CURDATE())) and dhda.id_autorite = @id_autorite and ds.est_termine is false
+		group by ds.id
+	
+		UNION
+		
+		select
+		pd.id as id,
+		'' id_date_heure_disponible_autorite,
+		'' id_date_heure_disponible,
+	
+		CONCAT(dhnda.date_debut,'T',dhnda.heure_debut) as start,
+		CONCAT(dhnda.date_fin,'T',dhnda.heure_fin) as end,
+		dhnda.id id_evenement,
+		'Pas disponible' as title,
+		'' motif,
+		'' child_libelle,
+		'' sigle,
+		dhnda.date_debut as date_debut,
+		dhnda.date_fin as date_fin,
+		dhnda.heure_debut as heure_debut,
+		dhnda.heure_fin as heure_fin,
+		'Pas disponible' status_audience,
+		'' nom,
+		'' prenom,
+		'' numero_telephone,
+		'' cin,
+		'' email,
+		'#000000' color,
+		'' color_status,
+		'Pas disponible' type_audience,
+		'' poste,
+		'' path,
+		FALSE est_termine,
+		 true editable
+		from date_heure_non_disponible_autorite dhnda
+		JOIN pas_disponible pd on dhnda.id = pd.id_date_heure_non_disponible_autorite
+		JOIN date_heure_disponible_autorite dhda on pd.id_date_heure_disponible_autorite = dhda.id
+		JOIN date_heure_disponible dhd on dhda.id_date_heure_disponible = dhd.id
+		where dhd.date_disponible >= (SELECT FIRST_DATE_OF_MONTH(CURDATE())) and dhda.id_autorite = @id_autorite
+		GROUP by dhnda.id;
+
+	ELSE
+		SELECT 
+		daadhd.id as id,
+		dhda.id as id_date_heure_disponible_autorite,
+		dhd.id as id_date_heure_disponible,
+	
+		CONCAT(daadhd.date_debut,'T',daadhd.heure_debut) as start,
+		CONCAT(daadhd.date_fin,'T',daadhd.heure_fin) as end,
+		daa.id as id_evenement,
+		'Audience autorité' as title,
+		daa.motif as motif,
+		daa.child_libelle as child_libelle,
+		daa.sigle as sigle,
+		daadhd.date_debut as date_debut,
+		daadhd.date_fin as date_fin,
+		daadhd.heure_debut as heure_debut,
+		daadhd.heure_fin as heure_fin,
+		CASE
+			WHEN daa.action = 0 THEN 'Non validé'
+			WHEN daa.action = 1 THEN 'Validé'
+			ELSE 'Reporté'
+		END AS status_audience,
+		c.nom,
+		c.prenom,
+		daa.numero_telephone as numero_telephone,
+		'' cin,
+		daa.email as email,
+		'#FF0000' color,
+		CASE
+			WHEN daa.action = 0 THEN '#35AF11'
+			WHEN daa.action = 1 THEN '#E61212'
+			ELSE '#000000'
+		END AS color_status,
+		'Autorité' type_audience,
+		c.poste as poste,
+		ts.path as path,
+		daa.est_termine,
+		true as editable
+		FROM dm_aud_autorite_date_heure_dispo daadhd
+		LEFT join date_heure_disponible_autorite dhda on daadhd.id_date_heure_disponible_autorite = dhda.id
+		LEFT JOIN date_heure_disponible dhd on dhda.id_date_heure_disponible = dhd.id
+		LEFT JOIN demande_audience_autorite daa on daadhd.id_dm_aud_autorite = daa.id
+		LEFT JOIN rohi.t_structure ts on daa.id_autorite_enfant_sender = ts.child_id
+		LEFT JOIN rohi.candidat c on ts.premier_responsable_id = c.id
+		where dhd.date_disponible >= (SELECT FIRST_DATE_OF_MONTH(CURDATE())) and dhda.id_autorite = @id_autorite 
+		GROUP by daadhd.id_dm_aud_autorite
+	
+		UNION
+		
+		-- Demande audience public and agent
+		SELECT 
+		dapdhd.id,
+		dhda.id as id_date_heure_disponible_autorite,
+		dhd.id as id_date_heure_disponible,
+	
+		CONCAT(dapdhd.date_debut,'T',dapdhd.heure_debut) as start,
+		CONCAT(dapdhd.date_fin,'T',dapdhd.heure_fin) as end,
+		dap.id as id_evenement,
+		IF(dap.id_agent>0,"Audience agent","Audience public") as title,
+		dap.motif as motif,
+		IF(dap.id_agent>0, ts.child_libelle, '' ) as child_libelle,
+		IF(dap.id_agent>0, ts.sigle, '' ) as sigle,
+		dapdhd.date_debut as date_debut,
+		dapdhd.date_fin as date_fin,
+		dapdhd.heure_debut as heure_debut,
+		dapdhd.heure_fin as heure_fin,
+		CASE
+			WHEN dap.action = 0 THEN 'Non validé'
+			WHEN dap.action = 1 THEN 'Validé'
+			ELSE 'Reporté'
+		END AS status_audience,
+		IF(dap.id_agent>0,c.nom,dap.nom) as nom,
+		IF(dap.id_agent>0,c.prenom,dap.prenom)  as prenom,
+		dap.numero_telephone as numero_telephone,
+		dap.cin as cin,
+		dap.email as email,
+		IF(dap.id_agent>0,"#532006","#008000") color,
+		CASE
+			WHEN dap.action = 0 THEN '#35AF11'
+			WHEN dap.action = 1 THEN '#E61212'
+			ELSE '#000000'
+		END AS color_status,
+		IF(dap.id_agent>0,"Agent","Public") as type_audience,
+		
+		IF(dap.id_agent>0, IFNULL(c.poste,'Agent'),'') as poste,
+		IF(dap.id_agent>0,ts.path,'')as path,
+		dap.est_termine,
+		true AS editable
+		FROM stage5.dm_aud_public_date_heure_dispo dapdhd
+		LEFT JOIN date_heure_disponible_autorite dhda on dapdhd.id_date_heure_disponible_autorite = dhda.id
+		LEFT JOIN date_heure_disponible dhd on dhda.id_date_heure_disponible = dhd.id
+		LEFT JOIN demande_audience_public dap on dapdhd.id_aud_public = dap.id
+		LEFT JOIN rohi.candidat c on dap.id_agent = c.id
+		LEFT JOIN rohi.t_structure ts on c.structureId = ts.child_id
+		WHERE dhd.date_disponible >= (SELECT FIRST_DATE_OF_MONTH(CURDATE())) and dhda.id_autorite = @id_autorite
+		GROUP by dapdhd.id_aud_public
+		
+		UNION
+		
+		-- Demande entretien stage
+	
+		select
+		eds.id,
+		dhda.id as id_date_heure_disponible_autorite,
+		dhd.id as id_date_heure_disponible,
+	
+		CONCAT(eds.date_debut,'T',eds.heure_debut) as start,
+		CONCAT(eds.date_fin,'T',eds.heure_fin) as end,
+		ds.id as id_evenement,
+		'Entretien' as title,
+		CONCAT('Entretien de ',ds.nom,' ',ds.prenom) as motif,
+		'' child_libelle,
+		'' sigle,
+		eds.date_debut as date_debut,
+		eds.date_fin as date_fin,
+		eds.heure_debut as heure_debut,
+		eds.heure_fin as heure_fin,
+		CASE 
+	        when eds.id IS NULL THEN 'Non validé'
+			when ds.action = 1 and eds.id IS NOT NULL THEN 'Validé'
+			when ds.action = 2 and eds.id IS NOT NULL THEN 'Reporté'
+	        ELSE 'Aucune'
+	    END as status_audience,
+		ds.nom as nom,
+		ds.prenom as prenom,
+		ds.telephone as numero_telephone,
+		ds.cin as cin,
+		ds.e_mail as email,
+		'#FFA500' color,
+		'#FFA500' color_status,
+		'Entretien' type_audience,
+		
+		'' poste,
+		'' path,
+		ds.est_termine,
+		true AS editable
+		from entretien_demande_stage eds
+		JOIN date_heure_disponible_autorite dhda on eds.id_date_heure_disponible_autorite = dhda.id
+		JOIN date_heure_disponible dhd on dhda.id_date_heure_disponible = dhd.id
+		JOIN demande_stage ds on eds.id_demande_stage = ds.id
+		where dhd.date_disponible >= (SELECT FIRST_DATE_OF_MONTH(CURDATE())) and dhda.id_autorite = @id_autorite
+		group by ds.id
+	
+		UNION
+		
+		select
+		pd.id as id,
+		'' id_date_heure_disponible_autorite,
+		'' id_date_heure_disponible,
+	
+		CONCAT(dhnda.date_debut,'T',dhnda.heure_debut) as start,
+		CONCAT(dhnda.date_fin,'T',dhnda.heure_fin) as end,
+		dhnda.id id_evenement,
+		'Pas disponible' as title,
+		'' motif,
+		'' child_libelle,
+		'' sigle,
+		dhnda.date_debut as date_debut,
+		dhnda.date_fin as date_fin,
+		dhnda.heure_debut as heure_debut,
+		dhnda.heure_fin as heure_fin,
+		'Pas disponible' status_audience,
+		'' nom,
+		'' prenom,
+		'' numero_telephone,
+		'' cin,
+		'' email,
+		'#000000' color,
+		'' color_status,
+		'Pas disponible' type_audience,
+		'' poste,
+		'' path,
+		FALSE est_termine,
+		 true editable
+		from date_heure_non_disponible_autorite dhnda
+		JOIN pas_disponible pd on dhnda.id = pd.id_date_heure_non_disponible_autorite
+		JOIN date_heure_disponible_autorite dhda on pd.id_date_heure_disponible_autorite = dhda.id
+		JOIN date_heure_disponible dhd on dhda.id_date_heure_disponible = dhd.id
+		where dhd.date_disponible >= (SELECT FIRST_DATE_OF_MONTH(CURDATE())) and dhda.id_autorite = @id_autorite
+		GROUP by dhnda.id;
+
+	END IF;
+END

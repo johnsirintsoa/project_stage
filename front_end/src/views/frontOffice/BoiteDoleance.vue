@@ -1,7 +1,7 @@
 <template>
     <NavBarFront/>
     <main id="main" class="main">
-        <h1>Boite à doléance</h1>
+        <h1>Boîte à doléance</h1>
         <div class="boite-a-doleance">
             
             <section class="section">

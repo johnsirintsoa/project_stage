@@ -38,8 +38,10 @@ app.use((req,res,next)=>{
     res.setHeader('Access-Control-Allow-Methods','Content-Type','Authorization');
     res.setHeader('Content-Type', 'application/json');
     next(); 
-})
+}) 
 
+
+// app.use(require('cookie-parser'));
 app.use(bodyParser.json())
 app.use(
     express.urlencoded({

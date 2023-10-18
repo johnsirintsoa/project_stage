@@ -1,7 +1,11 @@
 var mysql = require('mysql');
 
-const db_name = 'stage5'
-const rohi_db = 'rohi'
+// const db_name = 'stage5'
+// const rohi_db = 'rohi'
+
+
+const db_name = process.env.DB_APP
+const rohi_db = process.env.DB_AUTORITE
 
 var conn = mysql.createConnection({
   host: 'localhost', // Replace with your host name

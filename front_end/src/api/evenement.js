@@ -20,4 +20,11 @@ export default class EvenementApi{
         return res.data       
     }
 
+    static async setTerminer(arg){
+        const url = dom.domaineBackEnd(route1,'/terminer')
+        const res = await axios.post(url,arg)
+        // const res = await axios.post(url.concat('/revalider'),arg)
+        return res.data       
+    }
+
 }

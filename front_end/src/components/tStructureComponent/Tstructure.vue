@@ -3,6 +3,7 @@
     <div class="col-md-12">
       <div class="form-floating mb-3">
         <input type="text" class="form-control" id="floatingName" placeholder="Titre" @input="setDoleanceAutorite(autorite)" v-model="autorite"  required>
+        <!-- <input type="text" class="form-control" id="floatingName" placeholder="Titre" @input="setDoleanceAutorite(autorite)" v-model="autorite"  required> -->
         <label for="floatingSelect">Autorité</label>
       </div>
     </div>              
@@ -12,23 +13,25 @@
       :style="{ marginTop: marginTop + 'px' }"
     >
 
-      <div class="card">
-        <div class="card-body">
-          <div class="list-group">
-            
-            <a href="#" class="list-group-item list-group-item-action"
-              v-for="item in directions" :key="item.child_id" :value="item.child_libelle" @click="getAutorite(item)"
-            >
-              <div class="d-flex w-100 justify-content-between">
-                <h5 class="mb-1">{{item.child_libelle}}</h5>
-              </div>
-              <p class="mb-1">{{item.path}}</p>
-              <small class="text-muted">{{item.sigle}}</small>
-            </a>
+    
+    <!-- Liste des autorités -->
+    <div class="card">
+      <div class="card-body">
+        <div class="list-group">
+          
+          <a href="#" class="list-group-item list-group-item-action"
+            v-for="item in directions" :key="item.child_id" :value="item.child_libelle" @click="getAutorite(item)"
+          >
+            <div class="d-flex w-100 justify-content-between">
+              <h5 class="mb-1">{{item.child_libelle}}</h5>
+            </div>
+            <p class="mb-1">{{item.path}}</p>
+            <small class="text-muted">{{item.sigle}}</small>
+          </a>
 
-          </div>
         </div>
       </div>
+    </div>
 
     </div>    
 </template>
@@ -36,11 +39,13 @@
 <script>
 
   import AutoriteApi from '../../api/autorite'
+  // import watchEffect from 'vue'
 
   export default{
 
     props:{
-      autoriteSession: Object
+      autoriteSession: Object,
+
     },
 
     data() {
@@ -53,21 +58,28 @@
     },
 
     emits:[
-      'getAutoriteClicked'
+      'getAutoriteClicked',
     ],
+
+
 
     watch:{
       'autorite': function (input){
         if(input){
           this.getAutorites(input)
         }
-      }
+        
+      },
+
     },
 
     methods: {
 
+
+      
       async setDoleanceAutorite(value){    
         this.isSearching = true
+        console.log(value)
         if(value === ''){
           this.isSearching = false
         }

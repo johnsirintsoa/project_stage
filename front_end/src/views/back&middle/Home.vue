@@ -53,7 +53,7 @@
                         imageWidth: '500px',
                         image: doleanceImg,
                         // image:require("@/assets/img/doleance.png"),
-                        titre:'Boite à doléance',
+                        titre:'Boîte à doléance',
                         contenu:'Votre visite de courtoisie vous a-t-elle plu? Vous pouvez nous en dire plus si le coeur vous en dit.'
                     },
                     { 
@@ -80,7 +80,7 @@
                         imageWidth: '500px',
                         image: calendrierImg,
                         // image:require("@/assets/img/audience.png"),
-                        titre:'Mes évènements',
+                        titre:'Mon calendrier',
                         contenu:`Un interface requis pour chaque autorité. Ici, vous pouvez gérer vos évenements en cours et vos disponibilités selon vos occupations au sein de l'organisation.`
                     }
                 ]
@@ -145,7 +145,7 @@
         methods: {
 
             getStructure(value){
-                console.log(value)
+                // console.log(value)
             }
             
         },

@@ -45,7 +45,7 @@
             imageWidth: '500px',
             image: doleanceImg,
             // image:require("@/assets/img/doleance.png"),
-            titre:'Boite à doléance',
+            titre:'Boîte à doléance',
             contenu:'Votre visite de courtoisie vous a-t-elle plu? Vous pouvez nous en dire plus si le coeur vous en dit.'
           },
           { 

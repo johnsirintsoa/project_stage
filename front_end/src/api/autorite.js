@@ -27,13 +27,13 @@ export default class AutoriteAPI{
         const url = dom.domaineBackEnd(route1,'/login')
         const res = await axios.post(url,arg)
         // const res = await axios.post(url.concat('/login'),arg)
-        return res.data
+        return res.data.db
     }
 
-    static async calendrier(id_autorite){
+    static async calendrier(arg){
         const url = dom.domaineBackEnd(route1,'/calendrier')
-        const res = await axios.post(url,id_autorite)
-        console.log(res.data)
+        const res = await axios.post(url,arg)
+        // console.log(res.data)
         const dateTime = Function.dateIso(new Date())
         // console.log(dateTime)
         res.data.push({

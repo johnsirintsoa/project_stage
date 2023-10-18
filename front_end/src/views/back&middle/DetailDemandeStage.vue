@@ -57,7 +57,7 @@ import FooterBack from '../../components/footer/FooterComponent.vue'
 
     <main id="main" class="main">
         <div class="demande-stage">
-            <h1>Detail demande de stage</h1>
+            <h1>Détail demande de stage</h1>
             <div class="row">
                 <nav>
                     <ol class="breadcrumb">

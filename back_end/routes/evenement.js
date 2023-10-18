@@ -98,4 +98,35 @@ router.post('/revalider', async (req,res) =>{
 })
 
 
+router.post('/terminer', async (req,res) =>{
+
+    const type_evenement = req.body.type_evenement
+    const id = req.body.id_evenement 
+
+    let sql = ''
+    if (type_evenement === 'Public'){
+        sql = `UPDATE demande_audience_public SET est_termine = ${req.body.est_termine} where id = ${req.body.id_evenement}`    
+    }
+    else if (type_evenement === 'Agent'){
+        sql = `UPDATE demande_audience_public SET est_termine = ${req.body.est_termine} where id = ${req.body.id_evenement}`    
+    }
+    else if (type_evenement === 'Autorité'){
+        sql = `UPDATE demande_audience_autorite SET est_termine = ${req.body.est_termine} where id = ${req.body.id_evenement}`             
+    }
+    else if (type_evenement === 'Entretien'){
+        sql = `UPDATE demande_stage SET est_termine = ${req.body.est_termine} where id = ${req.body.id_evenement}`    
+    }
+
+    // console.log(sql)
+    db.query(sql,function(err,result){
+        // console.log(result)
+        if(err){
+            return res.send({ err });
+        }
+        else{
+            return res.json({result})
+        }
+    })
+})
+
 module.exports = router

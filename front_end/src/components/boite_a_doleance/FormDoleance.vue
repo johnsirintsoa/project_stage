@@ -137,6 +137,8 @@
               currentForm: 'AnonymusForm',
               isSearching: false,
               directions: 'Aucun résultats',
+              // resetAutorite: false,
+              // autoriteProps:'',
               doleance:{
                   autorite:'',
                   titre:'',
@@ -181,12 +183,16 @@
             if(this.currentForm === 'AnonymusForm'){
                 const data = await DoleanceApi.ajouter_anonyme(doleance)
                 if(data.message){
+                  
+                    this.reset()
                     swal('Doléance ajoutée',`${data.message}`,'success')
                 }
+
             }
             else if(this.currentForm === 'NonAnonymusForm'){
                 const data = await DoleanceApi.ajouter_non_anonyme(doleance)
                 if(data.message){
+                    this.reset()
                     swal('Doléance ajoutée',`${data.message}`,'success')
                 }
             }
@@ -201,8 +207,13 @@
               this.doleance.cin = ''                            
               this.doleance.e_mail = ''
               this.doleance.numero_telephone = '' 
-              this.doleance.message = ''  
-              this.doleance.autorite = ''                         
+              this.doleance.message = ''
+              // this.autoriteProps = ''
+              // this.resetAutorite = 
+              // this.doleance.autorite = '' 
+              // this.doleance.id_autorite = ''                         
+              // this.doleance.sigle = ''                         
+
           }
         },
 

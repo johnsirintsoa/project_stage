@@ -12,7 +12,7 @@
     <main id="main" class="main">
         <div class="boite-a-doleance">
             <section class="section">
-                <h1>Boite à doléances</h1>
+                <h1>Boîte à doléances</h1>
                 <div class="row">
                     <nav>
                         <ol class="breadcrumb">

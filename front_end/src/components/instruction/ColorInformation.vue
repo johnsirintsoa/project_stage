@@ -49,6 +49,7 @@ export default {
         /* background:red; */
         /* height:20px; */
         text-align:center;
+        /* margin-top: -2%; */
     }
     .color-infos li {
         display:inline-block;
