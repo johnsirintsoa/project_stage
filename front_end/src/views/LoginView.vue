@@ -78,7 +78,8 @@
         },
         async created() {
             // this.autorites = await AutoriteApi.liste()
-            if(sessionStorage.getItem('structure')){
+			const storage = localStorage.getItem('autorite')
+            if(storage){
                 this.$router.push({path: '/back-office/'});
             }
 
@@ -129,16 +130,38 @@
                     //     sessionStorage.setItem('structure',JSON.stringify(login))
                     //     this.$router.push({path: '/back-office/'});
                     // }
+					// console.log(login)
+
+					const storage = JSON.parse(localStorage.getItem('autorite'))
+					// if(storage){
+						// console.log(storage)
+					// }
+					
+					// if(storage){
+					// 	this.$router.replace(this.$route.query.redirect || '/back-office/');
+					// 	setInterval( () => {
+					// 		window.location.reload()
+					// 	}, 200)						
+					// }
+					// else if(login.message){
+					// 	this.errors = login.message
+					// 	this.sipnnerActivated = false						
+					// }
+					// else {
+					// 	console.log('Autre raison..')
+					// }
+
+
 					if(login.message){
 						this.errors = login.message
 						this.sipnnerActivated = false
 					}
-                    else{
-						sessionStorage.setItem('structure',JSON.stringify(login))
+                    else if(storage){
+						// sessionStorage.setItem('structure',JSON.stringify(login))
 						this.$router.replace(this.$route.query.redirect || '/back-office/');
-						setInterval( () => {
-							window.location.reload()
-						}, 200)
+						// setInterval( () => {
+						// 	window.location.reload()
+						// }, 200)
                         // this.$router.push({path: '/back-office/'});
 
                     }

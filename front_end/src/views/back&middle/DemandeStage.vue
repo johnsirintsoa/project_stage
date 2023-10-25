@@ -145,7 +145,7 @@
                 }
             }
         },
-        async mounted(){
+        async unmounted(){
             const filtre = {
                 date1: this.date1,
                 date2: this.date2,
@@ -305,7 +305,7 @@
         },
 
             getStructure(value){
-                console.log(value)
+                // console.log(value)
                 this.autorite = value
             },
             date_actu(){

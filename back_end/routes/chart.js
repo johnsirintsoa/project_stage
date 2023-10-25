@@ -3,7 +3,10 @@ const router = express.Router();
 const rohi = require('../database').rohi
 const db = require('../database').conn
 
-router.post('/barre/doleance', async(req,res) =>{
+const { authJwt } = require("../middleware");
+
+
+router.post('/barre/doleance', [authJwt.verifyToken], async(req,res) =>{
     let annee = ''
     if(!req.body.annee)
     {
@@ -109,7 +112,8 @@ router.post('/barre/doleance', async(req,res) =>{
     // console.log(sql)
     // // res.send(sql)
 })
-router.post('/barre/stage', async(req,res) =>{
+
+router.post('/barre/stage', [authJwt.verifyToken],async(req,res) =>{
     let annee = ''
     if(!req.body.annee)
     {

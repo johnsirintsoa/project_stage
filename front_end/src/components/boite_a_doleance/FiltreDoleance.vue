@@ -100,14 +100,14 @@
         </div>
          
         <div class="col-md-3">
-            <select class="form-select" id="type_doleance" :value="type_doleance" @input="$emit('update:type_doleance', $event.target.value)">
+            <select class="form-select"  :value="type_doleance" @input="$emit('update:type_doleance', $event.target.value)">
                 <option value="2">Tout</option>
                 <option value="1">Anonyme</option>
                 <option value="0">Non anonyme</option>
             </select>
         </div>
         <div class="col-md-3">
-            <select class="form-select" id="domaine" :value="nbr_filtre" @input="$emit('update:nbr_filtre', $event.target.value)" >
+            <select class="form-select" :value="nbr_filtre" @input="$emit('update:nbr_filtre', $event.target.value)" >
                 <option value="0" > Tout</option>
                 <option value="5" > 5</option>
                 <option value="10" > 10</option>

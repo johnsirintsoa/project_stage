@@ -1,6 +1,7 @@
 <template>
     <HeaderNavbar
         @structure="getStructure"
+        :sipnnerActivated="spinner"
     />
 
     <main id="main" class="main">
@@ -11,6 +12,7 @@
                 <Calendrier
                     typeCalendrier="audienceAutorite"
                     :autoriteSender="autorite"
+                    @spinnerStatus="getSpinnerStatus"
                 />
 
             </div>
@@ -67,6 +69,9 @@
         methods: {
             getStructure(value){
                 this.autorite = value
+            },
+            getSpinnerStatus(value){
+                this.spinner = value
             }
         },
     }

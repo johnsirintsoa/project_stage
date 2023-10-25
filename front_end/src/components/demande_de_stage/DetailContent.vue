@@ -5,13 +5,13 @@
     import swal from 'sweetalert';
     export default{
         props:{
-            id_demande_stage:String,
-            stage:Object
+            id_demande_stage: {type: String},
+            stage: Object
         },
 
         data() {
             return {
-                detail:''
+                detail:'',
             }
         },
 
@@ -218,7 +218,6 @@
     .icon{
         cursor: pointer;
     }
-    .content-detail-stage {
-        
-    }
+
+    
 </style>

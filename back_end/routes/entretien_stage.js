@@ -4,7 +4,9 @@ const db = require('../database').conn
 const db_name = require('../database').db_name
 const mailing = require('../Controllers/MailingController')
 
-router.post('/add',async(req,res) => {
+const { authJwt } = require("../middleware");
+
+router.post('/add',[authJwt.verifyToken],async(req,res) => {
     const autorite = req.body.autorite
     const stage = req.body.stage
     const sql = `CALL ajouter_entretien_stage(${stage.id}, ${req.body.id_date_heure_disponible_autorite})`
@@ -34,7 +36,7 @@ router.post('/add',async(req,res) => {
 })
 
 
-router.post('/update',async(req,res)=>{
+router.post('/update',[authJwt.verifyToken],async(req,res)=>{
     const autorite = req.body.autorite
     const stage = req.body.stage
     // console.log(req.body)
@@ -62,7 +64,7 @@ router.post('/update',async(req,res)=>{
     })
 })
 
-router.post('/updateCalendar',async(req,res) => {
+router.post('/updateCalendar',[authJwt.verifyToken],async(req,res) => {
     const autorite = req.body.autorite
     const stagiaire = req.body.stagiaire
     // IN id_entretien_stage int,IN id_demande_stage INT,IN date_debut date,IN date_fin date,IN heure_debut time,in heure_fin time, IN id_autorite INT
@@ -105,7 +107,7 @@ router.post('/updateCalendar',async(req,res) => {
     // })
 })
 
-router.post('/delete',async(req,res)=>{
+router.post('/delete',[authJwt.verifyToken],async(req,res)=>{
     const autorite = req.body.autorite
     const stage = req.body.stage
     const sql = `call supprimer_entretien_stage (${stage.id})`

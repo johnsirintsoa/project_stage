@@ -93,14 +93,15 @@ router.post('/backOffice/structure', async(req,res) =>{
 })
 
 router.get("/Hello", [authJwt.verifyToken], (req, res, next) => {
+    // console.log(req.headers['x-access-token'])
     res.send("Hello")
 })
 
 router.post('/login', async(req,res) =>{
-    res.header(
-        "Access-Control-Allow-Headers",
-        "x-access-token, Origin, Content-Type, Accept"
-    );
+    // res.header(
+    //     "Access-Control-Allow-Headers",
+    //     "x-access-token, Origin, Content-Type, Accept"
+    // );
     const email = `select 
     ts.child_id,
     ts.premier_responsable_id,
@@ -170,7 +171,7 @@ router.post('/login', async(req,res) =>{
                         {
                           algorithm: 'HS256',
                           allowInsecureKeySizes: true,
-                        //   expiresIn: 86400, // 24 hours
+                          expiresIn: 86400, // 24 hours
                         });
                     return res.json({
                             db: result[0],

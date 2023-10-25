@@ -1274,15 +1274,42 @@ h6 {
  
   background: lavender;
   padding: 10px 20px;
+  /* position: absolute; */
   position: fixed;
   left: 50%;
   top: 50%;
   transform: translateX(-50%) translateY(-50%);
+  /* width: 50%;
+  height: 80%; */
   width: auto;
   height: auto;
   z-index:999;
+  overflow:auto;
   box-shadow: 10px 10px 10px 10px;
 }
+
+.popupShowDetailEvent {
+ 
+  background: lavender;
+  padding: 10px 10px;
+  /* position: absolute; */
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  width: 40%;
+  height: 95%;
+  /* width: auto;
+  height: auto; */
+  z-index:999;
+  overflow:auto;
+  box-shadow: 10px 10px 10px 10px;
+}
+
+.popupToShowDetailEvent{
+  position: initial;
+}  
+
 .popupToShow{
   position: initial;
 }    

@@ -139,6 +139,7 @@
     import { RouterLink, RouterView } from 'vue-router'
     import SpinnerHeader from '../loading/SpinnerHeader.vue'
     import ColorInfos from '../instruction/ColorInformation.vue'
+    import autoriteApi from '../../api/autorite'
     export default {
         components:{
           RouterLink,
@@ -163,14 +164,17 @@
           'setCheckbox'
         ],
 
-        created() {
+        async created() {
+          // await autoriteApi.hello({})
           if(this.$route.name === 'back-office-calendrier-evenementiel'){
             this.isMyCalendarClicked = true
           }
 
-          const ses_admin = JSON.parse(sessionStorage.getItem('structure'))
+          const ses_admin = JSON.parse(localStorage.getItem('autorite'))
+          // const ses_admin = JSON.parse(sessionStorage.getItem('structure'))
           if(ses_admin != null){
-              this.autorite = JSON.parse(sessionStorage.getItem('structure'))
+              // this.autorite = JSON.parse(sessionStorage.getItem('structure'))
+              this.autorite = ses_admin.db
               this.$emit('structure', this.autorite)
               // setInterval( () => {
               //   window.location.reload()
@@ -184,7 +188,8 @@
 
         methods: {
             deconnection(){
-                sessionStorage.removeItem('structure')
+                // sessionStorage.removeItem('structure')
+                localStorage.removeItem('autorite')
                 this.$router.push({name: 'home-front'});
             },
 

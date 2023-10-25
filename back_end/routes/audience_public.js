@@ -7,6 +7,8 @@ const Function = require('../func/function')
 
 const notification_mailing = require('../Controllers/NotificationController')
 
+const { authJwt } = require("../middleware");
+
 
 // Liste audience disponible
 router.post('/public/heure_disponible_autorite/jour',async(req,res) =>{
@@ -186,7 +188,7 @@ router.post('/public/update',async(req,res)=>{
 //     })
 // })
 
-router.post('/public/valider',async(req,res)=>{
+router.post('/public/valider',[authJwt.verifyToken],async(req,res)=>{
 
     const sql = ` CALL valider_audience_public (${req.body.id_dm_aud_public_date_heure_dispo},${req.body.id_audience}, '${req.body.date_debut}','${req.body.date_fin}','${req.body.heure_debut}','${req.body.heure_fin}',${req.body.id_autorite})`
 
@@ -234,7 +236,7 @@ router.post('/public/valider',async(req,res)=>{
 //     })
 // })
 
-router.post('/public/revalider',async(req,res)=>{
+router.post('/public/revalider',[authJwt.verifyToken],async(req,res)=>{
     
     const entretien_date_time = String(req.body.date_debut).concat('T',req.body.heure_debut)
     const response = await mailing.audience_public_revalide(req.body.autorite,req.body.envoyeur,entretien_date_time)
@@ -283,7 +285,7 @@ router.post('/public/revalider',async(req,res)=>{
 //     })
 // })
 
-router.post('/public/reporter/now',async(req,res)=>{
+router.post('/public/reporter/now',[authJwt.verifyToken],async(req,res)=>{
 
     const entretien_date_time = String(req.body.date_debut).concat('T',req.body.heure_debut)
     const response = await mailing.audience_public_reporte(req.body.autorite,req.body.envoyeur,entretien_date_time)
@@ -306,7 +308,7 @@ router.post('/public/reporter/now',async(req,res)=>{
     })
 })
 
-router.post('/public/reporter/later',async(req,res)=>{
+router.post('/public/reporter/later',[authJwt.verifyToken],async(req,res)=>{
 
     const autorite = req.body.autorite
     const id_autorite = autorite.id_autorite

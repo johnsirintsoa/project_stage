@@ -23,11 +23,13 @@ import FooterBack from '../../components/footer/FooterComponent.vue'
         },
         data() {
             return {
-                // id_demande_stage:'',
+                id_demande_stage:'',
             }
         },
         async created() {
-            const ses = JSON.parse(sessionStorage.getItem('structure'))
+            // const ses = JSON.parse(sessionStorage.getItem('structure'))
+            const ses = JSON.parse(localStorage.getItem('autorite')).db
+
             const id_autorite = ses.child_id
             this.id_demande_stage = window.location.pathname.split('/')[ window.location.pathname.split('/').length-1]
             this.autorite = ses

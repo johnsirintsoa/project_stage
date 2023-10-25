@@ -3,6 +3,9 @@ import dom  from './config'
 
 const route1 = 'audience'
 
+import authHeader from './auth-header'
+
+
 // const domaine = "http://localhost:3000"
 // const url = domaine.concat("/api/audience")
 

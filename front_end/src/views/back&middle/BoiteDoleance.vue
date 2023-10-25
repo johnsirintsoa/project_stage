@@ -83,7 +83,8 @@ export default {
             }
         };
     },
-    async mounted() {
+
+    async unmounted(){
         const filtre = {
             date1: this.filter.date1,
             date2: this.filter.date2,
@@ -91,7 +92,7 @@ export default {
             nbr_filtre: this.filter.nbr_filtre,
             id_autorite: this.autorite.child_id
         }
-        console.log(filtre)
+        console.log(this.autorite)
         this.doleances = await DoleanceAPI.filtre(filtre)
         // this.doleances = await DoleanceAPI.getAllDoleance();
         // this.directions = await DirectionAPI.getAllDirection();

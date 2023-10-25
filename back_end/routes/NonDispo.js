@@ -3,8 +3,10 @@ const router = express.Router();
 const db = require('../database').conn
 const db_name = require('../database').db_name
 const mailing = require('../Controllers/MailingController')
+const { authJwt } = require("../middleware");
 
-router.post('/ajouter_non_disponible', async (req,res) => {
+
+router.post('/ajouter_non_disponible', [authJwt.verifyToken],async (req,res) => {
     const autorite = req.body.autorite
     // const sql = `CALL ajouter_non_disponible_autorite(${autorite.id},'${req.body.date_debut}','${req.body.date_fin}','${req.body.heure_debut}','${req.body.heure_fin}')`
     const sql = ` CALL ajouter_non_disponible_autorite (${req.body.id_autorite},'${req.body.date_debut}','${req.body.date_fin}','${req.body.heure_debut}','${req.body.heure_fin}')`
@@ -73,7 +75,7 @@ router.post('/ajouter_non_disponible', async (req,res) => {
     })
 })
 
-router.post('/modifier_non_disponible', async (req,res) => {
+router.post('/modifier_non_disponible', [authJwt.verifyToken],async (req,res) => {
     const autorite = req.body.autorite
     const evenement = req.body.evenement
     // const sql = ` CALL modifier_non_disponible_autorite (${autorite.id},${evenement.id_date_heure_non_dispo},'${req.body.date_debut}','${req.body.date_fin}','${req.body.heure_debut}','${req.body.heure_fin}')`
@@ -144,7 +146,7 @@ router.post('/modifier_non_disponible', async (req,res) => {
     })
 })
 
-router.post('/supprimer_non_disponible', async (req,res) => {
+router.post('/supprimer_non_disponible', [authJwt.verifyToken],async (req,res) => {
     // const autorite = req.body.autorite
     // const evenement = req.body.evenement
     const sql = ` DELETE FROM date_heure_non_disponible_autorite where id = ${req.body.id_date_heure_non_dispo}`

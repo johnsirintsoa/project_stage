@@ -12,7 +12,9 @@
                           <li class="breadcrumb-item active">dahsboard  </li>
                         </ol>
                     </nav>
-                    <Chart />
+                    <Chart 
+                        :autorite="autorite"
+                    />
                 </div>
             </section>
         </div>
@@ -32,7 +34,11 @@
             footerComponent,
             Chart
         },
-
+        data() {
+            return {
+                autorite:{}
+            }
+        },
         methods: {
             getStructure(value){
                 // console.log(value)

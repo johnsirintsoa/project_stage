@@ -3,6 +3,8 @@ const router = express.Router();
 const db = require('../database').conn
 const db_name = require('../database').db_name
 const Function = require('../func/function')
+const { authJwt } = require("../middleware");
+
 // const Doleance = require('../models/Doleance')
 
 
@@ -77,7 +79,7 @@ router.get('/supprimer/:id', async(req,res) =>{
     })
 })
 
-router.post('/filtre',async(req,res)=>{
+router.post('/filtre', [authJwt.verifyToken] ,async(req,res)=>{
     const sql = `CALL filtre_doleance('${req.body.date1}','${req.body.date2}',${req.body.type_doleance},${req.body.nbr_filtre},${req.body.id_autorite})`
     // console.log(sql)
     var query = db.query(sql, function(err, result) {

@@ -33,9 +33,14 @@
         components: {
             apexchart: VueApexCharts,
         },
+        props:{
+            autorite:{
+                type: Object
+            }
+        },
         data() {
             return {
-                autorite: JSON.parse(sessionStorage.getItem('structure')),
+                // autorite: JSON.parse(localStorage.getItem('autorite')).db,
                 doleance : {
                     selectAnnee: `${new Date(Date.now()).getFullYear()}`,
                     chartOptions: {
@@ -175,7 +180,8 @@
             this.stage.series[0].data = await chart.dashboard_stage({annee: input, id_autorite: this.autorite.child_id})
           }
         },
-        async mounted() {
+        async updated(){
+            // console.log(this.autorite.child_id)
             this.doleance.series[0].data = await chart.dashboard_doleance({id_autorite: this.autorite.child_id, annee: this.doleance.selectAnnee})
             this.stage.series[0].data = await chart.dashboard_stage({id_autorite: this.autorite.child_id, annee: this.stage.selectAnnee})
 

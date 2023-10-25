@@ -3,8 +3,10 @@ const router = express.Router();
 const db = require('../database').conn
 const db_name = require('../database').db_name
 const mailing = require('../Controllers/MailingController')
+const { authJwt } = require("../middleware");
 
-router.post('/valider', async (req,res) =>{
+
+router.post('/valider', [authJwt.verifyToken],async (req,res) =>{
     const sql = `CALL valider_evenement(
         ${req.body.id_date_heure_disponible_autorite},
         ${req.body.id_evenement},
@@ -50,7 +52,7 @@ router.post('/valider', async (req,res) =>{
     })
 })
 
-router.post('/revalider', async (req,res) =>{
+router.post('/revalider', [authJwt.verifyToken],async (req,res) =>{
     const sql = `CALL valider_evenement(
         ${req.body.id_date_heure_disponible_autorite},
         ${req.body.id_evenement},
@@ -98,7 +100,7 @@ router.post('/revalider', async (req,res) =>{
 })
 
 
-router.post('/terminer', async (req,res) =>{
+router.post('/terminer', [authJwt.verifyToken],async (req,res) =>{
 
     const type_evenement = req.body.type_evenement
     const id = req.body.id_evenement 

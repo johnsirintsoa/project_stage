@@ -40,7 +40,8 @@
     </div>
   </div>
 
-  <div class="popupToShow"></div>
+  <!-- <div class="popupToShow"></div> -->
+  <!-- <div class="popupToShowDetailEvent"></div> -->
   
   
   <div v-if="typeCalendrier === 'audiencePublic'">
@@ -533,234 +534,341 @@
   </div>
 
   <div v-else-if="typeCalendrier ==='evenementiel' && audience.typeEvenement ==='Public' ">
-    <teleport to=".popupToShow">
-      <div v-if="showPopupAudience" class="popupShow">
+    <teleport to=".popupToShowDetailEvent">
+      <div v-if="showPopupAudience" class="popupShowDetailEvent">
         <p  @click="togglePopupAudience"><i class="ri-close-line" style="font-size: 35px;position: fixed; margin-left: 88%;"></i></p>
+        
         <div class="card-body">
           <h2 class="card-title">Détail audience public</h2>
-          
-          <div class="row">
 
-            <div class="row d-flex justify-content-center">
-              <!-- <div class="col-xl-4">
-    
-                <div class="card">
-                  <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
-      
-                    <img src="../../assets/img/profile-img.jpg" alt="Profile" class="rounded-circle">
-                  </div>
-                </div>
-      
-              </div> -->
-      
-              <div class="col-md-12">
-      
-                <div class="card">
-                  <div class="card-body pt-3">
-                    <!-- Bordered Tabs -->
-  
-                    <div class="tab-content pt-2">
-      
-                      <div class="tab-pane fade show active profile-overview" id="profile-overview" role="tabpanel">
-                        <h5 class="card-title">Message</h5>
-                        <p class="small fst-italic">
-                          {{audience.motif}}. {{audience.dateAudience}}
-                        </p>
-      
-                        <h5 class="card-title">Détails </h5>
-      
-                        <div class="row">
-                          <div class="col-lg-3 col-md-4 label ">Nom: </div>
-                          <div class="col-lg-9 col-md-8">{{audience.nom}}</div>
-                        </div>
-      
-                        <div class="row">
-                          <div class="col-lg-3 col-md-4 label">Prénom:</div>
-                          <div class="col-lg-9 col-md-8">{{audience.prenom}}</div>
-                        </div>
-      
-      
-                        <div class="row">
-                          <div class="col-lg-3 col-md-4 label">Téléphone:</div>
-                          <div class="col-lg-9 col-md-8">{{audience.numero_telephone}}</div>
-                        </div>
-      
-                        <div class="row">
-                          <div class="col-lg-3 col-md-4 label">Mail:</div>
-                          <div class="col-lg-9 col-md-8">{{audience.email}}</div>
-                        </div>
-                        <div class="row">
-                          <div class="col-lg-3 col-md-4 label">Status:</div>
-                          <div class="col-lg-9 col-md-8">
-                            <span class="badge bg-dark" v-if="audience.status === 'Reporté'">{{audience.status}}</span>
-                            <span class="badge bg-danger" v-else-if="audience.status === 'Non validé'">{{audience.status}}</span>
-                            <span class="badge bg-success" v-else-if="audience.status === 'Validé'">{{audience.status}}</span>
-                            <span class="badge bg-light text-dark" v-else>{{audience.status}}</span>
-                            <!-- <span class="badge bg-secondary" style="margin-left: 1%" v-if="evenement.est_termine === '1'">Terminé</span> -->
+          <form @submit.prevent="setActionEvenement">
+            <div class="row">
 
-                          </div>
-                        </div>
-
-                        <div class="row">
-                          <div class="col-lg-3 col-md-4 label"> Etat:</div>
-                          <div class="col-lg-9 col-md-8">
-                            <input class="form-check-input" type="checkbox" v-model="terminerEvenement" id="gridCheck1"> Terminer
-                          </div>
-                        </div>
-                        
+              <div class="row d-flex justify-content-center">
+                <!-- <div class="col-xl-4">
       
-                      </div>
-  
-                      
-          
-      
+                  <div class="card">
+                    <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
+        
+                      <img src="../../assets/img/profile-img.jpg" alt="Profile" class="rounded-circle">
                     </div>
-      
                   </div>
-                  
+        
+                </div> -->
+
+                <div class="col-md-12">
+        
+                  <div class="card">
+                    <div class="card-body pt-3">
+                      <!-- Bordered Tabs -->
+    
+                      <div class="tab-content pt-2">
+        
+                        <div class="tab-pane fade show active profile-overview" id="profile-overview" role="tabpanel">
+                          <h5 class="card-title">Message</h5>
+                          <p class="small fst-italic">
+                            {{audience.motif}}
+                          </p>
+        
+                          <h5 class="card-title">Détails </h5>
+        
+                          <div class="row">
+                            <!-- <div class="col-lg-3 col-md-4 label ">Début: </div> -->
+                            <div class="row mb-2">
+                              <label for="inputDate" class="col-lg-3 col-md-4 label">Début:</label>
+                              <div class="col-sm-4">
+                                <input type="date" class="form-control" v-model="audience.date_debut" min="Monday" max="required" required>
+                              </div>
+                              à
+                              <div class="col-sm-4">
+                                <input type="time"  class="form-control" v-model="audience.time_debut" min="08:00" max="16:00" required>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div class="row">
+                            <!-- <div class="col-lg-3 col-md-4 label ">Début: </div> -->
+                            <div class="row mb-2">
+                              <label for="inputDate" class="col-lg-3 col-md-4 label">Fin:</label>
+                              <div class="col-sm-4">
+                                <input type="date" class="form-control" v-model="audience.date_fin">
+                              </div> à 
+                              <div class="col-sm-4">
+                                <input type="time" class="form-control" v-model="audience.time_fin" min="08:00" max="16:00" required>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div class="row">
+                            <div class="row mb-2">
+                              <div class="col-lg-3 col-md-4 label ">Nom: </div>
+                              <div class="col-lg-9 col-md-8">{{audience.nom}}</div>
+                            </div>
+                          </div>
+        
+                          <div class="row">
+                            <div class="row mb-2">
+                              <div class="col-lg-3 col-md-4 label">Prénom:</div>
+                              <div class="col-lg-9 col-md-8">{{audience.prenom}}</div>
+                            </div>
+                          </div>
+        
+        
+                          <div class="row">
+                            <div class="row mb-2">
+                              <div class="col-lg-3 col-md-4 label">Téléphone:</div>
+                              <div class="col-lg-9 col-md-8">{{audience.numero_telephone}}</div>
+                            </div>
+                          </div>
+        
+                          <div class="row">
+                            <div class="row mb-2">
+                              <div class="col-lg-3 col-md-4 label">Mail:</div>
+                              <div class="col-lg-9 col-md-8">{{audience.email}}</div>
+                            </div>
+                          </div>
+
+                          <div class="row">
+                            <div class="row mb-2">
+                              <div class="col-lg-3 col-md-4 label">Status:</div>
+                              <div class="col-lg-9 col-md-8">
+                                <span class="badge bg-dark" v-if="audience.status === 'Reporté'">{{audience.status}}</span>
+                                <span class="badge bg-danger" v-else-if="audience.status === 'Non validé'">{{audience.status}}</span>
+                                <span class="badge bg-success" v-else-if="audience.status === 'Validé'">{{audience.status}}</span>
+                                <span class="badge bg-light text-dark" v-else>{{audience.status}}</span>
+                                <!-- <span class="badge bg-secondary" style="margin-left: 1%" v-if="evenement.est_termine === '1'">Terminé</span> -->
+                              </div>
+                            </div>
+
+                          </div>
+
+                          <div class="row">
+                            <div class="row mb-2">
+                              <div class="col-lg-3 col-md-4 label"> Etat:</div>
+                              <div class="col-lg-9 col-md-8">
+                                <input class="form-check-input" type="checkbox" v-model="terminerEvenement" id="gridCheck1"> Terminer
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+        
+                      </div>
+        
+                    </div>
+                    
+                  </div>
+        
                 </div>
-      
+
+
               </div>
-            </div>
 
-
-            <SpinnerPopup
-              :sipnnerActivated="sipnnerActivated"
-            />
+              <SpinnerPopup
+                :sipnnerActivated="sipnnerActivated"
+              />
+              
+              <div class="text-center" >
+                <button type="submit" class="btn btn-success" @click="setEtatAction(1)"  v-if="audience.status === 'Non validé'" >
+                  Valider
+                </button>
             
-            <div class="text-center" >
-              <button type="submit" class="btn btn-success" @click="valider" v-if="audience.status === 'Non validé'" >
-                Valider
-              </button>
-              <button type="submit" class="btn btn-dark" @click="reporter" v-if="audience.status === 'Validé' || audience.status === 'Non validé'" >
-                Reporter
-              </button>
-            </div>
+                <button type="submit" class="btn btn-warning" @click="setEtatAction(4)"  v-if="audience.status === 'Validé'" >
+                  Modifier
+                </button>
 
-          </div>
+                <button type="submit" class="btn btn-dark" @click="setEtatAction(2)"  v-if="audience.status === 'Validé' || audience.status === 'Non validé'" >
+                  Reporter
+                </button>
+
+                <button type="submit" class="btn btn-success" @click="setEtatAction(3)"  v-if="audience.status === 'Reporté'" >
+                  Revalider
+                </button>
+              </div>
+
+
+            </div>
+          </form>
 
         </div>
+
+
       </div>
     </teleport>
   </div>
 
   <div v-else-if="typeCalendrier ==='evenementiel' && audience.typeEvenement ==='Agent' ">
-    <teleport to=".popupToShow">
-      <div v-if="showPopupAudience" class="popupShow">
+    <teleport to=".popupToShowDetailEvent">
+      <div v-if="showPopupAudience" class="popupShowDetailEvent">
         <p  @click="togglePopupAudience"><i class="ri-close-line" style="font-size: 35px;position: fixed; margin-left: 88%;"></i></p>
         <div class="card-body">
           <h2 class="card-title">Détail audience agent</h2>
           
-          <div class="row">
+          <form @submit.prevent="setActionEvenement">
+            <div class="row">
 
-            <div class="row d-flex justify-content-center">
-              <!-- <div class="col-md-6">
-    
-                <div class="card">
-                  <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
+              <div class="row d-flex justify-content-center">
+                <!-- <div class="col-md-6">
       
-                    <img src="../../assets/img/profile-img.jpg" alt="Profile" class="rounded-circle">
+                  <div class="card">
+                    <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
+        
+                      <img src="../../assets/img/profile-img.jpg" alt="Profile" class="rounded-circle">
+                    </div>
                   </div>
-                </div>
-      
-              </div> -->
-      
-              <div class="col-md-12">
-      
-                <div class="card">
-                  <div class="card-body pt-3">
-                    <!-- Bordered Tabs -->
-  
-                    <div class="tab-content pt-2">
-      
-                      <div class="tab-pane fade show active profile-overview" id="profile-overview" role="tabpanel">
-                        <h5 class="card-title">Message</h5>
-                        <p class="small fst-italic">
-                          {{audience.motif}}. {{audience.dateAudience}}
-                        </p>
-      
-                        <h5 class="card-title">Détails </h5>
-      
-                        <div class="row">
-                          <div class="col-lg-3 col-md-4 label ">Nom:</div>
-                          <div class="col-lg-9 col-md-8">{{audience.nom}}</div>
-                        </div>
-      
-                        <div class="row">
-                          <div class="col-lg-3 col-md-4 label">Prénom:</div>
-                          <div class="col-lg-9 col-md-8">{{audience.prenom}}</div>
-                        </div>
-      
-      
-                        <div class="row">
-                          <div class="col-lg-3 col-md-4 label">Tél:</div>
-                          <div class="col-lg-9 col-md-8">{{audience.numero_telephone}}</div>
-                        </div>
-      
-                        <div class="row">
-                          <div class="col-lg-3 col-md-4 label">Mail:</div>
-                          <div class="col-lg-9 col-md-8">{{audience.email}}</div>
-                        </div>
-                        <div class="row">
-                          <div class="col-lg-3 col-md-4 label">Fonction:</div>
-                          <div class="col-lg-9 col-md-8">{{audience.poste_agent}}</div>
-                        </div>
-                        <div class="row">
-                          <div class="col-lg-3 col-md-4 label">Path:</div>
-                          <div class="col-lg-9 col-md-8">{{audience.path_agent}}</div>
-                        </div>
-                        <div class="row">
-                          <div class="col-lg-3 col-md-4 label">Status:</div>
-                          <div class="col-lg-9 col-md-8">
-                            <span class="badge bg-dark" v-if="audience.status === 'Reporté'">{{audience.status}}</span>
-                            <span class="badge bg-danger" v-else-if="audience.status === 'Non validé'">{{audience.status}}</span>
-                            <span class="badge bg-success" v-else-if="audience.status === 'Validé'">{{audience.status}}</span>
-                            <span class="badge bg-light text-dark" v-else>{{audience.status}}</span>
+        
+                </div> -->
+        
+                <div class="col-md-12">
+        
+                  <div class="card">
+                    <div class="card-body pt-3">
+                      <!-- Bordered Tabs -->
+    
+                      <div class="tab-content pt-2">
+        
+                        <div class="tab-pane fade show active profile-overview" id="profile-overview" role="tabpanel">
+                          <h5 class="card-title">Motif</h5>
+                          <p class="small fst-italic">
+                            {{audience.motif}}
+                          </p>
+        
+                          <h5 class="card-title">Détails </h5>
+
+                          <div class="row">
+                            <!-- <div class="col-lg-3 col-md-4 label ">Début: </div> -->
+                            <div class="row mb-2">
+                              <label for="inputDate" class="col-lg-3 col-md-4 label">Début:</label>
+                              <div class="col-sm-4">
+                                <input type="date" class="form-control" v-model="audience.date_debut">
+                              </div>
+                              à
+                              <div class="col-sm-4">
+                                <input type="time" class="form-control" v-model="audience.time_debut">
+                              </div>
+                            </div>
                           </div>
-                        </div>
-                        <div class="row">
-                          <div class="col-lg-3 col-md-4 label"> Etat:</div>
-                          <div class="col-lg-9 col-md-8">
-                            <input class="form-check-input" type="checkbox" v-model="terminerEvenement" id="gridCheck1"> Terminer
+
+                          <div class="row">
+                            <!-- <div class="col-lg-3 col-md-4 label ">Début: </div> -->
+                            <div class="row mb-2">
+                              <label for="inputDate" class="col-lg-3 col-md-4 label">Fin:</label>
+                              <div class="col-sm-4">
+                                <input type="date" class="form-control" v-model="audience.date_fin">
+                              </div> à 
+                              <div class="col-sm-4">
+                                <input type="time" class="form-control" v-model="audience.time_fin">
+                              </div>
+                            </div>
+                          </div>
+        
+                          <div class="row">
+                            <div class="row mb-2">
+                              <div class="col-lg-3 col-md-4 label ">Nom:</div>
+                              <div class="col-lg-9 col-md-8">{{audience.nom}}</div>
+                            </div>
+                          </div>
+        
+                          <div class="row">
+                            <div class="row mb-2">
+                              <div class="col-lg-3 col-md-4 label">Prénom:</div>
+                              <div class="col-lg-9 col-md-8">{{audience.prenom}}</div>
+                            </div>
+                          </div>
+        
+        
+                          <div class="row">
+                            <div class="row mb-2">
+                              <div class="col-lg-3 col-md-4 label">Tél:</div>
+                              <div class="col-lg-9 col-md-8">{{audience.numero_telephone}}</div>
+                            </div>
+                          </div>
+        
+                          <div class="row">
+                            <div class="row mb-2">
+                              <div class="col-lg-3 col-md-4 label">Mail:</div>
+                              <div class="col-lg-9 col-md-8">{{audience.email}}</div>
+                            </div>
+                          </div>
+
+                          <div class="row">
+                            <div class="row mb-2">
+                              <div class="col-lg-3 col-md-4 label">Fonction:</div>
+                              <div class="col-lg-9 col-md-8">{{audience.poste_agent}}</div>
+                            </div>
+                          </div>
+
+                          <div class="row">
+                            <div class="row mb-2">
+                              <div class="col-lg-3 col-md-4 label">Path:</div>
+                              <div class="col-lg-9 col-md-8">{{audience.path_agent}}</div>
+                            </div>
+                          </div>
+
+                          <div class="row">
+                            <div class="row mb-2">
+                              <div class="col-lg-3 col-md-4 label">Status:</div>
+                              <div class="col-lg-9 col-md-8">
+                                <span class="badge bg-dark" v-if="audience.status === 'Reporté'">{{audience.status}}</span>
+                                <span class="badge bg-danger" v-else-if="audience.status === 'Non validé'">{{audience.status}}</span>
+                                <span class="badge bg-success" v-else-if="audience.status === 'Validé'">{{audience.status}}</span>
+                                <span class="badge bg-light text-dark" v-else>{{audience.status}}</span>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div class="row">
+                            <div class="row mb-2">
+                              <div class="col-lg-3 col-md-4 label"> Etat:</div>
+                              <div class="col-lg-9 col-md-8">
+                                <input class="form-check-input" type="checkbox" v-model="terminerEvenement" id="gridCheck1"> Terminer
+                              </div>
+                            </div>
                           </div>
                         </div>
                       </div>
+        
                     </div>
-      
+                    
                   </div>
-                  
+        
                 </div>
-      
               </div>
+
+
+              <SpinnerPopup
+                :sipnnerActivated="sipnnerActivated"
+              />
+              
+              <div class="text-center" >
+                <button type="submit" class="btn btn-success" @click="setEtatAction(1)" v-if="audience.status === 'Non validé'" >
+                  Valider
+                </button>
+                <button type="submit" class="btn btn-warning" @click="setEtatAction(4)"  v-if="audience.status === 'Validé'" >
+                  Modifier
+                </button>
+                <button type="submit" class="btn btn-dark" @click="setEtatAction(2)" v-if="audience.status === 'Validé' || audience.status === 'Non validé'" >
+                  Reporter
+                </button>
+                <button type="submit" class="btn btn-success" @click="setEtatAction(3)" v-if="audience.status === 'Reporté'" >
+                  Revalider
+                </button>
+              </div>
+
             </div>
-
-
-            <SpinnerPopup
-              :sipnnerActivated="sipnnerActivated"
-            />
-            
-            <div class="text-center" >
-              <button type="submit" class="btn btn-success" @click="valider" v-if="audience.status === 'Non validé'" >
-                Valider
-              </button>
-              <button type="submit" class="btn btn-dark" @click="reporter" v-if="audience.status === 'Validé' || audience.status === 'Non validé'" >
-                Reporter
-              </button>
-            </div>
-
-          </div>
-
+          </form>
         </div>
       </div>
     </teleport>
   </div>
 
   <div v-else-if="typeCalendrier ==='evenementiel' && audience.typeEvenement ==='Autorité' ">
-    <teleport to=".popupToShow">
-      <div v-if="showPopupAudience" class="popupShow">
+    <teleport to=".popupToShowDetailEvent">
+      <div v-if="showPopupAudience" class="popupShowDetailEvent">
         <p  @click="togglePopupAudience"><i class="ri-close-line" style="font-size: 35px;position: fixed; margin-left: 88%;"></i></p>
         <div class="card-body">
           <h2 class="card-title">Détail audience autorité</h2>
+
+          <form @submit.prevent="setActionEvenement">
             <div class="row">
               <div class="row d-flex justify-content-center">
                 <!-- <div class="col-md-6">
@@ -781,39 +889,78 @@
                       <div class="tab-content pt-2">
         
                         <div class="tab-pane fade show active profile-overview" id="profile-overview" role="tabpanel">
-                          <h5 class="card-title">Message</h5>
-                          <p class="small fst-italic">{{audience.motif}}. {{audience.dateAudience}}</p>
+                          <h5 class="card-title">Motif</h5>
+                          <p class="small fst-italic">{{audience.motif}}</p>
         
                           <h5 class="card-title">Détails</h5>
         
                           <div class="row">
-                            <div class="col-lg-3 col-md-4 label ">Autorité: </div>
-                            <div class="col-lg-9 col-md-8">{{audience.structure}}</div>
+                            <!-- <div class="col-lg-3 col-md-4 label ">Début: </div> -->
+                            <div class="row mb-2">
+                              <label for="inputDate" class="col-lg-3 col-md-4 label">Début:</label>
+                              <div class="col-sm-4">
+                                <input type="date" class="form-control" v-model="audience.date_debut">
+                              </div>
+                              à
+                              <div class="col-sm-4">
+                                <input type="time" class="form-control" v-model="audience.time_debut">
+                              </div>
+                            </div>
+                          </div>
+
+                          <div class="row">
+                            <!-- <div class="col-lg-3 col-md-4 label ">Début: </div> -->
+                            <div class="row mb-2">
+                              <label for="inputDate" class="col-lg-3 col-md-4 label">Fin:</label>
+                              <div class="col-sm-4">
+                                <input type="date" class="form-control" v-model="audience.date_fin">
+                              </div> à 
+                              <div class="col-sm-4">
+                                <input type="time" class="form-control" v-model="audience.time_fin">
+                              </div>
+                            </div>
+                          </div>
+
+                          <div class="row">
+                            <div class="row mb-2">
+                              <div class="col-lg-3 col-md-4 label ">Autorité: </div>
+                              <div class="col-lg-9 col-md-8">{{audience.structure}}</div>
+                            </div>
+
                           </div>
         
                           <div class="row">
-                            <div class="col-lg-3 col-md-4 label">Tél:</div>
-                            <div class="col-lg-9 col-md-8">{{audience.numero_telephone}}</div>
+                            <div class="row mb-2">
+                              <div class="col-lg-3 col-md-4 label">Tél:</div>
+                              <div class="col-lg-9 col-md-8">{{audience.numero_telephone}}</div>
+                            </div>
                           </div>
         
                           <div class="row">
-                            <div class="col-lg-3 col-md-4 label">Mail:</div>
-                            <div class="col-lg-9 col-md-8">{{audience.email}}</div>
+                            <div class="row mb-2">
+                              <div class="col-lg-3 col-md-4 label">Mail:</div>
+                              <div class="col-lg-9 col-md-8">{{audience.email}}</div>
+                            </div>
                           </div>
   
                           <div class="row">
-                            <div class="col-lg-3 col-md-4 label">Status:</div>
-                            <div class="col-lg-9 col-md-8">
-                              <span class="badge bg-dark" v-if="audience.status === 'Reporté'">{{audience.status}}</span>
-                              <span class="badge bg-danger" v-else-if="audience.status === 'Non validé'">{{audience.status}}</span>
-                              <span class="badge bg-success" v-else-if="audience.status === 'Validé'">{{audience.status}}</span>
-                              <span class="badge bg-light text-dark" v-else>{{audience.status}}</span>
+                            <div class="row mb-2">
+                              <div class="col-lg-3 col-md-4 label">Status:</div>
+                              <div class="col-lg-9 col-md-8">
+                                <span class="badge bg-dark" v-if="audience.status === 'Reporté'">{{audience.status}}</span>
+                                <span class="badge bg-danger" v-else-if="audience.status === 'Non validé'">{{audience.status}}</span>
+                                <span class="badge bg-success" v-else-if="audience.status === 'Validé'">{{audience.status}}</span>
+                                <span class="badge bg-light text-dark" v-else>{{audience.status}}</span>
+                              </div>
                             </div>
                           </div>
+
                           <div class="row">
-                            <div class="col-lg-3 col-md-4 label"> Etat:</div>
-                            <div class="col-lg-9 col-md-8">
-                              <input class="form-check-input" type="checkbox" v-model="terminerEvenement" id="gridCheck1"> Terminer
+                            <div class="row mb-2">
+                              <div class="col-lg-3 col-md-4 label"> Etat:</div>
+                              <div class="col-lg-9 col-md-8">
+                                <input class="form-check-input" type="checkbox" v-model="terminerEvenement" id="gridCheck1"> Terminer
+                              </div>
                             </div>
                           </div>
   
@@ -829,125 +976,175 @@
                   />
                   
                   <div class="text-center" >
-                    <button type="submit" class="btn btn-success" @click="valider" v-if="audience.status === 'Non validé'" >
+                    <button type="submit" class="btn btn-success" @click="setEtatAction(1)" v-if="audience.status === 'Non validé'" >
                       Valider
                     </button>
-                    <button type="submit" class="btn btn-dark" @click="reporter" v-if="audience.status === 'Validé' || audience.status === 'Non validé'" >
+                    <button type="submit" class="btn btn-warning" @click="setEtatAction(4)"  v-if="audience.status === 'Validé'" >
+                      Modifier
+                    </button>
+                    <button type="submit" class="btn btn-dark" @click="setEtatAction(2)" v-if="audience.status === 'Validé' || audience.status === 'Non validé'" >
                       Reporter
+                    </button>
+                    <button type="submit" class="btn btn-success" @click="setEtatAction(3)" v-if="audience.status === 'Reporté'" >
+                      Revalider
                     </button>
                   </div>
         
                 </div>
               </div>
             </div>
+          </form>
         </div>
       </div>
     </teleport>
   </div>
 
   <div v-else-if="typeCalendrier ==='evenementiel' && audience.typeEvenement ==='Entretien' ">
-    <teleport to=".popupToShow">
-      <div v-if="showPopupAudience" class="popupShow">
+    <teleport to=".popupToShowDetailEvent">
+      <div v-if="showPopupAudience" class="popupShowDetailEvent">
         <p  @click="togglePopupAudience"><i class="ri-close-line" style="font-size: 35px;position: fixed; margin-left: 88%;"></i></p>
         <div class="card-body">
           <h2 class="card-title">Détail entretien</h2>
-            <div class="row">
+            <form @submit.prevent="setActionEvenement">
+              <div class="row">
 
-              <!-- <div class="col-xl-4">
-      
-                <div class="card">
-                  <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
-      
-                    <img src="../../assets/img/profile-img.jpg" alt="Profile" class="rounded-circle">
-                  </div>
-                </div>
-      
-              </div> -->
-              <div class="row d-flex justify-content-center">
-                <div class="col-md-12">
-
+                <!-- <div class="col-xl-4">
+        
                   <div class="card">
-                    <div class="card-body">
-                      <div class="tab-content pt-2">
+                    <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
         
-                        <div class="tab-pane fade show active profile-overview" id="profile-overview" role="tabpanel">
-                          <h5 class="card-title">Message</h5>
-                          <p class="small fst-italic">{{audience.motif}}. {{audience.dateAudience}}</p>
-        
-                          <h5 class="card-title">Détails</h5>
-        
-                          <div class="row">
-                            <div class="col-lg-3 col-md-4 label ">Nom: </div>
-                            <div class="col-lg-9 col-md-8">{{audience.nom}}</div>
-                          </div>
-  
-                          <div class="row">
-                            <div class="col-lg-3 col-md-4 label ">Prénom: </div>
-                            <div class="col-lg-9 col-md-8">{{audience.prenom}}</div>
-                          </div>
-        
-                          <div class="row">
-                            <div class="col-lg-3 col-md-4 label">Tél:</div>
-                            <div class="col-lg-9 col-md-8">{{audience.numero_telephone}}</div>
-                          </div>
-        
-                          <div class="row">
-                            <div class="col-lg-3 col-md-4 label">Mail:</div>
-                            <div class="col-lg-9 col-md-8">{{audience.email}}</div>
-                          </div>
-  
-                          <div class="row">
-                            <div class="col-lg-3 col-md-4 label">Status:</div>
-                            <div class="col-lg-9 col-md-8">
-                              <span class="badge bg-dark" v-if="audience.status === 'Reporté'">{{audience.status}}</span>
-                              <span class="badge bg-danger" v-else-if="audience.status === 'Non validé'">{{audience.status}}</span>
-                              <span class="badge bg-success" v-else-if="audience.status === 'Validé'">{{audience.status}}</span>
-                              <span class="badge bg-light text-dark" v-else>{{audience.status}}</span>
-                            </div>
-                          </div>
-  
-                          <div class="row">
-                            <div class="col-lg-3 col-md-4 label"> Etat:</div>
-                            <div class="col-lg-9 col-md-8">
-                              <input class="form-check-input" type="checkbox" v-model="terminerEvenement" id="gridCheck1"> Terminer
-                            </div>
-                          </div>
-
-                          <div class="row">
-                            <div class="col-lg-3 col-md-4 label">
-                              <RouterLink :to="{name: 'back-office-detail-demande-stage',params:{id_demande_stage: audience.id_evenement}}">
-                                Voir plus
-                              </RouterLink> 
-                            </div>
-                          </div>
-
-                        </div>
-      
-                      </div>
-  
-                      <SpinnerPopup
-                        :sipnnerActivated="sipnnerActivated"
-                      />
-                      
-                      <div class="text-center" >
-                        <button type="submit" class="btn btn-dark" @click="reporter" v-if="audience.status === 'Validé' || audience.status === 'Non validé'" >
-                          Reporter
-                        </button>
-                      </div>
-        
+                      <img src="../../assets/img/profile-img.jpg" alt="Profile" class="rounded-circle">
                     </div>
                   </div>
         
+                </div> -->
+                <div class="row d-flex justify-content-center">
+                  <div class="col-md-12">
+
+                    <div class="card">
+                      <div class="card-body">
+                        <div class="tab-content pt-2">
+          
+                          <div class="tab-pane fade show active profile-overview" id="profile-overview" role="tabpanel">
+                            <h5 class="card-title">Message</h5>
+                            <p class="small fst-italic">{{audience.motif}}</p>
+          
+                            <h5 class="card-title">Détails</h5>
+          
+                            <div class="row">
+                              <div class="row mb-2">
+                                <label for="inputDate" class="col-lg-3 col-md-4 label">Début:</label>
+                                <div class="col-sm-4">
+                                  <input type="date" class="form-control" v-model="audience.date_debut">
+                                </div>
+                                à
+                                <div class="col-sm-4">
+                                  <input type="time" class="form-control" v-model="audience.time_debut">
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="row">
+                              <div class="row mb-2">
+                                <label for="inputDate" class="col-lg-3 col-md-4 label">Fin:</label>
+                                <div class="col-sm-4">
+                                  <input type="date" class="form-control" v-model="audience.date_fin">
+                                </div> à 
+                                <div class="col-sm-4">
+                                  <input type="time" class="form-control" v-model="audience.time_fin">
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="row">
+                              <div class="row mb-2">
+                                <div class="col-lg-3 col-md-4 label ">Nom: </div>
+                                <div class="col-lg-9 col-md-8">{{audience.nom}}</div>
+                              </div>
+                            </div>
+    
+                            <div class="row">
+                              <div class="row mb-2">
+                                <div class="col-lg-3 col-md-4 label ">Prénom: </div>
+                                <div class="col-lg-9 col-md-8">{{audience.prenom}}</div>
+                              </div>
+                            </div>
+          
+                            <div class="row">
+                              <div class="row mb-2">
+                                <div class="col-lg-3 col-md-4 label">Tél:</div>
+                                <div class="col-lg-9 col-md-8">{{audience.numero_telephone}}</div>
+                              </div>
+                            </div>
+          
+                            <div class="row">
+                              <div class="row mb-2">
+                                <div class="col-lg-3 col-md-4 label">Mail:</div>
+                                <div class="col-lg-9 col-md-8">{{audience.email}}</div>
+                              </div>
+                            </div>
+    
+                            <div class="row">
+                              <div class="row mb-2">
+                                <div class="col-lg-3 col-md-4 label">Status:</div>
+                                <div class="col-lg-9 col-md-8">
+                                  <span class="badge bg-dark" v-if="audience.status === 'Reporté'">{{audience.status}}</span>
+                                  <span class="badge bg-danger" v-else-if="audience.status === 'Non validé'">{{audience.status}}</span>
+                                  <span class="badge bg-success" v-else-if="audience.status === 'Validé'">{{audience.status}}</span>
+                                  <span class="badge bg-light text-dark" v-else>{{audience.status}}</span>
+                                </div>
+                              </div>
+                            </div>
+    
+                            <div class="row">
+                              <div class="row mb-2">
+                                <div class="col-lg-3 col-md-4 label"> Etat:</div>
+                                <div class="col-lg-9 col-md-8">
+                                  <input class="form-check-input" type="checkbox" v-model="terminerEvenement" id="gridCheck1"> Terminer
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="row">
+                              <div class="row mb-2">
+                                <div class="col-lg-3 col-md-4 label">
+                                  <RouterLink :to="{name: 'back-office-detail-demande-stage',params:{id_demande_stage: audience.id_evenement}}">
+                                    Voir plus
+                                  </RouterLink> 
+                                </div>
+                              </div>
+                            </div>
+
+                          </div>
+        
+                        </div>
+          
+                      </div>
+                    </div>
+          
+                  </div>
+                  <SpinnerPopup
+                    :sipnnerActivated="sipnnerActivated"
+                  />
+                  
+                  <div class="text-center" >
+                    <button type="submit" class="btn btn-warning" @click="setEtatAction(4)"  v-if="audience.status === 'Validé'" >
+                      Modifier
+                    </button>
+                    <button type="submit" class="btn btn-dark" @click="setEtatAction(2)" v-if="audience.status === 'Validé' || audience.status === 'Non validé'" >
+                      Reporter
+                    </button>
+                  </div>
                 </div>
+
               </div>
-
-
-
-            </div>
+            </form>
         </div>
       </div>
     </teleport>
-  </div>
+  </div>   
+
+
   <!-- <RouterView /> -->
 
 </template>
@@ -972,6 +1169,7 @@
     import EvenementApi from '../../api/evenement'
 
     import DemandeAudiencePublicAPI from '../../api/demande_audience_public'
+    import Swal from 'sweetalert2';
     import swal from 'sweetalert';
     import Function from '../../func/function';
     // import tippy from 'tippy.js';
@@ -1066,7 +1264,12 @@
                 heure_fin:''
               },
               masqueEvenement: true,
-              terminerEvenement: false
+              terminerEvenement: false,
+              // boolean pour les bouttons
+              etatAction: 0,
+              // estValide: false,
+              // estReporte: false,
+              // estRevalide: false
               // spinnerStatus:''                 
           }
       },
@@ -1080,7 +1283,7 @@
           this.setEvenementTerminer(value)
           this.refreshData()
           // this.terminerEvenement = false
-          this.showPopupAudience = false
+          // this.showPopupAudience = false
           
 
           // this.terminerEvenement = false
@@ -1262,15 +1465,18 @@
               sigle: this.autoriteSender.sigle,
               child_libelle: this.autoriteSender.child_libelle
             }
-            this.sipnnerActivated = true
+            // this.sipnnerActivated = true
+            this.$emit('spinnerStatus', true)
             const response = await DemandeAudienceAutoriteAPI.ajouter(audience)
             if(response.message){
               this.togglePopupAudience()
               swal("Audience enregistrée", `${response.message}`, "success");
-              this.sipnnerActivated = false
+              // this.sipnnerActivated = false
+              this.$emit('spinnerStatus', false)
             }
             else{
-                this.sipnnerActivated = false
+                // this.sipnnerActivated = false
+                this.$emit('spinnerStatus', false)
                 swal("Audience non enregistrée", "Votre audience n'a pas été enregistrée", "error");
             }
             this.calendarOptions.events = await DemandeAudienceAutoriteAPI.faire_audience(
@@ -1387,11 +1593,13 @@
             //   numero_telephone: this.audience.numero_telephone,
             //   id_audience: this.audience.id
             // }
-            this.sipnnerActivated = false
+            // this.sipnnerActivated = false
+            this.$emit('spinnerStatus', false)
             const response = await DemandeAudienceAutoriteAPI.modifier(audience)
             if(response.message){
               this.togglePopupAudience()
-              this.sipnnerActivated = false
+              // this.sipnnerActivated = false
+              this.$emit('spinnerStatus', false)
               swal("Audience modifiée", `${response.message}`, "success");
             }
             else{
@@ -1460,39 +1668,45 @@
 
         async valider(){
           if(this.typeCalendrier ==='evenementiel' && this.audience.typeEvenement ==='Public'){
-            const arg = {
-              id_dm_aud_public_date_heure_dispo: this.audience.id,
-              id_audience: this.audience.id_evenement,
-              date_debut: this.audience.date_debut,
-              date_fin: this.audience.date_fin,
-              heure_debut: this.audience.time_debut,
-              heure_fin: this.audience.time_fin,
-              id_autorite: this.autoriteSender.child_id,
-              type_audience: this.audience.typeEvenement,
-              autorite: {
+            // console.log(new Date())
+
+              const arg = {
+                id_dm_aud_public_date_heure_dispo: this.audience.id,
+                id_audience: this.audience.id_evenement,
+                date_debut: this.audience.date_debut,
+                date_fin: this.audience.date_fin,
+                heure_debut: this.audience.time_debut,
+                heure_fin: this.audience.time_fin,
                 id_autorite: this.autoriteSender.child_id,
-                intitule: this.autoriteSender.child_libelle,
-                intitule_code: this.autoriteSender.sigle
-              },
-              envoyeur: {
-                nom: this.audience.nom,
-                prenom: this.audience.prenom,
-                addresse_electronique: this.audience.email,
-                motif: this.audience.motif
+                type_audience: this.audience.typeEvenement,
+                autorite: {
+                  id_autorite: this.autoriteSender.child_id,
+                  intitule: this.autoriteSender.child_libelle,
+                  intitule_code: this.autoriteSender.sigle
+                },
+                envoyeur: {
+                  nom: this.audience.nom,
+                  prenom: this.audience.prenom,
+                  addresse_electronique: this.audience.email,
+                  motif: this.audience.motif
+                }
               }
-            }
-            this.sipnnerActivated = true
-            const response = await DemandeAudiencePublicAPI.valider_public(arg)
-            if(response.message){
-                this.togglePopupAudience()
-                this.sipnnerActivated = false
-                swal("Audience validée", `${response.message}`, "success");
-            }
-            else{
-                swal("Audience non validée", "Votre audience n'a pas été validée", "error");
-            }
-            this.refreshData()
-            // this.calendarOptions.events = await AutoriteApi.calendrier({id_autorite: this.autoriteSender.child_id})
+              // console.log('Cool ca marche...')
+              // this.sipnnerActivated = true
+              this.$emit('spinnerStatus', true)
+              const response = await DemandeAudiencePublicAPI.valider_public(arg)
+              if(response.message){
+                  this.togglePopupAudience()
+                  // this.sipnnerActivated = false
+                  this.$emit('spinnerStatus', false)
+                  swal("Audience validée", `${response.message}`, "success");
+              }
+              else{
+                  swal("Audience non validée", "Votre audience n'a pas été validée", "error");
+              }
+              this.refreshData()
+              // this.calendarOptions.events = await AutoriteApi.calendrier({id_autorite: this.autoriteSender.child_id})
+
           }
           else if(this.typeCalendrier ==='evenementiel' && this.audience.typeEvenement ==='Agent'){
             const arg = {
@@ -1516,11 +1730,13 @@
                 motif: this.audience.motif
               }
             }
-            this.sipnnerActivated = true
+            // this.sipnnerActivated = true
+            this.$emit('spinnerStatus', true)
             const response = await DemandeAudiencePublicAPI.valider_public(arg)
             if(response.message){
                 this.togglePopupAudience()
-                this.sipnnerActivated = false
+                // this.sipnnerActivated = false
+                this.$emit('spinnerStatus', false)
                 swal("Audience validée", `${response.message}`, "success");
             }
             else{
@@ -1529,14 +1745,50 @@
             this.refreshData()
           }
           else if (this.typeCalendrier ==='evenementiel' && this.audience.typeEvenement ==='Autorité'){
-            if(this.audience.status === 'Non validé'){
-              this.sipnnerActivated = true
-              const response = await DemandeAudienceAutoriteAPI.valider(this.evenement)
-              if(response.message){
-                this.togglePopupAudience()
-                this.sipnnerActivated = false
-                swal("Audience validée", `${response.message}`, "success");
+            this.$emit('spinnerStatus', true)
+            const response = await DemandeAudienceAutoriteAPI.valider(this.evenement)
+            if(response.message){
+              this.togglePopupAudience()
+              // this.sipnnerActivated = false
+              this.$emit('spinnerStatus', false)
+              swal("Audience validée", `${response.message}`, "success");
+            }
+            if(this.autoriteSender && this.typeCalendrier === 'evenementiel'){
+              const id = this.autoriteSender.child_id
+              this.refreshData()
+              // this.calendarOptions.events = await AutoriteApi.calendrier({id_autorite: id})
+            }
+          }
+          else if (this.typeCalendrier ==='evenementiel' && this.audience.typeEvenement ==='Entretien'){
+            const arg = {
+              id_entretien_stage: this.audience.id,
+              id_demande_stage: this.audience.id_evenement,
+              date_debut: this.audience.date_debut,
+              date_fin: this.audience.date_fin,
+              heure_debut: this.audience.time_debut,
+              heure_fin: this.audience.time_fin,
+              id_autorite: this.autoriteSender.child_id,
+              type_audience: this.audience.typeEvenement,
+              autorite: {
+                id_autorite: this.autoriteSender.child_id,
+                intitule: this.autoriteSender.child_libelle,
+                intitule_code: this.autoriteSender.sigle
+              },
+              stagiaire: {
+                nom: this.audience.nom,
+                prenom: this.audience.prenom,
+                addresse_electronique: this.audience.email,
+                motif: this.audience.motif
               }
+            }
+            // this.sipnnerActivated = true
+            this.$emit('spinnerStatus', true)
+            const response = await EntretienApi.modifier_calendrier(arg)
+            if(response.data){
+              this.togglePopupAudience()
+              // this.sipnnerActivated = false
+              this.$emit('spinnerStatus', false)
+              swal("Entretien modifié", `Entretien a bien été modifié`, "success");
             }
             if(this.autoriteSender && this.typeCalendrier === 'evenementiel'){
               const id = this.autoriteSender.child_id
@@ -1568,11 +1820,14 @@
                 motif: this.audience.motif
               }
             }
-            this.sipnnerActivated = true
+            // console.log('Reporte worked...')
+            // this.sipnnerActivated = true
+            this.$emit('spinnerStatus', true)
             const response = await DemandeAudiencePublicAPI.reporter_public_plus_tard(arg)
             if(response.message){
                 this.togglePopupAudience()
-                this.sipnnerActivated = false
+                // this.sipnnerActivated = false
+                this.$emit('spinnerStatus', false)
                 swal("Audience reportée", `${response.message}`, "success");
             }
             else{
@@ -1597,11 +1852,13 @@
                 motif: this.audience.motif
               }
             }
-            this.sipnnerActivated = true
+            // this.sipnnerActivated = true
+            this.$emit('spinnerStatus', true)
             const response = await DemandeAudiencePublicAPI.reporter_public_plus_tard(arg)
             if(response.message){
                 this.togglePopupAudience()
-                this.sipnnerActivated = false
+                // this.sipnnerActivated = false
+                this.$emit('spinnerStatus', false)
                 swal("Audience reportée", `${response.message}`, "success");
             }
             else{
@@ -1620,11 +1877,13 @@
                 prenom: this.audience.prenom
               }
             }
-            this.sipnnerActivated = true
+            // this.sipnnerActivated = true
+            this.$emit('spinnerStatus', true)
             const response = await EntretienApi.supprimer(arg)
             if(response.message){
                 this.togglePopupAudience()
-                this.sipnnerActivated = false
+                // this.sipnnerActivated = false
+                this.$emit('spinnerStatus', false)
                 swal("Entretien reportée", `${response.message}`, "success");
             }
             else{
@@ -1634,17 +1893,16 @@
             // this.calendarOptions.events = await AutoriteApi.calendrier({id_autorite: this.autoriteSender.child_id})
           }
           else if (this.typeCalendrier ==='evenementiel' && this.audience.typeEvenement ==='Autorité'){
-            if(this.audience.status === 'Validé'){
-              this.sipnnerActivated = true
-              const response = await DemandeAudienceAutoriteAPI.reporter_by_click(this.evenement)
-              if(response.message){
-                this.togglePopupAudience()
-                this.sipnnerActivated = false
-                swal("Audience reportée", `${response.message}`, "success");
-              }
-              else {
-                swal("Audience non reportée", `Votre audience n'a pas été reportée`, "error");
-              }
+            this.$emit('spinnerStatus', true)
+            const response = await DemandeAudienceAutoriteAPI.reporter_by_click(this.evenement)
+            if(response.message){
+              this.togglePopupAudience()
+              // this.sipnnerActivated = false
+              this.$emit('spinnerStatus', false)
+              swal("Audience reportée", `${response.message}`, "success");
+            }
+            else {
+              swal("Audience non reportée", `Votre audience n'a pas été reportée`, "error");
             }
             if(this.autoriteSender && this.typeCalendrier === 'evenementiel'){
               this.refreshData()
@@ -1654,6 +1912,94 @@
           }
         },
         
+
+
+        setEtatAction(value){
+          this.etatAction = value
+        },
+
+        async setActionEvenement(){
+
+          const dateTimeDebut = new Date(this.audience.date_debut+'T'+this.audience.time_debut)
+          const dateTimeFin = new Date(this.audience.date_fin+'T'+this.audience.time_fin)
+          
+          let currentDate = new Date();
+          currentDate.setDate(currentDate.getDate() - 1);
+
+          let currentDate2 = new Date()
+
+          // const huitHour = new Date(new Date()+'T08:00:00')
+          // console.log()
+          // huitHour.setDate(huitHour.getDate())
+          // currentDate2.setDate(currentDate2.getDate())
+
+          // console.log(dateTimeDebut.getDate())
+          // console.log(dateTimeFin.getDate())
+          // console.log(currentDate)
+
+          // console.log(dateTimeDebut.getTime())
+          // console.log(dateTimeFin.getTime())
+          // console.log(currentDate2.getTime())
+
+          // Gestion d'erreur horaire
+          if(dateTimeDebut < currentDate){
+            swal("Erreur de la date début", 'La date du début est inférieure à la date actuelle', "error");
+            console.log('Erreur 1')
+            // this.resetEtat()
+
+            // console.log('Date début est inférieure actuelle')
+
+          }
+          else if(dateTimeFin < currentDate){
+            swal(
+              'Erreur de la date fin',
+              'La date fin est inférieure à la date actuelle',
+              'error'
+            )
+            // this.resetEtat()
+          }
+          else if( dateTimeDebut.getTime() < currentDate2.getTime()){
+            swal("Erreur d'horaire", 'L\'heure du début est inférieure à l\'heure actuelle', "error");
+            // this.resetEtat()
+            // console.log('Heure début est inférieure')
+          }
+          else if(dateTimeFin.getTime() < currentDate2.getTime()){
+            swal("Erreur d'horaire", 'L\'heure fin est inférieure à l\'heure actuelle', "error");
+            // this.resetEtat()
+            // console.log("Heure fin est inférieure actuelle...")
+          }
+          else if(dateTimeDebut.getTime() > dateTimeFin.getTime()){
+            swal("Erreur d'horaire", 'L\'heure du début est supérieur à l\'heure fin', "error");
+            // this.resetEtat()
+            // console.log('Date début est supérieure au date fin')
+          }
+          else if(dateTimeDebut.getDay() == 6 || dateTimeDebut.getDay() == 0){
+            swal("Erreur de la date début", 'Les week-ends sont pas permis', "error");
+          }
+
+          else if(dateTimeFin.getDay() == 6 || dateTimeFin.getDay() == 0){
+            swal("Erreur de la date fin", 'Les week-ends sont pas permis', "error");
+          }
+          else {
+            if(this.etatAction == 1){
+              this.valider()
+            }else if(this.etatAction == 2){
+              this.reporter()
+            }else if(this.etatAction == 3){
+              this.valider()
+              // console.log('Revalider un event...')
+            }else if(this.etatAction == 4){
+              this.valider()
+            }
+          }
+
+          // Gestion d'eurreur horaire
+
+
+          // this.resetEtat()
+          // if()
+        },
+
         togglePopupAudience(){
             this.showPopupAudience = !this.showPopupAudience
         },
@@ -2110,6 +2456,12 @@
               this.count = 0
             }
           }
+
+          // controle unitaire des infos
+          if(this.typeCalendrier == 'evenementiel'){
+            this.setDateTimeDetailEvenement(event.event.extendedProps)
+          }
+          // this.controlDate()
         },
 
         detailEvent(info) {
@@ -2122,7 +2474,55 @@
               delay:[500,0]
             });
           }
-        }
+        },
+
+        setDateTimeDetailEvenement(info){
+          this.audience.date_debut = new Date(info.date_debut).toJSON().slice(0,10)
+          this.audience.date_fin = new Date(info.date_fin).toJSON().slice(0,10)
+          this.audience.time_debut = info.heure_debut
+          this.audience.time_fin = info.heure_fin
+
+          // if(new Date(info.date_fin) < new Date()){
+          //   // initialiser date actuel
+
+          //   // console.log('Date inférieure...')
+          //   // if(dateVar.getTime(info.heure_fin) < dateVar.getTime(new Date())){
+          //   //   console.log('Heure inférieure')
+          //   // }
+          // } else if (new Date(info.date_fin) > new Date()){
+          //   console.log('Date supérieure')
+          // }
+          // else {
+          //   console.log('Date ne change pas')
+          // }
+        },
+
+        controlDate(){
+          const dateTimeDebut = new Date(this.audience.date_debut+'T'+this.audience.time_debut)
+          const dateTimeFin = new Date(this.audience.date_fin+'T'+this.audience.time_fin)
+          if(new Date(this.audience.date_debut) < new Date()){
+
+            console.log('Date début est inférieure actuelle')
+
+          }
+          else if(new Date(this.audience.date_fin) < new Date()){
+            console.log('Date fin est  inférieure')
+          }
+          else if(dateTimeDebut.getTime() < new Date().getTime()){
+            console.log('Heure début est inférieure')
+          }
+          else if(dateTimeFin.getTime() < new Date().getTime()){
+            console.log("Heure fin est inférieure actuelle...")
+          }
+          else if(new Date(this.audience.date_debut) > new Date(this.audience.date_fin)){
+            console.log('Date début est supérieure au date fin')
+          }
+        },
+
+        date_actu(){
+          return new Date().toJSON().slice(0, 10)
+        },
+
 
       },
 
@@ -2211,8 +2611,9 @@
         }
       },
 
-      async mounted() {
+      async updated() {
         if(this.autoriteSender && this.typeCalendrier === 'evenementiel'){
+          // console.log('Updated ve...')
           const id = this.autoriteSender.child_id
           this.calendarOptions.events = await AutoriteApi.calendrier({
             id_autorite: id,
@@ -2241,4 +2642,12 @@
   .fc-event{
     cursor: pointer;
   }
+  .form-control {
+    display: block;
+    width: 100%;
+    padding: 0.075rem 0.25rem;
+    font-size: 15px;
+  }
+
+
 </style>

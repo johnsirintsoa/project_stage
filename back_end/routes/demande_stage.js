@@ -10,6 +10,8 @@ const FUNC = require('../func/function')
 const nodemailer = require('nodemailer');
 const path = require('path')
 const fs = require('fs')
+const { authJwt } = require("../middleware");
+
 
 const notification_mailing = require('../Controllers/NotificationController')
 
@@ -114,7 +116,7 @@ router.post('/liste',async(req,res)=>{
     })
 })
 
-router.post('/filtre', async(req,res)=>{
+router.post('/filtre',[authJwt.verifyToken], async(req,res)=>{
     const sql = `CALL filtre_stage ('${req.body.date1}','${req.body.date2}','${req.body.nom}','${req.body.etablissement}',${req.body.id_domaine},${req.body.id_autorite})`
     // console.log(req.body)
     var query = db.query(sql, function(err, result) {
@@ -233,7 +235,7 @@ router.get('/all_status/:id_autorite_enfant',async(req,res)=>{
 })
 
 // detail demande de stages
-router.post('/detail',async(req,res)=>{
+router.post('/detail', [authJwt.verifyToken],async(req,res)=>{
     let sql = `
     SELECT 
         e.id,
@@ -364,7 +366,7 @@ router.get('/file/:file_name',async(req,res)=>{
 })
 
 // Prolonger demande stage
-router.post('/prolonger',async(req,res)=>{
+router.post('/prolonger',[authJwt.verifyToken],async(req,res)=>{
     let sql = `call prolonger_duree_stage(${req.body.duree_en_plus},${req.body.id_entretien_stage})`
     
     var query = db.query(sql, function(err, result) {

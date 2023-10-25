@@ -103,4 +103,18 @@ const router = createRouter({
   linkActiveClass: 'router-view-active-link'
 })
 
+router.beforeEach((to, from, next) => {
+  const publicPages = ['/','/boite-a-doleance','/demande-stage','/demande-audience','/login'];
+  const authRequired = !publicPages.includes(to.path);
+  const loggedIn = localStorage.getItem('autorite');
+
+  // trying to access a restricted page + not logged in
+  // redirect to login page
+  if (authRequired && !loggedIn) {
+    next('/login');
+  } else {
+    next();
+  }
+});
+
 export default router

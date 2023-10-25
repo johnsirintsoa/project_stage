@@ -5,7 +5,7 @@ verifyToken = (req, res, next) => {
 
     if (!token) {
         return res.status(403).send({
-        message: "No token provided!"
+            message: "Aucun token a été fourni"
         });
     }
 
@@ -16,8 +16,8 @@ verifyToken = (req, res, next) => {
                         message: "Unauthorized!",
                     });
                 }
-                // console.log(decoded.id)
-                req.child_id = decoded.id;
+                // console.log(decoded)
+                req.child_id = decoded.data;
                 next();
                 });
 };

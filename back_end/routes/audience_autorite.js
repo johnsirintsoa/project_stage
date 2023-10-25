@@ -5,8 +5,11 @@ const db_name = require('../database').db_name
 const mailing = require('../Controllers/MailingController')
 const notification_mailing = require('../Controllers/NotificationController')
 
+const { authJwt } = require("../middleware");
 
-router.post('/autorite/faire_audience', async (req,res) =>{
+
+
+router.post('/autorite/faire_audience', [authJwt.verifyToken] ,async (req,res) =>{
     const sql = `CALL liste_disponible_autorite(${req.body.id_autorite_sender},${req.body.id_autorite})`
     // console.log(sql)
     db.query(sql,function(err,result){
@@ -517,7 +520,7 @@ router.post('/autorite/all/mois/v2', async(req,res) =>{
 })
 
 
-router.post('/autorite/ajouter',async(req,res)=>{
+router.post('/autorite/ajouter',[authJwt.verifyToken],async(req,res)=>{
     // const sql = `CALL si_disponible_autorite('${req.body.date_event_debut}','${req.body.date_event_fin}','${req.body.time_event_debut}','${req.body.time_event_fin}',${req.body.id_autorite_enfant},'${req.body.motif}')`
     // const sql = `CALL ajouter_audience_autorite (${req.body.id_autorite_sender},${req.body.id_autorite_receiver},${req.body.id_date_heure_disponible_autorite},'${req.body.motif}','${req.body.date_debut}','${req.body.date_fin}','${req.body.heure_debut}','${req.body.heure_fin}')`
     const sql = `CALL ajouter_audience_autorite (${req.body.id_autorite_sender},${req.body.id_autorite_receiver},${req.body.id_date_heure_disponible_autorite},'${req.body.motif}','${req.body.date_debut}','${req.body.date_fin}','${req.body.heure_debut}','${req.body.heure_fin}','${req.body.email}','${req.body.numero_telephone}','${req.body.sigle}','${req.body.child_libelle}')`
@@ -546,7 +549,7 @@ router.post('/autorite/ajouter',async(req,res)=>{
     })
 })
 
-router.post('/autorite/modifier',async(req,res)=>{
+router.post('/autorite/modifier',[authJwt.verifyToken],async(req,res)=>{
     console.log(req.body)
     db.query(`CALL modifier_audience_autorite (${req.body.id_date_heure_disponible_autorite} ,${req.body.id_dm_aud_autorite_date_heure_dispo},'${req.body.motif}','${req.body.email}','${req.body.numero_telephone}',${req.body.id_audience}) `, async (error,result) => {
         if(error){
@@ -568,7 +571,7 @@ router.post('/autorite/modifier',async(req,res)=>{
     })
 })
 
-router.post('/autorite/supprimer',async(req,res)=>{
+router.post('/autorite/supprimer',[authJwt.verifyToken],async(req,res)=>{
     // const sql = `
     //     DELETE FROM stage5.demande_audience_autorite where id = ${req.body.id};
     //     DELETE FROM stage5.dm_aud_autorite_date_heure_dispo WHERE id_dm_aud_autorite IS NULL;
@@ -614,7 +617,7 @@ router.post('/autorite/supprimer',async(req,res)=>{
 //     })
 // })
 
-router.post('/autorite/valider',async(req,res)=>{
+router.post('/autorite/valider',[authJwt.verifyToken],async(req,res)=>{
 
     const autorite = req.body.autorite
     const envoyeur = req.body.envoyeur
@@ -641,7 +644,7 @@ router.post('/autorite/valider',async(req,res)=>{
     })
 })
 
-router.post('/autorite/revalider',async(req,res)=>{
+router.post('/autorite/revalider',[authJwt.verifyToken],async(req,res)=>{
     const autorite = req.body.autorite
     const envoyeur = req.body.envoyeur
 
@@ -702,7 +705,7 @@ router.post('/autorite/revalider',async(req,res)=>{
 //     })
 // })
 
-router.post('/autorite/reporter/now',async(req,res)=>{  
+router.post('/autorite/reporter/now',[authJwt.verifyToken],async(req,res)=>{  
     const autorite = req.body.autorite
     const envoyeur = req.body.envoyeur
     const sql = `CALL reporter_audience_autorite_maintenant (${req.body.id_dm_aud_aut_date_heure_dispo},${req.body.id_audience}, '${req.body.date_debut}','${req.body.date_fin}','${req.body.heure_debut}','${req.body.heure_fin}',${req.body.id_autorite})`
@@ -723,7 +726,7 @@ router.post('/autorite/reporter/now',async(req,res)=>{
     })
 })
 
-router.post('/autorite/reporter/click',async(req,res)=>{
+router.post('/autorite/reporter/click',[authJwt.verifyToken],async(req,res)=>{
     const autorite = req.body.autorite
     const envoyeur = req.body.envoyeur
     
@@ -744,7 +747,7 @@ router.post('/autorite/reporter/click',async(req,res)=>{
     })
 })
 
-router.post('/autorite/reporter/later',async(req,res)=>{
+router.post('/autorite/reporter/later',[authJwt.verifyToken],async(req,res)=>{
     const autorite = req.body.autorite
     const evenement = req.body.evenement
     

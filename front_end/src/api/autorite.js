@@ -2,6 +2,7 @@
 import axios from 'axios'
 import dom  from './config'
 import Function from '../func/function';
+import authHeader from './auth-header'
 
 // const domaine = "http://localhost:3000"
 // const url = domaine.concat("/api/autorite")
@@ -25,9 +26,25 @@ export default class AutoriteAPI{
 
     static async login(arg){
         const url = dom.domaineBackEnd(route1,'/login')
-        const res = await axios.post(url,arg)
+        // await axios.post(url, sms_option, {
+        // }).then((response) => {
+        //   console.log(response)
+        // })
+        let data = ''
+        const res = await axios.post(url,arg,{}).then((response) =>{
+            if(response.data.accessToken){
+                localStorage.setItem('autorite',JSON.stringify(response.data))
+            }
+            // console.log(response.data)
+            data = response.data.db
+        })
+        return data
         // const res = await axios.post(url.concat('/login'),arg)
-        return res.data.db
+    }
+
+    static async hello(arg){
+        const url = dom.domaineBackEnd(route1,'/hello')
+        return axios.get(url,{headers: authHeader()})
     }
 
     static async calendrier(arg){

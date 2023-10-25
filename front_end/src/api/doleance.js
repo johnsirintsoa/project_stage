@@ -1,6 +1,8 @@
 import axios from 'axios'
 import dom  from './config'
 const route1 = 'doleance'
+import authHeader from './auth-header'
+
 
 // const domaine = "http://localhost:3000"
 // const url = domaine.concat("/api/doleance")
@@ -26,7 +28,7 @@ export default class DoleanceAPI{
 
     static async filtre(arg){
         const url = dom.domaineBackEnd(route1,'/filtre')
-        const res = await axios.post(url,arg)
+        const res = await axios.post(url,arg,{headers: authHeader()})
         // const res = await axios.post(url.concat('/filtre'), arg)
         return res.data
     }

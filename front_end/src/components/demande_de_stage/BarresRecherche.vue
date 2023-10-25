@@ -162,7 +162,7 @@
         
  
         <div class="col-md-2">
-            <select class="form-select" id="domaine" name="domaine" :value="domaine" @input="$emit('update:domaine', $event.target.value)" aria-label="Default select example" required="">
+            <select class="form-select"  :value="domaine" @input="$emit('update:domaine', $event.target.value)"  required="">
                 <option selected disabled value="">Domaine</option>
                 <option v-for="d in domaines"  :value="d.id" > {{d.nom_domaine}}</option>
             </select>
