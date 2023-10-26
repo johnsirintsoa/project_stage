@@ -27,7 +27,7 @@ const token_route = require('./routes/token')
 
 
 app.use(cors({
-    Origin: ['http://127.0.0.1:5173/','http://192.168.100.160/'],
+    // Origin: ['http://127.0.0.1:5173/','http://192.168.100.160/'],
     methods: ['GET','POST','DELETE','UPDATE','PUT','PATCH'],
     credentials: true
 }))
