@@ -255,7 +255,7 @@ const audience_public_reporte_plus_tard = async (autorite,evenement) =>{
         to: evenement.addresse_electronique,
         subject: 'Audience reporté',
         html: `<p>Bonjour ${evenement.nom} ${evenement.prenom}.</p> 
-                <p>En raison de certains évenements au sein de l'organisation, la ${autorite.intitule}(${autorite.intitule_code}) a du reporté,br/> votre audience au
+                <p>En raison de certains évenements au sein de l'organisation, la ${autorite.intitule}(${autorite.intitule_code}) a du reporté, votre audience au
                 sujet de <strong>"${evenement.motif}"</strong>.
                 <br/>Nous vous informerons une suite à votre audience</p>
                 <p>Merci pour votre compréhension</p>`

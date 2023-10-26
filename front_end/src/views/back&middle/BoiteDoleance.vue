@@ -92,7 +92,7 @@ export default {
             nbr_filtre: this.filter.nbr_filtre,
             id_autorite: this.autorite.child_id
         }
-        console.log(this.autorite)
+        // console.log(this.autorite)
         this.doleances = await DoleanceAPI.filtre(filtre)
         // this.doleances = await DoleanceAPI.getAllDoleance();
         // this.directions = await DirectionAPI.getAllDirection();

@@ -1641,11 +1641,13 @@
             }
             else {
               const response = await DemandeAudiencePublicController.supprimer(this.audience.id)
+
               swal(
                   'Audience supprimée',
                   `Votre audience a bien été supprimée`,
                   'success'
               )
+              this.togglePopupAudience()
               this.calendarOptions.events = await actual_events_public(this.audience.autoriteReceiver.child_id)
             }           
           }
