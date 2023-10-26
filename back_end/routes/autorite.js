@@ -7,7 +7,7 @@ const mailing = require('../Controllers/MailingController')
 
 require('dotenv').config()
 var jwt = require("jsonwebtoken");
-var bcrypt = require("bcryptjs");
+// var bcrypt = require("bcryptjs");
 const { authJwt } = require("../middleware");
 
 router.post('/structure', async(req,res) =>{
