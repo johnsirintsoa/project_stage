@@ -3034,3 +3034,14 @@ INSERT INTO sql8656622.`user`( id, login, password, role, im, exist_cv, validate
 INSERT INTO sql8656622.`user`( id, login, password, role, im, exist_cv, validate, nom, prenom, corps_id, grade_id, indice_id, cin, sexe, statut, dep, dir, serv, reg, distr, active, sanction, maj_effectue, `type`, type_sfao, type_sad, type_sau, type_sgrh, fb ) VALUES ( 15416, 'jean3', 'hìEO2F3` éª¡ˆ¼Õ', null, null, 0, 0, null, null, null, null, null, null, null, null, null, null, null, null, null, 1, null, null, null, null, null, null, null, null);
 INSERT INTO sql8656622.`user`( id, login, password, role, im, exist_cv, validate, nom, prenom, corps_id, grade_id, indice_id, cin, sexe, statut, dep, dir, serv, reg, distr, active, sanction, maj_effectue, `type`, type_sfao, type_sad, type_sau, type_sgrh, fb ) VALUES ( 15417, 'jean4', '·: O˜n¥ž!Ï ', null, null, 0, 0, null, null, null, null, null, null, null, null, null, null, null, null, null, 1, null, null, null, null, null, null, null, null);
 INSERT INTO sql8656622.`user`( id, login, password, role, im, exist_cv, validate, nom, prenom, corps_id, grade_id, indice_id, cin, sexe, statut, dep, dir, serv, reg, distr, active, sanction, maj_effectue, `type`, type_sfao, type_sad, type_sau, type_sgrh, fb ) VALUES ( 15418, 'jean5', '·RÔúñç«®Q ñØ', null, null, 0, 0, null, null, null, null, null, null, null, null, null, null, null, null, null, 1, null, null, null, null, null, null, null, null);
+
+
+INSERT INTO rohi_johns.`user` (id,login, password) VALUES 
+	(15412,'srcJean1',(SELECT AES_ENCRYPT('srcJean1','lHommeEstNaturellementBonCEestLaSocieteQuiLeCorrompt-Rousseau'))),
+	(15413,'dirJean1',(SELECT AES_ENCRYPT('dirJean1','lHommeEstNaturellementBonCEestLaSocieteQuiLeCorrompt-Rousseau'))),
+	( 15414, 'jean1', (SELECT AES_ENCRYPT('jean1','lHommeEstNaturellementBonCEestLaSocieteQuiLeCorrompt-Rousseau'))),
+	( 15415, 'jean2', (SELECT AES_ENCRYPT('jean2','lHommeEstNaturellementBonCEestLaSocieteQuiLeCorrompt-Rousseau'))),
+	( 15416, 'jean3', (SELECT AES_ENCRYPT('jean3','lHommeEstNaturellementBonCEestLaSocieteQuiLeCorrompt-Rousseau'))),
+	( 15417, 'jean4', (SELECT AES_ENCRYPT('jean4','lHommeEstNaturellementBonCEestLaSocieteQuiLeCorrompt-Rousseau'))),
+	( 15418, 'jean5', (SELECT AES_ENCRYPT('jean5','lHommeEstNaturellementBonCEestLaSocieteQuiLeCorrompt-Rousseau')));
+	

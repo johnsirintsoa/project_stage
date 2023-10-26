@@ -36,7 +36,7 @@ export default class AutoriteAPI{
                 localStorage.setItem('autorite',JSON.stringify(response.data))
             }
             // console.log(response.data)
-            data = response.data.db
+            data = response.data
         })
         return data
         // const res = await axios.post(url.concat('/login'),arg)
