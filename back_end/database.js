@@ -13,7 +13,7 @@ const rohi_db = process.env.DB_AUTORITE
 //   password: 'root',      // Replace with your database password
 //   // database: 'stage', // // Replace with your database Name
 //   database: db_name, // // Replace with your database Name
-//   timezone: 'EAT'
+//   timezone: 'EAT',
 // }); 
 // conn.connect(function(err) {
 //   if (err) throw err;

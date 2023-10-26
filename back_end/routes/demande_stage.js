@@ -15,9 +15,11 @@ const { authJwt } = require("../middleware");
 
 const notification_mailing = require('../Controllers/NotificationController')
 
+require('dotenv/config')
 
-require('./.env')
-const baseURL = HOSTING_URL
+
+// require('./.env')
+// const baseURL = HOSTING_URL
 // const env  = require('./.env')
 
 
@@ -58,7 +60,7 @@ router.post('/add',upload.fields([{name: 'curriculum_vitae'},{name: 'lettre_moti
         // let sql = "INSERT INTO demande_stage(nom,prenom,e_mail,cin,telephone,duree,curriculum_vitae,lettre_motivation,lettre_introduction,message,id_domaine) VALUES ('"+req.body.nom+"','"+req.body.prenom+"','"+req.body.e_mail+"','"+req.body.cin+"','"+req.body.telephone+"','"+req.body.duree+"','"+req.files['curriculum_vitae'][0].filename+"','"+req.files['lettre_motivation'][0].filename+"','"+req.files['lettre_introduction'][0].filename+"','"+req.body.message+"','"+req.body.id_domaine+"')"
         // console.log(req.body)
         // console.log('Hahahaha')
-        let sql = `INSERT INTO demande_stage(nom,prenom,etablissement,e_mail,cin,telephone,duree,curriculum_vitae,lettre_motivation,lettre_introduction,message,id_domaine,id_autorite_enfant,date_creation) VALUES ('${req.body.nom}','${prenomFormated}','${req.body.etablissement}','${req.body.e_mail}','${req.body.cin}','${req.body.telephone}','${req.body.duree}','${req.files['curriculum_vitae'][0].filename}','${req.files['lettre_motivation'][0].filename}','${req.files['lettre_introduction'][0].filename}','${req.body.message}',${req.body.id_domaine},${req.body.id_autorite_enfant},(SELECT CURDATE()))`
+        let sql = `INSERT INTO ${process.env.DB_APP}.demande_stage(nom,prenom,etablissement,e_mail,cin,telephone,duree,curriculum_vitae,lettre_motivation,lettre_introduction,message,id_domaine,id_autorite_enfant,date_creation) VALUES ('${req.body.nom}','${prenomFormated}','${req.body.etablissement}','${req.body.e_mail}','${req.body.cin}','${req.body.telephone}','${req.body.duree}','${req.files['curriculum_vitae'][0].filename}','${req.files['lettre_motivation'][0].filename}','${req.files['lettre_introduction'][0].filename}','${req.body.message}',${req.body.id_domaine},${req.body.id_autorite_enfant},(SELECT CURDATE()))`
         var query = db.query(sql, async (err, result) =>{
             if(err){
                 // console.log('Hahahaha')
@@ -96,10 +98,10 @@ router.post('/liste',async(req,res)=>{
         eds.id as id_entretien_stage,
         dhda.id as id_date_heure_disponible_autorite
         FROM
-        stage5.demande_stage ds
-        JOIN stage5.domaine d on ds.id_domaine = d.id
-        LEFT JOIN stage5.entretien_demande_stage eds on ds.id = eds.id_demande_stage
-        LEFT JOIN stage5.date_heure_disponible_autorite dhda on eds.id_date_heure_disponible_autorite = dhda.id
+        ${process.env.DB_APP}.demande_stage ds
+        JOIN ${process.env.DB_APP}.domaine d on ds.id_domaine = d.id
+        LEFT JOIN ${process.env.DB_APP}.entretien_demande_stage eds on ds.id = eds.id_demande_stage
+        LEFT JOIN ${process.env.DB_APP}.date_heure_disponible_autorite dhda on eds.id_date_heure_disponible_autorite = dhda.id
         WHERE ds.id_autorite_enfant = ${req.body.id_autorite_enfant}
         GROUP BY ds.id`
     

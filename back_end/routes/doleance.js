@@ -5,6 +5,9 @@ const db_name = require('../database').db_name
 const Function = require('../func/function')
 const { authJwt } = require('../middleware');
 
+require('dotenv/config')
+
+
 // const Doleance = require('../models/Doleance')
 
 

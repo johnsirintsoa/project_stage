@@ -6,6 +6,7 @@ const db_name = require('../database').db_name
 const mailing = require('../Controllers/MailingController')
 
 require('dotenv').config()
+
 var jwt = require("jsonwebtoken");
 // var bcrypt = require("bcryptjs");
 const { authJwt } = require("../middleware");
@@ -23,9 +24,9 @@ router.post('/structure', async(req,res) =>{
     c.email,
     c.phone
     FROM
-        rohi.t_structure e
-        LEFT join rohi.user u on e.premier_responsable_id = u.id
-        LEFT join rohi.candidat c on u.id = c.user_id
+        ${process.env.DB_AUTORITE}.t_structure e
+        LEFT join ${process.env.DB_AUTORITE}.user u on e.premier_responsable_id = u.id
+        LEFT join ${process.env.DB_AUTORITE}.candidat c on u.id = c.user_id
         where
         (e.niveau = 'MIN'
         or e.niveau = 'DG'
@@ -64,9 +65,9 @@ router.post('/backOffice/structure', async(req,res) =>{
     c.email,
     c.phone
     FROM
-        rohi.t_structure e
-        LEFT join rohi.user u on e.premier_responsable_id = u.id
-        LEFT join rohi.candidat c on u.id = c.user_id
+        ${process.env.DB_AUTORITE}.t_structure e
+        LEFT join ${process.env.DB_AUTORITE}.user u on e.premier_responsable_id = u.id
+        LEFT join ${process.env.DB_AUTORITE}.candidat c on u.id = c.user_id
         where
         (e.niveau = 'MIN'
         or e.niveau = 'DG'
@@ -111,9 +112,9 @@ router.post('/login', async(req,res) =>{
     ts.niveau,
     c.email,
     c.phone
-    from rohi.t_structure ts 
-    LEFT join rohi.user u on ts.premier_responsable_id = u.id
-    LEFT join rohi.candidat c on u.id = c.user_id
+    from ${process.env.DB_AUTORITE}.t_structure ts 
+    LEFT join ${process.env.DB_AUTORITE}.user u on ts.premier_responsable_id = u.id
+    LEFT join ${process.env.DB_AUTORITE}.candidat c on u.id = c.user_id
     where
     (ts.niveau = 'MIN'
     or ts.niveau = 'DG'
@@ -130,9 +131,9 @@ router.post('/login', async(req,res) =>{
     ts.niveau,
     c.email,
     c.phone
-    from rohi.t_structure ts 
-    LEFT join rohi.user u on ts.premier_responsable_id = u.id
-    LEFT join rohi.candidat c on u.id = c.user_id
+    from ${process.env.DB_AUTORITE}.t_structure ts 
+    LEFT join ${process.env.DB_AUTORITE}.user u on ts.premier_responsable_id = u.id
+    LEFT join ${process.env.DB_AUTORITE}.candidat c on u.id = c.user_id
     where
     (ts.niveau = 'MIN'
     or ts.niveau = 'DG'
@@ -141,7 +142,7 @@ router.post('/login', async(req,res) =>{
     and u.login = '${req.body.nom_utilisateur}'
     and ts.premier_responsable_id = (select 
     u.id
-    from rohi.user u 
+    from ${process.env.DB_AUTORITE}.user u 
     where 
     u.password = (SELECT AES_ENCRYPT('${req.body.mot_de_passe}','lHommeEstNaturellementBonCEestLaSocieteQuiLeCorrompt-Rousseau')));
     `

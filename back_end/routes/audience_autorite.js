@@ -7,6 +7,7 @@ const notification_mailing = require('../Controllers/NotificationController')
 
 const { authJwt } = require('../middleware');
 
+require('dotenv/config')
 
 
 router.post('/autorite/faire_audience', [authJwt.verifyToken] ,async (req,res) =>{
@@ -550,7 +551,7 @@ router.post('/autorite/ajouter',[authJwt.verifyToken],async(req,res)=>{
 })
 
 router.post('/autorite/modifier',[authJwt.verifyToken],async(req,res)=>{
-    console.log(req.body)
+    // console.log(req.body)
     db.query(`CALL modifier_audience_autorite (${req.body.id_date_heure_disponible_autorite} ,${req.body.id_dm_aud_autorite_date_heure_dispo},'${req.body.motif}','${req.body.email}','${req.body.numero_telephone}',${req.body.id_audience}) `, async (error,result) => {
         if(error){
             res.send(error)
@@ -577,7 +578,7 @@ router.post('/autorite/supprimer',[authJwt.verifyToken],async(req,res)=>{
     //     DELETE FROM stage5.dm_aud_autorite_date_heure_dispo WHERE id_dm_aud_autorite IS NULL;
     //     SELECT "Votre audience a bien été supprimée" as message;`
 
-    const sql = `DELETE FROM ${db_name}.demande_audience_autorite where id = ${req.body.id};`
+    const sql = `DELETE FROM ${process.env.DB_APP}.demande_audience_autorite where id = ${req.body.id};`
     
     // const sql1 = `CALL supprimer_audience_autorite (${req.body.id})`
     db.query(sql, (error,result) => {

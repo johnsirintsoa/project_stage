@@ -7,6 +7,9 @@ const Function = require('../func/function')
 
 const notification_mailing = require('../Controllers/NotificationController')
 
+const rohi = require('../database').rohi
+// const db = require('../database').conn
+require('dotenv/config')
 
 router.post('/agent/ajouter',async(req,res)=>{
     const nomFormated = req.body.nom.toUpperCase()

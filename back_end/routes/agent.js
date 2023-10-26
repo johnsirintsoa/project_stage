@@ -3,13 +3,15 @@ const router = express.Router();
 const rohi = require('../database').rohi
 const db = require('../database').conn
 
+require('dotenv/config')
+
 router.post('/login', async(req,res) =>{
 
     const email = `select
     c.id as id_candidat
-    FROM rohi.candidat c 
-    JOIN rohi.t_structure ts on c.structureId = ts.child_id
-    JOIN rohi.user u on c.user_id = u.id
+    FROM ${process.env.DB_AUTORITE}.candidat c 
+    JOIN ${process.env.DB_AUTORITE}.t_structure ts on c.structureId = ts.child_id
+    JOIN ${process.env.DB_AUTORITE}.user u on c.user_id = u.id
     where 
     ts.niveau NOT IN ('MIN', 'DG', 'DIR', 'SCE') 
     AND
@@ -31,9 +33,9 @@ router.post('/login', async(req,res) =>{
     ts.path,
     ts.niveau,
     ts.rang
-    FROM rohi.candidat c 
-    JOIN rohi.t_structure ts on c.structureId = ts.child_id
-    JOIN rohi.user u on c.user_id = u.id
+    FROM ${process.env.DB_AUTORITE}.candidat c 
+    JOIN ${process.env.DB_AUTORITE}.t_structure ts on c.structureId = ts.child_id
+    JOIN ${process.env.DB_AUTORITE}.user u on c.user_id = u.id
     where 
     ts.niveau NOT IN ('MIN', 'DG', 'DIR', 'SCE') 
     AND

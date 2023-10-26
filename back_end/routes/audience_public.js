@@ -9,6 +9,7 @@ const notification_mailing = require('../Controllers/NotificationController')
 
 const { authJwt } = require("../middleware");
 
+require('dotenv/config')
 
 // Liste audience disponible
 router.post('/public/heure_disponible_autorite/jour',async(req,res) =>{
@@ -41,7 +42,7 @@ router.post('/public/all', async(req,res) =>{
 
 // delete audiences
 router.post('/public/delete',async(req,res)=>{
-    let sql = `DELETE FROM ${db_name}.demande_audience_public where id = ${req.body.id} and session_navigateur = '${req.body.session_navigateur}'`
+    let sql = `DELETE FROM ${process.env.DB_APP}.demande_audience_public where id = ${req.body.id} and session_navigateur = '${req.body.session_navigateur}'`
     db.query(sql, (error,result) => {
         if(error) res.send(error)
         res.json(result)
