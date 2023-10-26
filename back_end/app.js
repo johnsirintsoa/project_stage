@@ -23,7 +23,7 @@ const chart_route = require('./routes/chart')
 // const notification_route = require('./routes/notification')
 const nonDispo = require('./routes/NonDispo')
 const evenement_route = require('./routes/evenement')
-const token_route = require('./routes/token')
+// const token_route = require('./routes/token')
 
 
 app.use(cors({
