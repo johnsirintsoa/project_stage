@@ -3,7 +3,7 @@ const router = express.Router();
 const db = require('../database').conn
 const db_name = require('../database').db_name
 const Function = require('../func/function')
-const { authJwt } = require("../middleware");
+const { authJwt } = require('../middleware');
 
 // const Doleance = require('../models/Doleance')
 

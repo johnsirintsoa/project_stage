@@ -5,7 +5,7 @@ const db_name = require('../database').db_name
 const mailing = require('../Controllers/MailingController')
 const notification_mailing = require('../Controllers/NotificationController')
 
-const { authJwt } = require("../middleware");
+const { authJwt } = require('../middleware');
 
 
 
