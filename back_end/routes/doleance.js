@@ -47,16 +47,18 @@ router.post('/ajouter/non_anonyme', async(req,res) =>{
         ( session_navigateur,titre,message,date_publication, id_autorite, sigle,child_libelle,heure_publication,e_mail, cin, numero_telephone, nom, prenom) 
         VALUES 
         ('${req.body.session_navigateur}','${req.body.titre}','${req.body.message}',(select curdate()) ,${req.body.id_autorite},'${req.body.sigle}','${req.body.autorite}',(SELECT SUBTIME(curtime(), "-03:00:00")),'${req.body.e_mail}', '${req.body.cin}', '${req.body.numero_telephone}', '${nomFormated}', '${prenomFormated}')`
-    db.query(sql,async (error,result) => {
-        // db.release();
+    
+    rohiAudiencePool.getConnection(function(err, rohiAudienceDB){
+        rohiAudienceDB.query(sql,async (error,result) => {
 
-        if(error) {
-            res.send(error)
-        }
-        else if(result ){
-            return res.json({message:'Votre doléance a bien été enregistrée',result})
-        }
-        db.release()
+            if(error) {
+                res.send(error)
+            }
+            else if(result ){
+                return res.json({message:'Votre doléance a bien été enregistrée',result})
+            }
+            rohiAudienceDB.release()
+        })
     })
     // res.json(sql)
 })
@@ -74,16 +76,17 @@ router.post('/modifier', async(req,res) =>{
     }
     // const sql = `UPDATE doleance SET titre = '${req.body.titre}',message = '${req.body.message}',id_autorite = ${req.body.id_autorite}, nom = '${req.body.nom}',prenom = '${req.body.prenom}',numero_telephone = '${req.body.numero_telephone}',cin = '${req.body.cin}', e_mail = '${req.body.e_mail}', child_libelle = '${req.body.child_libelle}' ,sigle ='${req.body.sigle}' where id = ${req.body.id};`
     // res.json(sql)
-    db.query(sql,async (error,result) => {
-        // db.release();
-
-        if(error) {
-            res.send(error)
-        }
-        else if(result ){
-            return res.json({message:'Votre doléance a bien été modifiée',result})
-        }
-        db.release()
+    
+    rohiAudiencePool.getConnection(function(err, rohiAudienceDB){
+        rohiAudienceDB.query(sql,async (error,result) => {
+            if(error) {
+                res.send(error)
+            }
+            else if(result ){
+                return res.json({message:'Votre doléance a bien été modifiée',result})
+            }
+            rohiAudienceDB.release()
+        })
     })
     // res.json(sql)
 })
@@ -91,33 +94,41 @@ router.post('/modifier', async(req,res) =>{
 router.get('/supprimer/:id', async(req,res) =>{
     const sql = `delete from ${db_name}.doleance where id = ${req.params.id};`
     // res.json(sql)
-    db.query(sql,async (error,result) => {
-        // db.release();
 
-        if(error) {
-            res.send(error)
-        }
-        else if(result ){
-            return res.json({message:'Votre doléance a bien été supprimée',result})
-        }
-        db.release()
+    rohiAudiencePool.getConnection( function (err, rohiAudienceDB){
+        rohiAudienceDB.query(sql,async (error,result) => {
+
+            if(error) {
+                res.send(error)
+            }
+            else if(result ){
+                return res.json({message:'Votre doléance a bien été supprimée',result})
+            }
+            rohiAudienceDB.release()
+        })
     })
+
+
 })
 
 router.post('/filtre', [authJwt.verifyToken] ,async(req,res)=>{
     const sql = `CALL filtre_doleance('${req.body.date1}','${req.body.date2}',${req.body.type_doleance},${req.body.nbr_filtre},${req.body.id_autorite})`
     // console.log(sql)
-    var query = db.query(sql, function(err, result) {
-        // db.release();
+    
+    rohiAudiencePool.getConnection( function(err, rohiAudienceDB){
+        rohiAudienceDB.query(sql, function(err, result) {
 
-        if(err){
-            return res.json({err});
-        }
-        else{
-            res.json(result[0])
-        }
-        db.release()
+            if(err){
+                return res.json({err});
+            }
+            else{
+                res.json(result[0])
+            }
+            rohiAudienceDB.release()
+        })
     })
+
+
 })
 
 
@@ -144,17 +155,21 @@ router.post('/liste/public',async (req,res)=>{
 	where 
 	d.session_navigateur = '${req.body.session_navigateur}'
 	and d.date_publication = (select curdate())`
-    var query = db.query(sql, function(err, result) {
-        // db.release();
 
-        if(err){
-            return res.json({err});
-        }
-        else{
-            res.json(result)
-        }
-        db.release()
+    rohiAudiencePool.getConnection(function(err, rohiAudienceDB){
+        rohiAudienceDB.query(sql, function(err, result) {
+
+            if(err){
+                return res.json({err});
+            }
+            else{
+                res.json(result)
+            }
+            rohiAudienceDB.release()
+        })
     })
+
+
 })
 
 module.exports = router
