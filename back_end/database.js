@@ -34,7 +34,7 @@ const rohi_db = process.env.DB_AUTORITE
 //   console.log('Database is connected successfully in ',rohi_db);
 // });
 
-var conn = mysql.createConnection({
+var conn = mysql.createPool({
   host: '5.183.8.211', // Replace with your host name
   user: 'dev',      // Replace with your database username
   password: 'dev',      // Replace with your database password
@@ -49,7 +49,8 @@ conn.connect(function(err) {
 });
 
 
-var rohi = mysql.createConnection({
+var rohi = mysql.createPool({
+  // connectionLimit : 1000,
   host: '5.183.8.211', // Replace with your host name
   port: '3306',
   user: 'dev',      // Replace with your database username

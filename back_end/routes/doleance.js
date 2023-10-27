@@ -18,7 +18,6 @@ router.post('/ajouter/anonyme', async(req,res) =>{
         ('${req.body.session_navigateur}','${req.body.titre}','${req.body.message}',(select curdate()) ,${req.body.id_autorite},'${req.body.sigle}','${req.body.autorite}',(SELECT SUBTIME(curtime(), "-3:0:0"))`
     db.query(sql,async (error,result) => {
         
-        // db.release();
 
         // console.log(pool._freeConnections.indexOf(db)); 
         if(error) {
@@ -27,6 +26,7 @@ router.post('/ajouter/anonyme', async(req,res) =>{
         else if(result ){
             return res.json({message:'Doléance envoyé',result})
         }
+        db.release()
     })
     // res.json(sql)
 })
@@ -47,6 +47,7 @@ router.post('/ajouter/non_anonyme', async(req,res) =>{
         else if(result ){
             return res.json({message:'Votre doléance a bien été enregistrée',result})
         }
+        db.release()
     })
     // res.json(sql)
 })
@@ -73,6 +74,7 @@ router.post('/modifier', async(req,res) =>{
         else if(result ){
             return res.json({message:'Votre doléance a bien été modifiée',result})
         }
+        db.release()
     })
     // res.json(sql)
 })
@@ -89,6 +91,7 @@ router.get('/supprimer/:id', async(req,res) =>{
         else if(result ){
             return res.json({message:'Votre doléance a bien été supprimée',result})
         }
+        db.release()
     })
 })
 
@@ -104,6 +107,7 @@ router.post('/filtre', [authJwt.verifyToken] ,async(req,res)=>{
         else{
             res.json(result[0])
         }
+        db.release()
     })
 })
 
@@ -140,6 +144,7 @@ router.post('/liste/public',async (req,res)=>{
         else{
             res.json(result)
         }
+        db.release()
     })
 })
 

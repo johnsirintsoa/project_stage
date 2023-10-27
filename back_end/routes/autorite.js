@@ -48,7 +48,8 @@ router.post('/structure', async(req,res) =>{
         }
         else{
             return res.json(result)    
-        }       
+        }
+        rohi.release();       
     })
 })
 
@@ -89,7 +90,8 @@ router.post('/backOffice/structure', async(req,res) =>{
         }
         else{
             return res.json(result)    
-        }       
+        }  
+        rohi.release()     
     })
 })
 
