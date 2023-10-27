@@ -18,7 +18,7 @@ router.post('/ajouter/anonyme', async(req,res) =>{
         ('${req.body.session_navigateur}','${req.body.titre}','${req.body.message}',(select curdate()) ,${req.body.id_autorite},'${req.body.sigle}','${req.body.autorite}',(SELECT SUBTIME(curtime(), "-3:0:0"))`
     db.query(sql,async (error,result) => {
         
-        db.release();
+        // db.release();
 
         // console.log(pool._freeConnections.indexOf(db)); 
         if(error) {
@@ -39,7 +39,7 @@ router.post('/ajouter/non_anonyme', async(req,res) =>{
         VALUES 
         ('${req.body.session_navigateur}','${req.body.titre}','${req.body.message}',(select curdate()) ,${req.body.id_autorite},'${req.body.sigle}','${req.body.autorite}',(SELECT SUBTIME(curtime(), "-3:0:0"),'${req.body.e_mail}', '${req.body.cin}', '${req.body.numero_telephone}', '${nomFormated}', '${prenomFormated}')`
     db.query(sql,async (error,result) => {
-        db.release();
+        // db.release();
 
         if(error) {
             res.send(error)
@@ -65,7 +65,7 @@ router.post('/modifier', async(req,res) =>{
     // const sql = `UPDATE doleance SET titre = '${req.body.titre}',message = '${req.body.message}',id_autorite = ${req.body.id_autorite}, nom = '${req.body.nom}',prenom = '${req.body.prenom}',numero_telephone = '${req.body.numero_telephone}',cin = '${req.body.cin}', e_mail = '${req.body.e_mail}', child_libelle = '${req.body.child_libelle}' ,sigle ='${req.body.sigle}' where id = ${req.body.id};`
     // res.json(sql)
     db.query(sql,async (error,result) => {
-        db.release();
+        // db.release();
 
         if(error) {
             res.send(error)
@@ -81,7 +81,7 @@ router.get('/supprimer/:id', async(req,res) =>{
     const sql = `delete from ${db_name}.doleance where id = ${req.params.id};`
     // res.json(sql)
     db.query(sql,async (error,result) => {
-        db.release();
+        // db.release();
 
         if(error) {
             res.send(error)
@@ -96,7 +96,7 @@ router.post('/filtre', [authJwt.verifyToken] ,async(req,res)=>{
     const sql = `CALL filtre_doleance('${req.body.date1}','${req.body.date2}',${req.body.type_doleance},${req.body.nbr_filtre},${req.body.id_autorite})`
     // console.log(sql)
     var query = db.query(sql, function(err, result) {
-        db.release();
+        // db.release();
 
         if(err){
             return res.json({err});
@@ -132,7 +132,7 @@ router.post('/liste/public',async (req,res)=>{
 	d.session_navigateur = '${req.body.session_navigateur}'
 	and d.date_publication = (select curdate())`
     var query = db.query(sql, function(err, result) {
-        db.release();
+        // db.release();
 
         if(err){
             return res.json({err});
