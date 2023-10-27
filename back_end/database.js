@@ -35,6 +35,7 @@ const rohi_db = process.env.DB_AUTORITE
 // });
 
 var rohiAudience = mysql.createPool({
+  connectionLimit : 1000,
   host: '5.183.8.211', // Replace with your host name
   user: 'dev',      // Replace with your database username
   password: 'dev',      // Replace with your database password
@@ -55,7 +56,7 @@ rohiAudience.getConnection(function(err, connection) {
 
 
 var rohi = mysql.createPool({
-  // connectionLimit : 1000,
+  connectionLimit : 1000,
   host: '5.183.8.211', // Replace with your host name
   port: '3306',
   user: 'dev',      // Replace with your database username
