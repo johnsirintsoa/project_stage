@@ -1,17 +1,24 @@
 const express = require('express')
 const router = express.Router();
-const db = require('../database').conn
-const db_name = require('../database').db_name
+// const db = require('../database').conn
+// const db_name = require('../database').db_name
+
+const rohiPool = require('../database').rohi
+const rohiAudiencePool = require('../database').rohiAudience
 
 router.get('/all',async (req,res)=>{
     let sql = "SELECT * FROM domaine"
-    var query = db.query(sql, function(err, result) {
-        if(err){
-            return res.send({ err });
-        }else{
-            return res.json(result);
-        }
-    });
+
+    rohiAudiencePool.getConnection(function(error, rohiAudienceDB){
+        rohiAudienceDB.query(sql, function(err, result) {
+            if(err){
+                return res.send({ err });
+            }else{
+                return res.json(result);
+            }
+            rohiAudienceDB.release()
+        });
+    })
 })
 
 module.exports = router

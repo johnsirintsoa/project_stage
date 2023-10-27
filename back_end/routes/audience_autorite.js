@@ -1,7 +1,11 @@
 const express = require('express')
 const router = express.Router();
-const db = require('../database').conn
-const db_name = require('../database').db_name
+
+const rohiPool = require('../database').rohi
+const rohiAudiencePool = require('../database').rohiAudience
+
+// const db = require('../database').conn
+// const db_name = require('../database').db_name
 const mailing = require('../Controllers/MailingController')
 const notification_mailing = require('../Controllers/NotificationController')
 
@@ -13,512 +17,516 @@ require('dotenv/config')
 router.post('/autorite/faire_audience', [authJwt.verifyToken] ,async (req,res) =>{
     const sql = `CALL liste_disponible_autorite(${req.body.id_autorite_sender},${req.body.id_autorite})`
     // console.log(sql)
-    db.query(sql,function(err,result){
-        if(err){
-            return res.send({ err });
-        }
-        else{
-            return res.json(result[0])    
-        }
+
+    rohiAudiencePool.getConnection(function(err, rohiAudienceDB){
+        rohiAudienceDB.query(sql,function(err,result){
+            if(err){
+                return res.send({ err });
+            }
+            else{
+                return res.json(result[0])    
+            }
+            rohiAudienceDB.release()
+        })
     })
 })
 
 
-router.post('/autorite/all/mois/', async(req,res) => {
-    const sql = `CALL LISTE_AUTORITE_PAR_MOIS(${req.body.id_autorite},'${req.body.date_du_jour}')`
-    // console.log(sql)
-    db.query(sql,function(err, result) {
-        if(err){
-            return res.send({ err });
-        }
-        else{
-            // res.send(sql);
-            const array_result = []
-            result[0].forEach(element => {
-                if(element.type_audience == 'Autorite'){
-                    const date_time_start = element.dd_aud_autorite.concat('T',element.td_aud_autorite)
-                    const date_time_fin = element.df_aud_autorite.concat('T',element.tf_aud_autorite)
-                    if(element.action_autorite == 1){
-                        array_result.push({
-                            id: element.id_aud_autorite,
-                            autorite:{
-                                id: element.id,
-                                intitule: element.intitule,
-                                intitule_code: element.intitule_code,
-                                addresse_electronique: element.addresse_electronique,
-                                mot_de_passe_mailing: element.mot_de_passe_mailing,
-                                porte: element.porte ,
-                            },
-                            sender:{
-                              id: element.id_autorite_sender,
-                              intitule: element.sender_intitule,
-                              intitule_code: element.sender_intitule_code,
-                              addresse_electronique: element.sender_addresse_electronique,
-                            },
-                            title: element.motif,
-                            start: date_time_start,
-                            end: date_time_fin,
-                            color:'#F10586',
-                            color_status: '#da2020',
-                            type_audience: element.type_audience,
-                            action: element.action_autorite,
-                            status_audience: element.status_audience,
-                            editable: true  
-                        })                       
-                    }
-                    else if(element.action_autorite == 0){
-                        array_result.push({
-                            id: element.id_aud_autorite,
-                            autorite:{
-                                id: element.id,
-                                intitule: element.intitule,
-                                intitule_code: element.intitule_code,
-                                addresse_electronique: element.addresse_electronique,
-                                mot_de_passe_mailing: element.mot_de_passe_mailing,
-                                porte: element.porte ,
-                            },
-                            sender:{
-                              id: element.id_autorite_sender,
-                              intitule: element.sender_intitule,
-                              intitule_code: element.sender_intitule_code,
-                              addresse_electronique: element.sender_addresse_electronique
-                            },
-                            title: element.motif,
-                            start: date_time_start,
-                            end: date_time_fin,
-                            color:'#F10586',
-                            color_status: '#09a009', 
-                            type_audience: element.type_audience,
-                            action: element.action_autorite,
-                            status_audience: element.status_audience,
-                            editable: true
-                        })                        
-                    }
-                }
-                else if (element.type_audience == 'Public'){
-                    const date_time_start = element.dd_aud_public.concat('T',element.td_aud_public)
-                    const date_time_fin = element.df_aud_public.concat('T',element.tf_aud_public)
-                    if(element.action_public == 1){
-                        array_result.push({
-                            id: element.id_aud_public,
-                            title: element.motif,
-                            autorite:{
-                                id: element.id,
-                                intitule: element.intitule,
-                                intitule_code: element.intitule_code,
-                                addresse_electronique: element.addresse_electronique,
-                                mot_de_passe_mailing: element.mot_de_passe_mailing,
-                                porte: element.porte ,
-                            },
-                            sender:{
-                                nom: element.nom,
-                                prenom: element.prenom,
-                                cin: element.cin,
-                                numero_telephone: element.numero_telephone,
-                                email: element.email
-                            },
-                            start: date_time_start,
-                            end: date_time_fin,
-                            color:'#331999',
-                            color_status: '#da2020',
-                            type_audience: element.type_audience,
-                            action: element.action_public,
-                            status_audience: element.status_audience,
-                            editable: true  
-                        })
-                    }
-                    else if(element.action_public == 0){
-                        array_result.push({
-                            id: element.id_aud_public,
-                            title: element.motif,
-                            autorite:{
-                                id: element.id,
-                                intitule: element.intitule,
-                                intitule_code: element.intitule_code,
-                                addresse_electronique: element.addresse_electronique,
-                                mot_de_passe_mailing: element.mot_de_passe_mailing,
-                                porte: element.porte ,
-                            },
-                            sender:{
-                                nom: element.nom,
-                                prenom: element.prenom,
-                                cin: element.cin,
-                                numero_telephone: element.numero_telephone,
-                                email: element.email
-                            },
-                            start: date_time_start,
-                            end: date_time_fin,
-                            color:'#331999',
-                            color_status: '#09a009',
-                            type_audience: element.type_audience,
-                            action: element.action_public,
-                            status_audience: element.status_audience,
-                            editable: true
-                        })
-                    }
-                }
-                else if (element.type_audience == 'Entretien'){
-                    const date_time_start = element.date_debut_entretien.concat('T',element.time_debut_entretien)
-                    const date_time_fin = element.date_fin_entretien.concat('T',element.time_fin_entretien)
-                    array_result.push({
-                        id: element.id_demande_entretien,
-                        title: element.motif,
-                        autorite:{
-                            id: element.id,
-                            intitule: element.intitule,
-                            intitule_code: element.intitule_code,
-                            addresse_electronique: element.addresse_electronique,
-                            mot_de_passe_mailing: element.mot_de_passe_mailing,
-                            porte: element.porte ,
-                        },
-                        stagiaire:{
-                            nom: element.nom,
-                            prenom: element.prenom,
-                            cin: element.cin,
-                            numero_telephone: element.numero_telephone,
-                            email: element.email
-                        },
-                        start: date_time_start,
-                        end: date_time_fin,
-                        color:'#4B187E',
-                        type_audience: element.type_audience,
-                        editable: true  
-                    })
-                }
-                else if(element.type_audience == 'Pas disponible date'){
-                    const date_time_start = element.dd_non_dispo_date.concat('T',element.td_non_dispo_date)
-                    const date_time_fin = element.df_non_dispo_date.concat('T',element.tf_non_dispo_date)
-                    array_result.push({
-                        id: element.id_non_dispo_date,
-                        title: 'Pas disponible',
-                        start: date_time_start,
-                        end: date_time_fin,
-                        color:'#2B2B2B',
-                        type_audience: element.type_audience,
-                        editable: false
-                    })
-                }
-                else if(element.type_audience == 'Jour ferie'){
-                    const date_ferie_debut = String(element.date_ferie).concat('T',element.td_ferie)
-                    const date_ferie_fin = String(element.date_ferie).concat('T',element.tf_ferie)
-                    array_result.push({
-                      id: String(element.id),
-                      title: element.motif,
-                      start: date_ferie_debut,
-                      end: date_ferie_fin,
-                      color:'#EFEC27',
-                      type_audience: element.type_audience,
-                      editable: false
+// router.post('/autorite/all/mois/', async(req,res) => {
+//     const sql = `CALL LISTE_AUTORITE_PAR_MOIS(${req.body.id_autorite},'${req.body.date_du_jour}')`
+//     // console.log(sql)
+//     db.query(sql,function(err, result) {
+//         if(err){
+//             return res.send({ err });
+//         }
+//         else{
+//             // res.send(sql);
+//             const array_result = []
+//             result[0].forEach(element => {
+//                 if(element.type_audience == 'Autorite'){
+//                     const date_time_start = element.dd_aud_autorite.concat('T',element.td_aud_autorite)
+//                     const date_time_fin = element.df_aud_autorite.concat('T',element.tf_aud_autorite)
+//                     if(element.action_autorite == 1){
+//                         array_result.push({
+//                             id: element.id_aud_autorite,
+//                             autorite:{
+//                                 id: element.id,
+//                                 intitule: element.intitule,
+//                                 intitule_code: element.intitule_code,
+//                                 addresse_electronique: element.addresse_electronique,
+//                                 mot_de_passe_mailing: element.mot_de_passe_mailing,
+//                                 porte: element.porte ,
+//                             },
+//                             sender:{
+//                               id: element.id_autorite_sender,
+//                               intitule: element.sender_intitule,
+//                               intitule_code: element.sender_intitule_code,
+//                               addresse_electronique: element.sender_addresse_electronique,
+//                             },
+//                             title: element.motif,
+//                             start: date_time_start,
+//                             end: date_time_fin,
+//                             color:'#F10586',
+//                             color_status: '#da2020',
+//                             type_audience: element.type_audience,
+//                             action: element.action_autorite,
+//                             status_audience: element.status_audience,
+//                             editable: true  
+//                         })                       
+//                     }
+//                     else if(element.action_autorite == 0){
+//                         array_result.push({
+//                             id: element.id_aud_autorite,
+//                             autorite:{
+//                                 id: element.id,
+//                                 intitule: element.intitule,
+//                                 intitule_code: element.intitule_code,
+//                                 addresse_electronique: element.addresse_electronique,
+//                                 mot_de_passe_mailing: element.mot_de_passe_mailing,
+//                                 porte: element.porte ,
+//                             },
+//                             sender:{
+//                               id: element.id_autorite_sender,
+//                               intitule: element.sender_intitule,
+//                               intitule_code: element.sender_intitule_code,
+//                               addresse_electronique: element.sender_addresse_electronique
+//                             },
+//                             title: element.motif,
+//                             start: date_time_start,
+//                             end: date_time_fin,
+//                             color:'#F10586',
+//                             color_status: '#09a009', 
+//                             type_audience: element.type_audience,
+//                             action: element.action_autorite,
+//                             status_audience: element.status_audience,
+//                             editable: true
+//                         })                        
+//                     }
+//                 }
+//                 else if (element.type_audience == 'Public'){
+//                     const date_time_start = element.dd_aud_public.concat('T',element.td_aud_public)
+//                     const date_time_fin = element.df_aud_public.concat('T',element.tf_aud_public)
+//                     if(element.action_public == 1){
+//                         array_result.push({
+//                             id: element.id_aud_public,
+//                             title: element.motif,
+//                             autorite:{
+//                                 id: element.id,
+//                                 intitule: element.intitule,
+//                                 intitule_code: element.intitule_code,
+//                                 addresse_electronique: element.addresse_electronique,
+//                                 mot_de_passe_mailing: element.mot_de_passe_mailing,
+//                                 porte: element.porte ,
+//                             },
+//                             sender:{
+//                                 nom: element.nom,
+//                                 prenom: element.prenom,
+//                                 cin: element.cin,
+//                                 numero_telephone: element.numero_telephone,
+//                                 email: element.email
+//                             },
+//                             start: date_time_start,
+//                             end: date_time_fin,
+//                             color:'#331999',
+//                             color_status: '#da2020',
+//                             type_audience: element.type_audience,
+//                             action: element.action_public,
+//                             status_audience: element.status_audience,
+//                             editable: true  
+//                         })
+//                     }
+//                     else if(element.action_public == 0){
+//                         array_result.push({
+//                             id: element.id_aud_public,
+//                             title: element.motif,
+//                             autorite:{
+//                                 id: element.id,
+//                                 intitule: element.intitule,
+//                                 intitule_code: element.intitule_code,
+//                                 addresse_electronique: element.addresse_electronique,
+//                                 mot_de_passe_mailing: element.mot_de_passe_mailing,
+//                                 porte: element.porte ,
+//                             },
+//                             sender:{
+//                                 nom: element.nom,
+//                                 prenom: element.prenom,
+//                                 cin: element.cin,
+//                                 numero_telephone: element.numero_telephone,
+//                                 email: element.email
+//                             },
+//                             start: date_time_start,
+//                             end: date_time_fin,
+//                             color:'#331999',
+//                             color_status: '#09a009',
+//                             type_audience: element.type_audience,
+//                             action: element.action_public,
+//                             status_audience: element.status_audience,
+//                             editable: true
+//                         })
+//                     }
+//                 }
+//                 else if (element.type_audience == 'Entretien'){
+//                     const date_time_start = element.date_debut_entretien.concat('T',element.time_debut_entretien)
+//                     const date_time_fin = element.date_fin_entretien.concat('T',element.time_fin_entretien)
+//                     array_result.push({
+//                         id: element.id_demande_entretien,
+//                         title: element.motif,
+//                         autorite:{
+//                             id: element.id,
+//                             intitule: element.intitule,
+//                             intitule_code: element.intitule_code,
+//                             addresse_electronique: element.addresse_electronique,
+//                             mot_de_passe_mailing: element.mot_de_passe_mailing,
+//                             porte: element.porte ,
+//                         },
+//                         stagiaire:{
+//                             nom: element.nom,
+//                             prenom: element.prenom,
+//                             cin: element.cin,
+//                             numero_telephone: element.numero_telephone,
+//                             email: element.email
+//                         },
+//                         start: date_time_start,
+//                         end: date_time_fin,
+//                         color:'#4B187E',
+//                         type_audience: element.type_audience,
+//                         editable: true  
+//                     })
+//                 }
+//                 else if(element.type_audience == 'Pas disponible date'){
+//                     const date_time_start = element.dd_non_dispo_date.concat('T',element.td_non_dispo_date)
+//                     const date_time_fin = element.df_non_dispo_date.concat('T',element.tf_non_dispo_date)
+//                     array_result.push({
+//                         id: element.id_non_dispo_date,
+//                         title: 'Pas disponible',
+//                         start: date_time_start,
+//                         end: date_time_fin,
+//                         color:'#2B2B2B',
+//                         type_audience: element.type_audience,
+//                         editable: false
+//                     })
+//                 }
+//                 else if(element.type_audience == 'Jour ferie'){
+//                     const date_ferie_debut = String(element.date_ferie).concat('T',element.td_ferie)
+//                     const date_ferie_fin = String(element.date_ferie).concat('T',element.tf_ferie)
+//                     array_result.push({
+//                       id: String(element.id),
+//                       title: element.motif,
+//                       start: date_ferie_debut,
+//                       end: date_ferie_fin,
+//                       color:'#EFEC27',
+//                       type_audience: element.type_audience,
+//                       editable: false
                     
-                    })
-                }
-                else if(element.type_audience == 'Pas disponible jour'){
-                    if(element.jour_non_dispo_jour == 'Sunday'){
-                        array_result.push({
-                            id: element.id_non_dispo_jour,
-                            title: 'Pas disponible',
-                            daysOfWeek: [ '0' ], // these recurrent events move separately
-                            startTime: element.td_non_dispo_jour,
-                            endTime: element.tf_non_dispo_jour,
-                            type_audience: element.type_audience,
-                            color: '#2B2B2B',
-                            editable: false
-                        })
-                      }
-                      else if(element.jour_non_dispo_jour == 'Monday'){
-                        array_result.push({
-                            id: element.id_non_dispo_jour,
-                            title: 'Pas disponible',
-                            daysOfWeek: [ '1' ], // these recurrent events move separately
-                            startTime: element.td_non_dispo_jour,
-                            endTime: element.tf_non_dispo_jour,
-                            type_audience: element.type_audience,
-                            color: '#2B2B2B',
-                            editable: false
+//                     })
+//                 }
+//                 else if(element.type_audience == 'Pas disponible jour'){
+//                     if(element.jour_non_dispo_jour == 'Sunday'){
+//                         array_result.push({
+//                             id: element.id_non_dispo_jour,
+//                             title: 'Pas disponible',
+//                             daysOfWeek: [ '0' ], // these recurrent events move separately
+//                             startTime: element.td_non_dispo_jour,
+//                             endTime: element.tf_non_dispo_jour,
+//                             type_audience: element.type_audience,
+//                             color: '#2B2B2B',
+//                             editable: false
+//                         })
+//                       }
+//                       else if(element.jour_non_dispo_jour == 'Monday'){
+//                         array_result.push({
+//                             id: element.id_non_dispo_jour,
+//                             title: 'Pas disponible',
+//                             daysOfWeek: [ '1' ], // these recurrent events move separately
+//                             startTime: element.td_non_dispo_jour,
+//                             endTime: element.tf_non_dispo_jour,
+//                             type_audience: element.type_audience,
+//                             color: '#2B2B2B',
+//                             editable: false
                         
-                        })
-                      }
-                      else if(element.jour_non_dispo_jour == 'Tuesday'){
-                        array_result.push({
-                            id: element.id_non_dispo_jour,
-                            title: 'Pas disponible',
-                            daysOfWeek: [ '2' ], // these recurrent events move separately
-                            startTime: element.td_non_dispo_jour,
-                            endTime: element.tf_non_dispo_jour,
-                            type_audience: element.type_audience,
-                            color: '#2B2B2B',
-                            editable: false
+//                         })
+//                       }
+//                       else if(element.jour_non_dispo_jour == 'Tuesday'){
+//                         array_result.push({
+//                             id: element.id_non_dispo_jour,
+//                             title: 'Pas disponible',
+//                             daysOfWeek: [ '2' ], // these recurrent events move separately
+//                             startTime: element.td_non_dispo_jour,
+//                             endTime: element.tf_non_dispo_jour,
+//                             type_audience: element.type_audience,
+//                             color: '#2B2B2B',
+//                             editable: false
                         
-                        })
-                      }
-                      else if(element.jour_non_dispo_jour == 'Wednesday'){
-                        array_result.push({
-                            id: element.id_non_dispo_jour,
-                            title: 'Pas disponible',
-                            daysOfWeek: [ '3' ], // these recurrent events move separately
-                            startTime: element.td_non_dispo_jour,
-                            endTime: element.tf_non_dispo_jour,
-                            type_audience: element.type_audience,
-                            color: '#2B2B2B',
-                            editable: false
+//                         })
+//                       }
+//                       else if(element.jour_non_dispo_jour == 'Wednesday'){
+//                         array_result.push({
+//                             id: element.id_non_dispo_jour,
+//                             title: 'Pas disponible',
+//                             daysOfWeek: [ '3' ], // these recurrent events move separately
+//                             startTime: element.td_non_dispo_jour,
+//                             endTime: element.tf_non_dispo_jour,
+//                             type_audience: element.type_audience,
+//                             color: '#2B2B2B',
+//                             editable: false
                         
-                        })
-                      }
-                      else if(element.jour_non_dispo_jour == 'Thursday'){
-                        array_result.push({
-                            id: element.id_non_dispo_jour,
-                            title: 'Pas disponible',
-                            daysOfWeek: [ '4' ], // these recurrent events move separately
-                            startTime: element.td_non_dispo_jour,
-                            endTime: element.tf_non_dispo_jour,
-                            type_audience: element.type_audience,
-                            color: '#2B2B2B',
-                            editable: false
+//                         })
+//                       }
+//                       else if(element.jour_non_dispo_jour == 'Thursday'){
+//                         array_result.push({
+//                             id: element.id_non_dispo_jour,
+//                             title: 'Pas disponible',
+//                             daysOfWeek: [ '4' ], // these recurrent events move separately
+//                             startTime: element.td_non_dispo_jour,
+//                             endTime: element.tf_non_dispo_jour,
+//                             type_audience: element.type_audience,
+//                             color: '#2B2B2B',
+//                             editable: false
                         
-                        })
-                      }
-                      else if(element.jour_non_dispo_jour == 'Friday'){
-                        array_result.push({
-                            id: element.id_non_dispo_jour,
-                            title: 'Pas disponible',
-                            daysOfWeek: [ '5' ], // these recurrent events move separately
-                            startTime: element.td_non_dispo_jour,
-                            endTime: element.tf_non_dispo_jour,
-                            type_audience: element.type_audience,
-                            color: '#2B2B2B',
-                            editable: false
+//                         })
+//                       }
+//                       else if(element.jour_non_dispo_jour == 'Friday'){
+//                         array_result.push({
+//                             id: element.id_non_dispo_jour,
+//                             title: 'Pas disponible',
+//                             daysOfWeek: [ '5' ], // these recurrent events move separately
+//                             startTime: element.td_non_dispo_jour,
+//                             endTime: element.tf_non_dispo_jour,
+//                             type_audience: element.type_audience,
+//                             color: '#2B2B2B',
+//                             editable: false
                         
-                        })
-                      }
-                      else if(element.jour_non_dispo_jour == 'Saturday'){
-                        array_result.push({
-                            id: element.id_non_dispo_jour,
-                            title: 'Pas disponible',
-                            daysOfWeek: [ '6' ], // these recurrent events move separately
-                            startTime: element.td_non_dispo_jour,
-                            endTime: element.tf_non_dispo_jour,
-                            type_audience: element.type_audience,
-                            color: '#2B2B2B',
-                            editable: false
+//                         })
+//                       }
+//                       else if(element.jour_non_dispo_jour == 'Saturday'){
+//                         array_result.push({
+//                             id: element.id_non_dispo_jour,
+//                             title: 'Pas disponible',
+//                             daysOfWeek: [ '6' ], // these recurrent events move separately
+//                             startTime: element.td_non_dispo_jour,
+//                             endTime: element.tf_non_dispo_jour,
+//                             type_audience: element.type_audience,
+//                             color: '#2B2B2B',
+//                             editable: false
                         
-                        })
-                      }                    
-                }
+//                         })
+//                       }                    
+//                 }
                                
-            });            
-            return res.json(array_result);
-        }
-    })
-})
+//             });            
+//             return res.json(array_result);
+//         }
+//     })
+// })
 
-router.post('/autorite/all/mois/v2', async(req,res) =>{
-    const sql = `CALL LISTE_AUTORITE_PAR_MOIS_v2(${req.body.id_autorite},'${req.body.date_du_jour}')`
-    // console.log(sql)
-    db.query(sql,function(err, result) {
-        if(err){
-            return res.send({ err });
-        }
-        else{
-            // res.send(sql);
-            const array_result = []
-            result[0].forEach(element => {
-                if(element.type_audience == 'Autorite'){
-                    const date_time_start = element.dd_aud_autorite.concat('T',element.td_aud_autorite)
-                    const date_time_fin = element.df_aud_autorite.concat('T',element.tf_aud_autorite)
-                    if(element.action_autorite == 1){
-                        array_result.push({
-                            id: element.id_aud_autorite,
-                            sender:{
-                              id: element.id_autorite_sender,
-                              intitule: element.sender_intitule,
-                              intitule_code: element.sender_intitule_code
-                            },
-                            title: element.motif,
-                            start: date_time_start,
-                            end: date_time_fin,
-                            color:'#F10586',
-                            type_audience: element.type_audience,
-                            action: element.action_autorite,
-                            editable: true  
-                        })                       
-                    }
-                    else if(element.action_autorite == 0){
-                        array_result.push({
-                            id: element.id_aud_autorite,
-                            sender:{
-                              id: element.id_autorite_sender,
-                              intitule: element.sender_intitule,
-                              intitule_code: element.sender_intitule_code
-                            },
-                            title: element.motif,
-                            start: date_time_start,
-                            end: date_time_fin,
-                            color:'#25AF1A',
-                            type_audience: element.type_audience,
-                            action: element.action_autorite,
-                            editable: true
-                        })                        
-                    }
-                }
-                else if (element.type_audience == 'Public'){
-                    const date_time_start = element.dd_aud_public.concat('T',element.td_aud_public)
-                    const date_time_fin = element.df_aud_public.concat('T',element.tf_aud_public)
-                    if(element.action_public == 1){
-                        array_result.push({
-                            id: element.id_aud_public,
-                            title: element.motif,
-                            start: date_time_start,
-                            end: date_time_fin,
-                            color:'#ff9f89',
-                            type_audience: element.type_audience,
-                            action: element.action_public,
-                            editable: true  
-                        })
-                    }
-                    else if(element.action_public == 0){
-                        array_result.push({
-                            id: element.id_aud_public,
-                            title: element.motif,
-                            start: date_time_start,
-                            end: date_time_fin,
-                            color:'#25AF1A',
-                            type_audience: element.type_audience,
-                            action: element.action_public,
-                            editable: true
-                        })
-                    }
-                }
-                else if (element.type_audience == 'Entretien'){
-                    const date_time_start = element.date_debut_entretien.concat('T',element.time_debut_entretien)
-                    const date_time_fin = element.date_fin_entretien.concat('T',element.time_fin_entretien)
-                    array_result.push({
-                        id: element.id_demande_entretien,
-                        title: element.motif,
-                        start: date_time_start,
-                        end: date_time_fin,
-                        color:'#ff9f89',
-                        type_audience: element.type_audience,
-                        editable: true  
-                    })
-                }
-                else if(element.type_audience == 'Pas disponible date'){
-                    const date_time_start = element.dd_non_dispo_date.concat('T',element.td_non_dispo_date)
-                    const date_time_fin = element.df_non_dispo_date.concat('T',element.tf_non_dispo_date)
-                    array_result.push({
-                        id: String(element.id),
-                        title: element.status_audience,
-                        start: date_time_start,
-                        end: date_time_fin,
-                        color:'#2B2B2B',
-                        type_audience: element.type_audience,
-                        editable: false
-                    })
-                }
-                else if(element.type_audience == 'Jour ferie'){
-                    const date_ferie_debut = String(element.date_ferie).concat('T',element.td_ferie)
-                    const date_ferie_fin = String(element.date_ferie).concat('T',element.tf_ferie)
-                    array_result.push({
-                      id: String(element.id),
-                      title: element.motif,
-                      start: date_ferie_debut,
-                      end: date_ferie_fin,
-                      color:'#EFEC27',
-                      type_audience: element.type_audience,
-                      editable: false
+// router.post('/autorite/all/mois/v2', async(req,res) =>{
+//     const sql = `CALL LISTE_AUTORITE_PAR_MOIS_v2(${req.body.id_autorite},'${req.body.date_du_jour}')`
+//     // console.log(sql)
+//     db.query(sql,function(err, result) {
+//         if(err){
+//             return res.send({ err });
+//         }
+//         else{
+//             // res.send(sql);
+//             const array_result = []
+//             result[0].forEach(element => {
+//                 if(element.type_audience == 'Autorite'){
+//                     const date_time_start = element.dd_aud_autorite.concat('T',element.td_aud_autorite)
+//                     const date_time_fin = element.df_aud_autorite.concat('T',element.tf_aud_autorite)
+//                     if(element.action_autorite == 1){
+//                         array_result.push({
+//                             id: element.id_aud_autorite,
+//                             sender:{
+//                               id: element.id_autorite_sender,
+//                               intitule: element.sender_intitule,
+//                               intitule_code: element.sender_intitule_code
+//                             },
+//                             title: element.motif,
+//                             start: date_time_start,
+//                             end: date_time_fin,
+//                             color:'#F10586',
+//                             type_audience: element.type_audience,
+//                             action: element.action_autorite,
+//                             editable: true  
+//                         })                       
+//                     }
+//                     else if(element.action_autorite == 0){
+//                         array_result.push({
+//                             id: element.id_aud_autorite,
+//                             sender:{
+//                               id: element.id_autorite_sender,
+//                               intitule: element.sender_intitule,
+//                               intitule_code: element.sender_intitule_code
+//                             },
+//                             title: element.motif,
+//                             start: date_time_start,
+//                             end: date_time_fin,
+//                             color:'#25AF1A',
+//                             type_audience: element.type_audience,
+//                             action: element.action_autorite,
+//                             editable: true
+//                         })                        
+//                     }
+//                 }
+//                 else if (element.type_audience == 'Public'){
+//                     const date_time_start = element.dd_aud_public.concat('T',element.td_aud_public)
+//                     const date_time_fin = element.df_aud_public.concat('T',element.tf_aud_public)
+//                     if(element.action_public == 1){
+//                         array_result.push({
+//                             id: element.id_aud_public,
+//                             title: element.motif,
+//                             start: date_time_start,
+//                             end: date_time_fin,
+//                             color:'#ff9f89',
+//                             type_audience: element.type_audience,
+//                             action: element.action_public,
+//                             editable: true  
+//                         })
+//                     }
+//                     else if(element.action_public == 0){
+//                         array_result.push({
+//                             id: element.id_aud_public,
+//                             title: element.motif,
+//                             start: date_time_start,
+//                             end: date_time_fin,
+//                             color:'#25AF1A',
+//                             type_audience: element.type_audience,
+//                             action: element.action_public,
+//                             editable: true
+//                         })
+//                     }
+//                 }
+//                 else if (element.type_audience == 'Entretien'){
+//                     const date_time_start = element.date_debut_entretien.concat('T',element.time_debut_entretien)
+//                     const date_time_fin = element.date_fin_entretien.concat('T',element.time_fin_entretien)
+//                     array_result.push({
+//                         id: element.id_demande_entretien,
+//                         title: element.motif,
+//                         start: date_time_start,
+//                         end: date_time_fin,
+//                         color:'#ff9f89',
+//                         type_audience: element.type_audience,
+//                         editable: true  
+//                     })
+//                 }
+//                 else if(element.type_audience == 'Pas disponible date'){
+//                     const date_time_start = element.dd_non_dispo_date.concat('T',element.td_non_dispo_date)
+//                     const date_time_fin = element.df_non_dispo_date.concat('T',element.tf_non_dispo_date)
+//                     array_result.push({
+//                         id: String(element.id),
+//                         title: element.status_audience,
+//                         start: date_time_start,
+//                         end: date_time_fin,
+//                         color:'#2B2B2B',
+//                         type_audience: element.type_audience,
+//                         editable: false
+//                     })
+//                 }
+//                 else if(element.type_audience == 'Jour ferie'){
+//                     const date_ferie_debut = String(element.date_ferie).concat('T',element.td_ferie)
+//                     const date_ferie_fin = String(element.date_ferie).concat('T',element.tf_ferie)
+//                     array_result.push({
+//                       id: String(element.id),
+//                       title: element.motif,
+//                       start: date_ferie_debut,
+//                       end: date_ferie_fin,
+//                       color:'#EFEC27',
+//                       type_audience: element.type_audience,
+//                       editable: false
                     
-                    })
-                }
-                else if(element.type_audience == 'Pas disponible jour'){
-                    if(element.jour_non_dispo_jour == 'Sunday'){
-                        array_result.push({
-                            title: element.status_audience,
-                            daysOfWeek: [ '0' ], // these recurrent events move separately
-                            startTime: element.td_non_dispo_jour,
-                            endTime: element.tf_non_dispo_jour,
-                            type_audience: element.type_audience,
-                            color: '#2B2B2B',
-                            editable: false
-                        })
-                      }
-                      else if(element.jour_non_dispo_jour == 'Monday'){
-                        array_result.push({
-                            title: element.status_audience,
-                            daysOfWeek: [ '1' ], // these recurrent events move separately
-                            startTime: element.td_non_dispo_jour,
-                            endTime: element.tf_non_dispo_jour,
-                            type_audience: element.type_audience,
-                            color: '#2B2B2B',
-                            editable: false
+//                     })
+//                 }
+//                 else if(element.type_audience == 'Pas disponible jour'){
+//                     if(element.jour_non_dispo_jour == 'Sunday'){
+//                         array_result.push({
+//                             title: element.status_audience,
+//                             daysOfWeek: [ '0' ], // these recurrent events move separately
+//                             startTime: element.td_non_dispo_jour,
+//                             endTime: element.tf_non_dispo_jour,
+//                             type_audience: element.type_audience,
+//                             color: '#2B2B2B',
+//                             editable: false
+//                         })
+//                       }
+//                       else if(element.jour_non_dispo_jour == 'Monday'){
+//                         array_result.push({
+//                             title: element.status_audience,
+//                             daysOfWeek: [ '1' ], // these recurrent events move separately
+//                             startTime: element.td_non_dispo_jour,
+//                             endTime: element.tf_non_dispo_jour,
+//                             type_audience: element.type_audience,
+//                             color: '#2B2B2B',
+//                             editable: false
                         
-                        })
-                      }
-                      else if(element.jour_non_dispo_jour == 'Tuesday'){
-                        array_result.push({
-                            title: element.status_audience,
-                            daysOfWeek: [ '2' ], // these recurrent events move separately
-                            startTime: element.td_non_dispo_jour,
-                            endTime: element.tf_non_dispo_jour,
-                            type_audience: element.type_audience,
-                            color: '#2B2B2B',
-                            editable: false
+//                         })
+//                       }
+//                       else if(element.jour_non_dispo_jour == 'Tuesday'){
+//                         array_result.push({
+//                             title: element.status_audience,
+//                             daysOfWeek: [ '2' ], // these recurrent events move separately
+//                             startTime: element.td_non_dispo_jour,
+//                             endTime: element.tf_non_dispo_jour,
+//                             type_audience: element.type_audience,
+//                             color: '#2B2B2B',
+//                             editable: false
                         
-                        })
-                      }
-                      else if(element.jour_non_dispo_jour == 'Wednesday'){
-                        array_result.push({
-                            title: element.status_audience,
-                            daysOfWeek: [ '3' ], // these recurrent events move separately
-                            startTime: element.td_non_dispo_jour,
-                            endTime: element.tf_non_dispo_jour,
-                            type_audience: element.type_audience,
-                            color: '#2B2B2B',
-                            editable: false
+//                         })
+//                       }
+//                       else if(element.jour_non_dispo_jour == 'Wednesday'){
+//                         array_result.push({
+//                             title: element.status_audience,
+//                             daysOfWeek: [ '3' ], // these recurrent events move separately
+//                             startTime: element.td_non_dispo_jour,
+//                             endTime: element.tf_non_dispo_jour,
+//                             type_audience: element.type_audience,
+//                             color: '#2B2B2B',
+//                             editable: false
                         
-                        })
-                      }
-                      else if(element.jour_non_dispo_jour == 'Thursday'){
-                        array_result.push({
-                            title: element.status_audience,
-                            daysOfWeek: [ '4' ], // these recurrent events move separately
-                            startTime: element.td_non_dispo_jour,
-                            endTime: element.tf_non_dispo_jour,
-                            type_audience: element.type_audience,
-                            color: '#2B2B2B',
-                            editable: false
+//                         })
+//                       }
+//                       else if(element.jour_non_dispo_jour == 'Thursday'){
+//                         array_result.push({
+//                             title: element.status_audience,
+//                             daysOfWeek: [ '4' ], // these recurrent events move separately
+//                             startTime: element.td_non_dispo_jour,
+//                             endTime: element.tf_non_dispo_jour,
+//                             type_audience: element.type_audience,
+//                             color: '#2B2B2B',
+//                             editable: false
                         
-                        })
-                      }
-                      else if(element.jour_non_dispo_jour == 'Friday'){
-                        array_result.push({
-                            title: element.status_audience,
-                            daysOfWeek: [ '5' ], // these recurrent events move separately
-                            startTime: element.td_non_dispo_jour,
-                            endTime: element.tf_non_dispo_jour,
-                            type_audience: element.type_audience,
-                            color: '#2B2B2B',
-                            editable: false
+//                         })
+//                       }
+//                       else if(element.jour_non_dispo_jour == 'Friday'){
+//                         array_result.push({
+//                             title: element.status_audience,
+//                             daysOfWeek: [ '5' ], // these recurrent events move separately
+//                             startTime: element.td_non_dispo_jour,
+//                             endTime: element.tf_non_dispo_jour,
+//                             type_audience: element.type_audience,
+//                             color: '#2B2B2B',
+//                             editable: false
                         
-                        })
-                      }
-                      else if(element.jour_non_dispo_jour == 'Saturday'){
-                        array_result.push({
-                            title: element.status_audience,
-                            daysOfWeek: [ '6' ], // these recurrent events move separately
-                            startTime: element.td_non_dispo_jour,
-                            endTime: element.tf_non_dispo_jour,
-                            type_audience: element.type_audience,
-                            color: '#2B2B2B',
-                            editable: false
+//                         })
+//                       }
+//                       else if(element.jour_non_dispo_jour == 'Saturday'){
+//                         array_result.push({
+//                             title: element.status_audience,
+//                             daysOfWeek: [ '6' ], // these recurrent events move separately
+//                             startTime: element.td_non_dispo_jour,
+//                             endTime: element.tf_non_dispo_jour,
+//                             type_audience: element.type_audience,
+//                             color: '#2B2B2B',
+//                             editable: false
                         
-                        })
-                      }                    
-                }
+//                         })
+//                       }                    
+//                 }
                                
-            });            
-            return res.json(array_result);
-        }
-    })
-})
+//             });            
+//             return res.json(array_result);
+//         }
+//     })
+// })
 
 
 router.post('/autorite/ajouter',[authJwt.verifyToken],async(req,res)=>{
@@ -535,41 +543,49 @@ router.post('/autorite/ajouter',[authJwt.verifyToken],async(req,res)=>{
         heure_debut: req.body.heure_debut,
         heure_fin: req.body.heure_fin
     }
-    // console.log(sql)
-    db.query(sql, async (error,result) => {
+
+    rohiAudiencePool.getConnection(function(err, rohiAudienceDB){
+        rohiAudienceDB.query(sql, async (error,result) => {
         
-        if(error){
-            res.send(error)
-        } 
-        else if(result.length > 0 ){
-            const mail = await notification_mailing.notification_audience_autorite(subject,req.body.autoriteSender,req.body.autoriteReceiver)
-            res.json(result[0][0])
-        }else{
-            res.json(result)
-        }
+            if(error){
+                res.send(error)
+            } 
+            else if(result.length > 0 ){
+                const mail = await notification_mailing.notification_audience_autorite(subject,req.body.autoriteSender,req.body.autoriteReceiver)
+                res.json(result[0][0])
+            }else{
+                res.json(result)
+            }
+            rohiAudienceDB.release()
+        })
     })
 })
 
 router.post('/autorite/modifier',[authJwt.verifyToken],async(req,res)=>{
     // console.log(req.body)
-    db.query(`CALL modifier_audience_autorite (${req.body.id_date_heure_disponible_autorite} ,${req.body.id_dm_aud_autorite_date_heure_dispo},'${req.body.motif}','${req.body.email}','${req.body.numero_telephone}',${req.body.id_audience}) `, async (error,result) => {
-        if(error){
-            res.send(error)
-        } 
-        else if(result.length > 0 ){
-            const subject = {
-                motif: req.body.motif,
-                date_debut: req.body.date_debut,
-                date_fin: req.body.date_fin,
-                heure_debut: req.body.heure_debut,
-                heure_fin: req.body.heure_fin
+
+    rohiAudiencePool.getConnection(function(err, rohiAudienceDB){
+        rohiAudienceDB.query(`CALL modifier_audience_autorite (${req.body.id_date_heure_disponible_autorite} ,${req.body.id_dm_aud_autorite_date_heure_dispo},'${req.body.motif}','${req.body.email}','${req.body.numero_telephone}',${req.body.id_audience}) `, async (error,result) => {
+            if(error){
+                res.send(error)
+            } 
+            else if(result.length > 0 ){
+                const subject = {
+                    motif: req.body.motif,
+                    date_debut: req.body.date_debut,
+                    date_fin: req.body.date_fin,
+                    heure_debut: req.body.heure_debut,
+                    heure_fin: req.body.heure_fin
+                }
+                const mail = await notification_mailing.notification_audience_autorite(subject,req.body.autoriteSender,req.body.autoriteReceiver)
+                res.json(result[0][0])
+            }else{
+                res.json(result)
             }
-            const mail = await notification_mailing.notification_audience_autorite(subject,req.body.autoriteSender,req.body.autoriteReceiver)
-            res.json(result[0][0])
-        }else{
-            res.json(result)
-        }
+            rohiAudienceDB.release()
+        })
     })
+
 })
 
 router.post('/autorite/supprimer',[authJwt.verifyToken],async(req,res)=>{
@@ -581,16 +597,22 @@ router.post('/autorite/supprimer',[authJwt.verifyToken],async(req,res)=>{
     const sql = `DELETE FROM ${process.env.DB_APP}.demande_audience_autorite where id = ${req.body.id};`
     
     // const sql1 = `CALL supprimer_audience_autorite (${req.body.id})`
-    db.query(sql, (error,result) => {
-        if(error){
-            res.send(error)
-        } 
-        else if(result.length > 0 ){
-            res.json(result[0][0])
-        }else{
-            res.json(result)
-        }
+
+    rohiAudiencePool.getConnection(function (err, rohiAudienceDB){
+        rohiAudienceDB.query(sql, (error,result) => {
+            if(error){
+                res.send(error)
+            } 
+            else if(result.length > 0 ){
+                res.json(result[0][0])
+            }else{
+                res.json(result)
+            }
+            rohiAudienceDB.release()
+        })
     })
+
+
 })
 
 // router.post('/autorite/valider',async(req,res)=>{
@@ -629,19 +651,23 @@ router.post('/autorite/valider',[authJwt.verifyToken],async(req,res)=>{
 
     const sql = ` CALL valider_audience_autorite (${req.body.id_dm_aud_aut_date_heure_dispo},${req.body.id_audience}, '${req.body.date_debut}','${req.body.date_fin}','${req.body.heure_debut}','${req.body.heure_fin}',${req.body.id_autorite})`
     
-    db.query(sql, req.body,async(error,result) => {
-        if(error) {
-            res.send(error)
-        }
-        else{
-            const response = await mailing.audience_autorite_valide(autorite,envoyeur,entretien_date_time)
-            if(response && result ){
-                res.json({message:'Audience validé et envoyé',mail:response,data:result})
+
+    rohiAudiencePool.getConnection(function(err,rohiAudienceDB){
+        rohiAudienceDB.query(sql, req.body,async(error,result) => {
+            if(error) {
+                res.send(error)
             }
-            else {
-                res.json({message:'Audience non validé '})
+            else{
+                const response = await mailing.audience_autorite_valide(autorite,envoyeur,entretien_date_time)
+                if(response && result ){
+                    res.json({message:'Audience validé et envoyé',mail:response,data:result})
+                }
+                else {
+                    res.json({message:'Audience non validé '})
+                }
             }
-        }
+            rohiAudienceDB.release()
+        })  
     })
 })
 
@@ -654,21 +680,26 @@ router.post('/autorite/revalider',[authJwt.verifyToken],async(req,res)=>{
 
     const sql = `CALL revalider_audience_autorite(${req.body.id_dm_aud_aut_date_heure_dispo},${req.body.id_audience}, '${req.body.date_debut}','${req.body.date_fin}','${req.body.heure_debut}','${req.body.heure_fin}',${req.body.id_autorite})`
     
-    db.query(sql, req.body,async(error,result) => {
-        if(error) {
-            res.send(error)
-        }
-        else{
-            const entretien_date_time = String(req.body.date_debut).concat('T',req.body.heure_debut)
-            const response = await mailing.audience_autorite_revalide(autorite,envoyeur,entretien_date_time)
-            if(response && result ){
-                res.json({message:'Audience validé et envoyé',mail:response,data:result})
+
+    rohiAudiencePool.getConnection(function(err, rohiAudienceDB){
+        rohiAudienceDB.query(sql, req.body,async(error,result) => {
+            if(error) {
+                res.send(error)
             }
-            else {
-                res.json({message:'Audience non validé '})
+            else{
+                const entretien_date_time = String(req.body.date_debut).concat('T',req.body.heure_debut)
+                const response = await mailing.audience_autorite_revalide(autorite,envoyeur,entretien_date_time)
+                if(response && result ){
+                    res.json({message:'Audience validé et envoyé',mail:response,data:result})
+                }
+                else {
+                    res.json({message:'Audience non validé '})
+                }
             }
-        }
+            rohiAudienceDB.release()
+        })
     })
+
 })
 
 // router.post('/autorite/reporter/now',async(req,res)=>{

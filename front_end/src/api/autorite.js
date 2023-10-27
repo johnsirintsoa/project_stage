@@ -49,7 +49,7 @@ export default class AutoriteAPI{
 
     static async calendrier(arg){
         const url = dom.domaineBackEnd(route1,'/calendrier')
-        const res = await axios.post(url,arg)
+        const res = await axios.post(url,arg,{headers: authHeader()})
         // console.log(res.data)
         const dateTime = Function.dateIso(new Date())
         // console.log(dateTime)

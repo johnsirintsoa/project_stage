@@ -165,63 +165,66 @@ router.post('/login', async(req,res) =>{
     u.password = (SELECT AES_ENCRYPT('${req.body.mot_de_passe}','lHommeEstNaturellementBonCEestLaSocieteQuiLeCorrompt-Rousseau')));
     `
     
-    rohi.query(email, function(err,result){
-        if(err){
-            return res.send({err})
-        }
-        else if(result.length == 0){
-            // console.log(result.length)
-            return res.json({message:`Votre nom d'utilisateur est incorrect`})
-        }
-        else {
-            // return res.json(result)
-            rohi.query(sql, function(err,result){
-                if(err){
-                    return res.send({err})
-                }
-                else if(result.length == 0){
-                    // console.log(result.length)
-                    return res.json({message:`Votre mot de passe est incorrect`})
-                }
-                else{
-                    // console.log(process.env.JWT_SECRET)
-                    const token = jwt.sign({data: result[0]},
-                        process.env.JWT_SECRET,
-                        {
-                          algorithm: 'HS256',
-                          allowInsecureKeySizes: true,
-                          expiresIn: 86400, // 24 hours
-                        });
-                    return res.json({
-                            db: result[0],
-                            accessToken: token
-                        })
-                    // return res.json(result[0])
-                }
-            })
-        }
+    rohiPool.getConnection( function(err, rohiDB){
+        rohiDB.query(email, function(err,result){
+            if(err){
+                return res.send({err})
+            }
+            else if(result.length == 0){
+                // console.log(result.length)
+                return res.json({message:`Votre nom d'utilisateur est incorrect`})
+            }
+            else {
+                // return res.json(result)
+                rohiDB.query(sql, function(err,result){
+                    if(err){
+                        return res.send({err})
+                    }
+                    else if(result.length == 0){
+                        // console.log(result.length)
+                        return res.json({message:`Votre mot de passe est incorrect`})
+                    }
+                    else{
+                        // console.log(process.env.JWT_SECRET)
+                        const token = jwt.sign({data: result[0]},
+                            process.env.JWT_SECRET,
+                            {
+                              algorithm: 'HS256',
+                              allowInsecureKeySizes: true,
+                              expiresIn: 86400, // 24 hours
+                            });
+                        return res.json({
+                                db: result[0],
+                                accessToken: token
+                            })
+                        // return res.json(result[0])
+                    }
+                })
+            }
+            rohiDB.release()
+        })
     })
-
-
-    // console.log(sql)
-    // // res.send(sql)
 
 })
 
-router.post('/calendrier', async (req,res) =>{
+router.post('/calendrier',[authJwt.verifyToken], async (req,res) =>{
     // const sql = `CALL calendrier_autorite(${req.body.id_autorite},${req.body.est_admin})`
     const sql = `CALL calendrier_autorite(${req.body.id_autorite},${req.body.masque_event_ended})`
-    db.query(sql,function(err,result){
-        if(err){
-            return res.send({ err });
-        }
-        else{
-            return res.json(result[0])    
-        }
+
+    rohiAudiencePool.getConnection(function(err, rohiAudienceDB){
+        rohiAudienceDB.query(sql,function(err,result){
+            if(err){
+                return res.send({ err });
+            }
+            else{
+                return res.json(result[0])    
+            }
+            rohiAudienceDB.release()
+        })
     })
 })
 
-router.post('/filtre_calendrier', async (req,res) =>{
+router.post('/filtre_calendrier', async (req,res) => {
     // res.json(req.body)
     const autorite = req.body.autorite
     const sql = `CALL filtre_calendrier_evenement(
@@ -232,29 +235,37 @@ router.post('/filtre_calendrier', async (req,res) =>{
                 ${autorite.id_autorite_enfant}
             )`
     // res.json(sql)
-    db.query(sql,function(err,result){
-        if(err){
-            return res.send({ err });
-        }
-        else{
-            return res.json(result[0])    
-        }
+    rohiAudiencePool.getConnection(function(err, rohiAudienceDB){
+        rohiAudienceDB.query(sql,function(err, result) {
+            if(err){
+                return res.send({ err });
+            }
+            else{
+                return res.json(result[0])    
+            }
+            rohiAudienceDB.release()
+        })
     })
+
 })
 
 router.post('/place_disponible', async (req,res) =>{
     const sql = `CALL places_disponible(${req.body.id_date_heure_disponible_autorite},${req.body.id_autorite})`
     // console.log(sql)
     // res.json(sql)
-    db.query(sql,function(err,result){
-        // console.log(result)
-        if(err){
-            return res.send({ err });
-        }
-        else{
-            return res.json(result[0] )    
-        }
+    rohiAudiencePool.getConnection(function(err, rohiAudienceDB){
+        rohiAudienceDB.query(sql,function(err,result){
+            // console.log(result)
+            if(err){
+                return res.send({ err });
+            }
+            else{
+                return res.json(result[0] )    
+            }
+            rohiAudienceDB.release()
+        })
     })
+
 })
 
 // router.get('/liste',async(req,res)=>{

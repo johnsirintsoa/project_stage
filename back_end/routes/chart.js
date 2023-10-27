@@ -1,7 +1,11 @@
 const express = require('express')
 const router = express.Router();
-const rohi = require('../database').rohi
-const db = require('../database').conn
+
+const rohiPool = require('../database').rohi
+const rohiAudiencePool = require('../database').rohiAudience
+
+// const rohi = require('../database').rohi
+// const db = require('../database').conn
 
 const { authJwt } = require("../middleware");
 
@@ -101,18 +105,17 @@ router.post('/barre/doleance', [authJwt.verifyToken], async(req,res) =>{
     ${process.env.DB_APP}.doleance d 
     where d.id_autorite = ${req.body.id_autorite} and year(d.date_publication) = ${annee} `
     
-    rohi.query(sql, function(err,result){
-        if(err){
-            return res.send({err})
-        }
-        else {
-            return res.json(result)
-        }
+    rohiAudiencePool.getConnection(function(error, rohiAudienceDB){
+        rohiAudienceDB.query(sql, function(err,result){
+            if(err){
+                return res.send({err})
+            }
+            else {
+                return res.json(result)
+            }
+            rohiAudienceDB.release()
+        })
     })
-
-
-    // console.log(sql)
-    // // res.send(sql)
 })
 
 router.post('/barre/stage', [authJwt.verifyToken],async(req,res) =>{
@@ -137,13 +140,16 @@ router.post('/barre/stage', [authJwt.verifyToken],async(req,res) =>{
     group by d.id order by x`
     console.log(sql)
     
-    rohi.query(sql, function(err,result){
-        if(err){
-            return res.send({err})
-        }
-        else {
-            return res.json(result)
-        }
+    rohiAudiencePool.getConnection(function(error, rohiAudienceDB){
+        rohiAudienceDB.query(sql, function(err,result){
+            if(err){
+                return res.send({err})
+            }
+            else {
+                return res.json(result)
+            }
+            rohiAudienceDB.release()
+        })
     })
 })
 module.exports = router

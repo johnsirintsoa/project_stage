@@ -1,7 +1,11 @@
 const express = require('express')
 const router = express.Router();
-const db = require('../database').conn
-const db_name = require('../database').db_name
+
+const rohiPool = require('../database').rohi
+const rohiAudiencePool = require('../database').rohiAudience
+
+// const db = require('../database').conn
+// const db_name = require('../database').db_name
 const mailing = require('../Controllers/MailingController')
 const { authJwt } = require("../middleware");
 
@@ -36,19 +40,22 @@ router.post('/valider', [authJwt.verifyToken],async (req,res) =>{
         response = await mailing.entretien_valide(autorite,sender,entretien_date_time)
     }
  
-    db.query(sql,function(err,result){
-        // console.log(result)
-        if(err){
-            return res.send({ err });
-        }
-        else{
-            if(result ){
-                return res.json({data:{db:result[0][0],mail:response}})
+    rohiAudiencePool.getConnection(function(error, rohiAudienceDB){
+        rohiAudienceDB.query(sql,function(err,result){
+            // console.log(result)
+            if(err){
+                return res.send({ err });
             }
-            else {
-                return res.json({data:{db:result[0][0],mail:response}})
+            else{
+                if(result ){
+                    return res.json({data:{db:result[0][0],mail:response}})
+                }
+                else {
+                    return res.json({data:{db:result[0][0],mail:response}})
+                }
             }
-        }
+            rohiAudienceDB.release()
+        })
     })
 })
 
@@ -82,21 +89,25 @@ router.post('/revalider', [authJwt.verifyToken],async (req,res) =>{
         
         response = await mailing.entretien_reporte(autorite,sender,entretien_date_time)
     }
- 
-    db.query(sql,function(err,result){
-        // console.log(result)
-        if(err){
-            return res.send({ err });
-        }
-        else{
-            if(result ){
-                return res.json({data:{db:result[0][0],mail:response,message:'Votre évènement a bien été modifié'}})
+
+    rohiAudiencePool.getConnection(function(error, rohiAudienceDB){
+        rohiAudienceDB.query(sql,function(err,result){
+            // console.log(result)
+            if(err){
+                return res.send({ err });
             }
-            else {
-                return res.json({data:{db:result[0][0],mail:response}})
+            else{
+                if(result ){
+                    return res.json({data:{db:result[0][0],mail:response,message:'Votre évènement a bien été modifié'}})
+                }
+                else {
+                    return res.json({data:{db:result[0][0],mail:response}})
+                }
             }
-        }
+            rohiAudienceDB.release()
+        })
     })
+
 })
 
 
@@ -119,16 +130,19 @@ router.post('/terminer', [authJwt.verifyToken],async (req,res) =>{
         sql = `UPDATE demande_stage SET est_termine = ${req.body.est_termine} where id = ${req.body.id_evenement}`    
     }
 
-    // console.log(sql)
-    db.query(sql,function(err,result){
-        // console.log(result)
-        if(err){
-            return res.send({ err });
-        }
-        else{
-            return res.json({result})
-        }
+    rohiAudiencePool.getConnection(function(error, rohiAudienceDB){
+        rohiAudienceDB.query(sql,function(err,result){
+            // console.log(result)
+            if(err){
+                return res.send({ err });
+            }
+            else{
+                return res.json({result})
+            }
+            rohiAudienceDB.release()
+        })
     })
+
 })
 
 module.exports = router

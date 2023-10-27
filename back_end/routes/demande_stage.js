@@ -1,7 +1,11 @@
 const express = require('express')
 const router = express.Router();
-const db = require('../database').conn
-const db_name = require('../database').db_name
+// const db = require('../database').conn
+// const db_name = require('../database').db_name
+
+const rohiPool = require('../database').rohi
+const rohiAudiencePool = require('../database').rohiAudience
+
 const multer = require("multer")
 const FUNC = require('../func/function')
 // const FUNC = require('../func/function')
@@ -60,26 +64,30 @@ router.post('/add',upload.fields([{name: 'curriculum_vitae'},{name: 'lettre_moti
         // let sql = "INSERT INTO demande_stage(nom,prenom,e_mail,cin,telephone,duree,curriculum_vitae,lettre_motivation,lettre_introduction,message,id_domaine) VALUES ('"+req.body.nom+"','"+req.body.prenom+"','"+req.body.e_mail+"','"+req.body.cin+"','"+req.body.telephone+"','"+req.body.duree+"','"+req.files['curriculum_vitae'][0].filename+"','"+req.files['lettre_motivation'][0].filename+"','"+req.files['lettre_introduction'][0].filename+"','"+req.body.message+"','"+req.body.id_domaine+"')"
         // console.log(req.body)
         // console.log('Hahahaha')
-        let sql = `INSERT INTO ${process.env.DB_APP}.demande_stage(nom,prenom,etablissement,e_mail,cin,telephone,duree,curriculum_vitae,lettre_motivation,lettre_introduction,message,id_domaine,id_autorite_enfant,date_creation) VALUES ('${req.body.nom}','${prenomFormated}','${req.body.etablissement}','${req.body.e_mail}','${req.body.cin}','${req.body.telephone}','${req.body.duree}','${req.files['curriculum_vitae'][0].filename}','${req.files['lettre_motivation'][0].filename}','${req.files['lettre_introduction'][0].filename}','${req.body.message}',${req.body.id_domaine},${req.body.id_autorite_enfant},(SELECT CURDATE()))`
-        var query = db.query(sql, async (err, result) =>{
-            if(err){
-                // console.log('Hahahaha')
-                return res.json(err);
-            }
-            else{
-                const envoyeur = {
-                    nom: nomFormated,
-                    prenom: prenomFormated
+        let sql = `INSERT INTO demande_stage(nom,prenom,etablissement,e_mail,cin,telephone,duree,curriculum_vitae,lettre_motivation,lettre_introduction,message,id_domaine,id_autorite_enfant,date_creation) VALUES ('${req.body.nom}','${prenomFormated}','${req.body.etablissement}','${req.body.e_mail}','${req.body.cin}','${req.body.telephone}','${req.body.duree}','${req.files['curriculum_vitae'][0].filename}','${req.files['lettre_motivation'][0].filename}','${req.files['lettre_introduction'][0].filename}','${req.body.message}',${req.body.id_domaine},${req.body.id_autorite_enfant},(SELECT CURDATE()))`
+        
+        rohiAudiencePool.getConnection(function(error,rohiAudienceDB){
+            rohiAudience.query(sql, async (err, result) =>{
+                if(err){
+                    // console.log('Hahahaha')
+                    return res.json(err);
                 }
-                const receiver = {
-                    email: req.body.autoriteEmail,
-                    intitule_code: req.body.autoriteSigle,
-                    intitule: req.body.autorite,
+                else{
+                    const envoyeur = {
+                        nom: nomFormated,
+                        prenom: prenomFormated
+                    }
+                    const receiver = {
+                        email: req.body.autoriteEmail,
+                        intitule_code: req.body.autoriteSigle,
+                        intitule: req.body.autorite,
+                    }
+                    const mail = await notification_mailing.notification_demande_stage(envoyeur,receiver)
+                    return res.json(result);
                 }
-                const mail = await notification_mailing.notification_demande_stage(envoyeur,receiver)
-                return res.json(result);
-            }
-        });
+                rohiAudienceDB.release()
+            });
+        })
     }
 })
 
@@ -105,28 +113,32 @@ router.post('/liste',async(req,res)=>{
         WHERE ds.id_autorite_enfant = ${req.body.id_autorite_enfant}
         GROUP BY ds.id`
     
-    var query = db.query(sql, function(err, result) {
-        if(err){
-            return res.json(err);
-        }
-        res.json(result)
-        // else if(result.length > 0 ){
-        //     res.json(result[0][0])
-        // }else{
-        //     res.json(result)
-        // }
+    rohiAudiencePool.getConnection(function(error, rohiAudienceDB){
+        rohiAudienceDB.query(sql, function(err, result) {
+            if(err){
+                return res.json(err);
+            }
+            res.json(result)
+            rohiAudienceDB.release()
+        })
     })
+
+
 })
 
 router.post('/filtre',[authJwt.verifyToken], async(req,res)=>{
     const sql = `CALL filtre_stage ('${req.body.date1}','${req.body.date2}','${req.body.nom}','${req.body.etablissement}',${req.body.id_domaine},${req.body.id_autorite})`
     // console.log(req.body)
-    var query = db.query(sql, function(err, result) {
-        if(err){
-            return res.json(err);
-        }
-        // console.log(sql)
-        res.json(result[0])
+
+    rohiAudiencePool.getConnection(function(error, rohiAudienceDB){
+        rohiAudienceDB.query(sql, function(err, result) {
+            if(err){
+                return res.json(err);
+            }
+            // console.log(sql)
+            res.json(result[0])
+            rohiAudienceDB.release()
+        })
     })
 })
 
@@ -163,77 +175,83 @@ router.get('/all_status/:id_autorite_enfant',async(req,res)=>{
             WHEN eds.id IS NULL THEN 'en attente' 
             ELSE 'validé' END as demande_status
     FROM
-        ${db_name}.demande_stage e 
+        demande_stage e 
         JOIN autorite_enfant ae on e.id_autorite_enfant = ae.id
         JOIN domaine d on e.id_domaine = d.id
         LEFT JOIN entretien_demande_stage eds on e.id = eds.id_demande_stage where e.id_autorite_enfant = ${req.params.id_autorite_enfant}`
-    var query = db.query(sql, function(err, result) {
-        if(err){
-            return res.json(err);
-        }else{
-            const array_result = []
-            result.forEach(element => {
-                if(element.id_entretien_demande_stage != null){
-                    array_result.push({
-                        id_demande_stage: element.id_demande_stage,
-                        nom: element.nom,
-                        prenom: element.prenom,
-                        telephone: element.telephone,
-                        e_mail: element.e_mail,
-                        cin: element.cin,
-                        duree: element.duree,
-                        curriculum_vitae: element.curriculum_vitae,
-                        lettre_motivation: element.lettre_motivation,
-                        lettre_introduction: element.lettre_introduction,
-                        message: element.message,
-                        autorite:{
-                            id_autorite: element.id_autorite_enfant,
-                            intitule: element.intitule,
-                            intitule_code: element.intitule_code,
-                            addresse_electronique: element.addresse_electronique,
-                            mot_de_passe_mailing: element.mot_de_passe_mailing,
-                            porte: element.porte
-                        },
-                        id_domaine: element.id_domaine,
-                        nom_domaine: element.nom_domaine,
-                        date_debut: element.date_debut,
-                        date_fin: element.date_fin,
-                        time_debut: element.time_debut,
-                        time_fin: element.time_fin,
-                        id_entretien_demande_stage: element.id_entretien_demande_stage,
-                        demande_status: element.demande_status
-                    })
-                }
-                else if(element.id_entretien_demande_stage == null){
-                    array_result.push({
-                        id_demande_stage: element.id_demande_stage,
-                        nom: element.nom,
-                        prenom: element.prenom,
-                        telephone: element.telephone,
-                        e_mail: element.e_mail,
-                        cin: element.cin,
-                        duree: element.duree,
-                        curriculum_vitae: element.curriculum_vitae,
-                        lettre_motivation: element.lettre_motivation,
-                        lettre_introduction: element.lettre_introduction,
-                        message: element.message,
-                        autorite:{
-                            id_autorite: element.id_autorite_enfant,
-                            intitule: element.intitule,
-                            intitule_code: element.intitule_code,
-                            addresse_electronique: element.addresse_electronique,
-                            mot_de_passe_mailing: element.mot_de_passe_mailing,
-                            porte: element.porte
-                        },
-                        id_domaine: element.id_domaine,
-                        nom_domaine: element.nom_domaine,
-                        demande_status: element.demande_status
-                    })                    
-                }
-            });
-            return res.json(array_result);
-        }
-    });
+    
+    rohiAudiencePool.getConnection(function(error, rohiAudienceDB){
+        rohiAudienceDB.query(sql, function(err, result) {
+            if(err){
+                return res.json(err);
+            }else{
+                const array_result = []
+                result.forEach(element => {
+                    if(element.id_entretien_demande_stage != null){
+                        array_result.push({
+                            id_demande_stage: element.id_demande_stage,
+                            nom: element.nom,
+                            prenom: element.prenom,
+                            telephone: element.telephone,
+                            e_mail: element.e_mail,
+                            cin: element.cin,
+                            duree: element.duree,
+                            curriculum_vitae: element.curriculum_vitae,
+                            lettre_motivation: element.lettre_motivation,
+                            lettre_introduction: element.lettre_introduction,
+                            message: element.message,
+                            autorite:{
+                                id_autorite: element.id_autorite_enfant,
+                                intitule: element.intitule,
+                                intitule_code: element.intitule_code,
+                                addresse_electronique: element.addresse_electronique,
+                                mot_de_passe_mailing: element.mot_de_passe_mailing,
+                                porte: element.porte
+                            },
+                            id_domaine: element.id_domaine,
+                            nom_domaine: element.nom_domaine,
+                            date_debut: element.date_debut,
+                            date_fin: element.date_fin,
+                            time_debut: element.time_debut,
+                            time_fin: element.time_fin,
+                            id_entretien_demande_stage: element.id_entretien_demande_stage,
+                            demande_status: element.demande_status
+                        })
+                    }
+                    else if(element.id_entretien_demande_stage == null){
+                        array_result.push({
+                            id_demande_stage: element.id_demande_stage,
+                            nom: element.nom,
+                            prenom: element.prenom,
+                            telephone: element.telephone,
+                            e_mail: element.e_mail,
+                            cin: element.cin,
+                            duree: element.duree,
+                            curriculum_vitae: element.curriculum_vitae,
+                            lettre_motivation: element.lettre_motivation,
+                            lettre_introduction: element.lettre_introduction,
+                            message: element.message,
+                            autorite:{
+                                id_autorite: element.id_autorite_enfant,
+                                intitule: element.intitule,
+                                intitule_code: element.intitule_code,
+                                addresse_electronique: element.addresse_electronique,
+                                mot_de_passe_mailing: element.mot_de_passe_mailing,
+                                porte: element.porte
+                            },
+                            id_domaine: element.id_domaine,
+                            nom_domaine: element.nom_domaine,
+                            demande_status: element.demande_status
+                        })                    
+                    }
+                });
+                return res.json(array_result);
+            }
+            rohiAudienceDB.release()
+        });
+    })
+    
+
 })
 
 // detail demande de stages
@@ -257,55 +275,58 @@ router.post('/detail', [authJwt.verifyToken],async(req,res)=>{
         e.id_autorite_enfant,
         IFNULL(eds.id,'0') as id_entretien_stage
     FROM
-        ${db_name}.demande_stage e 
+        demande_stage e 
         JOIN domaine d on e.id_domaine = d.id	
         LEFT JOIN entretien_demande_stage eds on  e.id = eds.id_demande_stage
         WHERE e.id = ${req.body.id_demande_stage}`
 
-    // res.json(sql)
-    var query = db.query(sql, function(err, result) {
-        if(err){
-            return res.json(err);
-        }else{
-            return res.json(result[0]);
-        }
+    rohiAudiencePool.getConnection(function(error, rohiAudienceDB){
+        rohiAudienceDB.query(sql, function(err, result) {
+            if(err){
+                return res.json(err);
+            }else{
+                return res.json(result[0]);
+            }
+            rohiAudienceDB.release()
+        })
     })
+
 })
   
 // envoie mail
-router.post('/sendMail' , async(req,res)=>{
-    // const username = req.body.username
-    // const usermail = req.body.usermail
-    // const date_entretien = FUNC.date_in_string(req.body.date_entretien)
-    const username = 'RANDRIANARISON Johns'
-    const usermail = 'johnsirintsoa18@gmail.com'
-    const date_entretien = FUNC.date_in_string('2022-11-22T11:00:00')
+// router.post('/sendMail' , async(req,res)=>{
+//     // const username = req.body.username
+//     // const usermail = req.body.usermail
+//     // const date_entretien = FUNC.date_in_string(req.body.date_entretien)
+//     const username = 'RANDRIANARISON Johns'
+//     const usermail = 'johnsirintsoa18@gmail.com'
+//     const date_entretien = FUNC.date_in_string('2022-11-22T11:00:00')
 
-    // const FUNC.date_in_string(date_entretien)
-    try {
-        const transporter = nodemailer.createTransport({
-            host: 'smtp.gmail.com',
-            port: 587,
-            secure:false,
-            auth: {
-                user: 'mefstage2022@gmail.com',
-                pass: 'wswrgxbntbumffqs'
-            }
-        });
+//     // const FUNC.date_in_string(date_entretien)
+//     try {
+//         const transporter = nodemailer.createTransport({
+//             host: 'smtp.gmail.com',
+//             port: 587,
+//             secure:false,
+//             auth: {
+//                 user: 'mefstage2022@gmail.com',
+//                 pass: 'wswrgxbntbumffqs'
+//             }
+//         });
         
-        // send email
-        await transporter.sendMail({
-            from: 'mefstage2022@gmail.com',
-            to: usermail,
-            subject: 'Demande approuvé et lu',
-            text: `Bonjour ${username}. Entretien ${date_entretien}`
-        });
-        res.send({message:'success'})
-    } catch (error) {
-        res.send(error)
-    }
+//         // send email
+//         await transporter.sendMail({
+//             from: 'mefstage2022@gmail.com',
+//             to: usermail,
+//             subject: 'Demande approuvé et lu',
+//             text: `Bonjour ${username}. Entretien ${date_entretien}`
+//         });
+//         res.send({message:'success'})
+//     } catch (error) {
+//         res.send(error)
+//     }
 
-})
+// })
 
 // send SMS
 router.post('/sendSms', async(req,res)=>{
@@ -371,15 +392,18 @@ router.get('/file/:file_name',async(req,res)=>{
 router.post('/prolonger',[authJwt.verifyToken],async(req,res)=>{
     let sql = `call prolonger_duree_stage(${req.body.duree_en_plus},${req.body.id_entretien_stage})`
     
-    var query = db.query(sql, function(err, result) {
-        if(err){
-            return res.json(err);
-        }
-        else if(result.length > 0 ){
-            res.json(result[0][0])
-        }else{
-            res.json(result)
-        }
+    rohiAudiencePool.getConnection(function(error, rohiAudienceDB){
+        rohiAudienceDB.query(sql, function(err, result) {
+            if(err){
+                return res.json(err);
+            }
+            else if(result.length > 0 ){
+                res.json(result[0][0])
+            }else{
+                res.json(result)
+            }
+            rohiAudienceDB.release()
+        })
     })
 })
 
