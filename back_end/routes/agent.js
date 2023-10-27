@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router();
-const rohi = require('../database').rohi
-const db = require('../database').conn
+const rohiPool = require('../database').rohi
+const rohiAudiencePool = require('../database').rohiAudience
 
 require('dotenv/config')
 
@@ -43,35 +43,45 @@ router.post('/login', async(req,res) =>{
     and 
     u.password = (SELECT AES_ENCRYPT('${req.body.mot_de_passe}','lHommeEstNaturellementBonCEestLaSocieteQuiLeCorrompt-Rousseau'));
     `
-    
-    rohi.query(email, function(err,result){
-        if(err){
-            return res.send({err})
-        }
-        else if(result.length == 0){
-            // console.log(result.length)
-            return res.json({message:`Votre nom d'utilisateur est incorrect ou vous n'avez\npas droit d'accès à cette fonctionnalité `})
-        }
-        else {
-            // return res.json(result)
-            rohi.query(sql, function(err,result){
-                if(err){
-                    return res.send({err})
-                }
-                else if(result.length == 0){
-                    // console.log(sql)
-                    // console.log(result.length)
-                    return res.json({message:`Votre mot de passe est incorrect ou vous n'avez\npas droit d'accès à cette fonctionnalité`})
-                }
-                else{
-                    return res.json(result[0])
-                }
-            })
-        }
-    })
+    rohiPool.getConnection(function(err, rohiDb) {
+        if (err) {
+            rohiDb.release();
+            throw err
+        } // not connected!
+
+        rohiDb.query(email, function(err,result){
+            if(err){
+                return res.send({err})
+            }
+            else if(result.length == 0){
+                // console.log(result.length)
+                return res.json({message:`Votre nom d'utilisateur est incorrect ou vous n'avez\npas droit d'accès à cette fonctionnalité `})
+            }
+            else {
+                // return res.json(result)
+                rohiDb.query(sql, function(err,result){
+                    if(err){
+                        return res.send({err})
+                    }
+                    else if(result.length == 0){
+                        // console.log(sql)
+                        // console.log(result.length)
+                        return res.json({message:`Votre mot de passe est incorrect ou vous n'avez\npas droit d'accès à cette fonctionnalité`})
+                    }
+                    else{
+                        return res.json(result[0])
+                    }
+                })
+            }
+            rohiDb.release()
+        })
+      });
+
+
 
 
     // console.log(sql)
     // // res.send(sql)
 })
+
 module.exports = router

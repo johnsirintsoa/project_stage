@@ -4,7 +4,7 @@ var mysql = require('mysql');
 // const rohi_db = 'rohi'
 
 
-const db_name = process.env.DB_APP
+const rohiAudience_name = process.env.DB_APP
 const rohi_db = process.env.DB_AUTORITE
 
 // var conn = mysql.createConnection({
@@ -34,7 +34,7 @@ const rohi_db = process.env.DB_AUTORITE
 //   console.log('Database is connected successfully in ',rohi_db);
 // });
 
-var conn = mysql.createPool({
+var rohiAudience = mysql.createPool({
   host: '5.183.8.211', // Replace with your host name
   user: 'dev',      // Replace with your database username
   password: 'dev',      // Replace with your database password
@@ -42,14 +42,15 @@ var conn = mysql.createPool({
   // database: 'stage', // // Replace with your database Name
   database: db_name, // // Replace with your database Name
   timezone: 'EAT'
-}); 
-conn.getConnection(function(err, connection) {
+});
+
+rohiAudience.getConnection(function(err, connection) {
   if (err) {
     connection.release();
     console.log(' Error getting mysql_pool connection: ' + err);
     throw err;
   }
-  console.log('Database is connected successfully in ',db_name);
+  console.log('Database is connected successfully in ',rohiAudience_name);
 });
 
 
@@ -63,6 +64,7 @@ var rohi = mysql.createPool({
   database: rohi_db, // // Replace with your database Name
   timezone: 'EAT'
 }); 
+
 rohi.getConnection(function(err, connection) {
   if (err) {
     connection.release();
@@ -72,5 +74,5 @@ rohi.getConnection(function(err, connection) {
   console.log('Database is connected successfully in ',rohi_db);
 });
 
-module.exports = {conn,db_name,rohi};
+module.exports = {rohiAudience,rohi};
 

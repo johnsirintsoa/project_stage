@@ -1,7 +1,12 @@
 const express = require('express')
 const router = express.Router();
-const db = require('../database').conn
-const db_name = require('../database').db_name
+
+// const db = require('../database').conn
+// const db_name = require('../database').db_name
+
+const rohiPool = require('../database').rohi
+const rohiAudiencePool = require('../database').rohiAudience
+
 const Function = require('../func/function')
 const { authJwt } = require('../middleware');
 
@@ -16,18 +21,22 @@ router.post('/ajouter/anonyme', async(req,res) =>{
         ( session_navigateur,titre,message,date_publication, id_autorite, sigle,child_libelle,heure_publication) 
         VALUES 
         ('${req.body.session_navigateur}','${req.body.titre}','${req.body.message}',(select curdate()) ,${req.body.id_autorite},'${req.body.sigle}','${req.body.autorite}',(SELECT SUBTIME(curtime(), "-3:0:0"))`
-    db.query(sql,async (error,result) => {
-        
-
-        // console.log(pool._freeConnections.indexOf(db)); 
-        if(error) {
-            res.send(error)
-        }
-        else if(result ){
-            return res.json({message:'Doléance envoyé',result})
-        }
-        db.release()
+    
+    rohiAudiencePool.getConnection(function(err, rohiAudienceDB){
+        rohiAudienceDB.query(sql,async (error,result) => {
+            // console.log(pool._freeConnections.indexOf(db)); 
+            if(error) {
+                rohiAudienceDB.release()
+                res.send(error)
+            }
+            else if(result ){
+                return res.json({message:'Doléance envoyé',result})
+            }
+            rohiAudienceDB.release()
+        })
     })
+
+
     // res.json(sql)
 })
 

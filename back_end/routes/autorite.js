@@ -1,8 +1,13 @@
 const express = require('express')
 const router = express.Router();
-const rohi = require('../database').rohi
-const db = require('../database').conn
-const db_name = require('../database').db_name
+
+const rohiPool = require('../database').rohi
+const rohiAudiencePool = require('../database').rohiAudience
+
+// const rohi = require('../database').rohi
+// const db = require('../database').conn
+
+// const db_name = require('../database').db_name
 const mailing = require('../Controllers/MailingController')
 
 require('dotenv').config()
@@ -42,15 +47,21 @@ router.post('/structure', async(req,res) =>{
 		or e.structure_entete LIKE UPPER('%${req.body.path}%')
 		or e.service_libele LIKE UPPER('%${req.body.path}%')) limit 10`
     // console.log(sql)
-    rohi.query(sql, function(err,result){
-        if(err){
-            return res.send({ err });
-        }
-        else{
-            return res.json(result)    
-        }
-        rohi.release();       
+
+    rohiPool.getConnection(function(err, rohiDB){
+        rohiDB.query(sql, function(err,result){
+            if(err){
+                rohiDB.release()
+                return res.send({ err });
+            }
+            else{
+                return res.json(result)    
+            }
+            rohiDB.release();       
+        })
     })
+
+
 })
 
 router.post('/backOffice/structure', async(req,res) =>{
@@ -84,15 +95,20 @@ router.post('/backOffice/structure', async(req,res) =>{
 		or e.structure_entete LIKE UPPER('%${req.body.path}%')
 		or e.service_libele LIKE UPPER('%${req.body.path}%')) limit 10`
     // console.log(sql)
-    rohi.query(sql, function(err,result){
-        if(err){
-            return res.send({ err });
-        }
-        else{
-            return res.json(result)    
-        }  
-        rohi.release()     
+
+    rohiPool.getConnection( function(err, rohiDB){
+        rohiDB.query(sql, function(err,result){
+            if(err){
+                rohiDB.release()
+                return res.send({ err });
+            }
+            else{
+                return res.json(result)    
+            }  
+            rohiDB.release()     
+        })
     })
+
 })
 
 router.get("/Hello", [authJwt.verifyToken], (req, res, next) => {
