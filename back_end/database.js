@@ -43,8 +43,12 @@ var conn = mysql.createPool({
   database: db_name, // // Replace with your database Name
   timezone: 'EAT'
 }); 
-conn.connect(function(err) {
-  if (err) throw err;
+conn.getConnection(function(err, connection) {
+  if (err) {
+    connection.release();
+    console.log(' Error getting mysql_pool connection: ' + err);
+    throw err;
+  }
   console.log('Database is connected successfully in ',db_name);
 });
 
@@ -59,8 +63,12 @@ var rohi = mysql.createPool({
   database: rohi_db, // // Replace with your database Name
   timezone: 'EAT'
 }); 
-rohi.connect(function(err) {
-  if (err) throw err;
+rohi.getConnection(function(err, connection) {
+  if (err) {
+    connection.release();
+    console.log(' Error getting mysql_pool connection: ' + err);
+    throw err;
+  }
   console.log('Database is connected successfully in ',rohi_db);
 });
 
