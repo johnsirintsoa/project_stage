@@ -84,7 +84,7 @@ export default {
         };
     },
 
-    async unmounted(){
+    async mounted(){
         const filtre = {
             date1: this.filter.date1,
             date2: this.filter.date2,

@@ -2,7 +2,11 @@
     import AutoriteApi from '../../api/autorite'
     import DoleanceAPI from '../../api/doleance';
     import Function from '../../func/function'
+    import spinnerPopup from '../loading/SpinnerPopup.vue'
     export default{
+      components:{
+        spinnerPopup
+      },
         props:{
             doleance:Object
         },
@@ -11,6 +15,7 @@
 
         data() {
           return {
+            isSpinnerActivated: false,
             marginTop: -16,
             isSearching: false,
             autorites:'Aucun résultats',
@@ -86,6 +91,7 @@
           },
 
           async modifier(){
+            this.isSpinnerActivated = true
               // console.log(this.doleance)
             const arg = {
               id: this.doleanceForm.id,
@@ -104,6 +110,7 @@
             console.log(arg)
             const response = await DoleanceAPI.modifier(arg)
             if(response.message){
+              this.isSpinnerActivated = false
               swal('Doléance modifiée',`${response.message}`,'success')
               const session = JSON.parse(sessionStorage.getItem('session_navigateur')).value
               const arg = {
@@ -176,7 +183,9 @@
               </div>
 
             </div>
-    
+            <spinnerPopup
+              :sipnnerActivated="isSpinnerActivated"
+            />
             <div class="text-center">
               <button type="submit" class="btn btn-warning">Modifier</button>
               <button type="reset" class="btn btn-secondary" @click="reset">Annuler</button>
@@ -292,6 +301,10 @@
             </div>
 
           </div>
+
+          <spinnerPopup
+            :sipnnerActivated="isSpinnerActivated"
+          />
 
           <div class="text-center">
             <button type="submit" class="btn btn-warning">Modifier</button>

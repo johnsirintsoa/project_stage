@@ -31,6 +31,10 @@
               @getAutoriteClicked="getAutorite"
             />
 
+            <spinnerPopup
+              :sipnnerActivated="isSpinnerActivated"
+            />
+
             <div class="text-center">
               <button type="submit" class="btn btn-primary">Ajouter</button>
               <button type="reset" class="btn btn-secondary" @click="reset">Annuler</button>
@@ -111,6 +115,10 @@
               @getAutoriteClicked="getAutorite"
             />
 
+            <spinnerPopup
+              :sipnnerActivated="isSpinnerActivated"
+            />
+
             <div class="text-center">
               <button type="submit" class="btn btn-primary">Ajouter</button>
               <button type="reset" class="btn btn-secondary" @click="reset">Annuler</button>
@@ -127,12 +135,15 @@
     import swal from 'sweetalert'
     import DoleanceApi from '../../api/doleance'
     import Function from '../../func/function'
+    import spinnerPopup from '../loading/SpinnerPopup.vue'
     export default {
         components:{
-          structure
+          structure,
+          spinnerPopup
         },
         data() {
           return {
+              isSpinnerActivated:false,
               marginTop: -16,
               currentForm: 'AnonymusForm',
               isSearching: false,
@@ -166,6 +177,7 @@
           },
 
           async ajouter() {
+            this.isSpinnerActivated = true
             const doleance = {
               autorite : this.doleance.autorite,
               id_autorite : this.doleance.id_autorite,
@@ -183,7 +195,7 @@
             if(this.currentForm === 'AnonymusForm'){
                 const data = await DoleanceApi.ajouter_anonyme(doleance)
                 if(data.message){
-                  
+                    this.isSpinnerActivated = false
                     this.reset()
                     swal('Doléance ajoutée',`${data.message}`,'success')
                 }
@@ -192,6 +204,7 @@
             else if(this.currentForm === 'NonAnonymusForm'){
                 const data = await DoleanceApi.ajouter_non_anonyme(doleance)
                 if(data.message){
+                    this.isSpinnerActivated = false
                     this.reset()
                     swal('Doléance ajoutée',`${data.message}`,'success')
                 }
