@@ -92,7 +92,7 @@ router.post('/modifier', async(req,res) =>{
 })
 
 router.get('/supprimer/:id', async(req,res) =>{
-    const sql = `delete from ${db_name}.doleance where id = ${req.params.id};`
+    const sql = `delete from doleance where id = ${req.params.id};`
     // res.json(sql)
 
     rohiAudiencePool.getConnection( function (err, rohiAudienceDB){
