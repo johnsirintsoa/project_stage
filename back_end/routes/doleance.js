@@ -46,7 +46,7 @@ router.post('/ajouter/non_anonyme', async(req,res) =>{
     const sql = `INSERT INTO doleance
         ( session_navigateur,titre,message,date_publication, id_autorite, sigle,child_libelle,heure_publication,e_mail, cin, numero_telephone, nom, prenom) 
         VALUES 
-        ('${req.body.session_navigateur}','${req.body.titre}','${req.body.message}',(select curdate()) ,${req.body.id_autorite},'${req.body.sigle}','${req.body.autorite}',(SELECT SUBTIME(curtime(), "-3:0:0"),'${req.body.e_mail}', '${req.body.cin}', '${req.body.numero_telephone}', '${nomFormated}', '${prenomFormated}')`
+        ('${req.body.session_navigateur}','${req.body.titre}','${req.body.message}',(select curdate()) ,${req.body.id_autorite},'${req.body.sigle}','${req.body.autorite}',(SELECT SUBTIME(curtime(), "-03:00:00")),'${req.body.e_mail}', '${req.body.cin}', '${req.body.numero_telephone}', '${nomFormated}', '${prenomFormated}')`
     db.query(sql,async (error,result) => {
         // db.release();
 
