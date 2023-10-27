@@ -20,13 +20,13 @@ router.post('/ajouter/anonyme', async(req,res) =>{
     const sql = `INSERT INTO doleance
         ( session_navigateur,titre,message,date_publication, id_autorite, sigle,child_libelle,heure_publication) 
         VALUES 
-        ('${req.body.session_navigateur}','${req.body.titre}','${req.body.message}',(select curdate()) ,${req.body.id_autorite},'${req.body.sigle}','${req.body.autorite}',(SELECT SUBTIME(curtime(), "-3:0:0"))`
+        ('${req.body.session_navigateur}','${req.body.titre}','${req.body.message}',(select curdate()) ,${req.body.id_autorite},'${req.body.sigle}','${req.body.autorite}',(SELECT SUBTIME(curtime(),'-03:00:00'))`
     
     rohiAudiencePool.getConnection(function(err, rohiAudienceDB){
         rohiAudienceDB.query(sql,async (error,result) => {
             // console.log(pool._freeConnections.indexOf(db)); 
             if(error) {
-                rohiAudienceDB.release()
+                // rohiAudienceDB.release()
                 res.send(error)
             }
             else if(result ){
