@@ -28,7 +28,7 @@ export default class DemandeAudienceAutorite {
 
     static async ajouter(audience){
         const url = dom.domaineBackEnd(route1,'/ajouter')
-        const res = await axios.post(url,audience)
+        const res = await axios.post(url,audience,{headers: authHeader()})
         // const res = await axios.post(url.concat('/ajouter'),audience)
         return res.data
     }

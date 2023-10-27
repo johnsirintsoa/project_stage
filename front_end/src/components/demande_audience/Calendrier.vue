@@ -1282,6 +1282,7 @@
         'terminerEvenement': async function(value){
           this.setEvenementTerminer(value)
           this.refreshData()
+          // this.togglePopupAudience()
           // this.terminerEvenement = false
           // this.showPopupAudience = false
           
@@ -1363,6 +1364,7 @@
               id_autorite: id,
               masque_event_ended: this.masqueEvenement
             })
+            this.showPopupAudience = false
           } 
         },         
 
@@ -1594,7 +1596,7 @@
             //   id_audience: this.audience.id
             // }
             // this.sipnnerActivated = false
-            this.$emit('spinnerStatus', false)
+            this.$emit('spinnerStatus', true)
             const response = await DemandeAudienceAutoriteAPI.modifier(audience)
             if(response.message){
               this.togglePopupAudience()
@@ -1747,8 +1749,21 @@
             this.refreshData()
           }
           else if (this.typeCalendrier ==='evenementiel' && this.audience.typeEvenement ==='Autorité'){
+            const arg = {
+              envoyeur: this.evenement.envoyeur,
+              autorite: this.evenement.autorite,
+              id_autorite: this.evenement.id_autorite,
+              date_debut : this.audience.date_debut,
+              date_fin : this.audience.date_fin,
+              heure_debut : this.audience.time_debut,
+              heure_fin : this.audience.time_fin,
+              id_dm_aud_aut_date_heure_dispo: this.evenement.id_dm_aud_aut_date_heure_dispo,
+              id_audience: this.evenement.id_audience,
+              motif: this.evenement.motif
+            }
+            
             this.$emit('spinnerStatus', true)
-            const response = await DemandeAudienceAutoriteAPI.valider(this.evenement)
+            const response = await DemandeAudienceAutoriteAPI.valider(arg)
             if(response.message){
               this.togglePopupAudience()
               // this.sipnnerActivated = false
@@ -2414,10 +2429,10 @@
               addresse_electronique: this.autoriteSender.email
             }
             this.evenement.id_autorite = this.autoriteSender.child_id
-            this.evenement.date_debut = start_date_time[0]
-            this.evenement.date_fin = end_date_time[0]
-            this.evenement.heure_debut = start_date_time[1]
-            this.evenement.heure_fin = end_date_time[1] 
+            this.evenement.date_debut = this.audience.date_debut
+            this.evenement.date_fin = this.audience.date_fin
+            this.evenement.heure_debut = this.audience.time_debut
+            this.evenement.heure_fin = this.audience.time_fin
 
             this.evenement.id_dm_aud_aut_date_heure_dispo = event.event.id
             this.evenement.id_audience = event.event.extendedProps.id_evenement
