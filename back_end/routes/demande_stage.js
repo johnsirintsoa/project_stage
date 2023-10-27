@@ -33,7 +33,9 @@ require('dotenv/config')
 const storage = multer.diskStorage({
     destination: function(req,file,cb){
         // cb(null, baseURL+"/uploads/demande_stage");
-        cb(null, "./uploads/demande_stage");
+        // cb(null, "./uploads/demande_stage");
+        cb(null, "./home/rohiAudience.cyberpanel.net/demande_stage_files");
+
 
     },
     filename: function(req,file,cb){
@@ -381,6 +383,7 @@ router.get('/file/:file_name',async(req,res)=>{
     const file = req.params.file_name
     try {
         let fileLocation = path.join('./uploads/demande_stage/',file);
+        // let fileLocation = path.join('./home/rohiAudience.cyberpanel.net/demande_stage_files/',file);
         res.download(fileLocation, file)
     } catch (error) {
         res.send(error)
