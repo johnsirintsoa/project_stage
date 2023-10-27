@@ -27,7 +27,7 @@ const evenement_route = require('./routes/evenement')
 
 
 app.use(cors({
-    // Origin: ['http://127.0.0.1:5173/','http://192.168.100.160/'],
+    Origin: ['http://127.0.0.1:5173/','http://192.168.100.160/','http://rohiaudience.cyberpanel.net/'],
     methods: ['GET','POST','DELETE','UPDATE','PUT','PATCH'],
     credentials: true
 }))
