@@ -4,7 +4,7 @@ var mysql = require('mysql');
 // const rohi_db = 'rohi'
 
 
-const rohiAudience_name = process.env.DB_APP
+const rohiAudience_db = process.env.DB_APP
 const rohi_db = process.env.DB_AUTORITE
 
 // var conn = mysql.createConnection({
@@ -40,7 +40,7 @@ var rohiAudience = mysql.createPool({
   password: 'dev',      // Replace with your database password
   port: '3306',
   // database: 'stage', // // Replace with your database Name
-  database: db_name, // // Replace with your database Name
+  database: rohiAudience_db, // // Replace with your database Name
   timezone: 'EAT'
 });
 
