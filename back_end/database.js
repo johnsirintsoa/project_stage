@@ -50,7 +50,7 @@ rohiAudience.getConnection(function(err, connection) {
     console.log(' Error getting mysql_pool connection: ' + err);
     throw err;
   }
-  console.log('Database is connected successfully in ',rohiAudience_name);
+  console.log('Database is connected successfully in ',rohiAudience_db);
 });
 
 
