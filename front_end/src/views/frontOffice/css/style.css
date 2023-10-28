@@ -2,7 +2,7 @@
 #main{
   /* margin-top: 0px !important; */
   margin-left: 9em !important;
-  margin-right: 9em;
+  margin-right: 9em !important;
 }
 h2 {
   margin: 0;
