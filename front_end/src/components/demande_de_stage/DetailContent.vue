@@ -214,10 +214,9 @@
 
     
 </template>
+
 <style>
     .icon{
         cursor: pointer;
-    }
-
-    
+    }  
 </style>

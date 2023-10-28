@@ -1,8 +1,8 @@
-<script setup>
+<!-- <script setup>
 import FormStage from '../../components/demande_de_stage/FormStage.vue';
 import NavBarFront from '../../components/header/NavBarFront.vue'
 import FooterFront from '../../components/footer/FooterComponent.vue'
-</script>
+</script> -->
 
 <template>
     <!-- header -->
@@ -24,20 +24,20 @@ import FooterFront from '../../components/footer/FooterComponent.vue'
 
 </template> 
 
-<!-- <script>
-import FormStage from '../../components/demande_de_stage/FormStage.vue';
-import NavBarFront from '../../components/header/NavBarFront.vue'
-import FooterFront from '../../components/footer/FooterComponent.vue'
+<script>
+    import FormStage from '../../components/demande_de_stage/FormStage.vue';
+    import NavBarFront from '../../components/header/NavBarFront.vue'
+    import FooterFront from '../../components/footer/FooterComponent.vue'
 
-export default {
-    
-    component:{
-        FormStage,
-        NavBarFront,
-        FooterFront
+    export default {
+        
+        components:{
+            FormStage,
+            NavBarFront,
+            FooterFront
+        }
     }
-}
-</script> -->
+</script>
 
 <style scoped>
 @import url('./css/style.css');

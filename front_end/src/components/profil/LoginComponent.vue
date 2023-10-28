@@ -1,6 +1,6 @@
-<script setup>
+<!-- <script setup>
     import Spinner from '../loading/SpinnerPopup.vue'
-</script>
+</script> -->
 
 <template>
     <div class="card mb-3">
@@ -48,10 +48,13 @@
 </template>
 
 <script>
-
+    import Spinner from '../loading/SpinnerPopup.vue'
     import AutoriteApi from '../../api/autorite'
     import Profil from '../../api/profil'
     export default {
+        components:{
+            Spinner
+        },
         data() {
             return {
                 sipnnerActivated: false,

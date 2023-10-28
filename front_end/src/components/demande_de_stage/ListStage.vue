@@ -11,8 +11,6 @@
         @rechercherStages="getDataStages($event)"
     />
 
-
-
     <div class="card">
         <div class="card-body">
 
