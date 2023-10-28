@@ -181,6 +181,7 @@
               // }, 200)
           }
           else {
+            localStorage.removeItem('autorite')
             this.$router.push({path: '/login'});
           }
         },

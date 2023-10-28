@@ -9,17 +9,16 @@ verifyToken = (req, res, next) => {
         });
     }
 
-    jwt.verify(token, process.env.JWT_SECRET,
-                (err, decoded) => {
-                if (err) {
-                    return res.status(401).send({
-                        message: "Unauthorized!",
-                    });
-                }
-                // console.log(decoded)
-                req.child_id = decoded.data;
-                next();
-                });
+    jwt.verify(token, process.env.JWT_SECRET,(err, decoded) => {
+        if (err) {
+            return res.status(401).send({
+                message: "Utilisateur non requis",
+            });
+        }
+        // console.log(decoded)
+        req.child_id = decoded.data;
+        next();
+    });
 };
 
 const authJwt  = {

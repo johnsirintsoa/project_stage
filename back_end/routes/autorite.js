@@ -10,7 +10,7 @@ const rohiAudiencePool = require('../database').rohiAudience
 // const db_name = require('../database').db_name
 const mailing = require('../Controllers/MailingController')
 
-require('dotenv').config()
+require('dotenv').config({path: './.env'})
 
 var jwt = require("jsonwebtoken");
 // var bcrypt = require("bcryptjs");

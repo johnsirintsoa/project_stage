@@ -7,73 +7,75 @@ var mysql = require('mysql');
 const rohiAudience_db = process.env.DB_APP
 const rohi_db = process.env.DB_AUTORITE
 
-// var conn = mysql.createConnection({
-//   host: 'localhost', // Replace with your host name
-//   user: 'root',      // Replace with your database username
-//   password: 'root',      // Replace with your database password
-//   // database: 'stage', // // Replace with your database Name
-//   database: db_name, // // Replace with your database Name
-//   timezone: 'EAT',
-// }); 
-// conn.connect(function(err) {
-//   if (err) throw err;
-//   console.log('Database is connected successfully in ',db_name);
-// });
-
-
-// var rohi = mysql.createConnection({
-//   host: 'localhost', // Replace with your host name
-//   user: 'root',      // Replace with your database username
-//   password: 'root',      // Replace with your database password
-//   // database: 'stage', // // Replace with your database Name
-//   database: rohi_db, // // Replace with your database Name
-//   timezone: 'EAT'
-// }); 
-// rohi.connect(function(err) {
-//   if (err) throw err;
-//   console.log('Database is connected successfully in ',rohi_db);
-// });
-
 var rohiAudience = mysql.createPool({
-  connectionLimit : 1000,
-  host: '5.183.8.211', // Replace with your host name
-  user: 'dev',      // Replace with your database username
-  password: 'dev',      // Replace with your database password
-  port: '3306',
+  connectionLimit : 10,
+  host: 'localhost', // Replace with your host name
+  user: 'root',      // Replace with your database username
+  password: 'root',      // Replace with your database password
   // database: 'stage', // // Replace with your database Name
   database: rohiAudience_db, // // Replace with your database Name
-  timezone: 'EAT'
-});
-
-rohiAudience.getConnection(function(err, connection) {
-  if (err) {
-    connection.release();
-    console.log(' Error getting mysql_pool connection: ' + err);
-    throw err;
-  }
+  timezone: 'EAT',
+}); 
+rohiAudience.getConnection(function(err) {
+  if (err) throw err;
   console.log('Database is connected successfully in ',rohiAudience_db);
 });
 
 
 var rohi = mysql.createPool({
-  connectionLimit : 1000,
-  host: '5.183.8.211', // Replace with your host name
-  port: '3306',
-  user: 'dev',      // Replace with your database username
-  password: 'dev',      // Replace with your database password
+  connectionLimit : 10,
+  host: 'localhost', // Replace with your host name
+  user: 'root',      // Replace with your database username
+  password: 'root',      // Replace with your database password
   // database: 'stage', // // Replace with your database Name
   database: rohi_db, // // Replace with your database Name
   timezone: 'EAT'
 }); 
-
-rohi.getConnection(function(err, connection) {
-  if (err) {
-    connection.release();
-    console.log(' Error getting mysql_pool connection: ' + err);
-    throw err;
-  }
+rohi.getConnection(function(err) {
+  if (err) throw err;
   console.log('Database is connected successfully in ',rohi_db);
 });
+
+// var rohiAudience = mysql.createPool({
+//   connectionLimit : 1000,
+//   host: '5.183.8.211', // Replace with your host name
+//   user: 'dev',      // Replace with your database username
+//   password: 'dev',      // Replace with your database password
+//   port: '3306',
+//   // database: 'stage', // // Replace with your database Name
+//   database: rohiAudience_db, // // Replace with your database Name
+//   timezone: 'EAT'
+// });
+
+// rohiAudience.getConnection(function(err, connection) {
+//   if (err) {
+//     connection.release();
+//     console.log(' Error getting mysql_pool connection: ' + err);
+//     throw err;
+//   }
+//   console.log('Database is connected successfully in ',rohiAudience_db);
+// });
+
+
+// var rohi = mysql.createPool({
+//   connectionLimit : 1000,
+//   host: '5.183.8.211', // Replace with your host name
+//   port: '3306',
+//   user: 'dev',      // Replace with your database username
+//   password: 'dev',      // Replace with your database password
+//   // database: 'stage', // // Replace with your database Name
+//   database: rohi_db, // // Replace with your database Name
+//   timezone: 'EAT'
+// }); 
+
+// rohi.getConnection(function(err, connection) {
+//   if (err) {
+//     connection.release();
+//     console.log(' Error getting mysql_pool connection: ' + err);
+//     throw err;
+//   }
+//   console.log('Database is connected successfully in ',rohi_db);
+// });
 
 module.exports = {rohiAudience,rohi};
 
