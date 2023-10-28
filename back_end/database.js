@@ -8,7 +8,7 @@ const rohiAudience_db = process.env.DB_APP
 const rohi_db = process.env.DB_AUTORITE
 
 var rohiAudience = mysql.createPool({
-  connectionLimit : 10000,
+  connectionLimit : 10,
   host: 'localhost', // Replace with your host name
   user: 'root',      // Replace with your database username
   password: 'root',      // Replace with your database password
@@ -17,13 +17,17 @@ var rohiAudience = mysql.createPool({
   timezone: 'EAT',
 }); 
 rohiAudience.getConnection(function(err) {
-  if (err) throw err;
+  if (err) {
+    connection.release();
+    console.log(' Error getting mysql_pool connection: ' + err);
+    throw err;
+  }
   console.log('Database is connected successfully in ',rohiAudience_db);
 });
 
 
 var rohi = mysql.createPool({
-  connectionLimit : 10000,
+  connectionLimit : 10,
   host: 'localhost', // Replace with your host name
   user: 'root',      // Replace with your database username
   password: 'root',      // Replace with your database password
@@ -32,7 +36,11 @@ var rohi = mysql.createPool({
   timezone: 'EAT'
 }); 
 rohi.getConnection(function(err) {
-  if (err) throw err;
+  if (err) {
+    connection.release();
+    console.log(' Error getting mysql_pool connection: ' + err);
+    throw err;
+  }
   console.log('Database is connected successfully in ',rohi_db);
 });
 
