@@ -11,13 +11,7 @@ import VueRouter from './router'
 
 
 // import './assets/main.css'
-import './assets/vendor/bootstrap-icons/bootstrap-icons.css'
-import './assets/vendor/boxicons/css/boxicons.min.css'
-import './assets/vendor/quill/quill.snow.css'
-import './assets/vendor/quill/quill.bubble.css'
-import './assets/vendor/remixicon/remixicon.css'
-import './assets/vendor/simple-datatables/style.css'
-import './assets/css/style.css'
+
 import FUNC from './func/function'
 
 let app = null
@@ -44,6 +38,14 @@ app = createApp(App)
 app.use(VueRouter)
 app.mount('#app')
 
+import './assets/vendor/bootstrap-icons/bootstrap-icons.css'
+import './assets/vendor/boxicons/css/boxicons.min.css'
+import './assets/vendor/quill/quill.snow.css'
+import './assets/vendor/quill/quill.bubble.css'
+import './assets/vendor/remixicon/remixicon.css'
+import './assets/vendor/simple-datatables/style.css'
+import './assets/css/style.css'
+
 
 import "./assets/vendor/apexcharts/apexcharts.min.js"
 import "bootstrap/dist/js/bootstrap.js"
@@ -53,3 +55,4 @@ import "./assets/vendor/quill/quill.min.js"
 import "./assets/vendor/simple-datatables/simple-datatables.js"
 import "./assets/vendor/tinymce/tinymce.min.js"
 import "./assets/js/main"
+
