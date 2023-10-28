@@ -8,7 +8,7 @@ const rohiAudience_db = process.env.DB_APP
 const rohi_db = process.env.DB_AUTORITE
 
 var rohiAudience = mysql.createPool({
-  connectionLimit : 10,
+  connectionLimit : 10000,
   host: 'localhost', // Replace with your host name
   user: 'root',      // Replace with your database username
   password: 'root',      // Replace with your database password
@@ -23,7 +23,7 @@ rohiAudience.getConnection(function(err) {
 
 
 var rohi = mysql.createPool({
-  connectionLimit : 10,
+  connectionLimit : 10000,
   host: 'localhost', // Replace with your host name
   user: 'root',      // Replace with your database username
   password: 'root',      // Replace with your database password

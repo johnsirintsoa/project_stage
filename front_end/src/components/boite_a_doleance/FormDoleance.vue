@@ -229,10 +229,19 @@
 
           }
         },
+        beforeCreate() {
+          const session = sessionStorage.getItem('session_navigateur')
+          if(session == null){
+              window.location.reload()
+          }
+        },
 
         async created() {
-            // this.setAutorites()
-            this.doleance.session_navigateur = JSON.parse(sessionStorage.getItem('session_navigateur')).value
+          const session = sessionStorage.getItem('session_navigateur')
+          if(session == null){
+              window.location.reload()
+          }
+          this.doleance.session_navigateur = JSON.parse(sessionStorage.getItem('session_navigateur')).value
         },
     }
 </script>

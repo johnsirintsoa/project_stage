@@ -1,6 +1,6 @@
 <template>
     <NavBarFront/>
-    <main id="main" class="main">
+    <main id="main" class="main" >
         <h1>Boîte à doléance</h1>
         <div class="boite-a-doleance">
             
@@ -83,7 +83,10 @@
 
 <style scoped>
     @import url('./css/style.css');
-
+    /* #main{
+        margin-left: 9em !important;
+        margin-right: 9em;
+    } */
     input [type=radio]{
         padding-left: 2px ;
     }

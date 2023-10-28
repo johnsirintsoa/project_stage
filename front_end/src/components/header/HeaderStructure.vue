@@ -163,7 +163,12 @@
           'structure',
           'setCheckbox'
         ],
-
+        beforeCreate() {
+          const session = sessionStorage.getItem('session_navigateur')
+          if(session == null){
+              window.location.reload()
+          }
+        },
         async created() {
           // await autoriteApi.hello({})
           if(this.$route.name === 'back-office-calendrier-evenementiel'){

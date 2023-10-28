@@ -40,6 +40,10 @@ import FooterFront from '../../components/footer/FooterComponent.vue'
 </script>
 
 <style scoped>
+  /* #main{
+    margin-left: 9em !important;
+    margin-right: 9em;
+  } */
 @import url('./css/style.css');
     
 </style>

@@ -394,5 +394,9 @@
 </script>
 
 <style lang='css'>
+  /* #main{
+    margin-left: 9em ;
+    margin-right: 9em;
+  } */
   @import url('./css/style.css');    
 </style>

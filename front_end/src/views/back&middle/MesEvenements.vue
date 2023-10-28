@@ -10,6 +10,7 @@
         :sipnnerActivated="spinner"
         @setCheckbox="getCheckBox"
     />
+
     <main id="main" class="main">
         <h1>Mon calendrier</h1>
         <section class="section">
@@ -78,3 +79,9 @@
         },
     }
 </script>
+
+<style lang='css'>
+
+    @import url('./css/style.css');    
+  </style>
+

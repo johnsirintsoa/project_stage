@@ -1,5 +1,4 @@
 
-import "bootstrap/dist/css/bootstrap.min.css"
 import { createApp } from 'vue'
 import AppBack from './AppBackOffice.vue'
 import AppFront from './AppFrontOffice.vue'
@@ -38,6 +37,7 @@ app = createApp(App)
 app.use(VueRouter)
 app.mount('#app')
 // window.location.reload()
+import "bootstrap/dist/css/bootstrap.min.css"
 
 import './assets/vendor/bootstrap-icons/bootstrap-icons.css'
 import './assets/vendor/boxicons/css/boxicons.min.css'

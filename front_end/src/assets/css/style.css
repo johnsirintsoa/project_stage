@@ -50,6 +50,12 @@ h6 {
   /* background-color: #666a6a65; */
 }
 
+
+element.style {
+}
+
+
+
 @media (max-width: 1199px) {
   #main {
     padding: 20px;
