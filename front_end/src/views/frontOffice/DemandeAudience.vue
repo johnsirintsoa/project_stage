@@ -4,7 +4,7 @@
   <NavBarFront/>
 
   <!-- Body -->
-  <main id="main" class="main">
+  <main id="main" class="main" style="margin-left: 9em !important; margin-right: 9em !important;">
     <h1>Demande d'audience</h1>
     <section class="section">
       

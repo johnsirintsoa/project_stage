@@ -577,11 +577,11 @@
                             <div class="row mb-2">
                               <label for="inputDate" class="col-lg-3 col-md-4 label">Début:</label>
                               <div class="col-sm-4">
-                                <input type="date" class="form-control" v-model="audience.date_debut" min="Monday" max="required" required>
+                                <input type="date" class="input-popup" v-model="audience.date_debut" min="Monday" max="required" required>
                               </div>
                               à
                               <div class="col-sm-4">
-                                <input type="time"  class="form-control" v-model="audience.time_debut" min="08:00" max="16:00" required>
+                                <input type="time"  class="input-popup" v-model="audience.time_debut" min="08:00" max="16:00" required>
                               </div>
                             </div>
                           </div>
@@ -591,10 +591,10 @@
                             <div class="row mb-2">
                               <label for="inputDate" class="col-lg-3 col-md-4 label">Fin:</label>
                               <div class="col-sm-4">
-                                <input type="date" class="form-control" v-model="audience.date_fin">
+                                <input type="date" class="input-popup" v-model="audience.date_fin">
                               </div> à 
                               <div class="col-sm-4">
-                                <input type="time" class="form-control" v-model="audience.time_fin" min="08:00" max="16:00" required>
+                                <input type="time" class="input-popup" v-model="audience.time_fin" min="08:00" max="16:00" required>
                               </div>
                             </div>
                           </div>
@@ -739,11 +739,11 @@
                             <div class="row mb-2">
                               <label for="inputDate" class="col-lg-3 col-md-4 label">Début:</label>
                               <div class="col-sm-4">
-                                <input type="date" class="form-control" v-model="audience.date_debut">
+                                <input type="date" class="input-popup" v-model="audience.date_debut">
                               </div>
                               à
                               <div class="col-sm-4">
-                                <input type="time" class="form-control" v-model="audience.time_debut">
+                                <input type="time" class="input-popup" v-model="audience.time_debut">
                               </div>
                             </div>
                           </div>
@@ -753,10 +753,10 @@
                             <div class="row mb-2">
                               <label for="inputDate" class="col-lg-3 col-md-4 label">Fin:</label>
                               <div class="col-sm-4">
-                                <input type="date" class="form-control" v-model="audience.date_fin">
+                                <input type="date" class="input-popup" v-model="audience.date_fin">
                               </div> à 
                               <div class="col-sm-4">
-                                <input type="time" class="form-control" v-model="audience.time_fin">
+                                <input type="time" class="input-popup" v-model="audience.time_fin">
                               </div>
                             </div>
                           </div>
@@ -899,11 +899,11 @@
                             <div class="row mb-2">
                               <label for="inputDate" class="col-lg-3 col-md-4 label">Début:</label>
                               <div class="col-sm-4">
-                                <input type="date" class="form-control" v-model="audience.date_debut">
+                                <input type="date" class="input-popup" v-model="audience.date_debut">
                               </div>
                               à
                               <div class="col-sm-4">
-                                <input type="time" class="form-control" v-model="audience.time_debut">
+                                <input type="time" class="input-popup" v-model="audience.time_debut">
                               </div>
                             </div>
                           </div>
@@ -913,10 +913,10 @@
                             <div class="row mb-2">
                               <label for="inputDate" class="col-lg-3 col-md-4 label">Fin:</label>
                               <div class="col-sm-4">
-                                <input type="date" class="form-control" v-model="audience.date_fin">
+                                <input type="date" class="input-popup" v-model="audience.date_fin">
                               </div> à 
                               <div class="col-sm-4">
-                                <input type="time" class="form-control" v-model="audience.time_fin">
+                                <input type="time" class="input-popup" v-model="audience.time_fin">
                               </div>
                             </div>
                           </div>
@@ -1035,11 +1035,11 @@
                               <div class="row mb-2">
                                 <label for="inputDate" class="col-lg-3 col-md-4 label">Début:</label>
                                 <div class="col-sm-4">
-                                  <input type="date" class="form-control" v-model="audience.date_debut">
+                                  <input type="date" class="input-popup" v-model="audience.date_debut">
                                 </div>
                                 à
                                 <div class="col-sm-4">
-                                  <input type="time" class="form-control" v-model="audience.time_debut">
+                                  <input type="time" class="input-popup" v-model="audience.time_debut">
                                 </div>
                               </div>
                             </div>
@@ -1048,10 +1048,10 @@
                               <div class="row mb-2">
                                 <label for="inputDate" class="col-lg-3 col-md-4 label">Fin:</label>
                                 <div class="col-sm-4">
-                                  <input type="date" class="form-control" v-model="audience.date_fin">
+                                  <input type="date" class="input-popup" v-model="audience.date_fin">
                                 </div> à 
                                 <div class="col-sm-4">
-                                  <input type="time" class="form-control" v-model="audience.time_fin">
+                                  <input type="time" class="input-popup" v-model="audience.time_fin">
                                 </div>
                               </div>
                             </div>
@@ -2659,7 +2659,7 @@
   .fc-event{
     cursor: pointer;
   }
-  .form-control {
+  .input-popup {
     display: block;
     width: 100%;
     padding: 0.075rem 0.25rem;
