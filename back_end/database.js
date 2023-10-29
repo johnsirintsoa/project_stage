@@ -16,7 +16,7 @@ var rohiAudience = mysql.createPool({
   database: rohiAudience_db, // // Replace with your database Name
   timezone: 'EAT',
 }); 
-rohiAudience.getConnection(function(err) {
+rohiAudience.getConnection(function(err, connection) {
   if (err) {
     connection.release();
     console.log(' Error getting mysql_pool connection: ' + err);
@@ -35,7 +35,7 @@ var rohi = mysql.createPool({
   database: rohi_db, // // Replace with your database Name
   timezone: 'EAT'
 }); 
-rohi.getConnection(function(err) {
+rohi.getConnection(function(err,connection) {
   if (err) {
     connection.release();
     console.log(' Error getting mysql_pool connection: ' + err);
