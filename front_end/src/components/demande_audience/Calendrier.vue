@@ -2364,7 +2364,7 @@
         
         async handleEventClick(event){
 
-          // console.log(event.event.extendedProps)
+          console.log(event.event.extendedProps)
 
           // this.spinnerStatus = 'enabled'
 

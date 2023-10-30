@@ -532,16 +532,18 @@ router.post('/autorite/faire_audience', [authJwt.verifyToken] ,async (req,res) =
 
 
 router.post('/autorite/ajouter',[authJwt.verifyToken],async(req,res)=>{
+    const date_debut_Formated = req.body.date_debut.split('T')[0]
+    const date_fin_Formated = req.body.date_fin.split('T')[0]
     // const sql = `CALL si_disponible_autorite('${req.body.date_event_debut}','${req.body.date_event_fin}','${req.body.time_event_debut}','${req.body.time_event_fin}',${req.body.id_autorite_enfant},'${req.body.motif}')`
     // const sql = `CALL ajouter_audience_autorite (${req.body.id_autorite_sender},${req.body.id_autorite_receiver},${req.body.id_date_heure_disponible_autorite},'${req.body.motif}','${req.body.date_debut}','${req.body.date_fin}','${req.body.heure_debut}','${req.body.heure_fin}')`
-    const sql = `CALL ajouter_audience_autorite (${req.body.id_autorite_sender},${req.body.id_autorite_receiver},${req.body.id_date_heure_disponible_autorite},'${req.body.motif}','${req.body.date_debut}','${req.body.date_fin}','${req.body.heure_debut}','${req.body.heure_fin}','${req.body.email}','${req.body.numero_telephone}','${req.body.sigle}','${req.body.child_libelle}')`
+    const sql = `CALL ajouter_audience_autorite (${req.body.id_autorite_sender},${req.body.id_autorite_receiver},${req.body.id_date_heure_disponible_autorite},'${req.body.motif}','${date_debut_Formated}','${date_fin_Formated}','${req.body.heure_debut}','${req.body.heure_fin}','${req.body.email}','${req.body.numero_telephone}','${req.body.sigle}','${req.body.child_libelle}')`
 
     // res.json(sql)
     console.log(req.body)
     const subject = {
         motif: req.body.motif,
-        date_debut: req.body.date_debut,
-        date_fin: req.body.date_fin,
+        date_debut: date_debut_Formated
+        date_fin: date_fin_Formated,
         heure_debut: req.body.heure_debut,
         heure_fin: req.body.heure_fin
     }
@@ -567,6 +569,8 @@ router.post('/autorite/ajouter',[authJwt.verifyToken],async(req,res)=>{
 
 router.post('/autorite/modifier',[authJwt.verifyToken],async(req,res)=>{
     // console.log(req.body)
+    const date_debut_Formated = req.body.date_debut.split('T')[0]
+    const date_fin_Formated = req.body.date_fin.split('T')[0]
 
     rohiAudiencePool.then((rohiAudienceDB) => {
         rohiAudienceDB.query(`CALL modifier_audience_autorite (${req.body.id_date_heure_disponible_autorite} ,${req.body.id_dm_aud_autorite_date_heure_dispo},'${req.body.motif}','${req.body.email}','${req.body.numero_telephone}',${req.body.id_audience}) `, async (error,result) => {
@@ -576,8 +580,8 @@ router.post('/autorite/modifier',[authJwt.verifyToken],async(req,res)=>{
             else if(result.length > 0 ){
                 const subject = {
                     motif: req.body.motif,
-                    date_debut: req.body.date_debut,
-                    date_fin: req.body.date_fin,
+                    date_debut:date_debut_Formated,
+                    date_fin: date_fin_Formated,
                     heure_debut: req.body.heure_debut,
                     heure_fin: req.body.heure_fin
                 }
@@ -630,7 +634,7 @@ router.post('/autorite/supprimer',[authJwt.verifyToken],async(req,res)=>{
 
 //     const sql = ` CALL valider_audience_autorite (${evenement.id_dm_aud_aut_date_heure_dispo},${evenement.id_audience}, '${req.body.date_debut}','${req.body.date_fin}','${req.body.heure_debut}','${req.body.heure_fin}',${autorite.id})`
     
-//     const entretien_date_time = String(req.body.date_debut).concat('T',req.body.heure_debut)
+//     const entretien_date_time = String(date_debut_Formated).concat('T',req.body.heure_debut)
 
 //     db.query(sql, req.body,async(error,result) => {
 //         if(error) {
@@ -649,15 +653,16 @@ router.post('/autorite/supprimer',[authJwt.verifyToken],async(req,res)=>{
 // })
 
 router.post('/autorite/valider',[authJwt.verifyToken],async(req,res)=>{
-
+    const date_debut_Formated = req.body.date_debut.split('T')[0]
+    const date_fin_Formated = req.body.date_fin.split('T')[0]
     const autorite = req.body.autorite
     const envoyeur = req.body.envoyeur
     
     // console.log(req.body)
 
-    const entretien_date_time = String(req.body.date_debut).concat('T',req.body.heure_debut)
+    const entretien_date_time = String(date_debut_Formated).concat('T',req.body.heure_debut)
 
-    const sql = ` CALL valider_audience_autorite (${req.body.id_dm_aud_aut_date_heure_dispo},${req.body.id_audience}, '${req.body.date_debut}','${req.body.date_fin}','${req.body.heure_debut}','${req.body.heure_fin}',${req.body.id_autorite})`
+    const sql = ` CALL valider_audience_autorite (${req.body.id_dm_aud_aut_date_heure_dispo},${req.body.id_audience}, '${date_debut_Formated}','${date_fin_Formated}','${req.body.heure_debut}','${req.body.heure_fin}',${req.body.id_autorite})`
     
 
     rohiAudiencePool.then((rohiAudienceDB) => {
@@ -682,13 +687,15 @@ router.post('/autorite/valider',[authJwt.verifyToken],async(req,res)=>{
 })
 
 router.post('/autorite/revalider',[authJwt.verifyToken],async(req,res)=>{
+    const date_debut_Formated = req.body.date_debut.split('T')[0]
+    const date_fin_Formated = req.body.date_fin.split('T')[0]
     const autorite = req.body.autorite
     const envoyeur = req.body.envoyeur
 
-    const entretien_date_time = String(req.body.date_debut).concat('T',req.body.heure_debut)
+    const entretien_date_time = String(date_debut_Formated).concat('T',req.body.heure_debut)
     const response = await mailing.audience_public_revalide(autorite,envoyeur,entretien_date_time)
 
-    const sql = `CALL revalider_audience_autorite(${req.body.id_dm_aud_aut_date_heure_dispo},${req.body.id_audience}, '${req.body.date_debut}','${req.body.date_fin}','${req.body.heure_debut}','${req.body.heure_fin}',${req.body.id_autorite})`
+    const sql = `CALL revalider_audience_autorite(${req.body.id_dm_aud_aut_date_heure_dispo},${req.body.id_audience}, '${date_debut_Formated}','${date_fin_Formated}','${req.body.heure_debut}','${req.body.heure_fin}',${req.body.id_autorite})`
     
 
     rohiAudiencePool.then((rohiAudienceDB) => {
@@ -697,7 +704,7 @@ router.post('/autorite/revalider',[authJwt.verifyToken],async(req,res)=>{
                 res.send(error)
             }
             else{
-                const entretien_date_time = String(req.body.date_debut).concat('T',req.body.heure_debut)
+                const entretien_date_time = String(date_debut_Formated).concat('T',req.body.heure_debut)
                 const response = await mailing.audience_autorite_revalide(autorite,envoyeur,entretien_date_time)
                 if(response && result ){
                     res.json({message:'Audience validé et envoyé',mail:response,data:result})
@@ -737,7 +744,7 @@ router.post('/autorite/revalider',[authJwt.verifyToken],async(req,res)=>{
 //             res.send(error)
 //         }
 //         else{
-//             const entretien_date_time = String(req.body.date_debut).concat('T',req.body.heure_debut)
+//             const entretien_date_time = String(date_debut_Formated).concat('T',req.body.heure_debut)
 //             const response = await mailing.audience_autorite_reporte(autorite,evenement,entretien_date_time)
 //             if(response && result ){
 //                 res.json({message:'Audience reportée et envoyé',mail:response,data:result})
@@ -750,9 +757,11 @@ router.post('/autorite/revalider',[authJwt.verifyToken],async(req,res)=>{
 // })
 
 router.post('/autorite/reporter/now',[authJwt.verifyToken],async(req,res)=>{  
+    const date_debut_Formated = req.body.date_debut.split('T')[0]
+    const date_fin_Formated = req.body.date_fin.split('T')[0]
     const autorite = req.body.autorite
     const envoyeur = req.body.envoyeur
-    const sql = `CALL reporter_audience_autorite_maintenant (${req.body.id_dm_aud_aut_date_heure_dispo},${req.body.id_audience}, '${req.body.date_debut}','${req.body.date_fin}','${req.body.heure_debut}','${req.body.heure_fin}',${req.body.id_autorite})`
+    const sql = `CALL reporter_audience_autorite_maintenant (${req.body.id_dm_aud_aut_date_heure_dispo},${req.body.id_audience}, '${date_debut_Formated}','${date_fin_Formated}','${req.body.heure_debut}','${req.body.heure_fin}',${req.body.id_autorite})`
     
     rohiAudiencePool.then((rohiAudienceDB) => {
         rohiAudienceDB.query(sql,req.body, async (error,result) => {
@@ -760,7 +769,7 @@ router.post('/autorite/reporter/now',[authJwt.verifyToken],async(req,res)=>{
                 res.send(error)
             }
             else{
-                const entretien_date_time = String(req.body.date_debut).concat('T',req.body.heure_debut)
+                const entretien_date_time = String(date_debut_Formated).concat('T',req.body.heure_debut)
                 const response = await mailing.audience_autorite_reporte(autorite,envoyeur,entretien_date_time)
                 if(response && result ){
                     res.json({message:'Audience reportée et envoyé',mail:response,data:result})
@@ -776,10 +785,12 @@ router.post('/autorite/reporter/now',[authJwt.verifyToken],async(req,res)=>{
 })
 
 router.post('/autorite/reporter/click',[authJwt.verifyToken],async(req,res)=>{
+    const date_debut_Formated = req.body.date_debut.split('T')[0]
+    const date_fin_Formated = req.body.date_fin.split('T')[0]
     const autorite = req.body.autorite
     const envoyeur = req.body.envoyeur
     
-    const sql = `CALL reporter_audience_autorite_plus_tard (${req.body.id_dm_aud_aut_date_heure_dispo},${req.body.id_audience}, '${req.body.date_debut}','${req.body.date_fin}','${req.body.heure_debut}','${req.body.heure_fin}',${autorite.id})`
+    const sql = `CALL reporter_audience_autorite_plus_tard (${req.body.id_dm_aud_aut_date_heure_dispo},${req.body.id_audience}, '${date_debut_Formated}','${date_fin_Formated}','${req.body.heure_debut}','${req.body.heure_fin}',${autorite.id})`
     rohiAudiencePool.then((rohiAudienceDB) => {
         rohiAudienceDB.query(sql, async(error,result) => {
             if(error) {
@@ -801,10 +812,12 @@ router.post('/autorite/reporter/click',[authJwt.verifyToken],async(req,res)=>{
 })
 
 router.post('/autorite/reporter/later',[authJwt.verifyToken],async(req,res)=>{
+    const date_debut_Formated = req.body.date_debut.split('T')[0]
+    const date_fin_Formated = req.body.date_fin.split('T')[0]
     const autorite = req.body.autorite
     const evenement = req.body.evenement
     
-    const sql = `CALL reporter_audience_autorite_plus_tard (${evenement.id_dm_aud_aut_date_heure_dispo},${evenement.id_audience}, '${req.body.date_debut}','${req.body.date_fin}','${req.body.heure_debut}','${req.body.heure_fin}',${autorite.id})`
+    const sql = `CALL reporter_audience_autorite_plus_tard (${evenement.id_dm_aud_aut_date_heure_dispo},${evenement.id_audience}, '${date_debut_Formated}','${date_fin_Formated}','${req.body.heure_debut}','${req.body.heure_fin}',${autorite.id})`
     rohiAudiencePool.then((rohiAudienceDB) => {
         rohiAudienceDB.query(sql, async(error,result) => {
             if(error) {
@@ -856,43 +869,43 @@ router.post('/autorite/reporter/later',[authJwt.verifyToken],async(req,res)=>{
 // 	ae.mot_de_passe_mailing,
 // 	ae.porte as porte_autorite,
 //     'Public' type_audience
-// FROM 
-//     stage.autorite_enfant AS ae
-//         INNER JOIN stage.demande_audience_public as dap on ae.id = dap.id_autorite_enfant
-//         WHERE dap.id_autorite_enfant = ${req.params.id_autorite_enfant} and dap.action = 1
-// UNION
-// SELECT 
-//     daa.id as id,
-//     daa.motif as motif,
-//     daa.date_debut as date_debut,             
-//     daa.date_fin as date_fin,
-//     daa.time_debut as time_debut,
-//     daa.time_fin as time_fin,
-//     CASE
-//         WHEN daa.action = 0 THEN 'Non validé'
-//         WHEN daa.action = 1 THEN 'Validé'
-//         WHEN daa.action = 2 THEN 'Reporté' 
-//     END as status_audience,
-//     aes.id as id_autorite_sender,
-//     aes.intitule as sender_intitule,
-//     aes.intitule_code as sender_intitule_code,
-//     aes.addresse_electronique,
-//     '' nom,
-//     '' prenom,
-//     '' numero_telephone,
-//     '' cin,
-//     aer.id as id_autorite,
-//     aer.intitule as intitule_autorite,
-//     aer.intitule_code as intitule_code_autorite,
-//     aer.addresse_electronique as addresse_electronique_autorite,
-//     aer.mot_de_passe_mailing,
-//     aer.porte as porte_autorite,
-//     'Autorité' type_audience
-// FROM 
-//     stage.demande_audience_autorite daa
-// 		INNER JOIN stage.autorite_enfant aer on aer.id = daa.id_autorite_enfant_receiver
-//         INNER JOIN stage.autorite_enfant aes on aes.id = daa.id_autorite_enfant_sender
-//         where daa.id_autorite_enfant_receiver = ${req.params.id_autorite_enfant} and daa.action = 1`
+//     FROM 
+//         stage.autorite_enfant AS ae
+//             INNER JOIN stage.demande_audience_public as dap on ae.id = dap.id_autorite_enfant
+//             WHERE dap.id_autorite_enfant = ${req.params.id_autorite_enfant} and dap.action = 1
+//     UNION
+//     SELECT 
+//         daa.id as id,
+//         daa.motif as motif,
+//         daa.date_debut as date_debut,             
+//         daa.date_fin as date_fin,
+//         daa.time_debut as time_debut,
+//         daa.time_fin as time_fin,
+//         CASE
+//             WHEN daa.action = 0 THEN 'Non validé'
+//             WHEN daa.action = 1 THEN 'Validé'
+//             WHEN daa.action = 2 THEN 'Reporté' 
+//         END as status_audience,
+//         aes.id as id_autorite_sender,
+//         aes.intitule as sender_intitule,
+//         aes.intitule_code as sender_intitule_code,
+//         aes.addresse_electronique,
+//         '' nom,
+//         '' prenom,
+//         '' numero_telephone,
+//         '' cin,
+//         aer.id as id_autorite,
+//         aer.intitule as intitule_autorite,
+//         aer.intitule_code as intitule_code_autorite,
+//         aer.addresse_electronique as addresse_electronique_autorite,
+//         aer.mot_de_passe_mailing,
+//         aer.porte as porte_autorite,
+//         'Autorité' type_audience
+//     FROM 
+//         stage.demande_audience_autorite daa
+//             INNER JOIN stage.autorite_enfant aer on aer.id = daa.id_autorite_enfant_receiver
+//             INNER JOIN stage.autorite_enfant aes on aes.id = daa.id_autorite_enfant_sender
+//             where daa.id_autorite_enfant_receiver = ${req.params.id_autorite_enfant} and daa.action = 1`
 //     // console.log(sql)
 //     db.query(sql,function(err, result) {
 //         if(err){
@@ -989,43 +1002,43 @@ router.post('/autorite/reporter/later',[authJwt.verifyToken],async(req,res)=>{
 // 	ae.mot_de_passe_mailing,
 // 	ae.porte as porte_autorite,
 //     'Public' type_audience
-// FROM 
-//     stage.autorite_enfant AS ae
-//         INNER JOIN stage.demande_audience_public as dap on ae.id = dap.id_autorite_enfant
-//         WHERE dap.id_autorite_enfant = ${req.params.id_autorite_enfant} and dap.action = 2
-// UNION
-// SELECT 
-//     daa.id as id,
-//     daa.motif as motif,
-//     daa.date_debut as date_debut,             
-//     daa.date_fin as date_fin,
-//     daa.time_debut as time_debut,
-//     daa.time_fin as time_fin,
-//     CASE
-//         WHEN daa.action = 0 THEN 'Non validé'
-//         WHEN daa.action = 1 THEN 'Validé'
-//         WHEN daa.action = 2 THEN 'Reporté' 
-//     END as status_audience,
-//     aes.id as id_autorite_sender,
-//     aes.intitule as sender_intitule,
-//     aes.intitule_code as sender_intitule_code,
-//     aes.addresse_electronique,
-//     '' nom,
-//     '' prenom,
-//     '' numero_telephone,
-//     '' cin,
-//     aer.id as id_autorite,
-//     aer.intitule as intitule_autorite,
-//     aer.intitule_code as intitule_code_autorite,
-//     aer.addresse_electronique as addresse_electronique_autorite,
-//     aer.mot_de_passe_mailing,
-//     aer.porte as porte_autorite,
-//     'Autorité' type_audience
-// FROM 
-//     stage.demande_audience_autorite daa
-// 		INNER JOIN stage.autorite_enfant aer on aer.id = daa.id_autorite_enfant_receiver
-//         INNER JOIN stage.autorite_enfant aes on aes.id = daa.id_autorite_enfant_sender
-//         where daa.id_autorite_enfant_receiver = ${req.params.id_autorite_enfant} and daa.action = 2`
+//     FROM 
+//         stage.autorite_enfant AS ae
+//             INNER JOIN stage.demande_audience_public as dap on ae.id = dap.id_autorite_enfant
+//             WHERE dap.id_autorite_enfant = ${req.params.id_autorite_enfant} and dap.action = 2
+//     UNION
+//     SELECT 
+//         daa.id as id,
+//         daa.motif as motif,
+//         daa.date_debut as date_debut,             
+//         daa.date_fin as date_fin,
+//         daa.time_debut as time_debut,
+//         daa.time_fin as time_fin,
+//         CASE
+//             WHEN daa.action = 0 THEN 'Non validé'
+//             WHEN daa.action = 1 THEN 'Validé'
+//             WHEN daa.action = 2 THEN 'Reporté' 
+//         END as status_audience,
+//         aes.id as id_autorite_sender,
+//         aes.intitule as sender_intitule,
+//         aes.intitule_code as sender_intitule_code,
+//         aes.addresse_electronique,
+//         '' nom,
+//         '' prenom,
+//         '' numero_telephone,
+//         '' cin,
+//         aer.id as id_autorite,
+//         aer.intitule as intitule_autorite,
+//         aer.intitule_code as intitule_code_autorite,
+//         aer.addresse_electronique as addresse_electronique_autorite,
+//         aer.mot_de_passe_mailing,
+//         aer.porte as porte_autorite,
+//         'Autorité' type_audience
+//     FROM 
+//         stage.demande_audience_autorite daa
+//             INNER JOIN stage.autorite_enfant aer on aer.id = daa.id_autorite_enfant_receiver
+//             INNER JOIN stage.autorite_enfant aes on aes.id = daa.id_autorite_enfant_sender
+//             where daa.id_autorite_enfant_receiver = ${req.params.id_autorite_enfant} and daa.action = 2`
 //     // console.log(sql)
 //     db.query(sql,function(err, result) {
 //         if(err){

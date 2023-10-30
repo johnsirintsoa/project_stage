@@ -11,12 +11,14 @@ const { authJwt } = require("../middleware");
 
 
 router.post('/valider', [authJwt.verifyToken],async (req,res) =>{
+    const date_debut_Formated = req.body.date_debut.split('T')[0]
+    const date_fin_Formated = req.body.date_fin.split('T')[0]
     const sql = `CALL valider_evenement(
         ${req.body.id_date_heure_disponible_autorite},
         ${req.body.id_evenement},
         '${req.body.type_evenement}',
-        '${req.body.date_debut}',
-        '${req.body.date_fin}',
+        '${date_debut_Formated}',
+        '${date_fin_Formated}',
         '${req.body.heure_debut}',
         '${req.body.heure_fin}'
     )`
@@ -26,7 +28,7 @@ router.post('/valider', [authJwt.verifyToken],async (req,res) =>{
     const evenement = req.body.evenement
 
     // res.json(sql)
-    const entretien_date_time = String(req.body.date_debut).concat('T',req.body.heure_debut)
+    const entretien_date_time = String(date_debut_Formated).concat('T',req.body.heure_debut)
     const type_evenement = req.body.type_evenement
     let response = ''
     if (type_evenement === 'Public'){
@@ -62,12 +64,14 @@ router.post('/valider', [authJwt.verifyToken],async (req,res) =>{
 })
 
 router.post('/revalider', [authJwt.verifyToken],async (req,res) =>{
+    const date_debut_Formated = req.body.date_debut.split('T')[0]
+    const date_fin_Formated = req.body.date_fin.split('T')[0]
     const sql = `CALL valider_evenement(
         ${req.body.id_date_heure_disponible_autorite},
         ${req.body.id_evenement},
         '${req.body.type_evenement}',
-        '${req.body.date_debut}',
-        '${req.body.date_fin}',
+        '${date_debut_Formated}',
+        '${date_fin_Formated}',
         '${req.body.heure_debut}',
         '${req.body.heure_fin}'
     )`
@@ -77,7 +81,7 @@ router.post('/revalider', [authJwt.verifyToken],async (req,res) =>{
     const evenement = req.body.evenement
 
     // res.json(sql)
-    const entretien_date_time = String(req.body.date_debut).concat('T',req.body.heure_debut)
+    const entretien_date_time = String(date_debut_Formated).concat('T',req.body.heure_debut)
     const type_evenement = req.body.type_evenement
     let response = ''
     if (type_evenement === 'Public'){

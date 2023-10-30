@@ -11,6 +11,7 @@ const mailing = require('../Controllers/MailingController')
 const { authJwt } = require("../middleware");
 
 router.post('/add',[authJwt.verifyToken],async(req,res) => {
+    
     const autorite = req.body.autorite
     const stage = req.body.stage
     const sql = `CALL ajouter_entretien_stage(${stage.id}, ${req.body.id_date_heure_disponible_autorite})`
@@ -77,11 +78,13 @@ router.post('/update',[authJwt.verifyToken],async(req,res)=>{
 })
 
 router.post('/updateCalendar',[authJwt.verifyToken],async(req,res) => {
+    const date_debut_Formated = req.body.date_debut.split('T')[0]
+    const date_fin_Formated = req.body.date_fin.split('T')[0]
     const autorite = req.body.autorite
     const stagiaire = req.body.stagiaire
     // IN id_entretien_stage int,IN id_demande_stage INT,IN date_debut date,IN date_fin date,IN heure_debut time,in heure_fin time, IN id_autorite INT
     // const sql = `CALL modifier_entretien_stage_calendrier(${stage.id_entretien_stage},${stage.id},'${req.body.date_debut}','${req.body.date_fin}','${req.body.heure_debut}','${req.body.heure_fin}',${autorite.id})`
-    const sql = `CALL modifier_entretien_stage_calendrier(${req.body.id_entretien_stage},${req.body.id_demande_stage},'${req.body.date_debut}','${req.body.date_fin}','${req.body.heure_debut}','${req.body.heure_fin}',${req.body.id_autorite})`
+    const sql = `CALL modifier_entretien_stage_calendrier(${req.body.id_entretien_stage},${req.body.id_demande_stage},'${date_debut_Formated}','${date_fin_Formated}','${req.body.heure_debut}','${req.body.heure_fin}',${req.body.id_autorite})`
     console.log(sql)
 
     rohiAudiencePool.then((rohiAudienceDB) => {
@@ -90,7 +93,7 @@ router.post('/updateCalendar',[authJwt.verifyToken],async(req,res) => {
                 res.send(error)
             } 
             else{
-                const entretien_date_time = String(req.body.date_debut).concat('T',req.body.heure_debut)
+                const entretien_date_time = String(date_debut_Formated).concat('T',req.body.heure_debut)
                 const response = await mailing.entretien_reporte(autorite,stagiaire,entretien_date_time)
                 if(result ){
                     res.json({data:result})
@@ -114,7 +117,7 @@ router.post('/updateCalendar',[authJwt.verifyToken],async(req,res) => {
     //         res.send(error)
     //     } 
     //     else{
-    //         const entretien_date_time = String(req.body.date_debut).concat('T',req.body.heure_debut)
+    //         const entretien_date_time = String(date_debut_Formated).concat('T',req.body.heure_debut)
     //         const response = await mailing.entretien_reporte(autorite,stage,entretien_date_time)
             
     //         if(response && result ){

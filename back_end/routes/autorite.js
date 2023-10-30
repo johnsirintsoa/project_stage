@@ -246,11 +246,13 @@ router.post('/calendrier',[authJwt.verifyToken], async (req,res) =>{
 })
 
 router.post('/filtre_calendrier', async (req,res) => {
+    const date_debut_Formated = req.body.date_debut.split('T')[0]
+    const date_fin_Formated = req.body.date_fin.split('T')[0]
     // res.json(req.body)
     const autorite = req.body.autorite
     const sql = `CALL filtre_calendrier_evenement(
-                '${req.body.date_debut}',
-                '${req.body.date_fin}',
+                '${date_debut_Formated}',
+                '${date_fin_Formated}',
                 '${req.body.type_evenement}',
                 ${req.body.status},
                 ${autorite.id_autorite_enfant}

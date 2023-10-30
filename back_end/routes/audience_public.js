@@ -72,7 +72,8 @@ router.post('/public/delete',async(req,res)=>{
 })
 
 router.post('/public/add',async(req,res)=>{
-    const sql = `CALL add_audience_public_V2('${req.body.session_navigateur}','${req.body.nom}','${req.body.prenom}','${req.body.cin}','${req.body.numero_telephone}','${req.body.email}','${req.body.date_event_debut}','${req.body.date_event_fin}','${req.body.time_event_debut}','${req.body.time_event_fin}','${req.body.motif}',${req.body.id_autorite_enfant})`
+    // const sql = `CALL add_audience_public_V2('${req.body.session_navigateur}','${req.body.nom}','${req.body.prenom}','${req.body.cin}','${req.body.numero_telephone}','${req.body.email}','${req.body.date_event_debut.split}','${req.body.date_event_fin}','${req.body.time_event_debut}','${req.body.time_event_fin}','${req.body.motif}',${req.body.id_autorite_enfant})`
+    const sql = `CALL add_audience_public_V2('${req.body.session_navigateur}','${req.body.nom}','${req.body.prenom}','${req.body.cin}','${req.body.numero_telephone}','${req.body.email}','${req.body.date_event_debut.split('T')[0]}','${req.body.date_event_fin.split('T')[0]}','${req.body.time_event_debut}','${req.body.time_event_fin}','${req.body.motif}',${req.body.id_autorite_enfant})`
     
     rohiAudiencePool.then((rohiAudienceDB) => {
         rohiAudienceDB.query(sql, (error,result) => {
@@ -95,7 +96,11 @@ router.post('/public/add',async(req,res)=>{
 router.post('/public/ajouter',async(req,res)=>{
     const nomFormated = req.body.nom.toUpperCase()
     const prenomFormated = Function.upSetFirstLetter(req.body.prenom)
-    const sql = `CALL ajouter_audience_public('${req.body.session_navigateur}','${nomFormated}','${prenomFormated}','${req.body.cin}','${req.body.numero_telephone}','${req.body.email}',${req.body.id_date_heure_disponible_autorite},'${req.body.motif}','${req.body.date_debut}','${req.body.date_fin}','${req.body.heure_debut}','${req.body.heure_fin}')`
+    const date_debut_Formated = req.body.date_debut.split('T')[0]
+    const date_fin_Formated = req.body.date_fin.split('T')[0]
+
+    // const sql = `CALL ajouter_audience_public('${req.body.session_navigateur}','${nomFormated}','${prenomFormated}','${req.body.cin}','${req.body.numero_telephone}','${req.body.email}',${req.body.id_date_heure_disponible_autorite},'${req.body.motif}','${req.body.date_debut}','${date_fin_Formated}','${req.body.heure_debut}','${req.body.heure_fin}')`
+    const sql = `CALL ajouter_audience_public('${req.body.session_navigateur}','${nomFormated}','${prenomFormated}','${req.body.cin}','${req.body.numero_telephone}','${req.body.email}',${req.body.id_date_heure_disponible_autorite},'${req.body.motif}','${date_debut_Formated}','${date_fin_Formated}','${req.body.heure_debut}','${req.body.heure_fin}')`
     // console.log(sql)
 
     rohiAudiencePool.then((rohiAudienceDB) => {
@@ -109,8 +114,8 @@ router.post('/public/ajouter',async(req,res)=>{
                     nom: nomFormated,
                     prenom: prenomFormated,
                     motif: req.body.motif,
-                    date_debut: req.body.date_debut,
-                    date_fin: req.body.heure_fin,
+                    date_debut: date_debut_Formated,
+                    date_fin: date_fin_Formated,
                     heure_debut: req.body.heure_debut,
                     heure_fin: req.body.heure_fin
                 }
@@ -156,6 +161,8 @@ router.post('/public/supprimer/:id',async(req,res)=>{
 router.post('/public/modifier',async(req,res)=>{
     const nomFormated = req.body.nom.toUpperCase()
     const prenomFormated = Function.upSetFirstLetter(req.body.prenom)
+    const date_debut_Formated = req.body.date_debut.split('T')[0]
+    const date_fin_Formated = req.body.date_fin.split('T')[0]
     const sql = `call modifier_audience_public ('${nomFormated }','${prenomFormated}','${req.body.cin }','${req.body.numero_telephone }','${req.body.email }','${req.body.motif}',${req.body.id_audience},${req.body.id_date_heure_disponible_autorite},${req.body.id_dm_aud_public_heure_dispo})`
     // console.log(sql)
     // console.log(req.body)    
@@ -170,8 +177,8 @@ router.post('/public/modifier',async(req,res)=>{
                     nom: nomFormated,
                     prenom: prenomFormated,
                     motif: req.body.motif,
-                    date_debut: req.body.date_debut,
-                    date_fin: req.body.heure_fin,
+                    date_debut: date_debut_Formated,
+                    date_fin: date_fin_Formated,
                     heure_debut: req.body.heure_debut,
                     heure_fin: req.body.heure_fin
                 }
@@ -195,7 +202,10 @@ router.post('/public/modifier',async(req,res)=>{
 })
 
 router.post('/public/update',async(req,res)=>{
-    const sql = `CALL update_audience_public ('${req.body.session_navigateur}','${req.body.nom }','${req.body.prenom }','${req.body.cin }','${req.body.numero_telephone }','${req.body.email }','${req.body.date_event_debut}','${req.body.date_event_fin}','${req.body.time_event_debut}','${req.body.time_event_fin}','${req.body.motif}',${req.body.id_autorite_enfant},${req.body.id})`
+    const date_debut_Formated = req.body.date_debut.split('T')[0]
+    const date_fin_Formated = req.body.date_fin.split('T')[0]
+    // const sql = `CALL update_audience_public ('${req.body.session_navigateur}','${req.body.nom }','${req.body.prenom }','${req.body.cin }','${req.body.numero_telephone }','${req.body.email }','${req.body.date_event_debut}','${req.body.date_event_fin}','${req.body.time_event_debut}','${req.body.time_event_fin}','${req.body.motif}',${req.body.id_autorite_enfant},${req.body.id})`
+    const sql = `CALL update_audience_public ('${req.body.session_navigateur}','${req.body.nom }','${req.body.prenom }','${req.body.cin }','${req.body.numero_telephone }','${req.body.email }','${date_debut_Formated}','${date_fin_Formated}','${req.body.time_event_debut}','${req.body.time_event_fin}','${req.body.motif}',${req.body.id_autorite_enfant},${req.body.id})`
     
     rohiAudiencePool.then(( rohiAudienceDB) => {
         rohiAudienceDB.query(sql, (error,result) => {
@@ -219,7 +229,7 @@ router.post('/public/update',async(req,res)=>{
 //     const autorite = req.body.autorite
 //     const evenement = req.body.evenement
 
-//     const sql = ` CALL valider_audience_public (${evenement.id_dm_aud_public_date_heure_dispo},${evenement.id}, '${req.body.date_debut}','${req.body.date_fin}','${req.body.heure_debut}','${req.body.heure_fin}',${autorite.id})`
+//     const sql = ` CALL valider_audience_public (${evenement.id_dm_aud_public_date_heure_dispo},${evenement.id}, '${req.body.date_debut}','${date_fin_Formated}','${req.body.heure_debut}','${req.body.heure_fin}',${autorite.id})`
     
     // const entretien_date_time = String(req.body.date_debut).concat('T',req.body.heure_debut)
     // const response = await mailing.audience_public_valide(autorite,evenement,entretien_date_time)
@@ -242,10 +252,11 @@ router.post('/public/update',async(req,res)=>{
 // })
 
 router.post('/public/valider',[authJwt.verifyToken],async(req,res)=>{
+    const date_debut_Formated = req.body.date_debut.split('T')[0]
+    const date_fin_Formated = req.body.date_fin.split('T')[0]
+    const sql = ` CALL valider_audience_public (${req.body.id_dm_aud_public_date_heure_dispo},${req.body.id_audience}, '${req.body.date_debut}','${date_fin_Formated}','${req.body.heure_debut}','${req.body.heure_fin}',${req.body.id_autorite})`
 
-    const sql = ` CALL valider_audience_public (${req.body.id_dm_aud_public_date_heure_dispo},${req.body.id_audience}, '${req.body.date_debut}','${req.body.date_fin}','${req.body.heure_debut}','${req.body.heure_fin}',${req.body.id_autorite})`
-
-    const entretien_date_time = String(req.body.date_debut).concat('T',req.body.heure_debut)
+    const entretien_date_time = String(req.body.date_debut.split('T')).concat('T',req.body.heure_debut)
 
     rohiAudiencePool.then(( rohiAudienceDB) => {
         rohiAudienceDB.query(sql,req.body,async (error,result) => {
@@ -278,7 +289,7 @@ router.post('/public/valider',[authJwt.verifyToken],async(req,res)=>{
 //     const response = await mailing.audience_public_revalide(autorite,evenement,entretien_date_time)
     
 //     // const sql = `UPDATE ${db_name}.demande_audience_public SET ? where id = ${req.body.id}`
-//     const sql = `CALL revalider_audience_public(${evenement.id_dm_aud_public_date_heure_dispo},${evenement.id}, '${req.body.date_debut}','${req.body.date_fin}','${req.body.heure_debut}','${req.body.heure_fin}',${autorite.id})`
+//     const sql = `CALL revalider_audience_public(${evenement.id_dm_aud_public_date_heure_dispo},${evenement.id}, '${req.body.date_debut}','${date_fin_Formated}','${req.body.heure_debut}','${req.body.heure_fin}',${autorite.id})`
 //     db.query(sql,req.body,async (error,result) => {
 //         if(error) {
 //             res.send(error)
@@ -295,11 +306,13 @@ router.post('/public/valider',[authJwt.verifyToken],async(req,res)=>{
 // })
 
 router.post('/public/revalider',[authJwt.verifyToken],async(req,res)=>{
-    
+    const date_debut_Formated = req.body.date_debut.split('T')[0]
+    const date_fin_Formated = req.body.date_fin.split('T')[0]
+
     const entretien_date_time = String(req.body.date_debut).concat('T',req.body.heure_debut)
     const response = await mailing.audience_public_revalide(req.body.autorite,req.body.envoyeur,entretien_date_time)
 
-    const sql = `CALL revalider_audience_public(${req.body.id_dm_aud_public_date_heure_dispo},${req.body.id_audience}, '${req.body.date_debut}','${req.body.date_fin}','${req.body.heure_debut}','${req.body.heure_fin}',${req.body.id_autorite})`
+    const sql = `CALL revalider_audience_public(${req.body.id_dm_aud_public_date_heure_dispo},${req.body.id_audience}, '${date_debut_Formated}','${date_fin_Formated}','${req.body.heure_debut}','${req.body.heure_fin}',${req.body.id_autorite})`
     
     rohiAudiencePool.then((rohiAudienceDB) => {
         rohiAudienceDB.query(sql,req.body,async (error,result) => {
@@ -325,7 +338,7 @@ router.post('/public/revalider',[authJwt.verifyToken],async(req,res)=>{
 //     const autorite = req.body.autorite
 //     const evenement = req.body.evenement
 //     // const sql = `UPDATE ${db_name}.demande_audience_public SET ? where id = ${req.body.id}`
-//     const sql = `CALL reporter_audience_public_maintenant (${evenement.id_dm_aud_public_date_heure_dispo},${evenement.id}, '${req.body.date_debut}','${req.body.date_fin}','${req.body.heure_debut}','${req.body.heure_fin}',${autorite.id})`
+//     const sql = `CALL reporter_audience_public_maintenant (${evenement.id_dm_aud_public_date_heure_dispo},${evenement.id}, '${req.body.date_debut}','${date_fin_Formated}','${req.body.heure_debut}','${req.body.heure_fin}',${autorite.id})`
     
 //     // res.json(req.body)
 
@@ -349,11 +362,13 @@ router.post('/public/revalider',[authJwt.verifyToken],async(req,res)=>{
 // })
 
 router.post('/public/reporter/now',[authJwt.verifyToken],async(req,res)=>{
+    const date_debut_Formated = req.body.date_debut.split('T')[0]
+    const date_fin_Formated = req.body.date_fin.split('T')[0]
 
     const entretien_date_time = String(req.body.date_debut).concat('T',req.body.heure_debut)
     const response = await mailing.audience_public_reporte(req.body.autorite,req.body.envoyeur,entretien_date_time)
 
-    const sql = `CALL reporter_audience_public_maintenant (${req.body.id_dm_aud_public_date_heure_dispo},${req.body.id_audience}, '${req.body.date_debut}','${req.body.date_fin}','${req.body.heure_debut}','${req.body.heure_fin}',${req.body.id_autorite})`
+    const sql = `CALL reporter_audience_public_maintenant (${req.body.id_dm_aud_public_date_heure_dispo},${req.body.id_audience}, '${date_debut_Formated}','${date_fin_Formated}','${req.body.heure_debut}','${req.body.heure_fin}',${req.body.id_autorite})`
 
     rohiAudiencePool.then((rohiAudienceDB) => {
         rohiAudienceDB.query(sql,req.body,async (error,result) => {
@@ -378,6 +393,9 @@ router.post('/public/reporter/now',[authJwt.verifyToken],async(req,res)=>{
 
 router.post('/public/reporter/later',[authJwt.verifyToken],async(req,res)=>{
 
+    const date_debut_Formated = req.body.date_debut.split('T')[0]
+    const date_fin_Formated = req.body.date_fin.split('T')[0]
+    
     const autorite = req.body.autorite
     const id_autorite = autorite.id_autorite
     // const evenement = req.body.evenement
@@ -386,8 +404,8 @@ router.post('/public/reporter/later',[authJwt.verifyToken],async(req,res)=>{
     
     // const sql = `UPDATE ${db_name}.demande_audience_public SET action = 2 where id = ${req.body.id}`
     
-    const sql = `CALL reporter_audience_public_plus_tard(${req.body.id_dm_aud_public_date_heure_dispo},${req.body.id_audience},'${req.body.date_debut}','${req.body.date_fin}','${req.body.heure_debut}','${req.body.heure_fin}', ${id_autorite})`
-    // const sql = `CALL reporter_audience_public_plus_tard (${evenement.id_dm_aud_public_date_heure_dispo},${evenement.id}, '${req.body.date_debut}','${req.body.date_fin}','${req.body.heure_debut}','${req.body.heure_fin}',${autorite.id})`
+    const sql = `CALL reporter_audience_public_plus_tard(${req.body.id_dm_aud_public_date_heure_dispo},${req.body.id_audience},'${date_debut_Formated}','${date_fin_Formated}','${req.body.heure_debut}','${req.body.heure_fin}', ${id_autorite})`
+    // const sql = `CALL reporter_audience_public_plus_tard (${evenement.id_dm_aud_public_date_heure_dispo},${evenement.id}, '${req.body.date_debut}','${date_fin_Formated}','${req.body.heure_debut}','${req.body.heure_fin}',${autorite.id})`
     // console.log(sql)
     // res.json(sql)
 

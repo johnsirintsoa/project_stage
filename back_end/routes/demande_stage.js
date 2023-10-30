@@ -68,6 +68,7 @@ router.post('/add',upload.fields([{name: 'curriculum_vitae'},{name: 'lettre_moti
         // console.log('Hahahaha')
         let sql = `INSERT INTO demande_stage(nom,prenom,etablissement,e_mail,cin,telephone,duree,curriculum_vitae,lettre_motivation,lettre_introduction,message,id_domaine,id_autorite_enfant,date_creation) VALUES ('${req.body.nom}','${prenomFormated}','${req.body.etablissement}','${req.body.e_mail}','${req.body.cin}','${req.body.telephone}','${req.body.duree}','${req.files['curriculum_vitae'][0].filename}','${req.files['lettre_motivation'][0].filename}','${req.files['lettre_introduction'][0].filename}','${req.body.message}',${req.body.id_domaine},${req.body.id_autorite_enfant},(SELECT CURDATE()))`
         
+        
         rohiAudiencePool.then((rohiAudienceDB) => {
             rohiAudience.query(sql, async (err, result) =>{
                 if(err){
@@ -133,7 +134,10 @@ router.post('/liste',async(req,res)=>{
 })
 
 router.post('/filtre',[authJwt.verifyToken], async(req,res)=>{
-    const sql = `CALL filtre_stage ('${req.body.date1}','${req.body.date2}','${req.body.nom}','${req.body.etablissement}',${req.body.id_domaine},${req.body.id_autorite})`
+    const date1_Formated = req.body.date1.split('T')[0]
+    const date2_Formated = req.body.date2.split('T')[0]
+
+    const sql = `CALL filtre_stage ('${date1_Formated}','${date2_Formated}','${req.body.nom}','${req.body.etablissement}',${req.body.id_domaine},${req.body.id_autorite})`
     // console.log(req.body)
 
     rohiAudiencePool.then((rohiAudienceDB) => {
@@ -189,6 +193,7 @@ router.get('/all_status/:id_autorite_enfant',async(req,res)=>{
         LEFT JOIN entretien_demande_stage eds on e.id = eds.id_demande_stage where e.id_autorite_enfant = ${req.params.id_autorite_enfant}`
     
     rohiAudiencePool.then((rohiAudienceDB) => {
+        
         rohiAudienceDB.query(sql, function(err, result) {
             if(err){
                 return res.json(err);

@@ -120,7 +120,9 @@ router.get('/supprimer/:id', async(req,res) =>{
 })
 
 router.post('/filtre', [authJwt.verifyToken] ,async(req,res)=>{
-    const sql = `CALL filtre_doleance('${req.body.date1}','${req.body.date2}',${req.body.type_doleance},${req.body.nbr_filtre},${req.body.id_autorite})`
+    const date1_Formated = req.body.date1.split('T')[0]
+    const date2_Formated = req.body.date2.split('T')[0]
+    const sql = `CALL filtre_doleance('${date1_Formated}','${date2_Formated}',${req.body.type_doleance},${req.body.nbr_filtre},${req.body.id_autorite})`
     // console.log(sql)
     
     rohiAudiencePool.then( (rohiAudienceDB) => {

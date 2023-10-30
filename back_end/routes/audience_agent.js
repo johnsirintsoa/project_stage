@@ -15,14 +15,16 @@ const notification_mailing = require('../Controllers/NotificationController')
 require('dotenv/config')
 
 router.post('/agent/ajouter',async(req,res)=>{
+    const date_debut_Formated = req.body.date_debut.split('T')[0]
+    const date_fin_Formated = req.body.date_fin.split('T')[0]
     const nomFormated = req.body.nom.toUpperCase()
     const prenomFormated = Function.upSetFirstLetter(req.body.prenom)
 
-    const sql = `CALL ajouter_audience_agent('${req.body.session_navigateur}','${req.body.id_agent}','${req.body.numero_telephone}','${req.body.email}',${req.body.id_date_heure_disponible_autorite},'${req.body.motif}','${req.body.date_debut}','${req.body.date_fin}','${req.body.heure_debut}','${req.body.heure_fin}')`
+    const sql = `CALL ajouter_audience_agent('${req.body.session_navigateur}','${req.body.id_agent}','${req.body.numero_telephone}','${req.body.email}',${req.body.id_date_heure_disponible_autorite},'${req.body.motif}','${date_debut_Formated}','${date_fin_Formated}','${req.body.heure_debut}','${req.body.heure_fin}')`
     // console.log(sql)
 
-    rohiPool.then((rohiDb) => {
-        rohiPool.query(sql, async (error,result) => {
+    rohiAudiencePool.then((rohiAudienceDB) => {
+        rohiAudienceDB.query(sql, async (error,result) => {
             if(error){
                 // throw err
                 res.send(error)
@@ -34,8 +36,8 @@ router.post('/agent/ajouter',async(req,res)=>{
                     prenom: prenomFormated,
                     path: req.body.path_agent,
                     motif: req.body.motif,
-                    date_debut: req.body.date_debut,
-                    date_fin: req.body.heure_fin,
+                    date_debut: date_debut_Formated,
+                    date_fin: date_fin_Formated,
                     heure_debut: req.body.heure_debut,
                     heure_fin: req.body.heure_fin
                 }
@@ -50,7 +52,7 @@ router.post('/agent/ajouter',async(req,res)=>{
             else{
                 res.json(result[0])
             }
-            rohiDb.release()
+            rohiAudienceDB.release()
         })
     }).catch((err) => {
         throw err
@@ -60,13 +62,15 @@ router.post('/agent/ajouter',async(req,res)=>{
 })
 
 router.post('/agent/modifier',async(req,res)=>{
+    const date_debut_Formated = req.body.date_debut.split('T')[0]
+    const date_fin_Formated = req.body.date_fin.split('T')[0]
     const nomFormated = req.body.nom.toUpperCase()
     const prenomFormated = Function.upSetFirstLetter(req.body.prenom)
     const sql = `call modifier_audience_agent ('${req.body.numero_telephone }','${req.body.email }','${req.body.motif}',${req.body.id_audience},${req.body.id_date_heure_disponible_autorite},${req.body.id_dm_aud_public_heure_dispo})`
     // console.log(sql)
     // console.log(req.body)  
-    rohiPool.then((rohiDB) => {
-        rohiDB.query(sql,async (error,result) => {
+    rohiAudiencePool.then((rohiAudienceDB) => {
+        rohiAudienceDB.query(sql,async (error,result) => {
             if(error){
                 res.send(error)
             } 
@@ -76,8 +80,8 @@ router.post('/agent/modifier',async(req,res)=>{
                     prenom: prenomFormated,
                     path: req.body.path_agent,
                     motif: req.body.motif,
-                    date_debut: req.body.date_debut,
-                    date_fin: req.body.heure_fin,
+                    date_debut: date_debut_Formated,
+                    date_fin: date_fin_Formated,
                     heure_debut: req.body.heure_debut,
                     heure_fin: req.body.heure_fin
                 }
@@ -91,7 +95,7 @@ router.post('/agent/modifier',async(req,res)=>{
             }else{
                 res.json(result)
             }
-            rohiDB.release()
+            rohiAudienceDB.release()
         })
     }).catch((err) => {
         throw err
