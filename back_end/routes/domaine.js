@@ -9,7 +9,7 @@ const rohiAudiencePool = require('../database').rohiAudience
 router.get('/all',async (req,res)=>{
     let sql = "SELECT * FROM domaine"
 
-    rohiAudiencePool.getConnection(function(error, rohiAudienceDB){
+    rohiAudiencePool.then((rohiAudienceDB) => {
         rohiAudienceDB.query(sql, function(err, result) {
             if(err){
                 return res.send({ err });
@@ -18,7 +18,9 @@ router.get('/all',async (req,res)=>{
             }
             rohiAudienceDB.release()
         });
-    })
+    }).catch((err) => {
+        throw err 
+     });
 })
 
 module.exports = router

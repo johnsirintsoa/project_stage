@@ -40,7 +40,7 @@ router.post('/valider', [authJwt.verifyToken],async (req,res) =>{
         response = await mailing.entretien_valide(autorite,sender,entretien_date_time)
     }
  
-    rohiAudiencePool.getConnection(function(error, rohiAudienceDB){
+    rohiAudiencePool.then((rohiAudienceDB) => {
         rohiAudienceDB.query(sql,function(err,result){
             // console.log(result)
             if(err){
@@ -56,7 +56,9 @@ router.post('/valider', [authJwt.verifyToken],async (req,res) =>{
             }
             rohiAudienceDB.release()
         })
-    })
+    }).catch((err) => {
+        throw err 
+     });
 })
 
 router.post('/revalider', [authJwt.verifyToken],async (req,res) =>{
@@ -81,6 +83,9 @@ router.post('/revalider', [authJwt.verifyToken],async (req,res) =>{
     if (type_evenement === 'Public'){
         response = await mailing.audience_public_revalide(autorite,sender,entretien_date_time)    
     }
+    else if (type_evenement === 'Agent'){
+        response = await mailing.audience_public_revalide(autorite,sender,entretien_date_time)    
+    }
     else if (type_evenement === 'Autorité'){
         const autorite_sender = evenement
         response = await mailing.audience_autorite_revalide(autorite,autorite_sender,entretien_date_time)         
@@ -90,7 +95,7 @@ router.post('/revalider', [authJwt.verifyToken],async (req,res) =>{
         response = await mailing.entretien_reporte(autorite,sender,entretien_date_time)
     }
 
-    rohiAudiencePool.getConnection(function(error, rohiAudienceDB){
+    rohiAudiencePool.then(( rohiAudienceDB) => {
         rohiAudienceDB.query(sql,function(err,result){
             // console.log(result)
             if(err){
@@ -106,7 +111,9 @@ router.post('/revalider', [authJwt.verifyToken],async (req,res) =>{
             }
             rohiAudienceDB.release()
         })
-    })
+    }).catch((err) => {
+        throw err 
+     });
 
 })
 
@@ -130,7 +137,7 @@ router.post('/terminer', [authJwt.verifyToken],async (req,res) =>{
         sql = `UPDATE demande_stage SET est_termine = ${req.body.est_termine} where id = ${req.body.id_evenement}`    
     }
 
-    rohiAudiencePool.getConnection(function(error, rohiAudienceDB){
+    rohiAudiencePool.then((rohiAudienceDB) => {
         rohiAudienceDB.query(sql,function(err,result){
             // console.log(result)
             if(err){
@@ -141,7 +148,9 @@ router.post('/terminer', [authJwt.verifyToken],async (req,res) =>{
             }
             rohiAudienceDB.release()
         })
-    })
+    }).catch((err) => {
+        throw err 
+     });
 
 })
 

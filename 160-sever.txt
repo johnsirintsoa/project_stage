@@ -3,3 +3,9 @@
 - Système : Administrateur / Adm1nSrv2022
 
 - VNC : Adm1n2022
+
+
+SSH
+5.183.8.211
+root
+Window34291@

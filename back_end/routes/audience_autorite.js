@@ -18,7 +18,7 @@ router.post('/autorite/faire_audience', [authJwt.verifyToken] ,async (req,res) =
     const sql = `CALL liste_disponible_autorite(${req.body.id_autorite_sender},${req.body.id_autorite})`
     // console.log(sql)
 
-    rohiAudiencePool.getConnection(function(err, rohiAudienceDB){
+    rohiAudiencePool.then((rohiAudienceDB) => {
         rohiAudienceDB.query(sql,function(err,result){
             if(err){
                 return res.send({ err });
@@ -28,7 +28,9 @@ router.post('/autorite/faire_audience', [authJwt.verifyToken] ,async (req,res) =
             }
             rohiAudienceDB.release()
         })
-    })
+    }).catch((err) => {
+        throw err
+    });
 })
 
 
@@ -544,7 +546,7 @@ router.post('/autorite/ajouter',[authJwt.verifyToken],async(req,res)=>{
         heure_fin: req.body.heure_fin
     }
 
-    rohiAudiencePool.getConnection(function(err, rohiAudienceDB){
+    rohiAudiencePool.then((rohiAudienceDB) => {
         rohiAudienceDB.query(sql, async (error,result) => {
         
             if(error){
@@ -558,13 +560,15 @@ router.post('/autorite/ajouter',[authJwt.verifyToken],async(req,res)=>{
             }
             rohiAudienceDB.release()
         })
-    })
+    }).catch((err) => {
+        throw err
+    });
 })
 
 router.post('/autorite/modifier',[authJwt.verifyToken],async(req,res)=>{
     // console.log(req.body)
 
-    rohiAudiencePool.getConnection(function(err, rohiAudienceDB){
+    rohiAudiencePool.then((rohiAudienceDB) => {
         rohiAudienceDB.query(`CALL modifier_audience_autorite (${req.body.id_date_heure_disponible_autorite} ,${req.body.id_dm_aud_autorite_date_heure_dispo},'${req.body.motif}','${req.body.email}','${req.body.numero_telephone}',${req.body.id_audience}) `, async (error,result) => {
             if(error){
                 res.send(error)
@@ -584,7 +588,9 @@ router.post('/autorite/modifier',[authJwt.verifyToken],async(req,res)=>{
             }
             rohiAudienceDB.release()
         })
-    })
+    }).catch((err) => {
+        throw err
+    });
 
 })
 
@@ -598,7 +604,7 @@ router.post('/autorite/supprimer',[authJwt.verifyToken],async(req,res)=>{
     
     // const sql1 = `CALL supprimer_audience_autorite (${req.body.id})`
 
-    rohiAudiencePool.getConnection(function (err, rohiAudienceDB){
+    rohiAudiencePool.then( (rohiAudienceDB) => {
         rohiAudienceDB.query(sql, (error,result) => {
             if(error){
                 res.send(error)
@@ -610,7 +616,9 @@ router.post('/autorite/supprimer',[authJwt.verifyToken],async(req,res)=>{
             }
             rohiAudienceDB.release()
         })
-    })
+    }).catch((err) => {
+        throw err
+    });
 
 
 })
@@ -652,7 +660,7 @@ router.post('/autorite/valider',[authJwt.verifyToken],async(req,res)=>{
     const sql = ` CALL valider_audience_autorite (${req.body.id_dm_aud_aut_date_heure_dispo},${req.body.id_audience}, '${req.body.date_debut}','${req.body.date_fin}','${req.body.heure_debut}','${req.body.heure_fin}',${req.body.id_autorite})`
     
 
-    rohiAudiencePool.getConnection(function(err,rohiAudienceDB){
+    rohiAudiencePool.then((rohiAudienceDB) => {
         rohiAudienceDB.query(sql, req.body,async(error,result) => {
             if(error) {
                 res.send(error)
@@ -668,7 +676,9 @@ router.post('/autorite/valider',[authJwt.verifyToken],async(req,res)=>{
             }
             rohiAudienceDB.release()
         })  
-    })
+    }).catch((err) => {
+        throw err
+    });
 })
 
 router.post('/autorite/revalider',[authJwt.verifyToken],async(req,res)=>{
@@ -681,7 +691,7 @@ router.post('/autorite/revalider',[authJwt.verifyToken],async(req,res)=>{
     const sql = `CALL revalider_audience_autorite(${req.body.id_dm_aud_aut_date_heure_dispo},${req.body.id_audience}, '${req.body.date_debut}','${req.body.date_fin}','${req.body.heure_debut}','${req.body.heure_fin}',${req.body.id_autorite})`
     
 
-    rohiAudiencePool.getConnection(function(err, rohiAudienceDB){
+    rohiAudiencePool.then((rohiAudienceDB) => {
         rohiAudienceDB.query(sql, req.body,async(error,result) => {
             if(error) {
                 res.send(error)
@@ -698,7 +708,9 @@ router.post('/autorite/revalider',[authJwt.verifyToken],async(req,res)=>{
             }
             rohiAudienceDB.release()
         })
-    })
+    }).catch((err) => {
+        throw err
+    });
 
 })
 
@@ -741,21 +753,26 @@ router.post('/autorite/reporter/now',[authJwt.verifyToken],async(req,res)=>{
     const autorite = req.body.autorite
     const envoyeur = req.body.envoyeur
     const sql = `CALL reporter_audience_autorite_maintenant (${req.body.id_dm_aud_aut_date_heure_dispo},${req.body.id_audience}, '${req.body.date_debut}','${req.body.date_fin}','${req.body.heure_debut}','${req.body.heure_fin}',${req.body.id_autorite})`
-    db.query(sql,req.body, async (error,result) => {
-        if(error) {
-            res.send(error)
-        }
-        else{
-            const entretien_date_time = String(req.body.date_debut).concat('T',req.body.heure_debut)
-            const response = await mailing.audience_autorite_reporte(autorite,envoyeur,entretien_date_time)
-            if(response && result ){
-                res.json({message:'Audience reportée et envoyé',mail:response,data:result})
+    
+    rohiAudiencePool.then((rohiAudienceDB) => {
+        rohiAudienceDB.query(sql,req.body, async (error,result) => {
+            if(error) {
+                res.send(error)
             }
-            else {
-                res.json({message:'Audience non reportée '})
+            else{
+                const entretien_date_time = String(req.body.date_debut).concat('T',req.body.heure_debut)
+                const response = await mailing.audience_autorite_reporte(autorite,envoyeur,entretien_date_time)
+                if(response && result ){
+                    res.json({message:'Audience reportée et envoyé',mail:response,data:result})
+                }
+                else {
+                    res.json({message:'Audience non reportée '})
+                }
             }
-        }
-    })
+        })
+    }).catch((err) => {
+       throw err 
+    });
 })
 
 router.post('/autorite/reporter/click',[authJwt.verifyToken],async(req,res)=>{
@@ -763,20 +780,24 @@ router.post('/autorite/reporter/click',[authJwt.verifyToken],async(req,res)=>{
     const envoyeur = req.body.envoyeur
     
     const sql = `CALL reporter_audience_autorite_plus_tard (${req.body.id_dm_aud_aut_date_heure_dispo},${req.body.id_audience}, '${req.body.date_debut}','${req.body.date_fin}','${req.body.heure_debut}','${req.body.heure_fin}',${autorite.id})`
-   db.query(sql, async(error,result) => {
-        if(error) {
-            res.send(error)
-        }
-        else{
-            const response = await mailing.audience_autorite_reporte_plus_tard(autorite,envoyeur)
-            if(response && result ){
-                res.json({message:'Audience reportée et envoyé',mail:response,data:result})
+    rohiAudiencePool.then((rohiAudienceDB) => {
+        rohiAudienceDB.query(sql, async(error,result) => {
+            if(error) {
+                res.send(error)
             }
-            else {
-                res.json({message:'Audience non reportée '})
+            else{
+                const response = await mailing.audience_autorite_reporte_plus_tard(autorite,envoyeur)
+                if(response && result ){
+                    res.json({message:'Audience reportée et envoyé',mail:response,data:result})
+                }
+                else {
+                    res.json({message:'Audience non reportée '})
+                }
             }
-        }
-    })
+        })
+   }).catch((err) => {
+        throw err
+   });
 })
 
 router.post('/autorite/reporter/later',[authJwt.verifyToken],async(req,res)=>{
@@ -784,22 +805,26 @@ router.post('/autorite/reporter/later',[authJwt.verifyToken],async(req,res)=>{
     const evenement = req.body.evenement
     
     const sql = `CALL reporter_audience_autorite_plus_tard (${evenement.id_dm_aud_aut_date_heure_dispo},${evenement.id_audience}, '${req.body.date_debut}','${req.body.date_fin}','${req.body.heure_debut}','${req.body.heure_fin}',${autorite.id})`
-   db.query(sql, async(error,result) => {
-        if(error) {
-            res.send(error)
-        }
-        else{
-            const autorite = req.body.autorite
-            const sender =  evenement.autorite_sender
-            const response = await mailing.audience_autorite_reporte_plus_tard(autorite,sender)
-            if(response && result ){
-                res.json({message:'Audience reportée et envoyé',mail:response,data:result})
+    rohiAudiencePool.then((rohiAudienceDB) => {
+        rohiAudienceDB.query(sql, async(error,result) => {
+            if(error) {
+                res.send(error)
             }
-            else {
-                res.json({message:'Audience non reportée '})
+            else{
+                const autorite = req.body.autorite
+                const sender =  evenement.autorite_sender
+                const response = await mailing.audience_autorite_reporte_plus_tard(autorite,sender)
+                if(response && result ){
+                    res.json({message:'Audience reportée et envoyé',mail:response,data:result})
+                }
+                else {
+                    res.json({message:'Audience non reportée '})
+                }
             }
-        }
-    })
+        })
+    }).catch((err) => {
+       throw err 
+    });
 })
 
 

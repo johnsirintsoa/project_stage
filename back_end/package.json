@@ -23,13 +23,14 @@
         "nodemailer": "^6.7.8",
         "nodemon": "^2.0.19",
         "sha1": "^1.1.1",
+        "ssh2": "^1.14.0",
         "xmlhttprequest": "^1.8.0"
     },
     "keywords": [
         "rohiAudience",
         "heroku"
-      ],
+    ],
     "engines": {
-        "node":"v16.16.0"
+        "node": "v16.16.0"
     }
 }

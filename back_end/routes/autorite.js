@@ -3,7 +3,8 @@ const router = express.Router();
 
 const rohiPool = require('../database').rohi
 const rohiAudiencePool = require('../database').rohiAudience
-
+// const rohiPool = await rohi;
+// const rohiAudiencePool = await rohiAudience;
 // const rohi = require('../database').rohi
 // const db = require('../database').conn
 
@@ -48,18 +49,32 @@ router.post('/structure', async(req,res) =>{
 		or e.service_libele LIKE UPPER('%${req.body.path}%')) limit 10`
     // console.log(sql)
 
-    rohiPool.getConnection(function(err, rohiDB){
-        rohiDB.query(sql, function(err,result){
+    rohiPool.then((conn) => {
+        conn.query(sql, function(err,result){
             if(err){
-                rohiDB.release()
+                conn.release()
                 return res.send({ err });
             }
             else{
                 return res.json(result)    
             }
-            rohiDB.release();       
+            conn.release();       
         })
-    })
+    }).catch((err) => {
+        throw err
+    });
+    // rohiPool.getConnection(function(err, rohiDB){
+    //     rohiDB.query(sql, function(err,result){
+    //         if(err){
+    //             rohiDB.release()
+    //             return res.send({ err });
+    //         }
+    //         else{
+    //             return res.json(result)    
+    //         }
+    //         rohiDB.release();       
+    //     })
+    // })
 
 
 })
@@ -96,7 +111,7 @@ router.post('/backOffice/structure', async(req,res) =>{
 		or e.service_libele LIKE UPPER('%${req.body.path}%')) limit 10`
     // console.log(sql)
 
-    rohiPool.getConnection( function(err, rohiDB){
+    rohiPool.then( ( rohiDB)=> {
         rohiDB.query(sql, function(err,result){
             if(err){
                 rohiDB.release()
@@ -107,7 +122,9 @@ router.post('/backOffice/structure', async(req,res) =>{
             }  
             rohiDB.release()     
         })
-    })
+    }).catch((err) => {
+        throw err
+    });
 
 })
 
@@ -165,7 +182,7 @@ router.post('/login', async(req,res) =>{
     u.password = (SELECT AES_ENCRYPT('${req.body.mot_de_passe}','lHommeEstNaturellementBonCEestLaSocieteQuiLeCorrompt-Rousseau')));
     `
     
-    rohiPool.getConnection( function(err, rohiDB){
+    rohiPool.then( (rohiDB) => {
         rohiDB.query(email, function(err,result){
             if(err){
                 return res.send({err})
@@ -203,7 +220,9 @@ router.post('/login', async(req,res) =>{
             }
             rohiDB.release()
         })
-    })
+    }).catch((err) => {
+        throw err
+    });
 
 })
 
@@ -211,7 +230,7 @@ router.post('/calendrier',[authJwt.verifyToken], async (req,res) =>{
     // const sql = `CALL calendrier_autorite(${req.body.id_autorite},${req.body.est_admin})`
     const sql = `CALL calendrier_autorite(${req.body.id_autorite},${req.body.masque_event_ended})`
 
-    rohiAudiencePool.getConnection(function(err, rohiAudienceDB){
+    rohiAudiencePool.then(( rohiAudienceDB) => {
         rohiAudienceDB.query(sql,function(err,result){
             if(err){
                 return res.send({ err });
@@ -221,7 +240,9 @@ router.post('/calendrier',[authJwt.verifyToken], async (req,res) =>{
             }
             rohiAudienceDB.release()
         })
-    })
+    }).catch((err) => {
+        throw err
+    });
 })
 
 router.post('/filtre_calendrier', async (req,res) => {
@@ -235,7 +256,7 @@ router.post('/filtre_calendrier', async (req,res) => {
                 ${autorite.id_autorite_enfant}
             )`
     // res.json(sql)
-    rohiAudiencePool.getConnection(function(err, rohiAudienceDB){
+    rohiAudiencePool.then((rohiAudienceDB) => {
         rohiAudienceDB.query(sql,function(err, result) {
             if(err){
                 return res.send({ err });
@@ -245,7 +266,9 @@ router.post('/filtre_calendrier', async (req,res) => {
             }
             rohiAudienceDB.release()
         })
-    })
+    }).catch((err) => {
+        throw err
+    });
 
 })
 
@@ -253,7 +276,7 @@ router.post('/place_disponible', async (req,res) =>{
     const sql = `CALL places_disponible(${req.body.id_date_heure_disponible_autorite},${req.body.id_autorite})`
     // console.log(sql)
     // res.json(sql)
-    rohiAudiencePool.getConnection(function(err, rohiAudienceDB){
+    rohiAudiencePool.then((rohiAudienceDB) => {
         rohiAudienceDB.query(sql,function(err,result){
             // console.log(result)
             if(err){
@@ -264,7 +287,9 @@ router.post('/place_disponible', async (req,res) =>{
             }
             rohiAudienceDB.release()
         })
-    })
+    }).catch((err) => {
+        throw err
+    });
 
 })
 

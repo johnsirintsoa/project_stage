@@ -105,7 +105,7 @@ router.post('/barre/doleance', [authJwt.verifyToken], async(req,res) =>{
     ${process.env.DB_APP}.doleance d 
     where d.id_autorite = ${req.body.id_autorite} and year(d.date_publication) = ${annee} `
     
-    rohiAudiencePool.getConnection(function(error, rohiAudienceDB){
+    rohiAudiencePool.then((rohiAudienceDB) => {
         rohiAudienceDB.query(sql, function(err,result){
             if(err){
                 return res.send({err})
@@ -115,7 +115,9 @@ router.post('/barre/doleance', [authJwt.verifyToken], async(req,res) =>{
             }
             rohiAudienceDB.release()
         })
-    })
+    }).catch((err) => {
+        throw err 
+     });
 })
 
 router.post('/barre/stage', [authJwt.verifyToken],async(req,res) =>{
@@ -140,7 +142,7 @@ router.post('/barre/stage', [authJwt.verifyToken],async(req,res) =>{
     group by d.id order by x`
     console.log(sql)
     
-    rohiAudiencePool.getConnection(function(error, rohiAudienceDB){
+    rohiAudiencePool.then((rohiAudienceDB) => {
         rohiAudienceDB.query(sql, function(err,result){
             if(err){
                 return res.send({err})
@@ -150,6 +152,8 @@ router.post('/barre/stage', [authJwt.verifyToken],async(req,res) =>{
             }
             rohiAudienceDB.release()
         })
-    })
+    }).catch((err) => {
+        throw err 
+    });
 })
 module.exports = router

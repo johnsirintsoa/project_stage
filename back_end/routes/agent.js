@@ -43,7 +43,7 @@ router.post('/login', async(req,res) =>{
     and 
     u.password = (SELECT AES_ENCRYPT('${req.body.mot_de_passe}','lHommeEstNaturellementBonCEestLaSocieteQuiLeCorrompt-Rousseau'));
     `
-    rohiPool.getConnection(function(err, rohiDb) {
+    rohiPool.then(( rohiDb) => {
         if (err) {
             rohiDb.release();
             throw err
@@ -75,7 +75,9 @@ router.post('/login', async(req,res) =>{
             }
             rohiDb.release()
         })
-      });
+    }).catch((err) => {
+        throw err
+    });
 
 
 

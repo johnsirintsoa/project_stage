@@ -19,7 +19,7 @@ require('dotenv/config')
 router.post('/public/heure_disponible_autorite/jour',async(req,res) =>{
     const sql = `CALL liste_place_disponible_public_par_jour('${req.body.date_du_jour}','${req.body.session_navigateur}',${req.body.id_autorite})`
     
-    rohiAudiencePool.getConnection(function(err, rohiAudienceDB){
+    rohiAudiencePool.then((rohiAudienceDB) => {
         rohiAudienceDB.query(sql,function(err,result){
             if(err){
                 return res.send({ err });
@@ -29,7 +29,9 @@ router.post('/public/heure_disponible_autorite/jour',async(req,res) =>{
             }
             rohiAudienceDB.release()
         })
-    })
+    }).catch((err) => {
+        throw err 
+     });
 
 })
 
@@ -39,7 +41,7 @@ router.post('/public/all', async(req,res) =>{
     const sql =`call liste_disponible_public('${req.body.session_navigateur}',${req.body.id_autorite})`
     // console.log(sql)
     
-    rohiAudiencePool.getConnection(function(err, rohiAudienceDB){
+    rohiAudiencePool.then(( rohiAudienceDB) => {
         rohiAudienceDB.query(sql,function(err,result){
             if(err){
                 return res.send({ err });
@@ -49,25 +51,30 @@ router.post('/public/all', async(req,res) =>{
             }
             rohiAudienceDB.release()
         })
-    })
+    }).catch((err) => {
+        throw err 
+     });
 })
 
 // delete audiences
 router.post('/public/delete',async(req,res)=>{
     let sql = `DELETE FROM demande_audience_public where id = ${req.body.id} and session_navigateur = '${req.body.session_navigateur}'`
     
-    rohiAudiencePool.getConnection(function(error, rohiAudienceDB){
+    rohiAudiencePool.then(( rohiAudienceDB) => {
         rohiAudienceDB.query(sql, (error,result) => {
             if(error) res.send(error)
             res.json(result)
             rohiAudienceDB.release()
         })
-    })
+    }).catch((err) => {
+        throw err 
+     });
 })
 
 router.post('/public/add',async(req,res)=>{
     const sql = `CALL add_audience_public_V2('${req.body.session_navigateur}','${req.body.nom}','${req.body.prenom}','${req.body.cin}','${req.body.numero_telephone}','${req.body.email}','${req.body.date_event_debut}','${req.body.date_event_fin}','${req.body.time_event_debut}','${req.body.time_event_fin}','${req.body.motif}',${req.body.id_autorite_enfant})`
-    rohiAudiencePool.getConnection(function(error, rohiAudienceDB){
+    
+    rohiAudiencePool.then((rohiAudienceDB) => {
         rohiAudienceDB.query(sql, (error,result) => {
             if(error){
                 res.send(error)
@@ -79,7 +86,9 @@ router.post('/public/add',async(req,res)=>{
             }  
             rohiAudienceDB.release()
         })
-    })
+    }).catch((err) => {
+        throw err 
+     });
 
 })
 
@@ -89,7 +98,7 @@ router.post('/public/ajouter',async(req,res)=>{
     const sql = `CALL ajouter_audience_public('${req.body.session_navigateur}','${nomFormated}','${prenomFormated}','${req.body.cin}','${req.body.numero_telephone}','${req.body.email}',${req.body.id_date_heure_disponible_autorite},'${req.body.motif}','${req.body.date_debut}','${req.body.date_fin}','${req.body.heure_debut}','${req.body.heure_fin}')`
     // console.log(sql)
 
-    rohiAudiencePool.getConnection(function(error,rohiAudienceDB){
+    rohiAudiencePool.then((rohiAudienceDB) => {
         rohiAudienceDB.query(sql, async (error,result) => {
             if(error){
                 res.send(error)
@@ -118,13 +127,15 @@ router.post('/public/ajouter',async(req,res)=>{
             }
             rohiAudienceDB.release()
         })
-    })
+    }).catch((err) => {
+        throw err 
+     });
 })
 
 router.post('/public/supprimer/:id',async(req,res)=>{
     const sql = `call supprimer_audience_public (${req.params.id})`
     
-    rohiAudiencePool.getConnection(function(error, rohiAudienceDB){
+    rohiAudiencePool.then(( rohiAudienceDB) => {
         rohiAudienceDB.query(sql, (error,result) => {
             if(error){
                 res.send(error)
@@ -137,7 +148,9 @@ router.post('/public/supprimer/:id',async(req,res)=>{
             } 
             rohiAudienceDB.release()
         })
-    })
+    }).catch((err) => {
+        throw err 
+     });
 })
 
 router.post('/public/modifier',async(req,res)=>{
@@ -147,7 +160,7 @@ router.post('/public/modifier',async(req,res)=>{
     // console.log(sql)
     // console.log(req.body)    
 
-    rohiAudiencePool.getConnection(function(error, rohiAudienceDB){
+    rohiAudiencePool.then((rohiAudienceDB) => {
         rohiAudienceDB.query(sql,async (error,result) => {
             if(error){
                 res.send(error)
@@ -174,7 +187,9 @@ router.post('/public/modifier',async(req,res)=>{
             }
             rohiAudienceDB.release()
         })
-    })
+    }).catch((err) => {
+        throw err 
+     });
 
 
 })
@@ -182,7 +197,7 @@ router.post('/public/modifier',async(req,res)=>{
 router.post('/public/update',async(req,res)=>{
     const sql = `CALL update_audience_public ('${req.body.session_navigateur}','${req.body.nom }','${req.body.prenom }','${req.body.cin }','${req.body.numero_telephone }','${req.body.email }','${req.body.date_event_debut}','${req.body.date_event_fin}','${req.body.time_event_debut}','${req.body.time_event_fin}','${req.body.motif}',${req.body.id_autorite_enfant},${req.body.id})`
     
-    rohiAudiencePool.getConnection(function(error, rohiAudienceDB){
+    rohiAudiencePool.then(( rohiAudienceDB) => {
         rohiAudienceDB.query(sql, (error,result) => {
             if(error){
                 res.send(error)
@@ -194,7 +209,9 @@ router.post('/public/update',async(req,res)=>{
             }
             rohiAudienceDB.release()
         })
-    })
+    }).catch((err) => {
+        throw err 
+     });
 })
 
 // router.post('/public/valider',async(req,res)=>{
@@ -230,7 +247,7 @@ router.post('/public/valider',[authJwt.verifyToken],async(req,res)=>{
 
     const entretien_date_time = String(req.body.date_debut).concat('T',req.body.heure_debut)
 
-    rohiAudiencePool.getConnection(function(error, rohiAudienceDB){
+    rohiAudiencePool.then(( rohiAudienceDB) => {
         rohiAudienceDB.query(sql,req.body,async (error,result) => {
             if(error) {
                 res.send(error)
@@ -246,7 +263,9 @@ router.post('/public/valider',[authJwt.verifyToken],async(req,res)=>{
             }
             rohiAudienceDB.release()
         })
-    })
+    }).catch((err) => {
+        throw err 
+     });
 })
 
 // router.post('/public/revalider',async(req,res)=>{
@@ -282,7 +301,7 @@ router.post('/public/revalider',[authJwt.verifyToken],async(req,res)=>{
 
     const sql = `CALL revalider_audience_public(${req.body.id_dm_aud_public_date_heure_dispo},${req.body.id_audience}, '${req.body.date_debut}','${req.body.date_fin}','${req.body.heure_debut}','${req.body.heure_fin}',${req.body.id_autorite})`
     
-    rohiAudiencePool.getConnection(function(error, rohiAudienceDB){
+    rohiAudiencePool.then((rohiAudienceDB) => {
         rohiAudienceDB.query(sql,req.body,async (error,result) => {
             if(error) {
                 res.send(error)
@@ -296,7 +315,9 @@ router.post('/public/revalider',[authJwt.verifyToken],async(req,res)=>{
                 }
             }
         })
-    })
+    }).catch((err) => {
+        throw err 
+     });
 })
 
 // router.post('/public/reporter/now',async(req,res)=>{
@@ -334,7 +355,7 @@ router.post('/public/reporter/now',[authJwt.verifyToken],async(req,res)=>{
 
     const sql = `CALL reporter_audience_public_maintenant (${req.body.id_dm_aud_public_date_heure_dispo},${req.body.id_audience}, '${req.body.date_debut}','${req.body.date_fin}','${req.body.heure_debut}','${req.body.heure_fin}',${req.body.id_autorite})`
 
-    rohiAudiencePool.getConnection(function(error, rohiAudienceDB){
+    rohiAudiencePool.then((rohiAudienceDB) => {
         rohiAudienceDB.query(sql,req.body,async (error,result) => {
             if(error) {
                 res.send(error)
@@ -350,7 +371,9 @@ router.post('/public/reporter/now',[authJwt.verifyToken],async(req,res)=>{
             }
             rohiAudienceDB.release()
         })
-    })
+    }).catch((err) => {
+        throw err 
+     });
 })
 
 router.post('/public/reporter/later',[authJwt.verifyToken],async(req,res)=>{
@@ -368,7 +391,7 @@ router.post('/public/reporter/later',[authJwt.verifyToken],async(req,res)=>{
     // console.log(sql)
     // res.json(sql)
 
-    rohiAudiencePool.getConnection(function(error, rohiAudienceDB){
+    rohiAudiencePool.then((rohiAudienceDB) => {
         rohiAudienceDB.query(sql, async (error,result) => {
             if(error) {
                 res.send(error)
@@ -385,7 +408,9 @@ router.post('/public/reporter/later',[authJwt.verifyToken],async(req,res)=>{
             }
             rohiAudienceDB.release()
         })   
-    })
+    }).catch((err) => {
+        throw err 
+     });
 
 
 })

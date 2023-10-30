@@ -21,7 +21,7 @@ router.post('/agent/ajouter',async(req,res)=>{
     const sql = `CALL ajouter_audience_agent('${req.body.session_navigateur}','${req.body.id_agent}','${req.body.numero_telephone}','${req.body.email}',${req.body.id_date_heure_disponible_autorite},'${req.body.motif}','${req.body.date_debut}','${req.body.date_fin}','${req.body.heure_debut}','${req.body.heure_fin}')`
     // console.log(sql)
 
-    rohiPool.getConnection(function(err, rohiDb) {
+    rohiPool.then((rohiDb) => {
         rohiPool.query(sql, async (error,result) => {
             if(error){
                 // throw err
@@ -52,7 +52,9 @@ router.post('/agent/ajouter',async(req,res)=>{
             }
             rohiDb.release()
         })
-    })
+    }).catch((err) => {
+        throw err
+    });
 
 
 })
@@ -63,7 +65,7 @@ router.post('/agent/modifier',async(req,res)=>{
     const sql = `call modifier_audience_agent ('${req.body.numero_telephone }','${req.body.email }','${req.body.motif}',${req.body.id_audience},${req.body.id_date_heure_disponible_autorite},${req.body.id_dm_aud_public_heure_dispo})`
     // console.log(sql)
     // console.log(req.body)  
-    rohiPool.getConnection( function(err, rohiDB){
+    rohiPool.then((rohiDB) => {
         rohiDB.query(sql,async (error,result) => {
             if(error){
                 res.send(error)
@@ -91,7 +93,9 @@ router.post('/agent/modifier',async(req,res)=>{
             }
             rohiDB.release()
         })
-    })
+    }).catch((err) => {
+        throw err
+    });
     
 
 })

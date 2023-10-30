@@ -68,7 +68,7 @@ router.post('/add',upload.fields([{name: 'curriculum_vitae'},{name: 'lettre_moti
         // console.log('Hahahaha')
         let sql = `INSERT INTO demande_stage(nom,prenom,etablissement,e_mail,cin,telephone,duree,curriculum_vitae,lettre_motivation,lettre_introduction,message,id_domaine,id_autorite_enfant,date_creation) VALUES ('${req.body.nom}','${prenomFormated}','${req.body.etablissement}','${req.body.e_mail}','${req.body.cin}','${req.body.telephone}','${req.body.duree}','${req.files['curriculum_vitae'][0].filename}','${req.files['lettre_motivation'][0].filename}','${req.files['lettre_introduction'][0].filename}','${req.body.message}',${req.body.id_domaine},${req.body.id_autorite_enfant},(SELECT CURDATE()))`
         
-        rohiAudiencePool.getConnection(function(error,rohiAudienceDB){
+        rohiAudiencePool.then((rohiAudienceDB) => {
             rohiAudience.query(sql, async (err, result) =>{
                 if(err){
                     // console.log('Hahahaha')
@@ -89,7 +89,9 @@ router.post('/add',upload.fields([{name: 'curriculum_vitae'},{name: 'lettre_moti
                 }
                 rohiAudienceDB.release()
             });
-        })
+        }).catch((err) => {
+            throw err 
+         });
     }
 })
 
@@ -115,7 +117,7 @@ router.post('/liste',async(req,res)=>{
         WHERE ds.id_autorite_enfant = ${req.body.id_autorite_enfant}
         GROUP BY ds.id`
     
-    rohiAudiencePool.getConnection(function(error, rohiAudienceDB){
+    rohiAudiencePool.then((rohiAudienceDB) => {
         rohiAudienceDB.query(sql, function(err, result) {
             if(err){
                 return res.json(err);
@@ -123,7 +125,9 @@ router.post('/liste',async(req,res)=>{
             res.json(result)
             rohiAudienceDB.release()
         })
-    })
+    }).catch((err) => {
+        throw err 
+     });
 
 
 })
@@ -132,7 +136,7 @@ router.post('/filtre',[authJwt.verifyToken], async(req,res)=>{
     const sql = `CALL filtre_stage ('${req.body.date1}','${req.body.date2}','${req.body.nom}','${req.body.etablissement}',${req.body.id_domaine},${req.body.id_autorite})`
     // console.log(req.body)
 
-    rohiAudiencePool.getConnection(function(error, rohiAudienceDB){
+    rohiAudiencePool.then((rohiAudienceDB) => {
         rohiAudienceDB.query(sql, function(err, result) {
             if(err){
                 return res.json(err);
@@ -141,7 +145,9 @@ router.post('/filtre',[authJwt.verifyToken], async(req,res)=>{
             res.json(result[0])
             rohiAudienceDB.release()
         })
-    })
+    }).catch((err) => {
+        throw err 
+     });
 })
 
 
@@ -182,7 +188,7 @@ router.get('/all_status/:id_autorite_enfant',async(req,res)=>{
         JOIN domaine d on e.id_domaine = d.id
         LEFT JOIN entretien_demande_stage eds on e.id = eds.id_demande_stage where e.id_autorite_enfant = ${req.params.id_autorite_enfant}`
     
-    rohiAudiencePool.getConnection(function(error, rohiAudienceDB){
+    rohiAudiencePool.then((rohiAudienceDB) => {
         rohiAudienceDB.query(sql, function(err, result) {
             if(err){
                 return res.json(err);
@@ -251,7 +257,9 @@ router.get('/all_status/:id_autorite_enfant',async(req,res)=>{
             }
             rohiAudienceDB.release()
         });
-    })
+    }).catch((err) => {
+        throw err 
+     });
     
 
 })
@@ -282,7 +290,7 @@ router.post('/detail', [authJwt.verifyToken],async(req,res)=>{
         LEFT JOIN entretien_demande_stage eds on  e.id = eds.id_demande_stage
         WHERE e.id = ${req.body.id_demande_stage}`
 
-    rohiAudiencePool.getConnection(function(error, rohiAudienceDB){
+    rohiAudiencePool.then((rohiAudienceDB) => {
         rohiAudienceDB.query(sql, function(err, result) {
             if(err){
                 return res.json(err);
@@ -291,7 +299,9 @@ router.post('/detail', [authJwt.verifyToken],async(req,res)=>{
             }
             rohiAudienceDB.release()
         })
-    })
+    }).catch((err) => {
+        throw err 
+     });
 
 })
   
@@ -395,7 +405,7 @@ router.get('/file/:file_name',async(req,res)=>{
 router.post('/prolonger',[authJwt.verifyToken],async(req,res)=>{
     let sql = `call prolonger_duree_stage(${req.body.duree_en_plus},${req.body.id_entretien_stage})`
     
-    rohiAudiencePool.getConnection(function(error, rohiAudienceDB){
+    rohiAudiencePool.then((rohiAudienceDB) => {
         rohiAudienceDB.query(sql, function(err, result) {
             if(err){
                 return res.json(err);
@@ -407,7 +417,9 @@ router.post('/prolonger',[authJwt.verifyToken],async(req,res)=>{
             }
             rohiAudienceDB.release()
         })
-    })
+    }).catch((err) => {
+        throw err 
+    });
 })
 
 module.exports = router

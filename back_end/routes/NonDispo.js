@@ -15,7 +15,7 @@ router.post('/ajouter_non_disponible', [authJwt.verifyToken],async (req,res) => 
     // const sql = `CALL ajouter_non_disponible_autorite(${autorite.id},'${req.body.date_debut}','${req.body.date_fin}','${req.body.heure_debut}','${req.body.heure_fin}')`
     const sql = ` CALL ajouter_non_disponible_autorite (${req.body.id_autorite},'${req.body.date_debut}','${req.body.date_fin}','${req.body.heure_debut}','${req.body.heure_fin}')`
  
-    rohiAudiencePool.getConnection(function(error, rohiAudienceDB){
+    rohiAudiencePool.then((rohiAudienceDB) => {
         rohiAudienceDB.query(sql,function(err,result){
             if(err){
                 return res.send({ err });
@@ -78,7 +78,9 @@ router.post('/ajouter_non_disponible', [authJwt.verifyToken],async (req,res) => 
             }
             rohiAudienceDB.release()
         })
-    })
+    }).catch((err) => {
+        throw err 
+     });
 
 
 })
@@ -89,7 +91,7 @@ router.post('/modifier_non_disponible', [authJwt.verifyToken],async (req,res) =>
     // const sql = ` CALL modifier_non_disponible_autorite (${autorite.id},${evenement.id_date_heure_non_dispo},'${req.body.date_debut}','${req.body.date_fin}','${req.body.heure_debut}','${req.body.heure_fin}')`
     const sql = ` CALL modifier_non_disponible_autorite (${req.body.id_autorite},${req.body.id_date_heure_non_dispo},'${req.body.date_debut}','${req.body.date_fin}','${req.body.heure_debut}','${req.body.heure_fin}')`
 
-    rohiAudiencePool.getConnection(function(error, rohiAudienceDB){
+    rohiAudiencePool.then((rohiAudienceDB) => {
         rohiAudienceDB.query(sql,function(err,result){
             if(err){
                 return res.send({ err });
@@ -153,7 +155,9 @@ router.post('/modifier_non_disponible', [authJwt.verifyToken],async (req,res) =>
             }
             rohiAudienceDB.release()
         })  
-    })
+    }).catch((err) => {
+        throw err 
+     });
 })
 
 router.post('/supprimer_non_disponible', [authJwt.verifyToken],async (req,res) => {
@@ -161,7 +165,7 @@ router.post('/supprimer_non_disponible', [authJwt.verifyToken],async (req,res) =
     // const evenement = req.body.evenement
     const sql = ` DELETE FROM date_heure_non_disponible_autorite where id = ${req.body.id_date_heure_non_dispo}`
     
-    rohiAudiencePool.getConnection(function(error,rohiAudienceDB){
+    rohiAudiencePool.then((rohiAudienceDB) => {
         rohiAudienceDB.query(sql,function(err,result){
             if(err){
                 return res.send({ err });
@@ -171,7 +175,9 @@ router.post('/supprimer_non_disponible', [authJwt.verifyToken],async (req,res) =
             } 
             rohiAudienceDB.release()       
         })
-    })
+    }).catch((err) => {
+        throw err 
+     });
 })
 
 module.exports = router

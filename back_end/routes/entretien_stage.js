@@ -15,7 +15,7 @@ router.post('/add',[authJwt.verifyToken],async(req,res) => {
     const stage = req.body.stage
     const sql = `CALL ajouter_entretien_stage(${stage.id}, ${req.body.id_date_heure_disponible_autorite})`
 
-    rohiAudiencePool.getConnection(function(error, rohiAudienceDB){
+    rohiAudiencePool.then((rohiAudienceDB) => {
         rohiAudienceDB.query(sql, async(error,result) => {
             if(error) {
                 res.send(error)
@@ -37,7 +37,9 @@ router.post('/add',[authJwt.verifyToken],async(req,res) => {
             }
             rohiAudienceDB.release()
         })
-    })
+    }).catch((err) => {
+        throw err 
+     });
 })
 
 
@@ -47,7 +49,7 @@ router.post('/update',[authJwt.verifyToken],async(req,res)=>{
     // console.log(req.body)
     const sql = `CALL modifier_entretien_stage(${req.body.id_date_heure_disponible_autorite},${stage.id}) `
     
-    rohiAudiencePool.getConnection(function(error, rohiAudienceDB){
+    rohiAudiencePool.then((rohiAudienceDB) => {
         rohiAudienceDB.query(sql, async (error,result) => {
             if(error){
                 res.send(error)
@@ -69,7 +71,9 @@ router.post('/update',[authJwt.verifyToken],async(req,res)=>{
             }
             rohiAudienceDB.release()
         })
-    })
+    }).catch((err) => {
+        throw err 
+     });
 })
 
 router.post('/updateCalendar',[authJwt.verifyToken],async(req,res) => {
@@ -80,7 +84,7 @@ router.post('/updateCalendar',[authJwt.verifyToken],async(req,res) => {
     const sql = `CALL modifier_entretien_stage_calendrier(${req.body.id_entretien_stage},${req.body.id_demande_stage},'${req.body.date_debut}','${req.body.date_fin}','${req.body.heure_debut}','${req.body.heure_fin}',${req.body.id_autorite})`
     console.log(sql)
 
-    rohiAudiencePool.getConnection(function(error,rohiAudienceDB){
+    rohiAudiencePool.then((rohiAudienceDB) => {
         rohiAudienceDB.query(sql, async (error,result) => {
             if(error){
                 res.send(error)
@@ -100,7 +104,9 @@ router.post('/updateCalendar',[authJwt.verifyToken],async(req,res) => {
             }
             rohiAudienceDB.release()
         })
-    })
+    }).catch((err) => {
+        throw err 
+     });
 
 
     // db.query(sql, async (error,result) => {
@@ -126,7 +132,7 @@ router.post('/delete',[authJwt.verifyToken],async(req,res)=>{
     const stage = req.body.stage
     const sql = `call supprimer_entretien_stage (${stage.id})`
 
-    rohiAudiencePool.getConnection(function(error, rohiAudienceDB){
+    rohiAudiencePool.then((rohiAudienceDB) => {
         rohiAudienceDB.query(sql,async (error,result)=>{
             if(error){
                 res.send(error)
@@ -147,7 +153,9 @@ router.post('/delete',[authJwt.verifyToken],async(req,res)=>{
             }
             rohiAudienceDB.release()
         })
-    })
+    }).catch((err) => {
+        throw err 
+     });
 
 })
 
