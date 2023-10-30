@@ -43,6 +43,7 @@
             AccueilComponent
         },
 
+
         data() {
             return {
                 menu:[

@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const aut = require('../models/Autorite')
 
 verifyToken = (req, res, next) => {
     let token = req.headers["x-access-token"];
@@ -17,7 +18,15 @@ verifyToken = (req, res, next) => {
         }
         // console.log(decoded)
         req.child_id = decoded.data;
-        next();
+        const isAutorite = aut.isAutorite(data.child_id)
+        if(isAutorite){
+            next()
+        }else{
+            return res.status(401).send({
+                message: "Utilisateur non requis",
+            }); 
+        }
+        // next();
     });
 };
 

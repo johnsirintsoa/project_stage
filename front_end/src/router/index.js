@@ -68,36 +68,50 @@ const router = createRouter({
       path: '/back-office/',
       name: 'back-office',
       component: () => import('../views/back&middle/Home.vue')
-    },
+    }
+    // {
+    //   path: '/back-office/',
+    //   name: 'back-office',
+    //   component: () => import('../views/back&middle/Home.vue'),
+    
+    // }
+    ,
     {
       path: '/back-office/boite-a-doleance',
       name: 'back-office-doleance',
       component: () => import('../views/back&middle/BoiteDoleance.vue')
-    },
+    }
+    ,
     {
       path: '/back-office/demande-stage',
       name: 'back-office-demande-stage',
       component: () => import('../views/back&middle/DemandeStage.vue')
-    },
+    }
+    ,
     {
       path: '/back-office/demande-audience',
       name: 'back-office-demande-audience',
       component: () => import('../views/back&middle/DemandeAudience.vue')
-    },
+    }
+    ,
     {
       path: '/back-office/calendrier-evenementiel',
       name: 'back-office-calendrier-evenementiel',
       component: () => import('../views/back&middle/MesEvenements.vue')
-    },
+    }
+    ,
     {
       path: '/back-office/demande-stage/detail/:id_demande_stage',
       name: 'back-office-detail-demande-stage',
       component: () => import('../views/back&middle/DetailDemandeStage.vue')
-    },
+    }
+    ,
     {
       path: '/back-office/tableau-bord',
       name: 'dashboard',
       component: () => import('../views/back&middle/Dashboard.vue')
+ ,
+
     }
   ],
   linkActiveClass: 'router-view-active-link'
