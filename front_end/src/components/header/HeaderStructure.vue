@@ -179,7 +179,8 @@
           // const ses_admin = JSON.parse(sessionStorage.getItem('structure'))
           if(ses_admin != null){
               // this.autorite = JSON.parse(sessionStorage.getItem('structure'))
-              this.autorite = ses_admin.db
+              // this.autorite = ses_admin.db
+              this.autorite = ses_admin
               this.$emit('structure', this.autorite)
               // setInterval( () => {
               //   window.location.reload()

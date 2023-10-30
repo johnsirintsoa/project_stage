@@ -193,11 +193,11 @@ router.post('/login', async(req,res) =>{
                               allowInsecureKeySizes: true,
                               expiresIn: 86400, // 24 hours
                             });
-                        return res.json({
-                                db: result[0],
-                                accessToken: token
-                            })
-                        // return res.json(result[0])
+                        // return res.json({
+                        //         db: result[0],
+                        //         accessToken: token
+                        //     })
+                        return res.json(result[0])
                     }
                 })
             }
