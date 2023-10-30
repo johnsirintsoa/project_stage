@@ -5,8 +5,8 @@ import vue from '@vitejs/plugin-vue'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  mode: 'production',
-  base: '/ProjectStageJohns/',
+  // mode: 'production',
+  // base: '/audience/',
   // base:'/',
   plugins: [vue()],
   resolve: {

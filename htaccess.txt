@@ -1,0 +1,69 @@
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+  RewriteRule ^index\.html$ - [L]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule . /index.html [L]
+</IfModule>
+
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+  RewriteCond %{ENV:HTTP} !on [NC]
+  RewriteRule ^(.*)$ https://rohi.audience/$1 [R,L]
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteRule . index.html [L]
+  <!-- RewriteEngine On
+  RewriteBase /
+  RewriteRule ^index\.html$ - [L]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule . /index.html [L] -->
+</IfModule>
+
+
+
+vHost Config
+context / {
+  location                /home/rohiAudience.cyberpanel.net/public_html
+  maxConns                100
+
+  addDefaultCharset       off
+}
+
+
+
+.htaccess Garina
+
+### Rewrite Rules Added by CyberPanel Rewrite Rule Generator
+
+RewriteEngine On
+RewriteCond %{HTTPS}  !=on
+RewriteRule ^/?(.*) https://%{SERVER_NAME}/$1 [R,L]
+
+### End CyberPanel Generated Rules.
+
+
+#   Empêche la visualisation de l'arborescence, n'a rien à voir avec le masquage du « index.php ».
+Options -Indexes
+
+#   Active le module de réécriture d'URL.
+RewriteEngine on
+
+#
+#   Fixe les règles de récriture d'URL. Ici, nous utilisons une liste blanche.
+#
+
+#   Toutes les URL qui ne correspondent pas à ces masques sont réécrites.
+RewriteCond $1 !^(index\.html|assets/|robots\.txt|invoices/|uploads/|sogenactif/|candidates/)
+
+#   Toutes les autres URL vont être redirigées vers le fichier index.php.
+RewriteRule ^(.*)$ index.html/$1 [L]
+
+###DRH##
+#RewriteEngine On
+#RewriteCond %{HTTPS} ^on$
+#RewriteRule ^(.*)$ http://example.com/$1 [NC,L,R]
