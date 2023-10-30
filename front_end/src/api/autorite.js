@@ -32,6 +32,8 @@ export default class AutoriteAPI{
         // })
         let data = ''
         const res = await axios.post(url,arg,{}).then((response) =>{
+            localStorage.setItem('autorite',JSON.stringify(response.data))
+
             if(response.data.accessToken){
                 localStorage.setItem('autorite',JSON.stringify(response.data))
             }
