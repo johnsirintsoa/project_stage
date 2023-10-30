@@ -278,6 +278,7 @@ router.post('/place_disponible', async (req,res) =>{
     const sql = `CALL places_disponible(${req.body.id_date_heure_disponible_autorite},${req.body.id_autorite})`
     // console.log(sql)
     // res.json(sql)
+    const newArray = []
     rohiAudiencePool.then((rohiAudienceDB) => {
         rohiAudienceDB.query(sql,function(err,result){
             // console.log(result)
@@ -285,7 +286,17 @@ router.post('/place_disponible', async (req,res) =>{
                 return res.send({ err });
             }
             else{
-                return res.json(result[0] )    
+                result[0].forEach(element => {
+                    newArray.push({
+                        
+                            id_date_heure_disponible_autorite: element.id_date_heure_disponible_autorite,
+                            date_disponible: new Date(`${element.date_disponible}`).toLocaleDateString(),
+                            heure_debut: element.heure_debut,
+                            heure_fin: element.heure_fin
+                    })
+                });
+                // console.log(newArray)
+                return res.json(newArray)    
             }
             rohiAudienceDB.release()
         })

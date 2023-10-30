@@ -483,7 +483,7 @@
                     <div class="form-floating mb-3">
                         <select class="form-select" id="floatingSelect" aria-label="Autorité" required="" v-model="audience.id_date_heure_disponible_autorite" disabled>
                             <option v-if="audience.actual_place" selected disabled>
-                                {{audience.actual_place["date_disponible"]}} {{audience.actual_place["heure_debut"]}} à {{audience.actual_place["heure_fin"]}}
+                                {{audience.actual_place["date_disponible"].split('T')[0]}} {{audience.actual_place["heure_debut"]}} à {{audience.actual_place["heure_fin"]}}
                             </option>
 
                             <option v-for="(item, index) in audience.places_disponible" :key="item.id_date_heure_disponible_autorite" :value="item.id_date_heure_disponible_autorite">
@@ -2364,7 +2364,7 @@
         
         async handleEventClick(event){
 
-          console.log(event.event.extendedProps)
+          // console.log(event.event.extendedProps)
 
           // this.spinnerStatus = 'enabled'
 
@@ -2399,6 +2399,12 @@
               id_date_heure_disponible_autorite: this.audience.id_date_heure_disponible_autorite,
               id_autorite: this.audience.autoriteReceiver.child_id 
             })
+            // const place_formated = {
+            //   date_disponible: this.audience.places_disponible[0]["date_disponible"].split('T')[0],
+            //   heure_debut: this.audience.places_disponible[0]["heure_debut"],
+            //   heure_fin: this.audience.places_disponible[0]["heure_fin"],
+            //   id_date_heure_disponible_autorite: 
+            // }
             this.audience.actual_place = this.audience.places_disponible[0]
           }
 
