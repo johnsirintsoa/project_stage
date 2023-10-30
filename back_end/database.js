@@ -57,6 +57,7 @@ var rohiAudience = mysql.createPool({
 
 rohiAudience.getConnection(function(err, connection) {
   if (err) {
+    if(connection)
     connection.release();
     console.log(' Error getting mysql_pool connection: ' + err);
     throw err;
@@ -78,6 +79,7 @@ var rohi = mysql.createPool({
 
 rohi.getConnection(function(err, connection) {
   if (err) {
+    if(connection)
     connection.release();
     console.log(' Error getting mysql_pool connection: ' + err);
     throw err;
