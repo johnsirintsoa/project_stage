@@ -542,7 +542,7 @@ router.post('/autorite/ajouter',[authJwt.verifyToken],async(req,res)=>{
     console.log(req.body)
     const subject = {
         motif: req.body.motif,
-        date_debut: date_debut_Formated
+        date_debut: date_debut_Formated,
         date_fin: date_fin_Formated,
         heure_debut: req.body.heure_debut,
         heure_fin: req.body.heure_fin
