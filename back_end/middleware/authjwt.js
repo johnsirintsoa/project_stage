@@ -4,6 +4,8 @@ const aut = require('../models/Autorite')
 
 verifyToken = (req, res, next) => {
     let token = req.headers["x-access-token"];
+    // const bearer = token.split(" ")
+    // const bearerToken = bearer[1]
     // console.log(token)
     if (!token) {
         return res.status(403).send({
@@ -17,7 +19,7 @@ verifyToken = (req, res, next) => {
                 message: "Utilisateur non requis",
             });
         }
-        console.log(decoded)
+        // console.log(decoded)
         req.child_id = decoded.data;
         // const isAutorite = aut.isAutorite(decoded.data.child_id)
         // const isAutorite = aut.isAutorite(15523)
