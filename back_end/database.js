@@ -10,7 +10,7 @@ const dbConfigBase = {
   host: process.env.HOST,
   port: process.env.DB_PORT,
   user: process.env.DB_USERNAME,
-  password: process.env.DB_PASSWORD,
+  password: process.env.DB_PASSWORD
     // dateStrings: [
     //   'DATE', 'DATETIME'
     // ],
@@ -65,6 +65,7 @@ const SSHDBConnectionRohi = new Promise((resolve, reject) => {
                   console.log(' Error getting mysql_pool connection: ' + err);
                   throw err;
                 }
+                connection.release();
                 console.log('Database is connected successfully in ',rohi_db);
                 resolve(connection);
               });
@@ -95,6 +96,7 @@ const SSHDBConnectionRohiAudience = new Promise((resolve, reject) => {
                   console.log(' Error getting mysql_pool connection: ' + err);
                   throw err;
                 }
+                connection.release();
                 console.log('Database is connected successfully in ',rohiAudience_db);
                 resolve(connection);
               });
