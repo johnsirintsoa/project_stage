@@ -64,7 +64,7 @@ router.post('/autorite/faire_audience', [authJwt.verifyToken] ,async (req,res) =
 	daa.id_autorite_enfant_sender = ${req.body.id_autorite_sender}
 	and dhda.id_autorite = ${req.body.id_autorite}
 	and (daa.action >= 0 and daa.action <=2)
-	and dhd.date_disponible >= (select `FIRST_DATE_OF_MONTH`(curdate()))
+	and dhd.date_disponible >= (select FIRST_DATE_OF_MONTH(curdate()))
 	group by daadhd.id_dm_aud_autorite
 	
 	UNION
