@@ -8,6 +8,8 @@ const rohiAudiencePool = require('../database').rohiAudience
 const mailing = require('../Controllers/MailingController')
 const Function = require('../func/function')
 
+const moment = require('../func/date.config')
+
 const notification_mailing = require('../Controllers/NotificationController')
 
 // const rohi = require('../database').rohi
@@ -15,8 +17,8 @@ const notification_mailing = require('../Controllers/NotificationController')
 require('dotenv/config')
 
 router.post('/agent/ajouter',async(req,res)=>{
-    const date_debut_Formated = req.body.date_debut.split('T')[0]
-    const date_fin_Formated = req.body.date_fin.split('T')[0]
+    const date_debut_Formated = moment.formatDate(req.body.date_debut)
+    const date_fin_Formated = moment.formatDate(req.body.date_fin)
     const nomFormated = req.body.nom.toUpperCase()
     const prenomFormated = Function.upSetFirstLetter(req.body.prenom)
 
@@ -62,8 +64,8 @@ router.post('/agent/ajouter',async(req,res)=>{
 })
 
 router.post('/agent/modifier',async(req,res)=>{
-    const date_debut_Formated = req.body.date_debut.split('T')[0]
-    const date_fin_Formated = req.body.date_fin.split('T')[0]
+    const date_debut_Formated = moment.formatDate(req.body.date_debut)
+    const date_fin_Formated = moment.formatDate(req.body.date_fin)
     const nomFormated = req.body.nom.toUpperCase()
     const prenomFormated = Function.upSetFirstLetter(req.body.prenom)
     const sql = `call modifier_audience_agent ('${req.body.numero_telephone }','${req.body.email }','${req.body.motif}',${req.body.id_audience},${req.body.id_date_heure_disponible_autorite},${req.body.id_dm_aud_public_heure_dispo})`

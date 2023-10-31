@@ -9,10 +9,11 @@ const rohiAudiencePool = require('../database').rohiAudience
 const mailing = require('../Controllers/MailingController')
 const { authJwt } = require("../middleware");
 
+const moment = require('../func/date.config')
 
 router.post('/valider', [authJwt.verifyToken],async (req,res) =>{
-    const date_debut_Formated = req.body.date_debut.split('T')[0]
-    const date_fin_Formated = req.body.date_fin.split('T')[0]
+    const date_debut_Formated = moment.formatDate(req.body.date_debut)
+    const date_fin_Formated = moment.formatDate(req.body.date_fin)
     const sql = `CALL valider_evenement(
         ${req.body.id_date_heure_disponible_autorite},
         ${req.body.id_evenement},
@@ -64,8 +65,8 @@ router.post('/valider', [authJwt.verifyToken],async (req,res) =>{
 })
 
 router.post('/revalider', [authJwt.verifyToken],async (req,res) =>{
-    const date_debut_Formated = req.body.date_debut.split('T')[0]
-    const date_fin_Formated = req.body.date_fin.split('T')[0]
+    const date_debut_Formated = moment.formatDate(req.body.date_debut)
+    const date_fin_Formated = moment.formatDate(req.body.date_fin)
     const sql = `CALL valider_evenement(
         ${req.body.id_date_heure_disponible_autorite},
         ${req.body.id_evenement},

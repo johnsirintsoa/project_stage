@@ -10,6 +10,8 @@ const mailing = require('../Controllers/MailingController')
 
 const { authJwt } = require("../middleware");
 
+const moment = require('../func/date.config')
+
 router.post('/add',[authJwt.verifyToken],async(req,res) => {
     
     const autorite = req.body.autorite
@@ -78,8 +80,8 @@ router.post('/update',[authJwt.verifyToken],async(req,res)=>{
 })
 
 router.post('/updateCalendar',[authJwt.verifyToken],async(req,res) => {
-    const date_debut_Formated = req.body.date_debut.split('T')[0]
-    const date_fin_Formated = req.body.date_fin.split('T')[0]
+    const date_debut_Formated = moment.formatDate(req.body.date_debut)
+    const date_fin_Formated = moment.formatDate(req.body.date_fin)
     const autorite = req.body.autorite
     const stagiaire = req.body.stagiaire
     // IN id_entretien_stage int,IN id_demande_stage INT,IN date_debut date,IN date_fin date,IN heure_debut time,in heure_fin time, IN id_autorite INT

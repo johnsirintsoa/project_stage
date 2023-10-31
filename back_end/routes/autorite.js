@@ -9,6 +9,8 @@ const rohiAudiencePool = require('../database').rohiAudience
 // const db = require('../database').conn
 
 // const db_name = require('../database').db_name
+const moment = require('../func/date.config')
+
 const mailing = require('../Controllers/MailingController')
 
 require('dotenv').config({path: './.env'})
@@ -286,17 +288,13 @@ router.post('/place_disponible', async (req,res) =>{
                 return res.send({ err });
             }
             else{
-                result[0].forEach(element => {
-                    newArray.push({
-                        
-                            id_date_heure_disponible_autorite: element.id_date_heure_disponible_autorite,
-                            date_disponible: new Date(`${element.date_disponible}`).toLocaleDateString(),
-                            heure_debut: element.heure_debut,
-                            heure_fin: element.heure_fin
-                    })
-                });
+                let resArray = result[0];
+                resArray.map(element=>{
+                    element.date_disponible = moment.formatDate(element.date_disponible);
+                    return element;
+                })
                 // console.log(newArray)
-                return res.json(newArray)    
+                return res.json(resArray)    
             }
             rohiAudienceDB.release()
         })

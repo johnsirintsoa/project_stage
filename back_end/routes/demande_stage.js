@@ -16,6 +16,7 @@ const path = require('path')
 const fs = require('fs')
 const { authJwt } = require("../middleware");
 
+const moment = require('../func/date.config')
 
 const notification_mailing = require('../Controllers/NotificationController')
 
@@ -33,8 +34,8 @@ require('dotenv/config')
 const storage = multer.diskStorage({
     destination: function(req,file,cb){
         // cb(null, baseURL+"/uploads/demande_stage");
-        // cb(null, "./uploads/demande_stage");
-        cb(null, "./home/rohiAudience.cyberpanel.net/demande_stage_files");
+        cb(null, "./uploads/demande_stage");
+        // cb(null, "./home/rohiAudience.cyberpanel.net/demande_stage_files");
 
 
     },
@@ -134,8 +135,8 @@ router.post('/liste',async(req,res)=>{
 })
 
 router.post('/filtre',[authJwt.verifyToken], async(req,res)=>{
-    const date1_Formated = req.body.date1.split('T')[0]
-    const date2_Formated = req.body.date2.split('T')[0]
+    const date1_Formated = moment.formatDate(req.body.date1)
+    const date2_Formated = moment.formatDate(req.body.date2)
 
     const sql = `CALL filtre_stage ('${date1_Formated}','${date2_Formated}','${req.body.nom}','${req.body.etablissement}',${req.body.id_domaine},${req.body.id_autorite})`
     // console.log(req.body)

@@ -11,6 +11,8 @@ const Function = require('../func/function')
 
 const notification_mailing = require('../Controllers/NotificationController')
 
+const moment = require('../func/date.config')
+
 const { authJwt } = require("../middleware");
 
 require('dotenv/config')
@@ -25,6 +27,7 @@ router.post('/public/heure_disponible_autorite/jour',async(req,res) =>{
                 return res.send({ err });
             }
             else{
+                console.log(result[0])
                 return res.json(result[0])    
             }
             rohiAudienceDB.release()
@@ -36,10 +39,12 @@ router.post('/public/heure_disponible_autorite/jour',async(req,res) =>{
 })
 
 // Liste audiences par jour
-router.post('/public/all', async(req,res) =>{
+router.post('/public/all', async(req,res) =>{   
     // const date_du_jour = new Date().getFullYear()+'-'+new Date().getMonth()+'-'+new Date().getDate();
     const sql =`call liste_disponible_public('${req.body.session_navigateur}',${req.body.id_autorite})`
     // console.log(sql)
+    
+    // console.log(moment.formatDate("2013-11-18T11:55:00-05"))
     
     rohiAudiencePool.then(( rohiAudienceDB) => {
         rohiAudienceDB.query(sql,function(err,result){
@@ -47,6 +52,7 @@ router.post('/public/all', async(req,res) =>{
                 return res.send({ err });
             }
             else{
+                console.log(result[0][2])
                 return res.json(result[0])    
             }
             rohiAudienceDB.release()
@@ -96,8 +102,11 @@ router.post('/public/add',async(req,res)=>{
 router.post('/public/ajouter',async(req,res)=>{
     const nomFormated = req.body.nom.toUpperCase()
     const prenomFormated = Function.upSetFirstLetter(req.body.prenom)
-    const date_debut_Formated = req.body.date_debut.split('T')[0]
-    const date_fin_Formated = req.body.date_fin.split('T')[0]
+    const date_debut_Formated = moment.formatDate(req.body.date_debut)
+    // console.log(moment.format())
+    // console.log(date_debut_Formated)
+    // console.new Date(info.date_debut).toJSON().slice(0,10)
+    const date_fin_Formated = moment.formatDate(req.body.date_fin)
 
     // const sql = `CALL ajouter_audience_public('${req.body.session_navigateur}','${nomFormated}','${prenomFormated}','${req.body.cin}','${req.body.numero_telephone}','${req.body.email}',${req.body.id_date_heure_disponible_autorite},'${req.body.motif}','${req.body.date_debut}','${date_fin_Formated}','${req.body.heure_debut}','${req.body.heure_fin}')`
     const sql = `CALL ajouter_audience_public('${req.body.session_navigateur}','${nomFormated}','${prenomFormated}','${req.body.cin}','${req.body.numero_telephone}','${req.body.email}',${req.body.id_date_heure_disponible_autorite},'${req.body.motif}','${date_debut_Formated}','${date_fin_Formated}','${req.body.heure_debut}','${req.body.heure_fin}')`
@@ -119,6 +128,7 @@ router.post('/public/ajouter',async(req,res)=>{
                     heure_debut: req.body.heure_debut,
                     heure_fin: req.body.heure_fin
                 }
+                // console.log(envoyeur)
                 const receiver = {
                     email: req.body.autoriteReceiver.email,
                     intitule_code: req.body.autoriteReceiver.sigle,
@@ -161,8 +171,8 @@ router.post('/public/supprimer/:id',async(req,res)=>{
 router.post('/public/modifier',async(req,res)=>{
     const nomFormated = req.body.nom.toUpperCase()
     const prenomFormated = Function.upSetFirstLetter(req.body.prenom)
-    const date_debut_Formated = req.body.date_debut.split('T')[0]
-    const date_fin_Formated = req.body.date_fin.split('T')[0]
+    const date_debut_Formated = moment.formatDate(req.body.date_debut)
+    const date_fin_Formated = moment.formatDate(req.body.date_fin)
     const sql = `call modifier_audience_public ('${nomFormated }','${prenomFormated}','${req.body.cin }','${req.body.numero_telephone }','${req.body.email }','${req.body.motif}',${req.body.id_audience},${req.body.id_date_heure_disponible_autorite},${req.body.id_dm_aud_public_heure_dispo})`
     // console.log(sql)
     // console.log(req.body)    
@@ -202,8 +212,8 @@ router.post('/public/modifier',async(req,res)=>{
 })
 
 router.post('/public/update',async(req,res)=>{
-    const date_debut_Formated = req.body.date_debut.split('T')[0]
-    const date_fin_Formated = req.body.date_fin.split('T')[0]
+    const date_debut_Formated = moment.formatDate(req.body.date_debut)
+    const date_fin_Formated = moment.formatDate(req.body.date_fin)
     // const sql = `CALL update_audience_public ('${req.body.session_navigateur}','${req.body.nom }','${req.body.prenom }','${req.body.cin }','${req.body.numero_telephone }','${req.body.email }','${req.body.date_event_debut}','${req.body.date_event_fin}','${req.body.time_event_debut}','${req.body.time_event_fin}','${req.body.motif}',${req.body.id_autorite_enfant},${req.body.id})`
     const sql = `CALL update_audience_public ('${req.body.session_navigateur}','${req.body.nom }','${req.body.prenom }','${req.body.cin }','${req.body.numero_telephone }','${req.body.email }','${date_debut_Formated}','${date_fin_Formated}','${req.body.time_event_debut}','${req.body.time_event_fin}','${req.body.motif}',${req.body.id_autorite_enfant},${req.body.id})`
     
@@ -252,8 +262,8 @@ router.post('/public/update',async(req,res)=>{
 // })
 
 router.post('/public/valider',[authJwt.verifyToken],async(req,res)=>{
-    const date_debut_Formated = req.body.date_debut.split('T')[0]
-    const date_fin_Formated = req.body.date_fin.split('T')[0]
+    const date_debut_Formated = moment.formatDate(req.body.date_debut)
+    const date_fin_Formated = moment.formatDate(req.body.date_fin)
     const sql = ` CALL valider_audience_public (${req.body.id_dm_aud_public_date_heure_dispo},${req.body.id_audience}, '${req.body.date_debut}','${date_fin_Formated}','${req.body.heure_debut}','${req.body.heure_fin}',${req.body.id_autorite})`
 
     const entretien_date_time = String(req.body.date_debut.split('T')).concat('T',req.body.heure_debut)
@@ -306,8 +316,8 @@ router.post('/public/valider',[authJwt.verifyToken],async(req,res)=>{
 // })
 
 router.post('/public/revalider',[authJwt.verifyToken],async(req,res)=>{
-    const date_debut_Formated = req.body.date_debut.split('T')[0]
-    const date_fin_Formated = req.body.date_fin.split('T')[0]
+    const date_debut_Formated = moment.formatDate(req.body.date_debut)
+    const date_fin_Formated = moment.formatDate(req.body.date_fin)
 
     const entretien_date_time = String(req.body.date_debut).concat('T',req.body.heure_debut)
     const response = await mailing.audience_public_revalide(req.body.autorite,req.body.envoyeur,entretien_date_time)
@@ -362,8 +372,8 @@ router.post('/public/revalider',[authJwt.verifyToken],async(req,res)=>{
 // })
 
 router.post('/public/reporter/now',[authJwt.verifyToken],async(req,res)=>{
-    const date_debut_Formated = req.body.date_debut.split('T')[0]
-    const date_fin_Formated = req.body.date_fin.split('T')[0]
+    const date_debut_Formated = moment.formatDate(req.body.date_debut)
+    const date_fin_Formated = moment.formatDate(req.body.date_fin)
 
     const entretien_date_time = String(req.body.date_debut).concat('T',req.body.heure_debut)
     const response = await mailing.audience_public_reporte(req.body.autorite,req.body.envoyeur,entretien_date_time)
@@ -393,8 +403,8 @@ router.post('/public/reporter/now',[authJwt.verifyToken],async(req,res)=>{
 
 router.post('/public/reporter/later',[authJwt.verifyToken],async(req,res)=>{
 
-    const date_debut_Formated = req.body.date_debut.split('T')[0]
-    const date_fin_Formated = req.body.date_fin.split('T')[0]
+    const date_debut_Formated = moment.formatDate(req.body.date_debut)
+    const date_fin_Formated = moment.formatDate(req.body.date_fin)
     
     const autorite = req.body.autorite
     const id_autorite = autorite.id_autorite

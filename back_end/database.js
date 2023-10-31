@@ -11,6 +11,10 @@ const dbConfigBase = {
   port: process.env.DB_PORT,
   user: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
+    // dateStrings: [
+    //   'DATE', 'DATETIME'
+    // ],
+    // timezone: '+00:00',
 }
 
 const rohiAudience_db = process.env.DB_APP

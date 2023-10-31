@@ -9,6 +9,8 @@ const rohiAudiencePool = require('../database').rohiAudience
 const mailing = require('../Controllers/MailingController')
 const notification_mailing = require('../Controllers/NotificationController')
 
+const moment =require('../func/date.config')
+
 const { authJwt } = require('../middleware');
 
 require('dotenv/config')
@@ -532,8 +534,8 @@ router.post('/autorite/faire_audience', [authJwt.verifyToken] ,async (req,res) =
 
 
 router.post('/autorite/ajouter',[authJwt.verifyToken],async(req,res)=>{
-    const date_debut_Formated = req.body.date_debut.split('T')[0]
-    const date_fin_Formated = req.body.date_fin.split('T')[0]
+    const date_debut_Formated = moment.formatDate(req.body.date_debut)
+    const date_fin_Formated = moment.formatDate(req.body.date_fin)
     // const sql = `CALL si_disponible_autorite('${req.body.date_event_debut}','${req.body.date_event_fin}','${req.body.time_event_debut}','${req.body.time_event_fin}',${req.body.id_autorite_enfant},'${req.body.motif}')`
     // const sql = `CALL ajouter_audience_autorite (${req.body.id_autorite_sender},${req.body.id_autorite_receiver},${req.body.id_date_heure_disponible_autorite},'${req.body.motif}','${req.body.date_debut}','${req.body.date_fin}','${req.body.heure_debut}','${req.body.heure_fin}')`
     const sql = `CALL ajouter_audience_autorite (${req.body.id_autorite_sender},${req.body.id_autorite_receiver},${req.body.id_date_heure_disponible_autorite},'${req.body.motif}','${date_debut_Formated}','${date_fin_Formated}','${req.body.heure_debut}','${req.body.heure_fin}','${req.body.email}','${req.body.numero_telephone}','${req.body.sigle}','${req.body.child_libelle}')`
@@ -569,8 +571,8 @@ router.post('/autorite/ajouter',[authJwt.verifyToken],async(req,res)=>{
 
 router.post('/autorite/modifier',[authJwt.verifyToken],async(req,res)=>{
     // console.log(req.body)
-    const date_debut_Formated = req.body.date_debut.split('T')[0]
-    const date_fin_Formated = req.body.date_fin.split('T')[0]
+    const date_debut_Formated = moment.formatDate(req.body.date_debut)
+    const date_fin_Formated = moment.formatDate(req.body.date_fin)
 
     rohiAudiencePool.then((rohiAudienceDB) => {
         rohiAudienceDB.query(`CALL modifier_audience_autorite (${req.body.id_date_heure_disponible_autorite} ,${req.body.id_dm_aud_autorite_date_heure_dispo},'${req.body.motif}','${req.body.email}','${req.body.numero_telephone}',${req.body.id_audience}) `, async (error,result) => {
@@ -653,8 +655,8 @@ router.post('/autorite/supprimer',[authJwt.verifyToken],async(req,res)=>{
 // })
 
 router.post('/autorite/valider',[authJwt.verifyToken],async(req,res)=>{
-    const date_debut_Formated = req.body.date_debut.split('T')[0]
-    const date_fin_Formated = req.body.date_fin.split('T')[0]
+    const date_debut_Formated = moment.formatDate(req.body.date_debut)
+    const date_fin_Formated = moment.formatDate(req.body.date_fin)
     const autorite = req.body.autorite
     const envoyeur = req.body.envoyeur
     
@@ -687,8 +689,8 @@ router.post('/autorite/valider',[authJwt.verifyToken],async(req,res)=>{
 })
 
 router.post('/autorite/revalider',[authJwt.verifyToken],async(req,res)=>{
-    const date_debut_Formated = req.body.date_debut.split('T')[0]
-    const date_fin_Formated = req.body.date_fin.split('T')[0]
+    const date_debut_Formated = moment.formatDate(req.body.date_debut)
+    const date_fin_Formated = moment.formatDate(req.body.date_fin)
     const autorite = req.body.autorite
     const envoyeur = req.body.envoyeur
 
@@ -757,8 +759,8 @@ router.post('/autorite/revalider',[authJwt.verifyToken],async(req,res)=>{
 // })
 
 router.post('/autorite/reporter/now',[authJwt.verifyToken],async(req,res)=>{  
-    const date_debut_Formated = req.body.date_debut.split('T')[0]
-    const date_fin_Formated = req.body.date_fin.split('T')[0]
+    const date_debut_Formated = moment.formatDate(req.body.date_debut)
+    const date_fin_Formated = moment.formatDate(req.body.date_fin)
     const autorite = req.body.autorite
     const envoyeur = req.body.envoyeur
     const sql = `CALL reporter_audience_autorite_maintenant (${req.body.id_dm_aud_aut_date_heure_dispo},${req.body.id_audience}, '${date_debut_Formated}','${date_fin_Formated}','${req.body.heure_debut}','${req.body.heure_fin}',${req.body.id_autorite})`
@@ -785,8 +787,8 @@ router.post('/autorite/reporter/now',[authJwt.verifyToken],async(req,res)=>{
 })
 
 router.post('/autorite/reporter/click',[authJwt.verifyToken],async(req,res)=>{
-    const date_debut_Formated = req.body.date_debut.split('T')[0]
-    const date_fin_Formated = req.body.date_fin.split('T')[0]
+    const date_debut_Formated = moment.formatDate(req.body.date_debut)
+    const date_fin_Formated = moment.formatDate(req.body.date_fin)
     const autorite = req.body.autorite
     const envoyeur = req.body.envoyeur
     
@@ -812,8 +814,8 @@ router.post('/autorite/reporter/click',[authJwt.verifyToken],async(req,res)=>{
 })
 
 router.post('/autorite/reporter/later',[authJwt.verifyToken],async(req,res)=>{
-    const date_debut_Formated = req.body.date_debut.split('T')[0]
-    const date_fin_Formated = req.body.date_fin.split('T')[0]
+    const date_debut_Formated = moment.formatDate(req.body.date_debut)
+    const date_fin_Formated = moment.formatDate(req.body.date_fin)
     const autorite = req.body.autorite
     const evenement = req.body.evenement
     
