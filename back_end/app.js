@@ -27,7 +27,7 @@ const evenement_route = require('./routes/evenement')
 
 
 app.use(cors({
-    Origin: ['http://127.0.0.1:5173/','http://192.168.100.160/','https://rohi.cloud/'],
+    Origin: ['http://127.0.0.1:5173/','http://192.168.100.160/','https://rohi.cloud/audience/'],
     methods: ['GET','POST','DELETE','UPDATE','PUT','PATCH'],
     credentials: true
 }))
@@ -84,4 +84,9 @@ app.use('/api/chart',chart_route)
 
 // port listener
 // Hello world
-app.listen(3000)
+
+app.get('/', (req, res) => res.send('Hello World!'))
+
+app.listen(3000, () => console.log(`Example app listening on port !`))
+
+// app.listen(3000)
