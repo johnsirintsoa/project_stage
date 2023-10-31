@@ -85,8 +85,8 @@ app.use('/api/chart',chart_route)
 // port listener
 // Hello world
 
-app.get('/', (req, res) => res.send('Hello World!'))
+// app.get('/', (req, res) => res.send('Hello World!'))
 
-app.listen(3000, () => console.log(`Example app listening on port !`))
+// app.listen(3000, () => console.log(`Example app listening on port !`))
 
-// app.listen(3000)
+app.listen(3000)
