@@ -127,7 +127,8 @@ router.post('/public/all', async(req,res) =>{
         LEFT JOIN entretien_demande_stage eds on dhda.id = eds.id_date_heure_disponible_autorite 
         WHERE 
         dhda.id_autorite = ${req.body.id_autorite}  
-        and UNIX_TIMESTAMP(CONCAT(dhd.date_disponible,' ',dhd.heure_debut)) BETWEEN UNIX_TIMESTAMP('${moment.firstAndLastOfDate().date1}') and UNIX_TIMESTAMP('${moment.firstAndLastOfDate().date2}')
+        and (dhd.date_disponible  BETWEEN '${moment.firstAndLastOfDate().date1}' and '${moment.firstAndLastOfDate().date2}' and dhd.heure_debut >= '${moment.firstAndLastOfDate().currentTime}')
+        or (dhd.date_disponible  BETWEEN '${moment.firstAndLastOfDate().date1}' and '${moment.firstAndLastOfDate().date2}' and dhd.heure_fin >= '${moment.firstAndLastOfDate().currentTime}')
         and eds.id is null 
         and daadhd.id is null 
         and dapdhd.id is null

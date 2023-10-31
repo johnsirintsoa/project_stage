@@ -7,13 +7,17 @@ const formatDate = (arg) => {
 
 const firstAndLastOfDate = () =>{
     // console.log("current month first date");
-    const currentFirstdate = moment.utc(new Date()).tz("Indian/Antananarivo").format().replace('T',' ').split('+')[0];
-    const firstDateSecondMonth = moment(currentFirstdate).subtract(-2, 'months').format().replace('T',' ').split('+')[0];
+    const currentFirstdate = moment.utc(moment()).tz("Indian/Antananarivo").format("YYYY-MM-DD");
+    const firstDateSecondMonth = moment(currentFirstdate).subtract(-2, 'months').format("YYYY-MM-DD")
+
+    const currentTime = moment("2023-11-01 12:15:00").tz("Indian/Antananarivo").format("HH:mm:ss")
     // console.log(currentFirstdate)
     // console.log(firstDateSecondMonth)
+    // console.log(currentTime)
     return {
         date1: currentFirstdate,
-        date2: firstDateSecondMonth
+        date2: firstDateSecondMonth,
+        currentTime
     }
     // const currentFirstdate = moment.tz(new Date(),"Indian/Antananarivo").format('YYYY-MM-DD HH:MM:SS');
     // const firstDateSecondMonth = moment(currentFirstdate).subtract(-2, 'months').format('YYYY-MM-DD HH:MM:SS');
