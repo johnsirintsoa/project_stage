@@ -28,6 +28,7 @@
         "request": "^2.79.0",
         "sha1": "^1.1.1",
         "ssh2": "^1.14.0",
+        "uuid": "^9.0.1",
         "xmlhttprequest": "^1.8.0"
     },
     "keywords": [
