@@ -101,7 +101,7 @@ router.post('/autorite/faire_audience', [authJwt.verifyToken] ,async (req,res) =
 	LEFT JOIN entretien_demande_stage eds on dhda.id = eds.id_date_heure_disponible_autorite 
 	WHERE 
 	dhda.id_autorite = ${req.body.id_autorite}
-	and timestamp(CONCAT(dhd.date_disponible,' ',dhd.heure_debut)) >= (select CURRENT_TIMESTAMP())
+    and UNIX_TIMESTAMP(CONCAT(dhd.date_disponible,' ',dhd.heure_debut)) BETWEEN UNIX_TIMESTAMP('${moment.firstAndLastOfDate().date1}') and UNIX_TIMESTAMP('${moment.firstAndLastOfDate().date2}')
 	and eds.id is null 
 	and daadhd.id is null 
 	and dapdhd.id is null

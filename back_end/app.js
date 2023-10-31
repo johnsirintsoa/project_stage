@@ -25,6 +25,9 @@ const nonDispo = require('./routes/NonDispo')
 const evenement_route = require('./routes/evenement')
 // const token_route = require('./routes/token')
 
+const moment = require('./func/date.config')
+
+moment.firstAndLastOfDate()
 
 app.use(cors({
     Origin: ['http://127.0.0.1:5173/','http://192.168.100.160/','https://rohi.cloud'],

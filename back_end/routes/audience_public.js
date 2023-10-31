@@ -126,22 +126,22 @@ router.post('/public/all', async(req,res) =>{
         LEFT JOIN demande_audience_public dap on dap.id = dapdhd.id_aud_public
         LEFT JOIN entretien_demande_stage eds on dhda.id = eds.id_date_heure_disponible_autorite 
         WHERE 
-        dhda.id_autorite = ${req.body.id_autorite}
-        and (timestamp(CONCAT(dhd.date_disponible,' ',dhd.heure_debut)) >= (select CURRENT_TIMESTAMP()) 
-        or timestamp(CONCAT(dhd.date_disponible,' ',dhd.heure_fin)) >= (select CURRENT_TIMESTAMP()))
+        dhda.id_autorite = ${req.body.id_autorite}  
+        and UNIX_TIMESTAMP(CONCAT(dhd.date_disponible,' ',dhd.heure_debut)) BETWEEN UNIX_TIMESTAMP('${moment.firstAndLastOfDate().date1}') and UNIX_TIMESTAMP('${moment.firstAndLastOfDate().date2}')
         and eds.id is null 
         and daadhd.id is null 
         and dapdhd.id is null
         and pd.id is NULL)`
 
+        // console.log(sql)
     rohiAudiencePool.then(( rohiAudienceDB) => {
         rohiAudienceDB.query(sql,function(err,result){
             if(err){
                 return res.send({ err });
             }
             else{
-                console.log(result[0][2])
-                return res.json(result[0])    
+                // console.log(result[0][2])
+                return res.json(result)    
             }
             rohiAudienceDB.release()
         })
