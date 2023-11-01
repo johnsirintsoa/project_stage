@@ -1899,7 +1899,7 @@ BEGIN
 	WHERE 
 	dhda.id_autorite = @id_autorite
 	and (timestamp(CONCAT(dhd.date_disponible,' ',dhd.heure_debut)) >= (select CURRENT_TIMESTAMP()) 
-	or timestamp(CONCAT(dhd.date_disponible,' ',dhd.heure_fin)) >= (select CURRENT_TIMESTAMP()))
+	or timestamp(CONCAT(dhd.date_disponible,' ',dhd.heure_fin)) >= (select CURRENT_TIMESTAMP())
 	and eds.id is null 
 	and daadhd.id is null 
 	and dapdhd.id is null
