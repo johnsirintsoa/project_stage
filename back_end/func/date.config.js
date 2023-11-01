@@ -10,7 +10,7 @@ const firstAndLastOfDate = () =>{
     const currentFirstdate = moment.utc(moment()).tz("Indian/Antananarivo").format("YYYY-MM-DD");
     const firstDateSecondMonth = moment(currentFirstdate).subtract(-2, 'months').format("YYYY-MM-DD")
 
-    const currentTime = moment("2023-11-01 12:15:00").tz("Indian/Antananarivo").format("HH:mm:ss")
+    const currentTime = moment().tz("Indian/Antananarivo").format("HH:mm:ss")
     // console.log(currentFirstdate)
     // console.log(firstDateSecondMonth)
     // console.log(currentTime)

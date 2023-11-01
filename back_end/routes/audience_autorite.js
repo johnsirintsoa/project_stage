@@ -17,96 +17,9 @@ require('dotenv/config')
 
 
 router.post('/autorite/faire_audience', [authJwt.verifyToken] ,async (req,res) =>{
-    // const sql = `CALL liste_disponible_autorite(${req.body.id_autorite_sender},${req.body.id_autorite})`
+    const sql = `CALL liste_disponible_autorite(${req.body.id_autorite_sender},${req.body.id_autorite})`
     // console.log(sql)
 
-    const sql = `	SELECT 
-	dhd.id as id_date_heure_disponible,
-	dhda.id as id_date_heure_disponible_autorite,
-	CONCAT(daadhd.date_debut,'T', daadhd.heure_debut) as start, 
-	CONCAT(daadhd.date_fin,'T', daadhd.heure_fin) as end, 
-	dhd.heure_debut as hd,
-	dhd.heure_fin as hf,
-	daa.id as id,
-	daadhd.id as id_dm_aud_autorite_date_heure_dispo,
-	dhd.date_disponible,
-	daadhd.heure_debut,
-	daadhd.heure_fin,
-	daa.motif as motif,
-	daa.motif as title,
-	daa.email as email,
-	daa.numero_telephone,
-	daa.sigle as sigle,
-	daa.child_libelle as child_libelle,
-	CASE 
-	    WHEN daa.action = 0 THEN 'Non validé' 
-	    WHEN daa.action = 1 THEN 'Validé' 
-	    WHEN daa.action = 2 THEN 'Reporté' 
-	    ELSE 'Aucune' 
-	END as status_audience,
-	CASE 
-	    WHEN daa.id_autorite_enfant_sender = ${req.body.id_autorite_sender} and daa.action = 0 THEN "#FF0018" 
-	    WHEN daa.id_autorite_enfant_sender = ${req.body.id_autorite_sender} and daa.action = 1 THEN "#407DFF" 
-		WHEN daa.id_autorite_enfant_sender = ${req.body.id_autorite_sender} and daa.action = 2 THEN "#000000"
-	END as color,
-	CASE 
-	    WHEN daa.id_autorite_enfant_sender = ${req.body.id_autorite_sender} and daa.action = 0 THEN "#FF0018" 
-	    WHEN daa.id_autorite_enfant_sender = ${req.body.id_autorite_sender} and daa.action = 1 THEN "#407DFF"
-		WHEN daa.id_autorite_enfant_sender = ${req.body.id_autorite_sender} and daa.action = 2 THEN "#000000" 
-	END as color_status,
-	false editable
-	FROM
-	rohiAudience_johns.dm_aud_autorite_date_heure_dispo daadhd
-	JOIN demande_audience_autorite daa on daadhd.id_dm_aud_autorite = daa.id
-	JOIN date_heure_disponible_autorite dhda on daadhd.id_date_heure_disponible_autorite = dhda.id
-	JOIN date_heure_disponible dhd on dhda.id_date_heure_disponible = dhd.id
-	WHERE 
-	daa.id_autorite_enfant_sender = ${req.body.id_autorite_sender}
-	and dhda.id_autorite = ${req.body.id_autorite}
-	and (daa.action >= 0 and daa.action <=2)
-	and dhd.date_disponible >= (select FIRST_DATE_OF_MONTH(curdate()))
-	group by daadhd.id_dm_aud_autorite
-	
-	UNION
-	
-	(SELECT
-	dhd.id as id_date_heure_disponible,
-	dhda.id as id_date_heure_disponible_autorite,
-	CONCAT(dhd.date_disponible,'T', dhd.heure_debut) as start, 
-	CONCAT(dhd.date_disponible,'T', dhd.heure_fin) as end,
-	dhd.heure_debut as hd,
-	dhd.heure_fin as hf,
-	'' id, 
-	daadhd.id as id_dm_aud_autorite_date_heure_dispo,
-	dhd.date_disponible,
-	dapdhd.heure_debut, 
-	dapdhd.heure_fin, 
-	'' as motif,
-	'Disponible' as title,
-	'' email,
-	'' numero_telephone,
-	'' sigle,
-	'' child_libelle,
-	'' status_audience, 
-	'#0AA913' color, 
-	'' color_status, 
-	false editable  
-	FROM date_heure_disponible_autorite dhda
-	JOIN date_heure_disponible dhd on dhda.id_date_heure_disponible = dhd.id 
-	LEFT JOIN pas_disponible pd on dhda.id = pd.id_date_heure_disponible_autorite
-	LEFT JOIN dm_aud_autorite_date_heure_dispo daadhd on dhda.id = daadhd.id_date_heure_disponible_autorite
-	LEFT JOIN demande_audience_autorite daa on daa.id = daadhd.id_dm_aud_autorite
-	LEFT JOIN dm_aud_public_date_heure_dispo dapdhd on dhda.id = dapdhd.id_date_heure_disponible_autorite 
-	LEFT JOIN demande_audience_public dap on dap.id = dapdhd.id_aud_public
-	LEFT JOIN entretien_demande_stage eds on dhda.id = eds.id_date_heure_disponible_autorite 
-	WHERE 
-	dhda.id_autorite = ${req.body.id_autorite}
-    and UNIX_TIMESTAMP(CONCAT(dhd.date_disponible,' ',dhd.heure_debut)) BETWEEN UNIX_TIMESTAMP('${moment.firstAndLastOfDate().date1}') and UNIX_TIMESTAMP('${moment.firstAndLastOfDate().date2}')
-	and eds.id is null 
-	and daadhd.id is null 
-	and dapdhd.id is null
-	and pd.id is NULL
-	);`
 
     rohiAudiencePool.then((rohiAudienceDB) => {
         rohiAudienceDB.query(sql,function(err,result){
