@@ -52,7 +52,7 @@ router.post('/public/all', async(req,res) =>{
             }
             else{
                 // console.log(result[0][2])
-                return res.json(result)    
+                return res.json(result[0])    
             }
             rohiAudienceDB.release()
         })
