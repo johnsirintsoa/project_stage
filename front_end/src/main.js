@@ -14,7 +14,7 @@ import FUNC from './func/function'
 
 let app = null
 
-const duree_expiration = 2
+const duree_expiration = 0
 const date_expiration = new Date(new Date().getTime() + (60000 * duree_expiration))
 console.log("Date d'expiration "+date_expiration)
 

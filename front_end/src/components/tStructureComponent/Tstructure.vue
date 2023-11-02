@@ -1,9 +1,11 @@
 <template>
 
+    
+
     <div class="col-md-12">
       <div class="form-floating mb-3">
         <input type="text" class="form-control" id="floatingName" placeholder="Titre" @input="setDoleanceAutorite(autorite)" v-model="autorite"  required>
-        <!-- <input type="text" class="form-control" id="floatingName" placeholder="Titre" @input="setDoleanceAutorite(autorite)" v-model="autorite"  required> -->
+        
         <label for="floatingSelect">Autorité</label>
       </div>
     </div>              
@@ -13,9 +15,23 @@
       :style="{ marginTop: marginTop + 'px' }"
     >
 
-    
-    <!-- Liste des autorités -->
-    <div class="card">
+    <div class="col-sm-12">
+      <select class="form-select" multiple="" aria-label="multiple select example">
+        <option selected="">Choisir autorité</option>
+        <option
+          v-for="item in directions" :key="item.child_id" :value="item.child_libelle" @click="getAutorite(item)"
+        >
+        {{item.child_libelle}}
+          <!-- <div class="d-flex w-100 justify-content-between">
+            <h5 class="mb-1"></h5>
+          </div>
+          <p class="mb-1">{{item.path}}</p>
+          <small class="text-muted">{{item.sigle}}</small> -->
+        </option>
+        
+      </select>
+    </div>
+    <!-- <div class="card">
       <div class="card-body">
         <div class="list-group">
           
@@ -31,7 +47,7 @@
 
         </div>
       </div>
-    </div>
+    </div> -->
 
     </div>    
 </template>
@@ -113,3 +129,9 @@
 
   }
 </script>
+
+<style>
+  select:hover, option:hover {
+    cursor: pointer;
+  } 
+</style>

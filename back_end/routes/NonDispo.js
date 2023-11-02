@@ -22,9 +22,11 @@ router.post('/ajouter_non_disponible', [authJwt.verifyToken],async (req,res) => 
     rohiAudiencePool.then((rohiAudienceDB) => {
         rohiAudienceDB.query(sql,function(err,result){
             if(err){
-                return res.send({ err });
+                throw err
+                // return res.send({ err });
             }
             else{
+                // console.log(result[0])
                 // return res.json(result[0
                 result[0].forEach(element => {
                     // console.log(element)
@@ -74,6 +76,7 @@ router.post('/ajouter_non_disponible', [authJwt.verifyToken],async (req,res) => 
                             else{
                                 const response = await mailing.reporter_evenement(autorite,element)
                                 // return res.json({mail:response, data:result})
+                                // console.log(response)
                             }
                         })
                     }

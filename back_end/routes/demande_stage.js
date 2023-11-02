@@ -71,7 +71,7 @@ router.post('/add',upload.fields([{name: 'curriculum_vitae'},{name: 'lettre_moti
         
         
         rohiAudiencePool.then((rohiAudienceDB) => {
-            rohiAudience.query(sql, async (err, result) =>{
+            rohiAudienceDB.query(sql, async (err, result) =>{
                 if(err){
                     // console.log('Hahahaha')
                     return res.json(err);
@@ -147,7 +147,15 @@ router.post('/filtre',[authJwt.verifyToken], async(req,res)=>{
                 return res.json(err);
             }
             // console.log(sql)
-            res.json(result[0])
+            // res.json(result[0])
+            let resArray = result[0];
+            resArray.map(element=>{
+                element.date_creation = moment.formatDate(element.date_creation);
+                // element.date_fin = moment.formatDate(element.date_fin);
+
+                return element;
+            })
+            res.json(resArray)
             rohiAudienceDB.release()
         })
     }).catch((err) => {
@@ -400,6 +408,7 @@ router.get('/file/:file_name',async(req,res)=>{
     try {
         let fileLocation = path.join('./uploads/demande_stage/',file);
         // let fileLocation = path.join('./home/rohiAudience.cyberpanel.net/demande_stage_files/',file);
+        
         res.download(fileLocation, file)
     } catch (error) {
         res.send(error)

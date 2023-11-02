@@ -270,7 +270,7 @@
                         </div>
                       </div>
   
-                      <div class="col-md-12" v-if="audience.status === 'Validé' || audience.status === 'Reporté'">
+                      <div class="col-sm-12" v-if="audience.status === 'Validé' || audience.status === 'Reporté'">
                           <div class="form-floating mb-3">
                             <select class="form-select" id="floatingSelect" aria-label="Autorité" required="" v-model="audience.actual_place">
                               <option v-if="audience.actual_place" selected disabled>
@@ -284,7 +284,8 @@
                           <label for="floatingSelect">Place</label>
                           </div>
                       </div>
-  
+
+<!--   
                       <div class="col-md-12" v-else>
                         <div class="form-floating mb-3">
                           
@@ -299,7 +300,22 @@
                           </select>
                         <label for="floatingSelect">Place</label>
                         </div>
+                      </div> -->
+
+                      <div class="col-sm-12" v-else>
+                        <select class="form-select" multiple="" aria-label="multiple select example" required="" v-model="audience.actual_place">
+                          <option v-if="audience.actual_place" selected disabled>
+                            {{audience.actual_place["date_disponible"]}} {{audience.actual_place["heure_debut"]}} à {{audience.actual_place["heure_fin"]}}
+                          </option>
+
+                          <option v-for="(item, index) in audience.places_disponible" :key="item" :value="item">
+                              {{item.date_disponible}} {{item.heure_debut}} à {{item.heure_fin}}
+                          </option>
+                        </select>
+                        <label for="floatingSelect">Place</label>
+
                       </div>
+
                       
                       <SpinnerPopup
                         :sipnnerActivated="sipnnerActivated"
@@ -383,7 +399,7 @@
   
                       <div class="col-md-12" v-if="audience.status === 'Validé' || audience.status === 'Reporté'">
                           <div class="form-floating mb-3">
-                            <select class="form-select" id="floatingSelect" aria-label="Autorité" required="" v-model="audience.actual_place">
+                            <select class="form-select" id="floatingSelect" aria-label="Autorité" required="" v-model="audience.actual_place" disabled>
                               <option v-if="audience.actual_place" selected disabled>
                                   {{audience.actual_place["date_disponible"]}} {{audience.actual_place["heure_debut"]}} à {{audience.actual_place["heure_fin"]}}
                               </option>
@@ -411,6 +427,7 @@
                         <label for="floatingSelect">Place</label>
                         </div>
                       </div>
+
                       
                       <SpinnerPopup
                         :sipnnerActivated="sipnnerActivated"
@@ -1214,6 +1231,7 @@
                   },
                   // initialView: 'timeGridDay',
                   initialView: 'timeGridWeek',
+                  initialDate:'2023-11-06',
 
                   // initialEvents: this.all_actual_events,
                   weekNumbers: true,
@@ -2469,11 +2487,13 @@
           if(this.audience.typeEvenement == 'Pas disponible'){
             this.count++
             if(this.count == 2){
+              this.$emit('spinnerStatus', true)
               // this.sipnnerActivated = true
               await nonDispoAPI.supprimer_non_disponible({
                 id_date_heure_non_dispo: this.audience.id_evenement
               })
               this.refreshData()
+              this.$emit('spinnerStatus', false)
               // const id = this.autoriteSender.child_id
               // this.calendarOptions.events = await AutoriteApi.calendrier({id_autorite: id})
               this.count = 0

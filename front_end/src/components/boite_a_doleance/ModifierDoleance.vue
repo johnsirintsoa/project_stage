@@ -162,8 +162,24 @@
               v-if="isSearching"
               :style="{ marginTop: marginTop + 'px' }"
             >
+            <div class="col-sm-12">
+              <select class="form-select" multiple="" aria-label="multiple select example">
+                <option selected="">Choisir autorité</option>
+                <option
+                  v-for="item in autorites" :key="item.child_id" :value="item.child_libelle" @click="getAutorite(item)"
+                >
+                {{item.child_libelle}}
+                  <!-- <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1"></h5>
+                  </div>
+                  <p class="mb-1">{{item.path}}</p>
+                  <small class="text-muted">{{item.sigle}}</small> -->
+                </option>
+                
+              </select>
+            </div>
 
-              <div class="card">
+              <!-- <div class="card">
                 <div class="card-body">
                   <div class="list-group">
                     
@@ -180,7 +196,7 @@
                     
                   </div>
                 </div>
-              </div>
+              </div> -->
 
             </div>
             <spinnerPopup
@@ -280,8 +296,23 @@
             v-if="isSearching"
             :style="{ marginTop: marginTop + 'px' }"
           >
-
-            <div class="card">
+          <div class="col-sm-12">
+            <select class="form-select" multiple="" aria-label="multiple select example">
+              <option selected="">Choisir autorité</option>
+              <option
+                v-for="item in autorites" :key="item.child_id" :value="item.child_libelle" @click="getAutorite(item)"
+              >
+              {{item.child_libelle}}
+                <!-- <div class="d-flex w-100 justify-content-between">
+                  <h5 class="mb-1"></h5>
+                </div>
+                <p class="mb-1">{{item.path}}</p>
+                <small class="text-muted">{{item.sigle}}</small> -->
+              </option>
+              
+            </select>
+          </div>
+            <!-- <div class="card">
               <div class="card-body">
                 <div class="list-group">
                   
@@ -298,7 +329,7 @@
                   
                 </div>
               </div>
-            </div>
+            </div> -->
 
           </div>
 

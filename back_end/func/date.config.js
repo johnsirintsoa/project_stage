@@ -5,6 +5,8 @@ const formatDate = (arg) => {
     return moment.tz(arg,"Indian/Antananarivo").format("YYYY-MM-DD")
 }
 
+
+
 const firstAndLastOfDate = () =>{
     // console.log("current month first date");
     const currentFirstdate = moment.utc(moment()).tz("Indian/Antananarivo").format("YYYY-MM-DD");

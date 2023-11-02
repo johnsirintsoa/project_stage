@@ -238,7 +238,14 @@ router.post('/calendrier',[authJwt.verifyToken], async (req,res) =>{
                 return res.send({ err });
             }
             else{
-                return res.json(result[0])    
+                let resArray = result[0];
+                resArray.map(element=>{
+                    element.date_debut = moment.formatDate(element.date_debut);
+                    element.date_fin = moment.formatDate(element.date_fin);
+
+                    return element;
+                })
+                return res.json(resArray)    
             }
             rohiAudienceDB.release()
         })

@@ -409,14 +409,32 @@ const reporter_evenement = async (autorite,sender) =>{
     });
     
     let data = ''
+    let context = ''
+    let sujet = ''
+
+    if(sender.type_evenement === 'Entretien'){
+        sujet = `Entretien de stage`
+        context = `<p>Bonjour Monsieur ou Madame ${sender.nom} ${sender.prenom}</p> 
+        <p>En raison de certains évenements au sein de l'organisation, la ${autorite.intitule}(${autorite.intitule_code}) a du reporté votre entretien. </p>
+        <p>Merci pour votre compréhension</p`
+    }
+
+    else {
+        sujet = `Audience reporté`
+        context = `<p>Bonjour Monsieur ou Madame ${sender.nom} ${sender.prenom}</p> 
+        <p>En raison de certains évenements au sein de l'organisation, la ${autorite.intitule}(${autorite.intitule_code}) a du reporté votre demande. </p>
+        <p>Merci pour votre compréhension</p`
+    }
     // send email
     await transporter.sendMail({
         from: userMail,
         to: sender.addresse_electronique,
-        subject: 'Audience reporté',
-        html: `<p>Bonjour Monsieur ou Madame ${sender.nom} ${sender.prenom}</p> 
-                <p>En raison de certains évenements au sein de l'organisation, la ${autorite.intitule}(${autorite.intitule_code}) a du reporté votre demande.</p>
-                <p>Merci pour votre compréhension</p>`
+        subject: sujet,
+        html: context
+        // subject: 'Audience reporté',
+        // html: `<p>Bonjour Monsieur ou Madame ${sender.nom} ${sender.prenom}</p> 
+        //         <p>En raison de certains évenements au sein de l'organisation, la ${autorite.intitule}(${autorite.intitule_code}) a du reporté votre demande.</p>
+        //         <p>Merci pour votre compréhension</p>`
     }).then((result) => {
         data = result
     }).catch((err) => {

@@ -72,7 +72,7 @@
             showInfosTemp(){
                 tippy('#doleance-temp', {
                     theme:'light',
-                    content: `<p>Vous trouverez ici vos doléances il y a 2 minutes plus tôt.</p>`,
+                    content: `<p>Vous trouverez ici vos doléances effectuées.</p>`,
                     allowHTML: true,
                     delay:[200,0]
                 });

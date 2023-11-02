@@ -98,6 +98,7 @@
 </template> 
 
 <script>
+    import moment from 'moment'
     import StageController from '../../controllers/StageController'
     import AutoriteController from '../../controllers/AutoriteController'
     import EntretienController from '../../controllers/EntretienController'
@@ -109,6 +110,8 @@
     import HeaderBM from '../../components/header/HeaderStructure.vue'
     import BarresRecherche from '../../components/demande_de_stage/BarresRecherche.vue'
     import FooterBack from '../../components/footer/FooterComponent.vue' 
+
+    // import momentFormat from '../../func/date.config'
 
     export default {
         components:{
@@ -145,7 +148,7 @@
                 }
             }
         },
-        async unmounted(){
+        async mounted(){
             const filtre = {
                 date1: this.date1,
                 date2: this.date2,
@@ -309,7 +312,10 @@
                 this.autorite = value
             },
             date_actu(){
-                return new Date().toJSON().slice(0, 10)
+                // const dateActu= moment.tz(new Date().toJSON().slice(0, 10),"Indian/Antananarivo").format("YYYY-MM-DD")
+                return moment(new Date()).local().format("YYYY-MM-DD")
+                // const date = new Date().toJSON().slice(0, 10)
+                // console.log(dateActu)
             },
             getDataStages(data){
                 this.stages = data

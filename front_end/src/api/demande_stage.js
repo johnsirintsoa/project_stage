@@ -49,7 +49,7 @@ export default class DemandeStageAPI{
         var fURL = document.createElement('a');
 
         fURL.href = fileURL;
-        fURL.setAttribute('download', ' .pdf');
+        fURL.setAttribute('download', `${file_name}.pdf`);
         document.body.appendChild(fURL);
 
         fURL.click();
