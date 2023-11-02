@@ -1945,7 +1945,7 @@
             // this.sipnnerActivated = true
             this.$emit('spinnerStatus', true)
             const response = await EntretienApi.reporter(arg)
-            if(response.message){
+            if(response.data){
                 this.togglePopupAudience()
                 // this.sipnnerActivated = false
                 this.$emit('spinnerStatus', false)

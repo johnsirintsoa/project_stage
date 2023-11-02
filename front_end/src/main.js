@@ -18,12 +18,15 @@ const duree_expiration = 0
 const date_expiration = new Date(new Date().getTime() + (60000 * duree_expiration))
 // console.log("Date d'expiration "+date_expiration)
 
-FUNC.session_navigateur(date_expiration)
+
 const session = sessionStorage.getItem('session_navigateur')
 
 if(session == null){
-    window.location.reload()
+    FUNC.session_navigateur(date_expiration)
 }
+// if(session == null){
+//     window.location.reload()
+// }
 
 
 
