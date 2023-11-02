@@ -230,7 +230,7 @@ router.post('/login', async(req,res) =>{
 
 router.post('/calendrier',[authJwt.verifyToken], async (req,res) =>{
     // const sql = `CALL calendrier_autorite(${req.body.id_autorite},${req.body.est_admin})`
-    const sql = `CALL calendrier_autorite(${req.body.id_autorite},${req.body.masque_event_ended})`
+    const sql = `CALL calendrier_autorite(${req.body.id_autorite},${req.body.masque_event_ended},'${req.body.date_debut}','${req.body.date_fin}')`
 
     rohiAudiencePool.then(( rohiAudienceDB) => {
         rohiAudienceDB.query(sql,function(err,result){

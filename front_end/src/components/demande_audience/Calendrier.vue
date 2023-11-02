@@ -1240,6 +1240,7 @@
                   // initialView: 'timeGridDay',
                   initialView: 'timeGridWeek',
                   initialDate:'2023-11-06',
+                  datesSet: this.setMonCalendrier,
 
                   // initialEvents: this.all_actual_events,
                   weekNumbers: true,
@@ -1289,6 +1290,8 @@
                 heure_debut:'',
                 heure_fin:''
               },
+              date_debut_next:'',
+              date_fin_previous:'',
               masqueEvenement: true,
               terminerEvenement: false,
               // boolean pour les bouttons
@@ -1316,6 +1319,21 @@
           // this.terminerEvenement = false
           
         },
+        date_debut_next: function (value){
+          if(this.typeCalendrier === 'evenementiel')
+            this.setCalendrierCheckBox()
+
+          // console.log(this.date_fin_previous)
+        },
+
+        // date_debut_next: function (value){
+        //   // console.log(value)
+        //   if(this.typeCalendrier === 'evenementiel')
+        //     this.setCalendrierCheckBox()
+
+        //   // console.log(this.date_fin_previous)
+        // },
+
         masqueEvenementFini: function(newVal,oldVal){
           // this.estTermine = newVal
           this.setMasqueEvent(newVal)
@@ -1329,6 +1347,21 @@
       emits:['spinnerStatus'],
 
       methods: {
+        async setMonCalendrier(infos){
+          const date_debut = moment(infos.startStr).format("YYYY-MM-DD")
+          const date_fin = moment(infos.endStr).format("YYYY-MM-DD")
+          this.date_debut_next = date_debut
+          this.date_fin_previous = date_fin
+          // const id = this.autoriteSender.child_id
+          // this.calendarOptions.events = await AutoriteApi.calendrier({
+          //   id_autorite: id,
+          //   masque_event_ended: this.masqueEvenement,
+          //   date_debut: this.date_debut_next,
+          //   date_fin: this.date_fin_previous
+          // })
+        },
+
+
         async places(arg){
             return await AutoriteApi.place_disponible(arg)
         },
@@ -1363,7 +1396,16 @@
           const id = this.autoriteSender.child_id
           this.calendarOptions.events = await AutoriteApi.calendrier({
             id_autorite: id,
-            masque_event_ended: this.masqueEvenement
+            masque_event_ended: this.masqueEvenement,
+            date_debut: this.date_debut_next,
+            date_fin: this.date_fin_previous
+          })
+          this.calendarOptions.events.push({
+            start: '1970-01-01T00:00:00',
+            end: moment(new Date()).format("YYYY-MM-DDThh:mm:ss"),
+            overlap: false,
+            display: 'background',
+            color: '#c8cacb9c'
           })
         },
 
@@ -1388,7 +1430,9 @@
             const id = this.autoriteSender.child_id
             this.calendarOptions.events = await AutoriteApi.calendrier({
               id_autorite: id,
-              masque_event_ended: this.masqueEvenement
+              masque_event_ended: this.masqueEvenement,
+              date_debut: this.date_debut_next,
+              date_fin: this.date_fin_previous
             })
             this.showPopupAudience = false
           } 
@@ -2158,7 +2202,12 @@
             if(this.autoriteSender && this.typeCalendrier === 'evenementiel'){
               // this.refreshData()
               const id = this.autoriteSender.child_id
-              this.calendarOptions.events = await AutoriteApi.calendrier({id_autorite: id,masque_event_ended: this.masqueEvenement})
+              this.calendarOptions.events = await AutoriteApi.calendrier({
+                id_autorite: id,
+                masque_event_ended: this.masqueEvenement,
+                date_debut: this.date_debut_next,
+                date_fin: this.date_fin_previous
+              })
             }
           }
 
@@ -2333,7 +2382,9 @@
               const id = this.autoriteSender.child_id
               this.calendarOptions.events = await AutoriteApi.calendrier({
                 id_autorite: id,
-                masque_event_ended: this.masqueEvenement
+                masque_event_ended: this.masqueEvenement,
+                date_debut: this.date_debut_next,
+                date_fin: this.date_fin_previous
               })
             }
           }
@@ -2357,7 +2408,9 @@
               const id = this.autoriteSender.child_id
               this.calendarOptions.events = await AutoriteApi.calendrier({
                 id_autorite: id,
-                masque_event_ended: this.masqueEvenement
+                masque_event_ended: this.masqueEvenement,
+                date_debut: this.date_debut_next,
+                date_fin: this.date_fin_previous
               })
             }
           }
@@ -2379,7 +2432,9 @@
               const id = this.autoriteSender.child_id
               this.calendarOptions.events = await AutoriteApi.calendrier({
                 id_autorite: id,
-                masque_event_ended: this.masqueEvenement
+                masque_event_ended: this.masqueEvenement,
+                date_debut: this.date_debut_next,
+                date_fin: this.date_fin_previous
               })
             }
           }
@@ -2400,7 +2455,9 @@
               const id = this.autoriteSender.child_id
               this.calendarOptions.events = await AutoriteApi.calendrier({
                 id_autorite: id,
-                masque_event_ended: this.masqueEvenement
+                masque_event_ended: this.masqueEvenement,
+                date_debut: this.date_debut_next,
+                date_fin: this.date_fin_previous
               })
             }
           }
@@ -2681,23 +2738,18 @@
         }
       },
 
-      async updated() {
-        if(this.autoriteSender && this.typeCalendrier === 'evenementiel'){
-          // console.log('Updated ve...')
-          const id = this.autoriteSender.child_id
-          this.calendarOptions.events = await AutoriteApi.calendrier({
-            id_autorite: id,
-            masque_event_ended: this.masqueEvenement
-          })
-          // this.calendarOptions.events.push({
-          //   start: '1970-01-01T00:00:00',
-          //   end: dateTime,
-          //   overlap: false,
-          //   display: 'background',
-          //   color: '#ff9f89a6'
-          // })
-        } 
-      },
+      // async mounted() {
+      //   if(this.autoriteSender && this.typeCalendrier === 'evenementiel'){
+      //     // console.log('Updated ve...')
+      //     const id = this.autoriteSender.child_id
+      //     this.calendarOptions.events = await AutoriteApi.calendrier({
+      //       id_autorite: id,
+      //       masque_event_ended: this.masqueEvenement,
+      //       date_debut: this.date_debut_next,
+      //       date_fin: this.date_fin_previous
+      //     })
+      //   } 
+      // },
 
     }
 </script>
