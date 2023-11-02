@@ -5,6 +5,10 @@ const formatDate = (arg) => {
     return moment.tz(arg,"Indian/Antananarivo").format("YYYY-MM-DD")
 }
 
+const formatDateTime = (arg) => {
+    return moment.tz(arg,"Indian/Antananarivo").format("YYYY-MM-DDThh:mm:ss")
+}
+
 
 
 const firstAndLastOfDate = () =>{
@@ -33,5 +37,6 @@ const firstAndLastOfDate = () =>{
 
 module.exports = {
     formatDate,
-    firstAndLastOfDate
+    firstAndLastOfDate,
+    formatDateTime
 }

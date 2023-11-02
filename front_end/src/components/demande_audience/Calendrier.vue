@@ -1321,7 +1321,7 @@
         },
         date_debut_next: function (value){
           if(this.typeCalendrier === 'evenementiel')
-            this.setCalendrierCheckBox()
+            this.refreshData()
 
           // console.log(this.date_fin_previous)
         },
@@ -1337,7 +1337,7 @@
         masqueEvenementFini: function(newVal,oldVal){
           // this.estTermine = newVal
           this.setMasqueEvent(newVal)
-          this.setCalendrierCheckBox()
+          this.refreshData()
           // console.log(`valeur init: ${oldVal} `)
           // console.log(`Valeur final: ${newVal}`)
         }
@@ -1349,7 +1349,7 @@
       methods: {
         async setMonCalendrier(infos){
           if(infos.view.type === 'timeGridWeek' || infos.view.type === 'dayGridMonth'){
-            console.log(`Data changed ${infos.view}`)
+            // console.log(`Data changed ${infos.view}`)
 
             const date_debut = moment(infos.startStr).format("YYYY-MM-DD")
             const date_fin = moment(infos.endStr).format("YYYY-MM-DD")
@@ -1397,22 +1397,21 @@
           // console.log(this.estTermine)
         },
 
-        async setCalendrierCheckBox(){
-          const id = this.autoriteSender.child_id
-          this.calendarOptions.events = await AutoriteApi.calendrier({
-            id_autorite: id,
-            masque_event_ended: this.masqueEvenement,
-            date_debut: this.date_debut_next,
-            date_fin: this.date_fin_previous
-          })
-          this.calendarOptions.events.push({
-            start: '1970-01-01T00:00:00',
-            end: moment(new Date()).format("YYYY-MM-DDThh:mm:ss"),
-            overlap: false,
-            display: 'background',
-            color: '#c8cacb9c'
-          })
-        },
+        // async setCalendrierCheckBox(){
+        //   const id = this.autoriteSender.child_id
+        //   this.calendarOptions.events = await AutoriteApi.calendrier({
+        //     id_autorite: id,
+        //     masque_event_ended: this.masqueEvenement,
+        //     date_debut: this.date_debut_next,
+        //     date_fin: this.date_fin_previous
+        //   }).push({
+        //     start: '1970-01-01T00:00:00',
+        //     end: moment(new Date()).format("YYYY-MM-DDThh:mm:ss"),
+        //     overlap: false,
+        //     display: 'background',
+        //     color: '#c8cacb9c'
+        //   })
+        // },
 
         async setEvents(value){
           if(this.sessionNavigateur){
@@ -1439,6 +1438,7 @@
               date_debut: this.date_debut_next,
               date_fin: this.date_fin_previous
             })
+
             this.showPopupAudience = false
           } 
         },         
@@ -2203,17 +2203,24 @@
               intitule_code: this.autoriteSender.sigle
             }
             const response = await nonDispoAPI.modifier_non_disponible(this.evenement)
+            this.refreshData()
 
-            if(this.autoriteSender && this.typeCalendrier === 'evenementiel'){
-              // this.refreshData()
-              const id = this.autoriteSender.child_id
-              this.calendarOptions.events = await AutoriteApi.calendrier({
-                id_autorite: id,
-                masque_event_ended: this.masqueEvenement,
-                date_debut: this.date_debut_next,
-                date_fin: this.date_fin_previous
-              })
-            }
+            // if(this.autoriteSender && this.typeCalendrier === 'evenementiel'){
+            //   // this.refreshData()
+            //   const id = this.autoriteSender.child_id
+            //   this.calendarOptions.events = await AutoriteApi.calendrier({
+            //     id_autorite: id,
+            //     masque_event_ended: this.masqueEvenement,
+            //     date_debut: this.date_debut_next,
+            //     date_fin: this.date_fin_previous
+            //   }).push({
+            //       start: '1970-01-01T00:00:00',
+            //       end: moment(new Date()).format("YYYY-MM-DDThh:mm:ss"),
+            //       overlap: false,
+            //       display: 'background',
+            //       color: '#c8cacb9c'
+            //     })
+            // }
           }
 
           else if(type === 'Public'){
@@ -2383,15 +2390,22 @@
               // this.$emit('spinnerStatus', true)
               const response = await DemandeAudiencePublicAPI.revalider_public(this.evenement)
             }
-            if(this.autoriteSender && this.typeCalendrier === 'evenementiel'){
-              const id = this.autoriteSender.child_id
-              this.calendarOptions.events = await AutoriteApi.calendrier({
-                id_autorite: id,
-                masque_event_ended: this.masqueEvenement,
-                date_debut: this.date_debut_next,
-                date_fin: this.date_fin_previous
-              })
-            }
+            this.refreshData()
+            // if(this.autoriteSender && this.typeCalendrier === 'evenementiel'){
+            //   const id = this.autoriteSender.child_id
+            //   this.calendarOptions.events = await AutoriteApi.calendrier({
+            //     id_autorite: id,
+            //     masque_event_ended: this.masqueEvenement,
+            //     date_debut: this.date_debut_next,
+            //     date_fin: this.date_fin_previous
+            //   }).push({
+            //       start: '1970-01-01T00:00:00',
+            //       end: moment(new Date()).format("YYYY-MM-DDThh:mm:ss"),
+            //       overlap: false,
+            //       display: 'background',
+            //       color: '#c8cacb9c'
+            //     })
+            // }
           }
           else if(type === 'Agent'){
             this.evenement.id_dm_aud_public_date_heure_dispo = event.event.id
@@ -2409,15 +2423,22 @@
               // this.$emit('spinnerStatus', true)
               const response = await DemandeAudiencePublicAPI.revalider_public(this.evenement)
             }
-            if(this.autoriteSender && this.typeCalendrier === 'evenementiel'){
-              const id = this.autoriteSender.child_id
-              this.calendarOptions.events = await AutoriteApi.calendrier({
-                id_autorite: id,
-                masque_event_ended: this.masqueEvenement,
-                date_debut: this.date_debut_next,
-                date_fin: this.date_fin_previous
-              })
-            }
+            this.refreshData()
+            // if(this.autoriteSender && this.typeCalendrier === 'evenementiel'){
+            //   const id = this.autoriteSender.child_id
+            //   this.calendarOptions.events = await AutoriteApi.calendrier({
+            //     id_autorite: id,
+            //     masque_event_ended: this.masqueEvenement,
+            //     date_debut: this.date_debut_next,
+            //     date_fin: this.date_fin_previous
+            //   }).push({
+            //       start: '1970-01-01T00:00:00',
+            //       end: moment(new Date()).format("YYYY-MM-DDThh:mm:ss"),
+            //       overlap: false,
+            //       display: 'background',
+            //       color: '#c8cacb9c'
+            //     })
+            // }
           }
 
           else if(type === 'Autorité'){
@@ -2433,15 +2454,22 @@
             else if (status === 'Reporté'){
               const response = await DemandeAudienceAutoriteAPI.revalider(this.evenement)
             }
-            if(this.autoriteSender && this.typeCalendrier === 'evenementiel'){
-              const id = this.autoriteSender.child_id
-              this.calendarOptions.events = await AutoriteApi.calendrier({
-                id_autorite: id,
-                masque_event_ended: this.masqueEvenement,
-                date_debut: this.date_debut_next,
-                date_fin: this.date_fin_previous
-              })
-            }
+            this.refreshData()
+            // if(this.autoriteSender && this.typeCalendrier === 'evenementiel'){
+            //   const id = this.autoriteSender.child_id
+            //   this.calendarOptions.events = await AutoriteApi.calendrier({
+            //     id_autorite: id,
+            //     masque_event_ended: this.masqueEvenement,
+            //     date_debut: this.date_debut_next,
+            //     date_fin: this.date_fin_previous
+            //   }).push({
+            //       start: '1970-01-01T00:00:00',
+            //       end: moment(new Date()).format("YYYY-MM-DDThh:mm:ss"),
+            //       overlap: false,
+            //       display: 'background',
+            //       color: '#c8cacb9c'
+            //     })
+            // }
           }
 
           else if(type === 'Entretien'){
@@ -2456,15 +2484,22 @@
             }
 
             const response = await EntretienApi.modifier_calendrier(this.evenement)
-            if(this.autoriteSender && this.typeCalendrier === 'evenementiel'){
-              const id = this.autoriteSender.child_id
-              this.calendarOptions.events = await AutoriteApi.calendrier({
-                id_autorite: id,
-                masque_event_ended: this.masqueEvenement,
-                date_debut: this.date_debut_next,
-                date_fin: this.date_fin_previous
-              })
-            }
+            this.refreshData()
+            // if(this.autoriteSender && this.typeCalendrier === 'evenementiel'){
+            //   const id = this.autoriteSender.child_id
+            //   this.calendarOptions.events = await AutoriteApi.calendrier({
+            //     id_autorite: id,
+            //     masque_event_ended: this.masqueEvenement,
+            //     date_debut: this.date_debut_next,
+            //     date_fin: this.date_fin_previous
+            //   }).push({
+            //       start: '1970-01-01T00:00:00',
+            //       end: moment(new Date()).format("YYYY-MM-DDThh:mm:ss"),
+            //       overlap: false,
+            //       display: 'background',
+            //       color: '#c8cacb9c'
+            //     })
+            // }
           }
           this.$emit('spinnerStatus', false)
         },

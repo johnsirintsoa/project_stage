@@ -3,6 +3,8 @@ import axios from 'axios'
 import dom  from './config'
 import Function from '../func/function';
 import authHeader from './auth-header'
+import moment from 'moment-timezone'
+moment.tz.setDefault('Indian/Antananarivo')
 
 // const domaine = "http://localhost:3000"
 // const url = domaine.concat("/api/autorite")
@@ -55,14 +57,6 @@ export default class AutoriteAPI{
         // console.log(res.data)
         const dateTime = Function.dateIso(new Date())
         // console.log(dateTime)
-        res.data.push({
-            start: '1970-01-01T00:00:00',
-            end: dateTime,
-            overlap: false,
-            display: 'background',
-            color: '#c8cacb9c'
-        })
-
         return res.data       
     }
 

@@ -238,13 +238,21 @@ router.post('/calendrier',[authJwt.verifyToken], async (req,res) =>{
                 return res.send({ err });
             }
             else{
-                let resArray = result[0];
+                result[0].push({
+                    start: '1970-01-01T00:00:00',
+                    end: moment.formatDateTime(new Date()),
+                    overlap: false,
+                    display: 'background',
+                    color: '#c8cacb9c'
+                });
+                let resArray = result[0]
                 resArray.map(element=>{
                     element.date_debut = moment.formatDate(element.date_debut);
                     element.date_fin = moment.formatDate(element.date_fin);
 
                     return element;
                 })
+                console.log(resArray)
                 return res.json(resArray)    
             }
             rohiAudienceDB.release()
