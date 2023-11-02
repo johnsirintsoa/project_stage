@@ -132,6 +132,59 @@ router.post('/updateCalendar',[authJwt.verifyToken],async(req,res) => {
     // })
 })
 
+router.post('/reporterCalendar',[authJwt.verifyToken],async(req,res) => {
+    const date_debut_Formated = moment.formatDate(req.body.date_debut)
+    const date_fin_Formated = moment.formatDate(req.body.date_fin)
+    const autorite = req.body.autorite
+    const stagiaire = req.body.stagiaire
+    // IN id_entretien_stage int,IN id_demande_stage INT,IN date_debut date,IN date_fin date,IN heure_debut time,in heure_fin time, IN id_autorite INT
+    // const sql = `CALL modifier_entretien_stage_calendrier(${stage.id_entretien_stage},${stage.id},'${req.body.date_debut}','${req.body.date_fin}','${req.body.heure_debut}','${req.body.heure_fin}',${autorite.id})`
+    const sql = `CALL reporter_entretien_stage_calendrier(${req.body.id_entretien_stage},${req.body.id_demande_stage},'${date_debut_Formated}','${date_fin_Formated}','${req.body.heure_debut}','${req.body.heure_fin}',${req.body.id_autorite})`
+    console.log(sql)
+
+    rohiAudiencePool.then((rohiAudienceDB) => {
+        rohiAudienceDB.query(sql, async (error,result) => {
+            if(error){
+                res.send(error)
+            } 
+            else{
+                const entretien_date_time = String(date_debut_Formated).concat('T',req.body.heure_debut)
+                const response = await mailing.reporter_evenement(autorite,stagiaire)
+                if(result ){
+                    res.json({data:result})
+                }
+                // if(response && result ){
+                //     res.json({data:result})
+                // }
+                else {
+                    res.json({message:'Entretien non validé et envoyé'})
+                }
+            }
+            rohiAudienceDB.release()
+        })
+    }).catch((err) => {
+        throw err 
+     });
+
+
+    // db.query(sql, async (error,result) => {
+    //     if(error){
+    //         res.send(error)
+    //     } 
+    //     else{
+    //         const entretien_date_time = String(date_debut_Formated).concat('T',req.body.heure_debut)
+    //         const response = await mailing.entretien_reporte(autorite,stage,entretien_date_time)
+            
+    //         if(response && result ){
+    //             res.json({mail:response,data:result})
+    //         }
+    //         else {
+    //             res.json({message:'Entretien non validé et envoyé'})
+    //         }
+    //     }
+    // })
+})
+
 router.post('/delete',[authJwt.verifyToken],async(req,res)=>{
     const autorite = req.body.autorite
     const stage = req.body.stage

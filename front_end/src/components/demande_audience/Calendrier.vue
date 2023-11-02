@@ -1151,6 +1151,9 @@
                     <button type="submit" class="btn btn-dark" @click="setEtatAction(2)" v-if="audience.status === 'Validé' || audience.status === 'Non validé'" >
                       Reporter
                     </button>
+                    <button type="submit" class="btn btn-success" @click="setEtatAction(3)" v-if="audience.status === 'Reporté'" >
+                      Revalider
+                    </button>
                   </div>
                 </div>
 
@@ -1821,6 +1824,7 @@
                 motif: this.audience.motif
               }
             }
+
             // this.sipnnerActivated = true
             this.$emit('spinnerStatus', true)
             const response = await EntretienApi.modifier_calendrier(arg)
@@ -1909,17 +1913,38 @@
           }
           else if(this.typeCalendrier ==='evenementiel' && this.audience.typeEvenement ==='Entretien'){
             const arg = {
-              autorite: autoriteS,
-              stage: {
-                id: this.audience.id_evenement,
-                addresse_electronique: this.audience.email,
+              id_entretien_stage: this.audience.id,
+              id_demande_stage: this.audience.id_evenement,
+              date_debut: this.audience.date_debut,
+              date_fin: this.audience.date_fin,
+              heure_debut: this.audience.time_debut,
+              heure_fin: this.audience.time_fin,
+              id_autorite: this.autoriteSender.child_id,
+              type_audience: this.audience.typeEvenement,
+              autorite: {
+                id_autorite: this.autoriteSender.child_id,
+                intitule: this.autoriteSender.child_libelle,
+                intitule_code: this.autoriteSender.sigle
+              },
+              stagiaire: {
                 nom: this.audience.nom,
-                prenom: this.audience.prenom
+                prenom: this.audience.prenom,
+                addresse_electronique: this.audience.email,
+                motif: this.audience.motif
               }
             }
+            // const arg = {
+            //   autorite: autoriteS,
+            //   stage: {
+            //     id: this.audience.id_evenement,
+            //     addresse_electronique: this.audience.email,
+            //     nom: this.audience.nom,
+            //     prenom: this.audience.prenom
+            //   }
+            // }
             // this.sipnnerActivated = true
             this.$emit('spinnerStatus', true)
-            const response = await EntretienApi.supprimer(arg)
+            const response = await EntretienApi.reporter(arg)
             if(response.message){
                 this.togglePopupAudience()
                 // this.sipnnerActivated = false
@@ -1976,6 +2001,8 @@
           const currentTime = currentDateTime.format("hh:mm:ss")
 
 
+          // console.log(`Get millisencod date_debut and current time: ${} and ${currentDateTime.format('x')}`)
+
           // Gestion d'erreur horaire
           if(date_debut < currentDate){
             swal("Erreur de la date début", 'La date du début est inférieure à la date actuelle', "error");
@@ -1993,17 +2020,17 @@
             )
             // this.resetEtat()
           }
-          else if( heure_debut < currentTime){
+          else if( dateTimeDebut.format('x') < currentDateTime.format('x') ){
             swal("Erreur d'horaire", 'L\'heure du début est inférieure à l\'heure actuelle', "error");
             // this.resetEtat()
             // console.log('Heure début est inférieure')
           }
-          else if(heure_debut < currentTime){
+          else if(dateTimeFin.format('x') < currentDateTime.format('x')){
             swal("Erreur d'horaire", 'L\'heure fin est inférieure à l\'heure actuelle', "error");
             // this.resetEtat()
             // console.log("Heure fin est inférieure actuelle...")
           }
-          else if(heure_debut > heure_fin){
+          else if(dateTimeDebut.format('x') > dateTimeFin.format('x')){
             swal("Erreur d'horaire", 'L\'heure du début est supérieur à l\'heure fin', "error");
             // this.resetEtat()
             // console.log('Date début est supérieure au date fin')

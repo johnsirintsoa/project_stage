@@ -36,4 +36,11 @@ export default class EntretienStage{
     return res.data
   }
 
+  static async reporter(stage){
+    const url = dom.domaineBackEnd(route1,'/reporterCalendar')
+    const res = await axios.post(url,stage,{headers: authHeader()})
+    // const res = await axios.post(url.concat('/updateCalendar'),stage)
+    return res.data
+  }
+
 }
