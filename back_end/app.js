@@ -89,7 +89,8 @@ app.use('/api/chart',chart_route)
 // Hello world
 
 // app.get('/', (req, res) => res.send('Hello World!'))
-
+// const host = '5.183.8.211'
 // app.listen(3000, () => console.log(`Example app listening on port !`))
+// app.listen(3000,host, () => console.log(`Example app listening on port !`))
 
 app.listen(3000)

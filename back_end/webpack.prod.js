@@ -7,7 +7,7 @@ module.exports = {
     output: {
         path: path.join(__dirname, 'dist'),
         publicPath: '/',
-        filename: 'index.js',
+        filename: 'app.js',
         clean: true
     },
     mode: 'production',

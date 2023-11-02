@@ -5,7 +5,7 @@ import HomeView from '../views/frontOffice/HomeView.vue'
 // console.log(import.meta.env.BASE_URL)
 const router = createRouter({
   // mode:'hash',
-  // mode: 'history',
+  mode: 'history',
   history: createWebHistory(import.meta.env.BASE_URL),
   // history: createWebHistory(),
   routes: [
