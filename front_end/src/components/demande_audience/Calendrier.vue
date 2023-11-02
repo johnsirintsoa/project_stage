@@ -1348,10 +1348,15 @@
 
       methods: {
         async setMonCalendrier(infos){
-          const date_debut = moment(infos.startStr).format("YYYY-MM-DD")
-          const date_fin = moment(infos.endStr).format("YYYY-MM-DD")
-          this.date_debut_next = date_debut
-          this.date_fin_previous = date_fin
+          if(infos.view.type === 'timeGridWeek' || infos.view.type === 'dayGridMonth'){
+            console.log(`Data changed ${infos.view}`)
+
+            const date_debut = moment(infos.startStr).format("YYYY-MM-DD")
+            const date_fin = moment(infos.endStr).format("YYYY-MM-DD")
+            this.date_debut_next = date_debut
+            this.date_fin_previous = date_fin
+          }
+
           // const id = this.autoriteSender.child_id
           // this.calendarOptions.events = await AutoriteApi.calendrier({
           //   id_autorite: id,
