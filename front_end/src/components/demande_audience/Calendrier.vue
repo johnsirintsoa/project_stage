@@ -1195,6 +1195,11 @@
     import ColorInfos from '../instruction/ColorInformation.vue'
     import InputStructure from '../tStructureComponent/Tstructure.vue';
     import SpinnerPopup from '../loading/SpinnerPopup.vue'
+
+    // import moment from 'moment'
+    import moment from 'moment-timezone'
+    moment.tz.setDefault('Indian/Antananarivo')
+
     export default{
       components: {
           FullCalendar,
@@ -1953,31 +1958,26 @@
           this.etatAction = value
         },
 
+
+
         async setActionEvenement(){
 
-          const dateTimeDebut = new Date(this.audience.date_debut+'T'+this.audience.time_debut)
-          const dateTimeFin = new Date(this.audience.date_fin+'T'+this.audience.time_fin)
-          
-          let currentDate = new Date();
-          currentDate.setDate(currentDate.getDate() - 1);
 
-          let currentDate2 = new Date()
+          const dateTimeDebut = moment(this.audience.date_debut+'T'+this.audience.time_debut)
+          const date_debut = dateTimeDebut.format("YYYY-MM-DD")
+          const heure_debut = dateTimeDebut.format("hh:mm:ss")
 
-          // const huitHour = new Date(new Date()+'T08:00:00')
-          // console.log()
-          // huitHour.setDate(huitHour.getDate())
-          // currentDate2.setDate(currentDate2.getDate())
+          const dateTimeFin = moment(this.audience.date_fin+'T'+this.audience.time_fin)
+          const date_fin = dateTimeFin.format("YYYY-MM-DD")
+          const heure_fin = dateTimeFin.format("hh:mm:ss")
 
-          // console.log(dateTimeDebut.getDate())
-          // console.log(dateTimeFin.getDate())
-          // console.log(currentDate)
+          const currentDateTime = moment(new Date()).tz('Indian/Antananarivo')
+          const currentDate = currentDateTime.format("YYYY-MM-DD")
+          const currentTime = currentDateTime.format("hh:mm:ss")
 
-          // console.log(dateTimeDebut.getTime())
-          // console.log(dateTimeFin.getTime())
-          // console.log(currentDate2.getTime())
 
           // Gestion d'erreur horaire
-          if(dateTimeDebut < currentDate){
+          if(date_debut < currentDate){
             swal("Erreur de la date début", 'La date du début est inférieure à la date actuelle', "error");
             console.log('Erreur 1')
             // this.resetEtat()
@@ -1985,7 +1985,7 @@
             // console.log('Date début est inférieure actuelle')
 
           }
-          else if(dateTimeFin < currentDate){
+          else if(date_fin < currentDate){
             swal(
               'Erreur de la date fin',
               'La date fin est inférieure à la date actuelle',
@@ -1993,26 +1993,26 @@
             )
             // this.resetEtat()
           }
-          else if( dateTimeDebut.getTime() < currentDate2.getTime()){
+          else if( heure_debut < currentTime){
             swal("Erreur d'horaire", 'L\'heure du début est inférieure à l\'heure actuelle', "error");
             // this.resetEtat()
             // console.log('Heure début est inférieure')
           }
-          else if(dateTimeFin.getTime() < currentDate2.getTime()){
+          else if(heure_debut < currentTime){
             swal("Erreur d'horaire", 'L\'heure fin est inférieure à l\'heure actuelle', "error");
             // this.resetEtat()
             // console.log("Heure fin est inférieure actuelle...")
           }
-          else if(dateTimeDebut.getTime() > dateTimeFin.getTime()){
+          else if(heure_debut > heure_fin){
             swal("Erreur d'horaire", 'L\'heure du début est supérieur à l\'heure fin', "error");
             // this.resetEtat()
             // console.log('Date début est supérieure au date fin')
           }
-          else if(dateTimeDebut.getDay() == 6 || dateTimeDebut.getDay() == 0){
+          else if(dateTimeDebut.day() == 6 || dateTimeDebut.day() == 0){
             swal("Erreur de la date début", 'Les week-ends sont pas permis', "error");
           }
 
-          else if(dateTimeFin.getDay() == 6 || dateTimeFin.getDay() == 0){
+          else if(dateTimeFin.day() == 6 || dateTimeFin.day() == 0){
             swal("Erreur de la date fin", 'Les week-ends sont pas permis', "error");
           }
           else {
