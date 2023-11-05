@@ -22,9 +22,12 @@ const notification_mailing = require('../Controllers/NotificationController')
 
 require('dotenv/config')
 
-const {initializeApp} = require("../config/auth.config")
+// const initializeApp = require("../config/firebase.config")
+const {initializeApp} = require('firebase/app')
 const { getStorage, ref, getDownloadURL, uploadBytesResumable } =  require("firebase/storage");
-
+const {firebaseConfig} = require('../config/firebase.config')
+// const moment = require('../func/date.config')
+initializeApp(firebaseConfig)
 // require('./.env')
 // const baseURL = HOSTING_URL
 // const env  = require('./.env')
@@ -32,44 +35,79 @@ const { getStorage, ref, getDownloadURL, uploadBytesResumable } =  require("fire
 
 // add form demande stage
 
+const storage = getStorage()
 // const maxSize = 2 * 1024 * 1024;
-const storage = multer.diskStorage({
-    destination: function(req,file,cb){
-        // cb(null, baseURL+"/uploads/demande_stage");
-        cb(null, "./uploads/demande_stage");
-        // cb(null, "./home/rohiAudience.cyberpanel.net/demande_stage_files");
+// const storage = multer.diskStorage({
+//     destination: function(req,file,cb){
+//         // cb(null, baseURL+"/uploads/demande_stage");
+//         cb(null, "./uploads/demande_stage");
+//         // cb(null, "./home/rohiAudience.cyberpanel.net/demande_stage_files");
 
 
-    },
-    filename: function(req,file,cb){
-        // console.log(file.originalname)
-        cb(null, file.fieldname+"_"+Date.now()+"_"+file.originalname)
-    }
-});
+//     },
+//     filename: function(req,file,cb){
+//         // console.log(file.originalname)
+//         cb(null, file.fieldname+"_"+Date.now()+"_"+file.originalname)
+//     }
+// });
 
 // var upload = multer({
 //     storage: storage,
 //     limits: { fileSize: maxSize },
 // });
 
+// var upload = multer({
+//     storage: storage
+// });
+
+
+const http = require('http');
+// const fs = require('fs');
+
+
+
+
 var upload = multer({
-    storage: storage
+    storage: multer.memoryStorage( )
 });
 
-
-// Add demande de stage
-router.post('/add',upload.fields([{name: 'curriculum_vitae'},{name: 'lettre_motivation'},{name: 'lettre_introduction'}]),async(req,res)=>{
-    const prenomFormated = FUNC.upSetFirstLetter(req.body.prenom)
-    const nomFormated = req.body.nom.toUpperCase()
-    const all_file = req.files;
-    if (!all_file) {
+router.post('/add',upload.fields([{name: 'curriculum_vitae'},{name: 'lettre_motivation'},{name: 'lettre_introduction'}]), async (req,res) =>{
+    // console.log(req.files)
+    if (!req.files) {
         return res.status(400).send({ message: 'Please upload a data.' });
-    }else{
-        // return res.status(200).send({ message: 'Nice we got it...' });
-        // let sql = "INSERT INTO demande_stage(nom,prenom,e_mail,cin,telephone,duree,curriculum_vitae,lettre_motivation,lettre_introduction,message,id_domaine) VALUES ('"+req.body.nom+"','"+req.body.prenom+"','"+req.body.e_mail+"','"+req.body.cin+"','"+req.body.telephone+"','"+req.body.duree+"','"+req.files['curriculum_vitae'][0].filename+"','"+req.files['lettre_motivation'][0].filename+"','"+req.files['lettre_introduction'][0].filename+"','"+req.body.message+"','"+req.body.id_domaine+"')"
-        // console.log(req.body)
-        // console.log('Hahahaha')
-        let sql = `INSERT INTO demande_stage(nom,prenom,etablissement,e_mail,cin,telephone,duree,curriculum_vitae,lettre_motivation,lettre_introduction,message,id_domaine,id_autorite_enfant,date_creation) VALUES ('${req.body.nom}','${prenomFormated}','${req.body.etablissement}','${req.body.e_mail}','${req.body.cin}','${req.body.telephone}','${req.body.duree}','${req.files['curriculum_vitae'][0].filename}','${req.files['lettre_motivation'][0].filename}','${req.files['lettre_introduction'][0].filename}','${req.body.message}',${req.body.id_domaine},${req.body.id_autorite_enfant},(SELECT CURDATE()))`
+    }
+    else {
+        const nomFormated = req.body.nom.toUpperCase()
+        const prenomFormated = FUNC.upSetFirstLetter(req.body.prenom)
+    
+        const cv = new String(req.files['curriculum_vitae'][0].originalname).concat(nomFormated,'_',prenomFormated)
+        const lm = new String(req.files['lettre_motivation'][0].originalname).concat(nomFormated,'_',prenomFormated)
+        const li = new String(req.files['lettre_introduction'][0].originalname).concat(nomFormated,'_',prenomFormated)
+    
+        // CV
+        const storageRef_CV = ref(storage, `demande_stage/${cv}`)
+        const metadata_CV = {
+            contentType: req.files['curriculum_vitae'][0].mimetype
+        }
+        const snapshot_CV = await uploadBytesResumable(storageRef_CV, req.files['curriculum_vitae'][0].buffer, metadata_CV)
+        const downloadURL_CV = await getDownloadURL(snapshot_CV.ref)
+    
+        // Lettre de motivation
+        const storageRef_LM = ref(storage, `demande_stage/${lm}`)
+        const metadata_LM = {
+            contentType: req.files['lettre_motivation'][0].mimetype
+        }
+        const snapshot_LM = await uploadBytesResumable(storageRef_LM, req.files['lettre_motivation'][0].buffer, metadata_LM)
+        const downloadURL_LM = await getDownloadURL(snapshot_LM.ref)
+    
+        // Lettre d'introduction
+        const storageRef_LI = ref(storage, `demande_stage/${li}`)
+        const metadata_LI = {
+            contentType: req.files['lettre_introduction'][0].mimetype
+        }
+        const snapshot_LI = await uploadBytesResumable(storageRef_LI, req.files['lettre_introduction'][0].buffer, metadata_LI)
+        const downloadURL_LI = await getDownloadURL(snapshot_LI.ref)
+        let sql = `INSERT INTO demande_stage(nom,prenom,etablissement,e_mail,cin,telephone,duree,curriculum_vitae,lettre_motivation,lettre_introduction,message,id_domaine,id_autorite_enfant,date_creation) VALUES ('${req.body.nom}','${prenomFormated}','${req.body.etablissement}','${req.body.e_mail}','${req.body.cin}','${req.body.telephone}','${req.body.duree}','${downloadURL_CV}','${downloadURL_LM}','${downloadURL_LI}','${req.body.message}',${req.body.id_domaine},${req.body.id_autorite_enfant},(SELECT CURDATE()))`
         
         
         rohiAudiencePool.then((rohiAudienceDB) => {
@@ -97,7 +135,69 @@ router.post('/add',upload.fields([{name: 'curriculum_vitae'},{name: 'lettre_moti
             throw err 
          });
     }
+
+
+    
+
+    // return res.send({
+    //     downloadURL_CV: downloadURL_CV,
+    //     downloadUR_LM: downloadURL_LM,
+    //     downloadUR_LI: downloadURL_LI
+    // })
 })
+
+// Add demande de stage
+// router.post('/add',upload.fields([{name: 'curriculum_vitae'},{name: 'lettre_motivation'},{name: 'lettre_introduction'}]),async(req,res)=>{
+//     const dateTimeActu = moment.formatDateTime(new Date())
+//     const nomFormated = req.body.nom.toUpperCase()
+//     const prenomFormated = FUNC.upSetFirstLetter(req.body.prenom)
+
+//     // file name format
+
+//     const cv = req.files['curriculum_vitae'][0].filename.concat(nomFormated'_',prenomFormated)
+//     const lm = req.files['lettre_motivation'][0].filename.concat(nomFormated'_',prenomFormated)
+//     const li = req.files['lettre_introduction'][0].filename.concat(nomFormated'_',prenomFormated)
+
+//     const storageRef = ref(storage,`demande_stage/${}`)
+
+    
+//     const all_file = req.files;
+//     if (!all_file) {
+//         return res.status(400).send({ message: 'Please upload a data.' });
+//     }else{
+//         // return res.status(200).send({ message: 'Nice we got it...' });
+//         // let sql = "INSERT INTO demande_stage(nom,prenom,e_mail,cin,telephone,duree,curriculum_vitae,lettre_motivation,lettre_introduction,message,id_domaine) VALUES ('"+req.body.nom+"','"+req.body.prenom+"','"+req.body.e_mail+"','"+req.body.cin+"','"+req.body.telephone+"','"+req.body.duree+"','"+req.files['curriculum_vitae'][0].filename+"','"+req.files['lettre_motivation'][0].filename+"','"+req.files['lettre_introduction'][0].filename+"','"+req.body.message+"','"+req.body.id_domaine+"')"
+//         // console.log(req.body)
+//         // console.log('Hahahaha')
+//         let sql = `INSERT INTO demande_stage(nom,prenom,etablissement,e_mail,cin,telephone,duree,curriculum_vitae,lettre_motivation,lettre_introduction,message,id_domaine,id_autorite_enfant,date_creation) VALUES ('${req.body.nom}','${prenomFormated}','${req.body.etablissement}','${req.body.e_mail}','${req.body.cin}','${req.body.telephone}','${req.body.duree}','${req.files['curriculum_vitae'][0].filename}','${req.files['lettre_motivation'][0].filename}','${req.files['lettre_introduction'][0].filename}','${req.body.message}',${req.body.id_domaine},${req.body.id_autorite_enfant},(SELECT CURDATE()))`
+        
+        
+//         rohiAudiencePool.then((rohiAudienceDB) => {
+//             rohiAudienceDB.query(sql, async (err, result) =>{
+//                 if(err){
+//                     // console.log('Hahahaha')
+//                     return res.json(err);
+//                 }
+//                 else{
+//                     const envoyeur = {
+//                         nom: nomFormated,
+//                         prenom: prenomFormated
+//                     }
+//                     const receiver = {
+//                         email: req.body.autoriteEmail,
+//                         intitule_code: req.body.autoriteSigle,
+//                         intitule: req.body.autorite,
+//                     }
+//                     const mail = await notification_mailing.notification_demande_stage(envoyeur,receiver)
+//                     return res.json(result);
+//                 }
+//                 rohiAudienceDB.release()
+//             });
+//         }).catch((err) => {
+//             throw err 
+//          });
+//     }
+// })
 
 router.post('/liste',async(req,res)=>{
         let sql = `SELECT
@@ -408,10 +508,14 @@ router.get('/file/:file_name',async(req,res)=>{
 
     const file = req.params.file_name
     try {
+        // const file = fs.createWriteStream("file.jpg");
+        // const request = http.get(file, function(response) {
+        //     response.pipe(file);
+        // });
         let fileLocation = path.join('./uploads/demande_stage/',file);
-        // let fileLocation = path.join('./home/rohiAudience.cyberpanel.net/demande_stage_files/',file);
+        // // let fileLocation = path.join('./home/rohiAudience.cyberpanel.net/demande_stage_files/',file);
         
-        res.download(fileLocation, file)
+        // res.download(file)
     } catch (error) {
         res.send(error)
     }

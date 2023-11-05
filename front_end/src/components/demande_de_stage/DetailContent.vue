@@ -24,7 +24,8 @@
         methods: {
 
             async getFile(file_name){
-                await DemandeStage.getFile(file_name)
+                window.open(file_name,"_blank")
+                // await DemandeStage.getFile(file_name)
             },
 
             async updateDuree(){
@@ -153,9 +154,8 @@
                             <div class="icon">
                                 <a @click.prevent="getFile(this.detail.curriculum_vitae)" >
                                 <i class="bx bxs-file-pdf" style="font-size: 2.0rem;color: #012970"></i>
-                                <div class="label-cv">
-                                    {{this.detail.curriculum_vitae}}
-                                </div>
+                                <!-- <div class="label-cv">Curriculum vitae
+                                </div> -->
                                 </a>
                             </div>
                         </div>
@@ -167,9 +167,9 @@
                             <div class="icon">
                                 <a @click.prevent="getFile(this.detail.lettre_motivation)" >
                                 <i class="bx bxs-file-pdf" style="font-size: 2.0rem;color: #012970"></i>
-                                <div class="label-lm">
-                                    {{this.detail.lettre_motivation}}
-                                </div>
+                                <!-- <div class="label-lm">
+                                    Lettre de motivation
+                                </div> -->
                                 </a>
                             </div>
                         </div>
@@ -181,7 +181,7 @@
                             <a @click.prevent="getFile(this.detail.lettre_introduction)" >
                             <div class="icon">
                                 <i class="bx bxs-file-pdf" style="font-size: 2.0rem;color: #012970"></i>
-                                <div class="label-li">{{this.detail.lettre_introduction}}</div>
+                                <!-- <div class="label-li">Lettre d'introduction</div> -->
                             </div>
                             </a>
                         </div>
