@@ -1227,7 +1227,7 @@
                   },
                   // initialView: 'timeGridDay',
                   initialView: 'timeGridWeek',
-                  initialDate:'2023-11-06',
+                  // initialDate:'2023-11-06',
                   datesSet: this.setMonCalendrier,
 
                   // initialEvents: this.all_actual_events,

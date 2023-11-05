@@ -188,10 +188,12 @@
                     </div>
                     <div class="row" v-if="this.detail.id_entretien_stage > 0 ">
                         <!-- <div class="col-lg-3 col-md-4 label">Lettre d'introduction</div> -->
-                        <div class="col-lg-9 col-md-8">
-                            <div class="icon">
-                                <div class="label-li">
-                                    <button  type="button" class="btn btn-primary" @click="updateDuree()">Prolonger</button>
+                        <div v-if="this.detail.action == 1">
+                            <div class="col-lg-9 col-md-8">
+                                <div class="icon">
+                                    <div class="label-li">
+                                        <button  type="button" class="btn btn-primary" @click="updateDuree()">Prolonger</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>

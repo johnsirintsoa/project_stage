@@ -253,7 +253,7 @@
 
             <div class="text-center">
               <button type="submit" class="btn btn-primary">Ajouter</button>
-              <button type="reset" class="btn btn-secondary">Annuler</button>
+              <button type="reset" @change="viderChamp" class="btn btn-secondary">Annuler</button>
             </div>
         </form>
 

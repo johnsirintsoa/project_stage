@@ -398,6 +398,7 @@ router.post('/detail', [authJwt.verifyToken],async(req,res)=>{
         e.message, 
         d.id, 
         d.nom_domaine,
+        e.action,
         e.id_autorite_enfant,
         IFNULL(eds.id,'0') as id_entretien_stage
     FROM
