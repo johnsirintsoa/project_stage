@@ -154,6 +154,8 @@
 
 					if(login.message){
 						this.errors = login.message
+						localStorage.removeItem('autorite')
+						this.$router.replace(this.$route.query.redirect || '/login');
 						this.sipnnerActivated = false
 					}
                     else if(storage){
