@@ -22,6 +22,8 @@ const notification_mailing = require('../Controllers/NotificationController')
 
 require('dotenv/config')
 
+const {initializeApp} = require("../config/auth.config")
+const { getStorage, ref, getDownloadURL, uploadBytesResumable } =  require("firebase/storage");
 
 // require('./.env')
 // const baseURL = HOSTING_URL

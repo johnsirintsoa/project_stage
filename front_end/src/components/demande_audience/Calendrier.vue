@@ -285,7 +285,7 @@
                           </div>
                       </div>
 
-<!--   
+  
                       <div class="col-md-12" v-else>
                         <div class="form-floating mb-3">
                           
@@ -300,21 +300,9 @@
                           </select>
                         <label for="floatingSelect">Place</label>
                         </div>
-                      </div> -->
-
-                      <div class="col-sm-12" v-else>
-                        <select class="form-select" multiple="" aria-label="multiple select example" required="" v-model="audience.actual_place">
-                          <option v-if="audience.actual_place" selected disabled>
-                            {{audience.actual_place["date_disponible"]}} {{audience.actual_place["heure_debut"]}} à {{audience.actual_place["heure_fin"]}}
-                          </option>
-
-                          <option v-for="(item, index) in audience.places_disponible" :key="item" :value="item">
-                              {{item.date_disponible}} {{item.heure_debut}} à {{item.heure_fin}}
-                          </option>
-                        </select>
-                        <label for="floatingSelect">Place</label>
-
                       </div>
+
+
 
                       
                       <SpinnerPopup
@@ -1998,7 +1986,7 @@
                 this.togglePopupAudience()
                 // this.sipnnerActivated = false
                 this.$emit('spinnerStatus', false)
-                swal("Entretien reportée", `${response.message}`, "success");
+                swal("Entretien reportée", `L'entretien a été reporté`, "success");
             }
             else{
                 swal("Entretien non enregistrée", "L'entretien n'a pas été reporté", "error");
@@ -2008,7 +1996,18 @@
           }
           else if (this.typeCalendrier ==='evenementiel' && this.audience.typeEvenement ==='Autorité'){
             this.$emit('spinnerStatus', true)
-            const response = await DemandeAudienceAutoriteAPI.reporter_by_click(this.evenement)
+            const arg = {
+              envoyeur: this.evenement.envoyeur,
+              autorite: this.evenement.autorite,
+              date_debut: this.audience.date_debut,
+              date_fin: this.audience.date_fin,
+              heure_debut: this.audience.time_debut,
+              heure_fin: this.audience.time_fin,
+              id_dm_aud_aut_date_heure_dispo: this.audience.id,
+              id_audience: this.audience.id_evenement
+            }
+            // console.log(arg)
+            const response = await DemandeAudienceAutoriteAPI.reporter_by_click(arg)
             if(response.message){
               this.togglePopupAudience()
               // this.sipnnerActivated = false
@@ -2505,6 +2504,7 @@
         },
         
         async handleEventClick(event){
+          // console.log(event.event.id)
 
           // console.log(event.event.extendedProps)
 

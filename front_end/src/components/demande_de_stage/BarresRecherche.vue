@@ -97,7 +97,7 @@
 
         methods: {
             async rechercher(e){
-                const ses = JSON.parse(sessionStorage.getItem('structure'))
+                const ses = JSON.parse(localStorage.getItem('autorite')).db
                 // this.autorite = ses
                 const filtre = {
                     date1: this.date1,

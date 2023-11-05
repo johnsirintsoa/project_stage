@@ -44,13 +44,11 @@ router.post('/login', async(req,res) =>{
     u.password = (SELECT AES_ENCRYPT('${req.body.mot_de_passe}','lHommeEstNaturellementBonCEestLaSocieteQuiLeCorrompt-Rousseau'));
     `
     rohiPool.then(( rohiDb) => {
-        if (err) {
-            rohiDb.release();
-            throw err
-        } // not connected!
+
 
         rohiDb.query(email, function(err,result){
             if(err){
+                rohiDb.release();
                 return res.send({err})
             }
             else if(result.length == 0){
